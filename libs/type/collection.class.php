@@ -14,69 +14,69 @@ namespace org\octris\core\type {
      ****
      */
 
-    class collection implements \Iterator, \ArrayAccess, \Serializable, \Countable {
+    class collection implements \IteratorAggregate, \ArrayAccess, \Serializable, \Countable {
+        /****v* collection/$data
+         * SYNOPSIS
+         */
+        protected $data = array();
+        /*
+         * FUNCTION
+         *      collection data
+         ****
+         */
+
+        /****v* collection/$keys
+         * SYNOPSIS
+         */
+        protected $keys = array();
+        /*
+         * FUNCTION
+         *      parameter names
+         ****
+         */
+        
+        /****m* collection/__construct
+         * SYNOPSIS
+         */
         function __construct($array) {
+        /*
+         * FUNCTION
+         *      constructor
+         * INPUTS
+         *      * $array (mixed) -- array to construct
+         ****
+         */
+        {
             if (is_scalar($array)) {
+                // a scalar will be splitted into bytes
                 $array = str_split((string)$array, 1);
             } elseif (is_object($array)) {
-                if ($array instanceof octris_type_array) {
-                    $array = $array->export();
+                if (($array instanceof collection) || ($array instanceof collection\Iterator) || ($array instanceof \ArrayIterator)) {
+                    $array = $array->getArrayCopy();
                 } else {
                     $array = (array)$array;
                 }
+            } elseif (!is_array($array)) {
+                throw new Exception('don\'t know how to handle parameter of type "' . gettype($array) . '"');
             }
         
-            $this->keys   = array_keys($array);
-            $this->values = array_values($array);
-        
-            $this->position = 0;
-            $this->count    = count($array);
+            $this->keys = array_keys($array);
+            $this->data = $array;
         }
     
-        protected function getItem($pos) {
-            $item = $this->values[$pos];
-        
-            switch (gettype($item)) {
-            case 'array':
-                $item = new self($item);
-                break;
-            case 'object':
-                $item = new self((array)$item);
-                break;
-            }
-        
-            return (object)array(
-                'item'      => $item,
-                'key'       => $this->keys[$pos],
-                'pos'       => $pos,
-                'count'     => $this->count,
-                'is_first'  => ($pos == 0),
-                'is_last'   => ($pos == $this->count - 1)
-            );
-        }
-    
-        function export() {
-            return array_combine($this->keys, $this->values);
-        }
-    
-        function current() {
-            return $this->getItem($this->position);
-        }
-    
-        function rewind() {
-            $this->position = 0;
-        }
-    
-        function next() {
-            ++$this->position;
-        }
-    
-        function key() {
-            return $this->keys[$this->position];
-        }
-    
-        function valid() {
-            return isset($this->values[$this->position]);
+        /****m* collection/getIterator
+         * SYNOPSIS
+         */
+        function getIterator()
+        /*
+         * FUNCTION
+         *      returns iterator object for collection
+         * OUTPUTS
+         *      (iterator) -- iterator object
+         ****
+         */
+        {
+            return new \ArrayIterator($this->data);
         }
     
         function offsetExists($offs) {
@@ -86,16 +86,16 @@ namespace org\octris\core\type {
         function offsetGet($offs) {
             $idx = array_search($offs, $this->keys, true);
         
-            return ($idx !== false ? $this->getItem($idx) : false);
+            return ($idx !== false ? $this->data[$this->keys[$idx]] : false);
         }
     
         function offsetSet($offs, $value) {
             // is_null implements $...[] = ...
             if (!is_null($offs) && ($idx = array_search($offs, $this->keys, true)) !== false) {
-                $this->values[$idx] = $value;
+                $this->data[$this->keys[$idx]] = $tmp;
             } else {
-                $this->keys[]   = $offs;
-                $this->values[] = $value;
+                $this->keys[]      = $offs;
+                $this->data[$offs] = $tmp;
             }
         }
 
@@ -103,18 +103,13 @@ namespace org\octris\core\type {
             $idx = array_search($offs, $this->keys, true);
 
             if ($idx !== false) {
-                $tmp = array_combine($this->keys, $this->values);
-                unset($tmp[$offs]);
-            
-                $this->keys   = array_keys($tmp);
-                $this->values = array_values($tmp);
-            
-                $this->count  = count($this->keys);
+                unset($this->keys[$idx]);
+                unset($this->data[$offs]);
             }
         }
     
         function serialize() {
-            return serialize(array_combine($this->keys, $this->values));
+            return serialize($this->data);
         }
     
         function unserialize($data) {
@@ -122,7 +117,7 @@ namespace org\octris\core\type {
         }
     
         function count() {
-            return $this->count;
+            return count($this->data);
         }
     }
 }
