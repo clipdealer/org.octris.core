@@ -3,6 +3,18 @@
 require_once('org.octris.core/app.class.php');
 
 namespace org\octris\core\app {
+    /****c* app/cli
+     * NAME
+     *      cli
+     * FUNCTION
+     *      core class for CLI applications
+     * COPYRIGHT
+     *      copyright (c) 2010 by Harald Lapp
+     * AUTHOR
+     *      Harald Lapp <harald@octris.org>
+     ****
+     */
+
     class cli extends \org\octris\core\app {
         /****m* cli/getOptions
          * SYNOPSIS
