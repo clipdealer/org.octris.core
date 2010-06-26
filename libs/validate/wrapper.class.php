@@ -13,27 +13,7 @@ namespace org\octris\core\validate {
      ****
      */
 
-    final class wrapper implements \IteratorAggregate, \ArrayAccess, \Serializable, \Countable {
-        /****v* wrapper/$cache
-         * SYNOPSIS
-         */
-        protected $cache = array();
-        /*
-         * FUNCTION
-         *      cache for parameters
-         ****
-         */
-
-        /****v* wrapper/$keys
-         * SYNOPSIS
-         */
-        protected $keys = array();
-        /*
-         * FUNCTION
-         *      parameter names
-         ****
-         */
-
+    final class wrapper extends \org\octris\core\collection {
         /****v* wrapper/$defaults
          * SYNOPSIS
          */
@@ -61,34 +41,32 @@ namespace org\octris\core\validate {
          */
         {
             if (($cnt = count($source)) > 0) {
-                $this->keys  = array_keys($source);
-                $this->cache = array();
+                $this->keys = array_keys($source);
+                $this->data = array();
                 
                 foreach ($source as $k => $v) {
-                    $this->cache[$k] = (object)$this->defaults;
-                    $this->cache[$k]->isSet       = true;
-                    $this->cache[$k]->unsanitized = $v;
+                    $this->data[$k] = (object)$this->defaults;
+                    $this->data[$k]->isSet       = true;
+                    $this->data[$k]->unsanitized = $v;
                 }
             } else {
-                $this->cache = array();
+                $this->data = array();
             }
         }
 
-        function getIterator() {
-            return new \ArrayIterator($this->cache);
-        }
-    
-        function offsetExists($offs) {
-            return (in_array($offs, $this->keys));
-        }
-    
-        function offsetGet($offs) {
-            $idx = array_search($offs, $this->keys, true);
-        
-            return ($idx !== false ? $this->cache[$this->keys[$idx]] : false);
-        }
-    
-        function offsetSet($offs, $value) {
+        /****m* wrapper/offsetSet
+         * SYNOPSIS
+         */
+        function offsetSet($offs, $value)
+        /*
+         * FUNCTION
+         *      overwrite collection's offsetSet to store value with meta data
+         * INPUTS
+         *      * $offs (mixed) -- offset to store value at
+         *      * $value (mixed) -- value to store
+         ****
+         */
+        {
             $tmp = (object)$this->defaults;
             $tmp->isSet       = true;
             $tmp->isValid     = true;
@@ -96,44 +74,9 @@ namespace org\octris\core\validate {
             $tmp->unsanitized = $value;
             $tmp->value       = $value;
             
-            // is_null implements $...[] = ...
-            if (!is_null($offs) && ($idx = array_search($offs, $this->keys, true)) !== false) {
-                $this->values[$this->keys[$idx]] = $tmp;
-            } else {
-                $this->keys[]        = $offs;
-                $this->values[$offs] = $tmp;
-            }
-        }
-
-        function offsetUnset($offs) {
-            $idx = array_search($offs, $this->keys, true);
-
-            if ($idx !== false) {
-                unset($this->keys[$idx]);
-                unset($this->cache[$offs]);
-            }
-        }
-    
-        function serialize() {
-            return serialize($this->cache);
-        }
-    
-        function unserialize($data) {
-            $this->__construct($data);
-        }
-    
-        function count() {
-            return count($this->cache);
+            parent::offsetSet($offs, $tmp);
         }
     }
-
-    // enable validation for superglobals
-    $_COOKIE  = new wrapper($_COOKIE);
-    $_GET     = new wrapper($_GET);
-    $_POST    = new wrapper($_POST);
-    $_SERVER  = new wrapper($_SERVER);
-    $_ENV     = new wrapper($_ENV);
-    $_REQUEST = new wrapper($_REQUEST);
 }
 
 ?>
