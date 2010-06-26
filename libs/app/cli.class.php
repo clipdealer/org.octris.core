@@ -1,5 +1,7 @@
 <?php
 
+require_once('org.octris.core/app.class.php');
+
 namespace org\octris\core\app {
     class cli extends \org\octris\core\app {
         /****m* cli/getOptions
