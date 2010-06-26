@@ -1,0 +1,31 @@
+Template Engine
+===============
+
+*   Every Variable in the Template is an object. The following Objects
+    are available:
+    
+    *   String
+    *   Number
+    *   Money
+    *   Collection
+    
+    The template variable types are inherited from the core variable types.
+
+Syntax
+------
+
+..  source: plain
+
+    ::($variable)                     // casted to string
+
+    ::($object->property)             // object property casted to string
+
+    ::($variable->default('...'))     // string object
+
+Blocks
+------
+
+..  source: plain
+    
+    ::(foreach(...))
+    ::(end)

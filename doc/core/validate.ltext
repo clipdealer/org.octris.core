@@ -1,0 +1,80 @@
+Parameter validation using schemas
+==================================
+
+How to implement rule chaining, to apply multiple rules on one
+parameter?
+
+*   type: chain?
+    rules: validation rules chain
+    
+*   required / invalid
+
+Field validation rules
+~~~~~~~~~~~~~~~~~~~~~~
+
+    *   type -- (required) type of field
+        the type the field must have to be valid
+
+_Example #1:_
+
+Example shows required schema for validating login credentials:
+
+..  source: php
+
+    <?php
+    
+    $schema = array(
+        '_schema_' => array(                        // entry point, always required!
+            'type'          => 'object',
+            'properties'    => array(
+                'username' => array(                // field: username
+                    'type'  => 'print'
+                ),
+                'password' => array(                // field: password
+                    'type'  => 'print'
+                )
+            )
+        )
+    );
+    
+    ?>
+
+_Example: #2:_
+
+Example shows required schema for user-registration data containing a list of up to 5 website URLs:
+
+..  source: php
+
+    <?php
+    
+    $schema = array(
+        '_schema_' => array(
+            'type'       => 'object',
+            'properties' => array(
+                'username' => array(
+                    'type'  => 'print'
+                ),
+                'password' => array(
+                    'type'    => 'print',
+                ),
+                'pwdcmp'   => array(                // field: a second password field to compare to
+                    'type'    => 'compare',
+                    'options' => array(
+                        'compare' => 'pwdcmp'
+                    )
+                ),
+                'websites' => array(
+                    'type'      => 'array',
+                    'items'     => array('url'),
+                    'min_items' => 0,
+                    'max_items' => 5
+                )
+            )
+        ),
+        
+        'url' => array(                         // name of schema: url
+            'url' => array(
+                'type' => 'url'
+            )
+        )
+    )
