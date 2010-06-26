@@ -38,7 +38,7 @@ namespace org\octris\core\type {
         /****m* collection/__construct
          * SYNOPSIS
          */
-        function __construct($array) {
+        function __construct($array)
         /*
          * FUNCTION
          *      constructor
@@ -78,17 +78,17 @@ namespace org\octris\core\type {
         {
             return new \ArrayIterator($this->data);
         }
-    
+            
         function offsetExists($offs) {
             return (in_array($offs, $this->keys));
         }
-    
+            
         function offsetGet($offs) {
             $idx = array_search($offs, $this->keys, true);
         
             return ($idx !== false ? $this->data[$this->keys[$idx]] : false);
         }
-    
+            
         function offsetSet($offs, $value) {
             // is_null implements $...[] = ...
             if (!is_null($offs) && ($idx = array_search($offs, $this->keys, true)) !== false) {
@@ -98,24 +98,24 @@ namespace org\octris\core\type {
                 $this->data[$offs] = $tmp;
             }
         }
-
+        
         function offsetUnset($offs) {
             $idx = array_search($offs, $this->keys, true);
-
+        
             if ($idx !== false) {
                 unset($this->keys[$idx]);
                 unset($this->data[$offs]);
             }
         }
-    
+            
         function serialize() {
             return serialize($this->data);
         }
-    
+            
         function unserialize($data) {
             $this->__construct($data);
         }
-    
+            
         function count() {
             return count($this->data);
         }
