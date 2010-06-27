@@ -99,27 +99,10 @@ namespace org\octris\core\app {
                   $_ENV['OCTRIS_DEVEL']->value);
         }
 
-        /****m* config/getInstance
-         * SYNOPSIS
-         */
-        static function getInstance()
-        /*
-         * FUNCTION
-         *      creates new instance of config object.
-         ****
-         */
-        {
-            if (is_null(self::$instance)) {
-                self::$instance = new static();
-            }
-
-            return self::$instance;
-        }
-
         /****m* config/set
          * SYNOPSIS
          */
-        function set($name, $value)
+        static function set($name, $value)
         /*
          * FUNCTION
          *      sets an array of values
@@ -129,13 +112,13 @@ namespace org\octris\core\app {
          ****
          */
         {
-            $this->data[$name] = $value;
+            self::$data[$name] = $value;
         }
 
         /****m* config/get
          * SYNOPSIS
          */
-        function get($name)
+        static function get($name)
         /*
          * FUNCTION
          *      return value of spacified setting
@@ -146,10 +129,10 @@ namespace org\octris\core\app {
          ****
          */
         {
-            $return = NULL;
+            $return = null;
 
-            if (array_key_exists($name, $this->data)) {
-                $return =& $this->data[$name];
+            if (array_key_exists($name, self::$data)) {
+                $return =& self::$data[$name];
             }
 
             return $return;
@@ -158,7 +141,7 @@ namespace org\octris\core\app {
         /****m* config/getSet
          * SYNOPSIS
          */
-        function getSet($prefix)
+        static function getSet($prefix)
         /*
          * FUNCTION
          *      return a set of configuration options
@@ -174,7 +157,7 @@ namespace org\octris\core\app {
             $len = strlen($prefix);
             $set = array();
 
-            foreach ($this->data as $k => $v) {
+            foreach (self::$data as $k => $v) {
                 if (substr($k, 0, $len) == $prefix) {
                     $set[substr($k, $len)] = $v;
                 }
@@ -221,7 +204,7 @@ namespace org\octris\core\app {
         /****m* config/load
          * SYNOPSIS
          */
-        function load($app)
+        static function load($app)
         /*
          * FUNCTION
          *      loads the configuration file(s) for specified application
