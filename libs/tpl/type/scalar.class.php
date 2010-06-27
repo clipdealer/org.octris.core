@@ -1,11 +1,11 @@
 <?php
 
 namespace org\octris\core\tpl\type {
-    /****c* type/string
+    /****c* type/scalar
      * NAME
-     *      string
+     *      scalar
      * FUNCTION
-     *      string type of template class
+     *      scalar type of template class
      * COPYRIGHT
      *      copyright (c) 2010 by Harald Lapp
      * AUTHOR
@@ -13,22 +13,6 @@ namespace org\octris\core\tpl\type {
      ****
      */
 
-    class string extends \org\octris\core\type\string {
-        /****m* string/default
-         * SYNOPSIS
-         */
-        function default()
-        /*
-         * FUNCTION
-         *      
-         * INPUTS
-         *      
-         * OUTPUTS
-         *      
-         ****
-         */
-        {
-            
-        }
+    class scalar extends \org\octris\core\type\scalar {
     }
 }
