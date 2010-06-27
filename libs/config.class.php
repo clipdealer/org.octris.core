@@ -16,27 +16,7 @@ namespace org\octris\core\app {
      */
 
     class config {
-        /****v* config/$instance
-         * SYNOPSIS
-         */
-        protected static $instance = NULL;
-        /*
-         * FUNCTION
-         *      stores instance of lima_config object
-         ****
-         */
-
-        /****v* config/$data
-         * SYNOPSIS
-         */
-        protected $data = array();
-        /*
-         * FUNCTION
-         *      stores data of config (namespace)
-         ****
-         */
-
-        /****m* config/T_PATH_CACHE, T_PATH_DATA, T_PATH_ETC, T_PATH_HOST, T_PATH_LIBS, T_PATH_LIBSJS, T_PATH_LOCALE, T_PATH_RESOURCES, T_PATH_STYLES, T_PATH_LOG, T_PATH_WORK, T_PATH_WORK_LIBSJS, T_PATH_WORK_RESOURCES, T_PATH_WORK_STYLES, T_PATH_WORK_TPL
+        /****d* config/T_PATH_CACHE, T_PATH_DATA, T_PATH_ETC, T_PATH_HOST, T_PATH_LIBS, T_PATH_LIBSJS, T_PATH_LOCALE, T_PATH_RESOURCES, T_PATH_STYLES, T_PATH_LOG, T_PATH_WORK, T_PATH_WORK_LIBSJS, T_PATH_WORK_RESOURCES, T_PATH_WORK_STYLES, T_PATH_WORK_TPL
          * SYNOPSIS
          */
         const T_PATH_CACHE          = '%s/cache/%s';
@@ -58,17 +38,37 @@ namespace org\octris\core\app {
         const T_PATH_WORK_TPL       = '%s/work/%s/templates';
         /*
          * FUNCTION
-         *      used in combination with config/getPath to determine path
+         *      used in combination with app/getPath to determine path
          ****
          */
 
         /****v* config/$pathtypes
          * SYNOPSIS
          */
-        protected $pathtypes = array();
+        protected static $pathtypes = array();
         /*
          * FUNCTION
          *      filled by constructor with the path types
+         ****
+         */
+
+        /****v* config/$instance
+         * SYNOPSIS
+         */
+        protected static $instance = NULL;
+        /*
+         * FUNCTION
+         *      stores instance of lima_config object
+         ****
+         */
+
+        /****v* config/$data
+         * SYNOPSIS
+         */
+        protected static $data = array();
+        /*
+         * FUNCTION
+         *      stores data of config (namespace)
          ****
          */
 
@@ -90,16 +90,13 @@ namespace org\octris\core\app {
             if (!$_ENV->validate('OCTRIS_APP', validate::T_ALPHANUM) || !$_ENV->validate('OCTRIS_BASE', validate::T_PRINT)) {
                 throw new lima_exception_critical('unable to import OCTRIS_APP or OCTRIS_BASE - invalid settings!');
             } else {
-                $this->data['common.app.name'] = $_ENV['OCTRIS_APP']->value;
-                $this->data['common.app.base'] = $_ENV['OCTRIS_BASE']->value;
+                self::$data['common.app.name'] = $_ENV['OCTRIS_APP']->value;
+                self::$data['common.app.base'] = $_ENV['OCTRIS_BASE']->value;
             }
 
-            $this->data['common.app.development'] =
+            self::$data['common.app.development'] =
                 (($_ENV->validate('OCTRIS_DEVEL', validate::T_BOOL)) &&        
                   $_ENV['OCTRIS_DEVEL']->value);
-
-            $class = new ReflectionClass($this);
-            $this->pathtypes = array_flip($class->getConstants());
         }
 
         /****m* config/getInstance
@@ -113,7 +110,7 @@ namespace org\octris\core\app {
          */
         {
             if (is_null(self::$instance)) {
-                self::$instance = new config();
+                self::$instance = new static();
             }
 
             return self::$instance;
@@ -189,26 +186,33 @@ namespace org\octris\core\app {
         /****m* config/getPath
          * SYNOPSIS
          */
-        function getPath($type, $appname = '')
+        static function getPath($type, $module = '')
         /*
          * FUNCTION
          *      returns path for specified type for current application
          * INPUTS
          *      * $type (string) -- type of path to return
-         *      * $appname (string) -- optional name of application to return path for. default is: current application
+         *      * $module (string) -- (optional) name of module to return path for. default is: current application name
          * OUTPUTS
          *      (string) -- existing path or empty string, if path does not exist
          ****
          */
         {
-            if (isset($this->pathtypes[$type])) {
+            if (count(self::$pathtypes) == 0) {
+                $class = new ReflectionClass(self);
+                self::$pathtypes = array_flip($class->getConstants());
+            }
+
+            $return = '';
+
+            if (isset(self::$pathtypes[$type])) {
                 $return = sprintf(
                     $type,
-                    $this->get('common.application.path'),
-                    ($appname ? $appname : $this->get('common.application.name'))
+                    self::$data['common.application.path'],
+                    ($module 
+                        ? $module 
+                        : self::$data['common.application.name'])
                 );
-            } else {
-                $return = '';
             }
 
             return realpath($return);
@@ -226,12 +230,12 @@ namespace org\octris\core\app {
          ****
          */
         {
-            $this->data = \org\octris\core::getProxy(
+            self::$data = \org\octris\core::getProxy(
                 'config',
                 array(
-                    $this->data['common.app.name'],
-                    $this->data['common.app.base'],
-                    $this->data['common.app.development']
+                    self::$data['common.app.name'],
+                    self::$data['common.app.base'],
+                    self::$data['common.app.development']
                 )
             )->load($app);
         }
