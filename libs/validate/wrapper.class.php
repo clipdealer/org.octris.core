@@ -131,5 +131,3 @@ namespace org\octris\core\validate {
         }
     }
 }
-
-?>
