@@ -1,6 +1,5 @@
 <?php
 
-
 require_once('org.octris.core/app.class.php');
 
 class main extends \org\octris\core\app\cli {
