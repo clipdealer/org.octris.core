@@ -100,5 +100,7 @@ namespace org\octris\core\app {
     unset($_POST);
     unset($_REQUEST);
     unset($_COOKIE);
+    unset($_SESSION);
+    unset($_FILES);
 }
 
