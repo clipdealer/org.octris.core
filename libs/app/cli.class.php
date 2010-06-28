@@ -1,6 +1,8 @@
 <?php
 
 namespace org\octris\core\app {
+    use \org\octris\core\validate as validate;
+    
     require_once('org.octris.core/app.class.php');
 
     /****c* app/cli
@@ -91,9 +93,9 @@ namespace org\octris\core\app {
     }
 
     // enable validation for superglobals
-    $_SERVER  = new \org\octris\core\validate\wrapper($_SERVER);
-    $_ENV     = new \org\octris\core\validate\wrapper($_ENV);
-    $_GET     = new \org\octris\core\validate\wrapper(cli::getOptions());
+    $_SERVER  = new validate\wrapper($_SERVER);
+    $_ENV     = new validate\wrapper($_ENV);
+    $_GET     = new validate\wrapper(cli::getOptions());
     
     unset($_POST);
     unset($_REQUEST);
