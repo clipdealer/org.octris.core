@@ -38,16 +38,18 @@ namespace org\octris\core\type {
         /****m* collection/__construct
          * SYNOPSIS
          */
-        function __construct($array)
+        function __construct($array = null)
         /*
          * FUNCTION
          *      constructor
          * INPUTS
-         *      * $array (mixed) -- array to construct
+         *      * $array (mixed) -- (optional) array to construct
          ****
          */
         {
-            if (is_scalar($array)) {
+            if (is_null($array)) {
+                $array = array();
+            } elseif (is_scalar($array)) {
                 // a scalar will be splitted into bytes
                 $array = str_split((string)$array, 1);
             } elseif (is_object($array)) {
