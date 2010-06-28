@@ -1,6 +1,25 @@
 Template Engine
 ===============
 
+*   variable scopes for template
+
+    tpl::setValue(name, value, scope = '')
+
+    class ... {
+        $tpl->setValue('name', 'value', $this);
+    }
+
+    setvalue expects string or object of instance 'page' as 3rd paramter. extracts page name of class name of object.
+    
+    access in template:
+    
+    ::($scope:variable)
+    
+    questions:
+    
+    *   how can we handle nested scopes and the possibility to leave name of scope away when trying to fetch variable 
+        in this way in template?
+
 *   Every Variable in the Template is an object. The following Objects
     are available:
     
