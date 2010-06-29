@@ -80,18 +80,56 @@ namespace org\octris\core\type {
         {
             return new \ArrayIterator($this->data);
         }
-            
-        function offsetExists($offs) {
+        
+        /****m* collection/offsetExists
+         * SYNOPSIS
+         */
+        function offsetExists($offs)
+        /*
+         * FUNCTION
+         *      whether a offset exists
+         * INPUTS
+         *      * $offs (string) -- offset to test
+         * OUTPUTS
+         *      (bool) -- returns true, if offset exists
+         ****
+         */
+        {
             return (in_array($offs, $this->keys));
         }
-            
-        function offsetGet($offs) {
+
+        /****m* collection/offsetGet
+         * SYNOPSIS
+         */
+        function offsetGet($offs)
+        /*
+         * FUNCTION
+         *      offset to retrieve
+         * INPUTS
+         *      * $offs (string) -- offset to retrieve
+         * OUTPUTS
+         *      (mixed) -- array value for offset
+         ****
+         */
+        {
             $idx = array_search($offs, $this->keys, true);
         
             return ($idx !== false ? $this->data[$this->keys[$idx]] : false);
         }
-            
-        function offsetSet($offs, $value) {
+
+        /****m* collection/offsetSet
+         * SYNOPSIS
+         */
+        function offsetSet($offs, $value)
+        /*
+         * FUNCTION
+         *      offset to set
+         * INPUTS
+         *      * $offs (string) -- offset to set
+         *      * $value (mixed) -- value for offset to set
+         ****
+         */
+        {
             // is_null implements $...[] = ...
             if (!is_null($offs) && ($idx = array_search($offs, $this->keys, true)) !== false) {
                 $this->data[$this->keys[$idx]] = $tmp;
@@ -101,7 +139,18 @@ namespace org\octris\core\type {
             }
         }
         
-        function offsetUnset($offs) {
+        /****m* collection/offsetUnset
+         * SYNOPSIS
+         */
+        function offsetUnset($offs)
+        /*
+         * FUNCTION
+         *      offset to unset
+         * INPUTS
+         *      * $offs (string) -- offset to unset
+         ****
+         */
+        {
             $idx = array_search($offs, $this->keys, true);
         
             if ($idx !== false) {
@@ -109,16 +158,49 @@ namespace org\octris\core\type {
                 unset($this->data[$offs]);
             }
         }
-            
-        function serialize() {
+
+        /****m* collection/serialize
+         * SYNOPSIS
+         */
+        function serialize()
+        /*
+         * FUNCTION
+         *      when serializing collection
+         * OUTPUTS
+         *      (string) -- serialized collection data
+         ****
+         */
+        {
             return serialize($this->data);
         }
-            
-        function unserialize($data) {
+
+        /****m* collection/unserialize
+         * SYNOPSIS
+         */
+        function unserialize($data)
+        /*
+         * FUNCTION
+         *      when collection data is unserialized
+         * INPUTS
+         *      * $data (string) -- serialized data to unserialize und pull into collection
+         ****
+         */
+        {
             $this->__construct($data);
         }
-            
-        function count() {
+
+        /****m* collection/count
+         * SYNOPSIS
+         */
+        function count()
+        /*
+         * FUNCTION
+         *      count items in collection
+         * OUTPUTS
+         *      (int) -- items in collection
+         ****
+         */
+        {
             return count($this->data);
         }
     }
