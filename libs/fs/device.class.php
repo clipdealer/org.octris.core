@@ -71,22 +71,22 @@ namespace org\octris\core\fs {
          ****
          */
         {
-            if (!preg_match($this->parse_mode, $match)) {
+            if (!preg_match($this->parse_mode, $mode, $match)) {
                 trigger_error('unable to parse access mode "' . $mode . '"');
                 return false;
             }
             
             switch ($match['access']) {
             case 'r':
-                $this->mode = $this->mode & self::T_READ;
+                $this->mode = self::T_READ;
                 if ($match['rw']) $this->mode = $this->mode | self::T_WRITE;
                 break;
             case 'w':
-                $this->mode = $this->mode & self::T_WRITE;
+                $this->mode = self::T_WRITE;
                 if ($match['rw']) $this->mode = $this->mode | self::T_READ;
                 break;
             case 'a':
-                $this->mode = $this->mode & (self::T_APPEND | self::T_READ);
+                $this->mode = (self::T_APPEND | self::T_READ);
                 if ($match['rw']) $this->mode = $this->mode | self::T_WRITE;
                 break;
             }
