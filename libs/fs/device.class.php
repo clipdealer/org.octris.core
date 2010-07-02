@@ -24,6 +24,78 @@ namespace org\octris\core\fs {
          ****
          */
         
+        /****v* device/$parse_mode
+         * SYNOPSIS
+         */
+        protected $parse_mode = '/^(?P<access>(r|w|a))(?P<binary>b?)(?P<rw>\+?)$/i';
+        /*
+         * FUNCTION
+         *      regular expression for parsing filemode
+         ****
+         */
+
+        /****v* device/$mode
+         * SYNOPSIS
+         */
+        protected $mode = 0;
+        /*
+         * FUNCTION
+         *      access mode
+         ****
+         */
+
+        /****d* device/T_READ, T_WRITE, T_APPEND, T_BINARY
+         * SYNOPSIS
+         */
+        const T_READ   = 1;
+        const T_WRITE  = 2;
+        const T_APPEND = 4;
+        const T_BINARY = 8;
+        /*
+         * FUNCTION
+         *      access modes to form ~mode~ bit-field
+         ****
+         */
+        
+        /****m* device/parseMode
+         * SYNOPSIS
+         */
+        protected function parseMode($mode)
+        /*
+         * FUNCTION
+         *      parse mode and set bit-field according to mode parameters
+         * INPUTS
+         *      * $mode (string) -- mode to parse
+         * OUTPUTS
+         *      (bool) -- returns true for valid mode, otherwise false
+         ****
+         */
+        {
+            if (!preg_match($this->parse_mode, $match)) {
+                trigger_error('unable to parse access mode "' . $mode . '"');
+                return false;
+            }
+            
+            switch ($match['access']) {
+            case 'r':
+                $this->mode = $this->mode & self::T_READ;
+                if ($match['rw']) $this->mode = $this->mode | self::T_WRITE;
+                break;
+            case 'w':
+                $this->mode = $this->mode & self::T_WRITE;
+                if ($match['rw']) $this->mode = $this->mode | self::T_READ;
+                break;
+            case 'a':
+                $this->mode = $this->mode & (self::T_APPEND | self::T_READ);
+                if ($match['rw']) $this->mode = $this->mode | self::T_WRITE;
+                break;
+            }
+            
+            if ($match['binary']) $this->mode = $this->mode | self::T_BINARY;
+            
+            return true;
+        }
+        
         /****m* device/register
          * SYNOPSIS
          */
