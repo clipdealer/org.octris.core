@@ -99,7 +99,7 @@ namespace org\octris\core\fs {
         /****m* device/register
          * SYNOPSIS
          */
-        public static function register($name, $device, array $options = array())
+        public static function register($name, array $options = array())
         /*
          * FUNCTION
          *      Register a device as stream wrapper. The method requires a name as first parameter. The device will
@@ -111,15 +111,14 @@ namespace org\octris\core\fs {
          *          fopen('gridfs://...');
          * INPUTS
          *      * $name (string) -- name of device, protocol name to register device with
-         *      * $device (string) -- 
          *      * $options (string) -- (optional)
          ****
          */
         {
             if (get_class() == ($class = get_called_class())) {
-                throw new Exception("invalid context!");
+                throw new \Exception("invalid context!");
             } elseif (isset(self::$registry[$name])) {
-                throw new Exception('device already registered!');
+                throw new \Exception('device already registered!');
             }
 
             self::$registry[$name] = $options;
