@@ -49,7 +49,7 @@ help::
 		echo ""; \
 	fi
 	@echo "install          install project"
-	@echo "clean	     	uninstall project"
+	@echo "clean            uninstall project"
 	@echo "test             run all tests of a project"
 	@echo ""
 	@echo "dist             create distribution package"
