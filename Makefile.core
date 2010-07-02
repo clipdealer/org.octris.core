@@ -50,6 +50,7 @@ help::
 	fi
 	@echo "install          install project"
 	@echo "clean	     	uninstall project"
+	@echo "test             run all tests of a project"
 	@echo ""
 	@echo "dist             create distribution package"
 	@echo "deploy           deploy project to production environment"
@@ -118,6 +119,15 @@ clean: onlyroot
 		fi; \
 		rm -rf ../../host/$(project); \
 	fi; \
+
+#****t* Makefile/test
+# SYNOPSIS
+#	make test
+# FUNCTION
+# 	execute tests of a project
+#****
+test:
+	@phpunit $(CURSYMDIR)/tests/
 
 #****t* Makefile/msgfmt
 # SYNOPSIS
