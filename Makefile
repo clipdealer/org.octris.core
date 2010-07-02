@@ -5,20 +5,24 @@
 # NAME
 #	Makefile
 # FUNCTION
-#	base makefile for handling targets only available from core project
+#	Makefile for handling targets only available for core project
 # COPYRIGHT
 #	copyright (c) 2006-2010 by Harald Lapp
 # AUTHOR
 #	Harald Lapp <harald.lapp@gmail.com>
-#
 #****
 #
 
-include Makefile.base
+include Makefile.core
 
 target = ""
 
-# create new project
+#****t* Makefile/new
+# NAME
+#	make new
+# FUNCTION
+#	create and initialize a new project
+#****
 new:
 	@if [ "$(project)" = "org.octris.core" ]; then \
 		echo ""; \
@@ -39,33 +43,3 @@ new:
 		exit 1; \
 	fi	
 	@../../tools/org.octris.core/project/init.sh $(project)
-
-# reinstall all projects
-reinstall:
-	@if [ "$(devel)" = "" ]; then \
-		echo ""; \
-		echo "please specify whether to install in development or production environment"; \
-		echo ""; \
-		echo "eg.:"; \
-		echo "       make reinstall devel=1          // development environment"; \
-		echo "       make reinstall devel=0          // production environment"; \
-		echo ""; \
-		exit 1; \
-	fi
-	@if [ "$(devel)" = "0" ]; then \
-		if [ "$(target)" = "" ]; then \
-			echo ""; \
-			echo "deploy target is required when executed in production environment"; \
-			echo ""; \
-			echo "eg.:"; \
-			echo "       make reinstall devel=0 target=live"; \
-			echo ""; \
-			exit 1; \
-		fi; \
-	elif [ "$(devel)" != "1" ]; then \
-		echo ""; \
-		echo "unknown value for 'devel'"; \
-		echo ""; \
-		exit 1; \
-	fi
-	@../../tools/org.octris.core/project/reinstall.sh $(CURSYMDIR)/../../ $(devel) $(target)
