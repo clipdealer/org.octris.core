@@ -31,4 +31,14 @@ class deviceTest extends PHPUnit_Framework_TestCase {
             $this->assertEquals($v, $property->getValue($stub), '"' . $k . '" failed!');
         }
     }
+    
+    public function testRegister() {
+        try {
+            \org\octris\core\fs\device::register('test');
+        } catch(\Exception $e) {
+            return;
+        }
+        
+        $this->fail();
+    }
 }
