@@ -42,26 +42,6 @@ namespace org\octris\core {
          ****
          */
 
-        /****v* config/$pathtypes
-         * SYNOPSIS
-         */
-        protected static $pathtypes = array();
-        /*
-         * FUNCTION
-         *      filled by constructor with the path types
-         ****
-         */
-
-        /****v* config/$instance
-         * SYNOPSIS
-         */
-        protected static $instance = NULL;
-        /*
-         * FUNCTION
-         *      stores instance of lima_config object
-         ****
-         */
-
         /****v* config/$data
          * SYNOPSIS
          */
@@ -75,29 +55,13 @@ namespace org\octris\core {
         /****m* config/__construct
          * SYNOPSIS
          */
-        protected function __construct()
+        private function __construct() {}
+        private function __clone() {}
         /*
          * FUNCTION
-         *      constructor -- setup several base configuration options, even before configuration file
-         *      was loaded
+         *      private to make class static
          ****
          */
-        {
-            if (!$_ENV['OCTRIS_APP']->isSet || !$_ENV['OCTRIS_BASE']->isSet) {
-                throw new Exception('unable to import OCTRIS_APP or OCTRIS_BASE!');
-            }
-
-            if (!$_ENV->validate('OCTRIS_APP', validate::T_ALPHANUM) || !$_ENV->validate('OCTRIS_BASE', validate::T_PRINT)) {
-                throw new lima_exception_critical('unable to import OCTRIS_APP or OCTRIS_BASE - invalid settings!');
-            } else {
-                self::$data['common.app.name'] = $_ENV['OCTRIS_APP']->value;
-                self::$data['common.app.base'] = $_ENV['OCTRIS_BASE']->value;
-            }
-
-            self::$data['common.app.development'] =
-                (($_ENV->validate('OCTRIS_DEVEL', validate::T_BOOL)) &&        
-                  $_ENV['OCTRIS_DEVEL']->value);
-        }
 
         /****m* config/set
          * SYNOPSIS
@@ -181,14 +145,9 @@ namespace org\octris\core {
          ****
          */
         {
-            if (count(self::$pathtypes) == 0) {
-                $class = new ReflectionClass(self);
-                self::$pathtypes = array_flip($class->getConstants());
-            }
-
             $return = '';
 
-            if (isset(self::$pathtypes[$type])) {
+            if (defined('self::' . $type)) {
                 $return = sprintf(
                     $type,
                     self::$data['common.application.path'],
@@ -213,6 +172,21 @@ namespace org\octris\core {
          ****
          */
         {
+            if (!$_ENV['OCTRIS_APP']->isSet || !$_ENV['OCTRIS_BASE']->isSet) {
+                throw new Exception('unable to import OCTRIS_APP or OCTRIS_BASE!');
+            }
+
+            if (!$_ENV->validate('OCTRIS_APP', validate::T_ALPHANUM) || !$_ENV->validate('OCTRIS_BASE', validate::T_PRINT)) {
+                throw new lima_exception_critical('unable to import OCTRIS_APP or OCTRIS_BASE - invalid settings!');
+            } else {
+                self::$data['common.app.name'] = $_ENV['OCTRIS_APP']->value;
+                self::$data['common.app.base'] = $_ENV['OCTRIS_BASE']->value;
+            }
+
+            self::$data['common.app.development'] =
+                (($_ENV->validate('OCTRIS_DEVEL', validate::T_BOOL)) &&        
+                  $_ENV['OCTRIS_DEVEL']->value);
+
             self::$data = \org\octris\core::getProxy(
                 'config',
                 array(
