@@ -13,7 +13,7 @@ namespace org\octris\core\validate {
      ****
      */
 
-    final class wrapper extends \org\octris\core\type\collection {
+    class wrapper extends \org\octris\core\type\collection {
         /****v* wrapper/$defaults
          * SYNOPSIS
          */
