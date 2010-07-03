@@ -1,9 +1,9 @@
 <?php
 
-namespace org\octris\core\app {
+namespace org\octris\core {
     use \org\octris\core\validate as validate;
     
-    /****c* app/config
+    /****c* core/config
      * NAME
      *      config
      * FUNCTION
