@@ -147,10 +147,10 @@ namespace org\octris\core\type {
         {
             // is_null implements $...[] = ...
             if (!is_null($offs) && ($idx = array_search($offs, $this->keys, true)) !== false) {
-                $this->data[$this->keys[$idx]] = $tmp;
+                $this->data[$this->keys[$idx]] = $value;
             } else {
                 $this->keys[]      = $offs;
-                $this->data[$offs] = $tmp;
+                $this->data[$offs] = $value;
             }
         }
         
