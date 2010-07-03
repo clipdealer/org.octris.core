@@ -27,8 +27,8 @@ namespace org\octris\core {
         /****m* validate/__construct, __clone
          * SYNOPSIS
          */
-        protected function __construct() {};
-        protected function __clone() {};
+        protected function __construct() {}
+        protected function __clone() {}
         /*
          * FUNCTION
          *      prevent constructing multiple instances and cloning
