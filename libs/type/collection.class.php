@@ -201,7 +201,7 @@ namespace org\octris\core\type {
          ****
          */
         {
-            $this->__construct($data);
+            $this->__construct(unserialize($data));
         }
 
         /****m* collection/count
