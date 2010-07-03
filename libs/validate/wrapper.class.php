@@ -72,11 +72,14 @@ namespace org\octris\core\validate {
          ****
          */
         {
-            if ($this->tainted) {
+            if (($valid = isset($this->data[$name]))) {
+                $valid = $this->data[$name]->isValid;
                 
+                // TODO: implementation
+                $valid = true;
             }
             
-            return $this->isValid;
+            return $valid;
         }
 
         /****m* wrapper/offsetGet
