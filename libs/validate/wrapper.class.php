@@ -66,7 +66,7 @@ namespace org\octris\core\validate {
          * INPUTS
          *      * $name (string) -- name of value to untaint
          *      * $type (string) -- type of value
-         *      * $options (array) -- optional options for validating
+         *      * $options (array) -- (optional) options for validating
          * OUTPUTS
          *      (bool) -- returns true, if validation succeededs
          ****
