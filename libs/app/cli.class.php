@@ -92,15 +92,19 @@ namespace org\octris\core\app {
         }
     }
 
-    // enable validation for superglobals
-    $_SERVER  = new validate\wrapper($_SERVER);
-    $_ENV     = new validate\wrapper($_ENV);
-    $_GET     = new validate\wrapper(cli::getOptions());
+    if (!defined('OCTRIS_WRAPPER')) {
+        // enable validation for superglobals
+        define('OCTRIS_WRAPPER', true);
+        
+        $_SERVER  = new validate\wrapper($_SERVER);
+        $_ENV     = new validate\wrapper($_ENV);
+        $_GET     = new validate\wrapper(cli::getOptions());
     
-    unset($_POST);
-    unset($_REQUEST);
-    unset($_COOKIE);
-    unset($_SESSION);
-    unset($_FILES);
+        unset($_POST);
+        unset($_REQUEST);
+        unset($_COOKIE);
+        unset($_SESSION);
+        unset($_FILES);
+    }
 }
 
