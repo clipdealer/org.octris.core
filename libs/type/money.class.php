@@ -83,9 +83,7 @@ namespace org\octris\core\type {
          ****
          */
         {
-            $class = __CLASS__;
-
-            return new $class($value, $currency, $lc);
+            return new static($value, $currency, $lc);
         }
 
         /****m* number/__tostring
