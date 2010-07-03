@@ -24,6 +24,20 @@ namespace org\octris\core {
          ****
          */
          
+        /****d* validate/T_ALPHA, T_ALPHANUM, T_PATH, T_PRINT
+         * SYNOPSIS
+         */
+        const T_ALPHA    = '\org\octris\core\validate\alpha';
+        const T_ALPHANUM = '\org\octris\core\validate\alphanum';
+        const T_BOOL     = '\org\octris\core\validate\bool';
+        const T_PATH     = '\org\octris\core\validate\path';
+        const T_PRINT    = '\org\octris\core\validate\print';
+        /*
+         * FUNCTION
+         *      available validation types
+         ****
+         */
+        
         /****m* validate/__construct, __clone
          * SYNOPSIS
          */
