@@ -16,6 +16,4 @@ class configTest extends PHPUnit_Framework_TestCase {
         $prop = $class->getProperty('data');
         $this->assertTrue($prop->isStatic());
     }
-    
-    public function 
 }
