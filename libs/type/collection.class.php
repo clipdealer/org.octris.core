@@ -81,6 +81,21 @@ namespace org\octris\core\type {
             return new \ArrayIterator($this->data);
         }
         
+        /****m* collection/getArrayCopy
+         * SYNOPSIS
+         */
+        function getArrayCopy()
+        /*
+         * FUNCTION
+         *      returns copy of data as PHP array
+         * OUTPUTS
+         *      (array) -- collection data
+         ****
+         */
+        {
+            return $this->data;
+        }
+        
         /****m* collection/offsetExists
          * SYNOPSIS
          */
