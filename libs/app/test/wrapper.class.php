@@ -20,22 +20,6 @@ namespace org\octris\core\app\test {
      */
 
     class wrapper extends \org\octris\core\validate\wrapper {
-        /****m* wrapper/__construct
-         * SYNOPSIS
-         */
-        function __construct($source)
-        /*
-         * FUNCTION
-         *      constructor
-         * INPUTS
-         *      * $source (wrapper) -- source wrapper object
-         ****
-         */
-        {
-            $this->data = $source->getArrayCopy();
-            $this->keys = array_keys($this->data);
-        }
-        
         /****m* wrapper/offsetGet
          * SYNOPSIS
          */
