@@ -163,29 +163,24 @@ namespace org\octris\core {
         /****m* config/load
          * SYNOPSIS
          */
-        static function load($app)
+        static function load($module = '')
         /*
          * FUNCTION
-         *      loads the configuration file(s) for specified application
+         *      Loads the configuration file(s) for app configured in 
+         *      the environment variable OCTRIS_APP or for module specified
+         *      by a parameter.
          * INPUTS
-         *      * $app (string) -- name of application to load config file(s) for
+         *      * $module (string) -- (optional) name of module to load config file(s) for
+         * OUTPUTS
+         *      (bool) -- returns true, if config file was load successful
          ****
          */
         {
-            if (!$_ENV['OCTRIS_APP']->isSet || !$_ENV['OCTRIS_BASE']->isSet) {
-                throw new Exception('unable to import OCTRIS_APP or OCTRIS_BASE!');
-            }
-
-            if (!$_ENV->validate('OCTRIS_APP', validate::T_ALPHANUM) || !$_ENV->validate('OCTRIS_BASE', validate::T_PRINT)) {
-                throw new lima_exception_critical('unable to import OCTRIS_APP or OCTRIS_BASE - invalid settings!');
-            } else {
-                self::$data['common.app.name'] = $_ENV['OCTRIS_APP']->value;
-                self::$data['common.app.base'] = $_ENV['OCTRIS_BASE']->value;
-            }
-
-            self::$data['common.app.development'] =
-                (($_ENV->validate('OCTRIS_DEVEL', validate::T_BOOL)) &&        
-                  $_ENV['OCTRIS_DEVEL']->value);
+            $module = ($module == '' ? $_ENV['OCTRIS_APP']->value : $module);
+            
+            self::$data['common.app.name']  = $module;
+            self::$data['common.app.base']  = $_ENV['OCTRIS_BASE']->value;
+            self::$data['common.app.devel'] = $_ENV['OCTRIS_DEVEL']->value;
 
             self::$data = \org\octris\core::getProxy(
                 'config',
@@ -197,4 +192,14 @@ namespace org\octris\core {
             )->load($app);
         }
     }
+    
+    if (!$_ENV['OCTRIS_APP']->isSet || !$_ENV['OCTRIS_BASE']->isSet) {
+        die("unable to import OCTRIS_APP or OCTRIS_BASE!\n");
+    }
+
+    if (!$_ENV->validate('OCTRIS_APP', validate::T_ALPHANUM) || !$_ENV->validate('OCTRIS_BASE', validate::T_PRINT)) {
+        die("unable to import OCTRIS_APP or OCTRIS_BASE - invalid settings!\n");
+    }
+    
+    $_ENV['OCTRIS_DEVEL']->value = ($_ENV->validate('OCTRIS_DEVEL', validate::T_BOOL) && $_ENV['OCTRIS_DEVEL']->value);
 }
