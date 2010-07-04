@@ -76,10 +76,22 @@ namespace org\octris\core\validate {
             //     throw new \Exception('unknown validation type "' . $type . '"');
             // } else
             if (($valid = isset($this->data[$name]))) {
-                $valid = $this->data[$name]->isValid;
-                
-                // TODO: implementation
-                $valid = true;
+                if ($this->data[$name]->isTainted) {
+                    $instance = new $type($options);
+                    $value    = $instance->preFilter($this->data[$name]->tainted);
+                    
+                    if (($valid = ($instance->validate($value) && $instance->postValidate($value)))) {
+                        $this->data[$name]->value = $value;
+                    }
+                    
+                    $this->data[$name]->isTainted = false;
+                    $this->data[$name]->isSet     = true;
+                    $this->data[$name]->isValid   = $valid;
+                } else {
+                    $valid = $this->data[$name]->isValid;
+                }
+            } else {
+                $valid = false;
             }
             
             return $valid;
