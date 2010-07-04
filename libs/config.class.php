@@ -2,6 +2,7 @@
 
 namespace org\octris\core {
     use \org\octris\core\validate as validate;
+    use \org\octris\core\cache\proxy as proxy;
     
     /****c* core/config
      * NAME
@@ -150,10 +151,10 @@ namespace org\octris\core {
             if (defined('self::' . $type)) {
                 $return = sprintf(
                     $type,
-                    self::$data['common.application.path'],
+                    self::$data['common.app.path'],
                     ($module 
                         ? $module 
-                        : self::$data['common.application.name'])
+                        : self::$data['common.app.name'])
                 );
             }
 
@@ -182,7 +183,7 @@ namespace org\octris\core {
             self::$data['common.app.base']  = $_ENV['OCTRIS_BASE']->value;
             self::$data['common.app.devel'] = $_ENV['OCTRIS_DEVEL']->value;
 
-            self::$data = \org\octris\core::getProxy(
+            self::$data = proxy::getProxy(
                 'config',
                 array(
                     self::$data['common.app.name'],
