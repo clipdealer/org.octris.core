@@ -223,7 +223,7 @@ namespace org\octris\core\validate {
                         break;
                     default:
                         // type validation
-                        $class    = 'lima_validate_' . $t;
+                        $class    = 'type\\\\' . $t;
                         $instance = new $class();
                         $return   = $instance->validate($v);
                         break;
