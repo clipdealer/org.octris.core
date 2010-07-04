@@ -225,7 +225,9 @@ namespace org\octris\core\validate {
                         // type validation
                         $class    = 'type\\\\' . $t;
                         $instance = new $class();
-                        $return   = $instance->validate($v);
+                        $v        = $instance->preFilter($v);
+                        $return   = ($instance->validate($v) && $instance->postValidate());
+                        
                         break;
                     }
                 }
