@@ -72,6 +72,9 @@ namespace org\octris\core\validate {
          ****
          */
         {
+            // if (!defined('\org\octris\core\validate::' . $type)) {
+            //     throw new \Exception('unknown validation type "' . $type . '"');
+            // } else
             if (($valid = isset($this->data[$name]))) {
                 $valid = $this->data[$name]->isValid;
                 
