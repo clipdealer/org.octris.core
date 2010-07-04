@@ -73,7 +73,7 @@ namespace org\octris\core\cache {
         /****m* proxy/__construct
          * SYNOPSIS
          */
-        function __construct($cache, array $options, $object) 
+        public function __construct($cache, array $options, $object) 
         /*
          * FUNCTION
          *      constructor
@@ -101,7 +101,7 @@ namespace org\octris\core\cache {
         /****m* proxy/__call
          * SYNOPSIS
          */
-        function __call($name, $params = array()) 
+        public function __call($name, $params = array()) 
         /*
          * FUNCTION
          *      method of datasource to call through proxy
@@ -158,7 +158,7 @@ namespace org\octris\core\cache {
         /****m* proxy/getCached
          * SYNOPSIS
          */
-        function getCached($classname, $key, &$data)
+        public function getCached($classname, $key, &$data)
         /*
          * FUNCTION 
          *      this method will return data from local (request based) cache or
