@@ -146,17 +146,13 @@ namespace org\octris\core {
          ****
          */
         {
-            $return = '';
-
-            if (defined('self::' . $type)) {
-                $return = sprintf(
-                    $type,
-                    self::$data['common.app.path'],
-                    ($module 
-                        ? $module 
-                        : self::$data['common.app.name'])
-                );
-            }
+            $return = sprintf(
+                $type,
+                self::$data['common.app.path'],
+                ($module 
+                    ? $module 
+                    : self::$data['common.app.name'])
+            );
 
             return realpath($return);
         }
@@ -183,14 +179,11 @@ namespace org\octris\core {
             self::$data['common.app.base']  = $_ENV['OCTRIS_BASE']->value;
             self::$data['common.app.devel'] = $_ENV['OCTRIS_DEVEL']->value;
 
-            self::$data = proxy::getProxy(
-                'config',
-                array(
-                    self::$data['common.app.name'],
-                    self::$data['common.app.base'],
-                    self::$data['common.app.development']
-                )
-            )->load($app);
+            $ds = new \org\octris\core\data\config();
+            
+            if (($tmp = proxy::getProxy($ds))->load(self::$data['common.app.name'], self::$data['common.app.base'])) {
+                self::$data = array_merge($tmp, self::$data);
+            }
         }
     }
     
