@@ -72,9 +72,6 @@ namespace org\octris\core\validate {
          ****
          */
         {
-            // if (!defined('\org\octris\core\validate::' . $type)) {
-            //     throw new \Exception('unknown validation type "' . $type . '"');
-            // } else
             if (($valid = isset($this->data[$name]))) {
                 if ($this->data[$name]->isTainted) {
                     $instance = new $type($options);
@@ -90,8 +87,6 @@ namespace org\octris\core\validate {
                 } else {
                     $valid = $this->data[$name]->isValid;
                 }
-            } else {
-                $valid = false;
             }
             
             return $valid;
