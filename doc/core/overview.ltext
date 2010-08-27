@@ -1,0 +1,30 @@
+..  source: plain
+
+    org.octris.core 
+        |
+        +-\
+          +-\host           // host directory
+          +-\libs           // application libraries
+          +-\libsjs         // javascript libraries
+          +-\resources      // binary resources
+          +-\static         // static files
+          +-\styles         // css styles
+          +-\templates      // templates
+          +-Makefile        // makefile
+
+          
+      org.octris.core 
+          |
+          +-\
+            +-\host           
+            +-\libs
+              +-\app        // application view
+              +-\dbo        // database objects
+              +-\obj        // general purpose objects
+              
+            
+content-routing
+
+    Accept: text/html   -> standard web app
+    Accept: text/json   -> ajax client
+    Accept: text/xml    -> ... other app

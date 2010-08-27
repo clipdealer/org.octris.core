@@ -1,0 +1,9 @@
+Routing
+=======
+
+*   ,...^   -- output selector
+
+Examples
+--------
+
+    ^(?:(?P<module>[^\.]+)\.|www\.|)clipdealer\.(de|com)/(?:(?P<action>[^\/]+)|[^\/]*)$
