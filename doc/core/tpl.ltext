@@ -19,7 +19,7 @@ Template Engine
     
     access in template:
     
-    ::($scope:variable)
+    {{$scope:variable}}
     
     questions:
     
@@ -41,9 +41,9 @@ Syntax
 
 ..  source: plain
 
-    ::($variable)                     // casted to string
+    {{$variable}}                   // casted to string
 
-    ::($object->property)             // object property casted to string
+    {{$object->property}}           // object property casted to string
 
     ::($variable->default('...'))     // string object
 
@@ -52,5 +52,13 @@ Blocks
 
 ..  source: plain
     
-    ::(foreach(...))
-    ::(end)
+    :(foreach())
+    :(end)
+    
+    :‚‚IF(...)}}
+    {{ELSEIF(...)}}
+    {{END}}
+
+    {{IF(...)}}
+    {{ELSEIF(...)}}
+    {{END}}
