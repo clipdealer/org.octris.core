@@ -1,6 +1,12 @@
 Template Engine
 ===============
 
+*   context awareness: html / xml, javascript, text ...
+
+    this is needed to apply auto-escaping and context-aware escaping to values:
+    
+    *   http://googleonlinesecurity.blogspot.com/2009/03/reducing-xss-by-way-of-automatic.html
+
 *   variable scopes for template
 
     tpl::setValue(name, value, scope = '')
