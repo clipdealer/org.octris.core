@@ -20,7 +20,7 @@ namespace org\octris\core {
         /****v* l10n/$instance
          * SYNOPSIS
          */
-        static private $instance = null;
+        private static $instance = null;
         /*
          * FUNCTION
          *      stores instance of l10n
@@ -74,7 +74,7 @@ namespace org\octris\core {
             if (!is_null($locale)) {
                 $this->setLocale($locale);
 
-                if (php_sapi_name() != 'cli') {
+                if (app::getContext() == app\T_CONTEXT_WEB) {
                     app::getInstance()->addHeader(
                         'Content-Type', 
                         'text/html; charset="' . nl_langinfo(CODESET) . '"'
