@@ -1,1 +1,3 @@
-{{@import("tpl2.html")}}
+{{#if(not($import))}}
+    {{@import("tpl2.html")}}
+{{#end}}
