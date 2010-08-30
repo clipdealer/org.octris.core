@@ -1,15 +1,18 @@
 {{#if($import)}}
-    {{@import("tpl2.html")}}
-{{#end}}
-
-{{#foreach($item, $data)}}
-    {{dump($item)}}
+    {#{@import("tpl2.html")}}
 {{#end}}
 
 {{#cut($test)}}
     start buffer
-    {{#foreach($item, $data)}}
-        {{$item}}
+    {{#foreach($item, $data, $meta)}}
+
+        value: {{$item}} | key {{$meta:key}} | idx {{$meta:pos}} | is_first {{$meta:is_first}} | is_last {{$meta:is_last}}
+
+    {{#end}}
+    {{#foreach($item, $data, $meta)}}
+
+        value: {{$item}} | key {{$meta:key}} | idx {{$meta:pos}} | is_first {{$meta:is_first}} | is_last {{$meta:is_last}}
+
     {{#end}}
 {{#end}}
 
