@@ -158,6 +158,21 @@ namespace org\octris\core\tpl\type\collection {
             $this->position = $position;
         }
         
+        /****m* iterator/count
+         * SYNOPSIS
+         */
+        public function count()
+        /*
+         * FUNCTION
+         *      returns number of elements
+         * OUTPUTS
+         *      (int) -- number of elements of collection
+         ****
+         */
+        {
+            return $this->count;
+        }
+        
         /****m* iterator/getItem
          * SYNOPSIS
          */
