@@ -84,7 +84,7 @@ namespace org\octris\core\tpl\type\collection {
          ****
          */
         {
-            return $this->data[$this->keys[$this->position]];
+            return $this->getItem($this->position);
         }
         
         /****m* iterator/key
