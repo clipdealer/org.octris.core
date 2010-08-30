@@ -16,6 +16,14 @@
     {{#end}}
 {{#end}}
 
+{{#foreach($x, $rec)}}
+    {{dump($x)}}
+
+    {{#foreach($y, $x)}}
+        {{dump($y)}}
+    {{#end}}
+{{#end}}
+
 ----
 
-{{$test}}
+{#{$test}}
