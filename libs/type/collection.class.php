@@ -38,7 +38,7 @@ namespace org\octris\core\type {
         /****m* collection/__construct
          * SYNOPSIS
          */
-        function __construct($array = null)
+        public function __construct($array = null)
         /*
          * FUNCTION
          *      constructor
@@ -69,7 +69,7 @@ namespace org\octris\core\type {
         /****m* collection/getIterator
          * SYNOPSIS
          */
-        function getIterator()
+        public function getIterator()
         /*
          * FUNCTION
          *      returns iterator object for collection
@@ -84,7 +84,7 @@ namespace org\octris\core\type {
         /****m* collection/getArrayCopy
          * SYNOPSIS
          */
-        function getArrayCopy()
+        public function getArrayCopy()
         /*
          * FUNCTION
          *      returns copy of data as PHP array
@@ -99,7 +99,7 @@ namespace org\octris\core\type {
         /****m* collection/offsetExists
          * SYNOPSIS
          */
-        function offsetExists($offs)
+        public function offsetExists($offs)
         /*
          * FUNCTION
          *      whether a offset exists
@@ -116,7 +116,7 @@ namespace org\octris\core\type {
         /****m* collection/offsetGet
          * SYNOPSIS
          */
-        function offsetGet($offs)
+        public function offsetGet($offs)
         /*
          * FUNCTION
          *      offset to retrieve
@@ -135,7 +135,7 @@ namespace org\octris\core\type {
         /****m* collection/offsetSet
          * SYNOPSIS
          */
-        function offsetSet($offs, $value)
+        public function offsetSet($offs, $value)
         /*
          * FUNCTION
          *      offset to set
@@ -157,7 +157,7 @@ namespace org\octris\core\type {
         /****m* collection/offsetUnset
          * SYNOPSIS
          */
-        function offsetUnset($offs)
+        public function offsetUnset($offs)
         /*
          * FUNCTION
          *      offset to unset
@@ -177,7 +177,7 @@ namespace org\octris\core\type {
         /****m* collection/serialize
          * SYNOPSIS
          */
-        function serialize()
+        public function serialize()
         /*
          * FUNCTION
          *      when serializing collection
@@ -192,7 +192,7 @@ namespace org\octris\core\type {
         /****m* collection/unserialize
          * SYNOPSIS
          */
-        function unserialize($data)
+        public function unserialize($data)
         /*
          * FUNCTION
          *      when collection data is unserialized
@@ -207,7 +207,7 @@ namespace org\octris\core\type {
         /****m* collection/count
          * SYNOPSIS
          */
-        function count()
+        public function count()
         /*
          * FUNCTION
          *      count items in collection
@@ -222,7 +222,7 @@ namespace org\octris\core\type {
         /****m* collection/flatten
          * SYNOPSIS
          */
-        function flatten($sep = '.') 
+        public function flatten($sep = '.') 
         /*
          * FUNCTION
          *      flatten an array. convert a recursive index or key/value based array into a flat array with expanded
@@ -265,7 +265,7 @@ namespace org\octris\core\type {
         /****m* collection/deflatten
          * SYNOPSIS
          */
-        function deflatten()
+        public function deflatten()
         /*
          * FUNCTION
          *      deflatten an array, which was flattened with flatten method
@@ -295,7 +295,7 @@ namespace org\octris\core\type {
         /****m* collection/utf8Encode
          * SYNOPSIS
          */
-        function utf8Encode()
+        public function utf8Encode()
         /*
          * FUNCTION
          *      utf8 encode collection values
@@ -327,7 +327,7 @@ namespace org\octris\core\type {
         /****m* collection/utf8Decode
          * SYNOPSIS
          */
-        function utf8Decode()
+        public function utf8Decode()
         /*
          * FUNCTION
          *      utf8 decode collection
