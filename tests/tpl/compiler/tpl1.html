@@ -1,5 +1,10 @@
-{{#if(not($import))}}
+{{#if($import)}}
     {{@import("tpl2.html")}}
 {{#end}}
 
-{{func()}}
+{{setValue()}}
+
+{{#foreach($item, $data)}}
+    {{dump($item)}}
+{{#end}}
+
