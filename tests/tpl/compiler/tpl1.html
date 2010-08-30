@@ -2,9 +2,17 @@
     {{@import("tpl2.html")}}
 {{#end}}
 
-{{setValue()}}
-
 {{#foreach($item, $data)}}
     {{dump($item)}}
 {{#end}}
 
+{{#cut($test)}}
+    start buffer
+    {{#foreach($item, $data)}}
+        {{$item}}
+    {{#end}}
+{{#end}}
+
+----
+
+{{$test}}
