@@ -17,14 +17,16 @@ namespace org\octris\core\tpl {
      */
 
     class compress {
-        /****v* compress/$files
+        /****v* compress/$path
          * SYNOPSIS
          */
-        protected $files = array('js' => array(), 'css' => array());
+        protected $path = array(
+            'js'    => '/tmp',      // output path for compressed javascript
+            'css'   => '/tmp'       // output path for compressed css
+        );
         /*
          * FUNCTION
-         *      Purpose of this property is to store all already loaded javascript/css files to silently ommit them, if
-         *      they are included multiple times.
+         *      output path for various file types
          ****
          */
         
@@ -40,15 +42,34 @@ namespace org\octris\core\tpl {
         {
         }
 
+        /****m* compress/setPath
+         * SYNOPSIS
+         */
+        public function setPath($type, $path)
+        /*
+         * FUNCTION
+         *      set path for css output
+         * INPUTS
+         *      * $type (string) -- type of path to set
+         *      * $path (string) -- name of path
+         ****
+         */
+        {
+            if (array_key_exists($type, $this->path) && is_writable($path)) {
+                $this->path[$type] = $path;
+            }
+        }
+        
         /****m* compress/exec
          * SYNOPSIS
          */
-        protected static function exec($files, $args)
+        protected static function exec($files, $out, $args)
         /*
          * FUNCTION
          *      execute yuicompressor
          * INPUTS
          *      * $files (array) -- files to compress
+         *      * $out (string) -- name of path to store file in
          *      * $args (array) -- additional arguments for yuicompressor
          * OUTPUTS
          *      (string) -- name of created filename
@@ -66,39 +87,49 @@ namespace org\octris\core\tpl {
                 $tmp
             );
             
+            $cmd = sprintf('md5 %s', $tmp);
+            
+            if (preg_match('/[a-]'))
+            
             print "$tmp";
+            
+            return $tmp;
         }
         
         /****m* compress/compressCSS
          * SYNOPSIS
          */
-        public static function compressCSS(array $files)
+        public static function compressCSS(array $files, $out)
         /*
          * FUNCTION
          *      compress external css files
          * INPUTS
          *      * $files (array) -- array of files to load and compress
+         *      * $out (string) -- name of path to store file in
          * OUTPUTS
          *      (string) -- filename of compressed javascript file
          ****
          */
         {
-            self::exec($files, array());
+            return self::exec($files, array());
         }
 
         /****m* compress/compressJS
          * SYNOPSIS
          */
-        public static function compressJS(array $files)
+        public static function compressJS(array $files, $out)
         /*
          * FUNCTION
          *      compress external JS files
          * INPUTS
          *      * $files (array) -- array of files to load and merge
+         *      * $out (string) -- name of path to store file in
+         * OUTPUTS
+         *      (string) -- filename of compressed javascript file
          ****
          */
         {
-            self::exec($files, array());
+            return self::exec($files, array());
         }
 
         /****m* compress/process
@@ -115,7 +146,11 @@ namespace org\octris\core\tpl {
          ****
          */
         {
-            $process = function($pattern, $snippet, &$files, $cb) use (&$tpl) {
+            // methods purpose is to collection script/style blocks and extract all included external files. the function
+            // makes sure, that files are not included multiple times
+            $process = function($pattern, $snippet, $cb) use (&$tpl) {
+                $files = array();
+                
                 while (preg_match("#(?:$pattern"."([\n\r\s]*))+#si", $tpl, $m_block, PREG_OFFSET_CAPTURE)) {
                     $compressed = '';
 
@@ -137,7 +172,6 @@ namespace org\octris\core\tpl {
             $process(
                 '<script[^>]+src="(libsjs/\d+.js)"[^>]*></script>', 
                 '<script type="text/javascript" src="/libsjs/%s"></script>',
-                $this->files['js'],
                 function($files) {
                     return \org\octris\core\tpl\compiler\compress::compressJS($files);
                 }
@@ -147,7 +181,6 @@ namespace org\octris\core\tpl {
             $process(
                 '<link[^>]*? href="(?!https?://)([^"]+\.css)"[^>]*/>',
                 '<link rel="stylesheet" href="/styles/%s" type="text/css" />',
-                $this->files['css'],
                 function($files) {
                     return \org\octris\core\tpl\compiler\compress::compressCSS($files);
                 }
