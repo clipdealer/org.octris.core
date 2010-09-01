@@ -2,7 +2,9 @@
     {#{@import("tpl2.html")}}
 {{#end}}
 
-{{#cut($test)}}
+{{#foreach(1)}}
+
+{{#cut(, $test)}}
     start buffer
     {{#foreach($item, $data, $meta)}}
 
