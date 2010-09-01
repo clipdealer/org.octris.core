@@ -1,15 +1,18 @@
 <?php
 
-namespace org\octris\core\tpl\compiler {
-    /****c* compiler/compress
+namespace org\octris\core\tpl {
+    /****c* tpl/compress
      * NAME
      *      compress
      * FUNCTION
-     *      Compress javascript and css files. This is a static class.
+     *      Compress javascript and css files. This is a static class. This class makes use of 
+     *      the yuicompressor.
      * COPYRIGHT
      *      copyright (c) 2010 by Harald Lapp
      * AUTHOR
      *      Harald Lapp <harald@octris.org>
+     * REFERENCE
+     *      http://developer.yahoo.com/yui/compressor/
      ****
      */
 
@@ -36,6 +39,35 @@ namespace org\octris\core\tpl\compiler {
          */
         {
         }
+
+        /****m* compress/exec
+         * SYNOPSIS
+         */
+        protected static function exec($files, $args)
+        /*
+         * FUNCTION
+         *      execute yuicompressor
+         * INPUTS
+         *      * $files (array) -- files to compress
+         *      * $args (array) -- additional arguments for yuicompressor
+         * OUTPUTS
+         *      (string) -- name of created filename
+         ****
+         */
+        {
+            foreach ($files as &$file) {
+                $file = escapeshellarg($file);
+            }
+
+            $tmp = tempnam('/tmp', 'yui');
+            $cmd = sprintf(
+                'cat %s | java -jar /opt/yuicompressor/yuicompressor.jar > %s',
+                implode(' ', $files);
+                $tmp
+            );
+            
+            print "$tmp";
+        }
         
         /****m* compress/compressCSS
          * SYNOPSIS
@@ -51,26 +83,7 @@ namespace org\octris\core\tpl\compiler {
          ****
          */
         {
-            $compress = function($buffer) {
-                $buffer = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $buffer);
-                $buffer = str_replace(array("\r\n", "\r", "\n", "\t"), '', $buffer);
-                $buffer = preg_replace('/\s\s+/', ' ', $buffer);
-                
-                return $buffer;
-            };
-            
-            $buffer = '';
-            
-            foreach ($files as $file) {
-                $buffer .= $compress(file_get_contents($file));
-                
-            }
-
-            if ($buffer != '') {
-                file_put_contents(/* TODO: file */, $buffer);
-            }
-
-            return $content;
+            self::exec($files, array());
         }
 
         /****m* compress/compressJS
@@ -85,6 +98,7 @@ namespace org\octris\core\tpl\compiler {
          ****
          */
         {
+            self::exec($files, array());
         }
 
         /****m* compress/process
