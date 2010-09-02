@@ -30,6 +30,16 @@ namespace org\octris\core\tpl {
          ****
          */
         
+        /****v* compress/$defaults
+         * SYNOPSIS
+         */
+        protected static $defaults = array('js' => array(), 'css' => array());
+        /*
+         * FUNCTION
+         *      default options for yuicompressor
+         ****
+         */
+        
         /****m* compress/__construct
          * SYNOPSIS
          */
@@ -42,56 +52,45 @@ namespace org\octris\core\tpl {
         {
         }
 
-        /****m* compress/setPath
-         * SYNOPSIS
-         */
-        public function setPath($type, $path)
-        /*
-         * FUNCTION
-         *      set path for css output
-         * INPUTS
-         *      * $type (string) -- type of path to set
-         *      * $path (string) -- name of path
-         ****
-         */
-        {
-            if (array_key_exists($type, $this->path) && is_writable($path)) {
-                $this->path[$type] = $path;
-            }
-        }
-        
         /****m* compress/exec
          * SYNOPSIS
          */
-        protected static function exec($files, $out, $args)
+        protected static function exec($files, $out, $type, array $options = array())
         /*
          * FUNCTION
          *      execute yuicompressor
          * INPUTS
          *      * $files (array) -- files to compress
          *      * $out (string) -- name of path to store file in
-         *      * $args (array) -- additional arguments for yuicompressor
+         *      * $type (string) -- type of files to compress
+         *      * $options (array) -- (optional) additional options for yuicompressor
          * OUTPUTS
          *      (string) -- name of created filename
          ****
          */
         {
-            foreach ($files as &$file) {
+            array_walk($files, function(&$file) {
                 $file = escapeshellarg($file);
-            }
-
+            });
+            $options = array_merge(self::$defaults[$type], $options, array('type' => $type));
+            $options = array_map(function($k, $v) {
+                return "--$k " . escapeshellarg($v);
+            }, array_keys($options), array_values($options));
+            
             $tmp = tempnam('/tmp', 'yui');
             $cmd = sprintf(
-                'cat %s | java -jar /opt/yuicompressor/yuicompressor.jar > %s',
-                implode(' ', $files);
+                'cat %s | java -jar /opt/yuicompressor/yuicompressor.jar %s -o %s 2>&1',
+                implode(' ', $files),
+                implode(' ', $options),
                 $tmp
             );
+            print "$cmd";
+            exec($cmd, $out = array(), $ret_val = 0);
             
-            $cmd = sprintf('md5 %s', $tmp);
+            print "[$ret_val]";
             
-            if (preg_match('/[a-]'))
-            
-            print "$tmp";
+            $md5 = md5_file($tmp);
+            rename($tmp, $out . '/' . $md5 . '.' . $type);
             
             return $tmp;
         }
@@ -111,7 +110,7 @@ namespace org\octris\core\tpl {
          ****
          */
         {
-            return self::exec($files, array());
+            return self::exec($files, $out, 'css');
         }
 
         /****m* compress/compressJS
@@ -129,7 +128,7 @@ namespace org\octris\core\tpl {
          ****
          */
         {
-            return self::exec($files, array());
+            return self::exec($files, $out, 'js');
         }
 
         /****m* compress/process
@@ -189,4 +188,6 @@ namespace org\octris\core\tpl {
             return $tpl;
         }
     }
+    
+    compress::compressJS(array('/tmp/inp.js'), '/tmp');
 }
