@@ -1,9 +1,6 @@
 <?php
 
 namespace org\octris\core\tpl\type {
-    require_once('collection/iterator.class.php');
-    require_once(__DIR__ . '/../../type/collection.class.php');
-    
     /****c* type/collection
      * NAME
      *      collection
