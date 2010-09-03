@@ -2,9 +2,6 @@
     {#{@import("tpl2.html")}}
 {{#end}}
 
-{{#foreach(1)}}
-
-{{#cut(, $test)}}
     start buffer
     {{#foreach($item, $data, $meta)}}
 
@@ -16,7 +13,6 @@
         value: {{$item}} | key {{$meta:key}} | idx {{$meta:pos}} | is_first {{$meta:is_first}} | is_last {{$meta:is_last}}
 
     {{#end}}
-{{#end}}
 
 {{#foreach($x, $rec)}}
     {{dump($x)}}
@@ -24,8 +20,21 @@
     {{#foreach($y, $x)}}
         {{dump($y)}}
     {{#end}}
-{{#end}}
+{#{#end}}
 
 ----
+
+LOOP
+
+{{#loop($x, 0, 5)}}
+    outer: {{$x}}
+    
+    {{#loop($i, 0, 5)}}
+        inner: {{$i}}
+    {{#end}}
+    
+    
+    
+{{#end}}
 
 {#{$test}}
