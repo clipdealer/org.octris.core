@@ -84,13 +84,14 @@ namespace org\octris\core\tpl {
                 implode(' ', $options),
                 $tmp
             );
-            print "$cmd";
-            exec($cmd, $out = array(), $ret_val = 0);
             
-            print "[$ret_val]";
-            
-            $md5 = md5_file($tmp);
-            rename($tmp, $out . '/' . $md5 . '.' . $type);
+            // print "$cmd";
+            // exec($cmd, $out = array(), $ret_val = 0);
+            // 
+            // print "[$ret_val]";
+            // 
+            // $md5 = md5_file($tmp);
+            // rename($tmp, $out . '/' . $md5 . '.' . $type);
             
             return $tmp;
         }
@@ -134,12 +135,14 @@ namespace org\octris\core\tpl {
         /****m* compress/process
          * SYNOPSIS
          */
-        public function process($tpl)
+        public function process($tpl, $out_js, $out_css)
         /*
          * FUNCTION
          *      compress file
          * INPUTS
          *      * $tpl (string) -- template to compress
+         *      * $out_js (string) -- path to output compressed javascript
+         *      * $out_css (string) -- path to output compressed css
          * OUTPUTs
          *      (string) -- processed template
          ****
@@ -171,8 +174,8 @@ namespace org\octris\core\tpl {
             $process(
                 '<script[^>]+src="(libsjs/\d+.js)"[^>]*></script>', 
                 '<script type="text/javascript" src="/libsjs/%s"></script>',
-                function($files) {
-                    return \org\octris\core\tpl\compiler\compress::compressJS($files);
+                function($files) use ($out_js) {
+                    return \org\octris\core\tpl\compiler\compress::compressJS($files, $out_js);
                 }
             );
 
@@ -180,14 +183,12 @@ namespace org\octris\core\tpl {
             $process(
                 '<link[^>]*? href="(?!https?://)([^"]+\.css)"[^>]*/>',
                 '<link rel="stylesheet" href="/styles/%s" type="text/css" />',
-                function($files) {
-                    return \org\octris\core\tpl\compiler\compress::compressCSS($files);
+                function($files) use ($out_css) {
+                    return \org\octris\core\tpl\compiler\compress::compressCSS($files, $out_css);
                 }
             );
             
             return $tpl;
         }
     }
-    
-    compress::compressJS(array('/tmp/inp.js'), '/tmp');
 }
