@@ -390,8 +390,8 @@ multiple time inclusion of external javascript/css files.
 
 ..  source: html
 
-    <script type="libsjs/lib.js?{{@uniqid()}}"></script>
-    <script type="libsjs/lib.js?{{@uniqid()}}"></script>
+    <script type="text/javascript" src="libsjs/lib.js?{{@uniqid()}}"></script>
+    <script type="text/javascript" src="libsjs/lib.js?{{@uniqid()}}"></script>
 
 Functions
 ---------
@@ -400,474 +400,209 @@ The template engine provides several built-in functions. Besides the built-in
 functions it's possible to register additional functions that can be used in
 a template.
 
-PHP functions
-~~~~~~~~~~~~~
+The template has the following built-in functions:
 
-The following PHP functions are available in any template context. Have a
-look at the official PHP documentation for further information of usage.
 
-..  source: html
 
-    html_entity_decode      addcslashes     ceil
-    htmlentities            nl2br           round
-    htmlspecialchars        strtoupper      
-                            strtolower      
-    json_decode             strcmp          
-    json_encode             str_repeat      
-    rawurldecode            str_replace     
-    rawurlencode            sprintf         
-                                            
-    array_key_exists        trim
-    isset                   ltrim
-    count                   rtrim
+Javascript & CSS compressor
+---------------------------
 
-~lima_app~ functions
-~~~~~~~~~~~~~~~~~~~~
+The compressor is called after all macros and constants in a template are resolved
+and the template was converted to PHP code. The compressor looks through the html
+template and optimizes optimizes Javascript and CSS inclusion. The following tasks
+are fulfilled:
 
-The following functions are only available, when template is accessed
-using ~lima_app~'s getTemplate method. For further information see ~lima_app~
-API documentation.
+*   optimizing includes reducing necessary HTTP requests
+*   compressing Javascript and CSS
+
+Optimizing HTTP Requests
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+The compressor parses a HTML template and looks for multiple following
 
 ..  source: html
 
-    getHtmlState
+    <script type="text/javascript" src="..."></script>
+
+and
+
+..  source: html
+
+    <link rel="stylesheet" type="text/css" href="..." />
+
+tags. It will combine multiple files and rewrite the HTML template to reduce 
+external file inclusion. For example:
+
+_before:_
+
+..  source: html
+
+    <html>
+        <link rel="stylesheet" type="text/css" href="default.css" />
+        <link rel="stylesheet" type="text/css" href="hacks.css" />
+        <script type="text/javascript" src="inc1.js"></script>
+        <script type="text/javascript" src="inc2.js"></script>
+        <script type="text/javascript" src="inc3.js"></script>
+        <body>
+            ...
+            <script type="text/javascript" src="inc4.js"></script>
+            <script type="text/javascript" src="inc5.js"></script>
+            ...
+        </body>
+    </html>
+
+_after:_
+
+..  source: html
+
+    <html>
+        <link rel="stylesheet" type="text/css" href="combined.css" />
+        <script type="text/javascript" src="combined1.js"></script>
+        <body>
+            ...
+            <script type="text/javascript" src="combined2.js"></script>
+            ...
+        </body>
+    </html>
+
+In addition, each file will be included only once. This is very useful, when you
+use sub-templates and wan't be sure, that every javascript required by the sub-
+template is included and additionally make sure, that it was not already included
+by an other template. The following example uses three templates -- main.html, 
+sub1.html and sub2.html:
+
+..  source: html
+
+    <!-- main.html -->
+    <html>
+        <body>
+            {{@import('sub1.html')}}
+            {{@import('sub2.html')}}
+        </body>
+    </html>
+
+    <!-- sub1.html -->
+    <p>
+        <script type="text/javascript" src="inc1.js"></script>
+        <script type="text/javascript" src="inc2.js"></script>
+        <script type="text/javascript" src="inc3.js"></script>
+        ...
+    </p>
     
-Built-in functions
-~~~~~~~~~~~~~~~~~~
+    <!-- sub2.html -->
+    <p>
+        <script type="text/javascript" src="inc1.js"></script>
+        <script type="text/javascript" src="inc2.js"></script>
+        <script type="text/javascript" src="inc5.js"></script>
+        ...
+    </p>
 
-The template engine defines the following built-in and already registered
-functions which are therefore available in any template context. See the 
-API documentation of ~lima_tpl_sandbox~ for further information of how to
-use them:
-
-..  source: html
-
-    dump
-
-
-
-Registering own functions
-~~~~~~~~~~~~~~~~~~~~~~~~~
-
-It's possible to register own functions for useage in a template. This is
-done in the application by the following PHP code:
-
-..  source: php
-    
-    $template->registerMethod(&$object, $method);
-
-_Example:_
-
-..  source: php
-
-    $template->registerMethod($this, 'formatString');
-
-The function can be accessed from inside a template as already described:
+After processing the above example using the compiler, you get one big template
+main.html:
 
 ..  source: html
 
-    {{formatString()}}
-    
-The method ~registerMethod~ accepts an optional third parameter. A string where
-it's possible to provide a custom name. This is useful for example, when there's
-already a function with the same name registered.
+    <!-- main.html -->
+    <html>
+        <body>
+            <p>
+                <script type="text/javascript" src="inc1.js"></script>
+                <script type="text/javascript" src="inc2.js"></script>
+                <script type="text/javascript" src="inc3.js"></script>
+                ...
+            </p>
+            <p>
+                <script type="text/javascript" src="inc1.js"></script>
+                <script type="text/javascript" src="inc2.js"></script>
+                <script type="text/javascript" src="inc5.js"></script>
+                ...
+            </p>
+        </body>
+    </html>
 
-Localization of templates
--------------------------
-
-There's a built-in function for translating text messages:
-
-..  source: html
-
-    {{_('text message to translate')}}
-
-It's possible to use so called ~inline~ functions to perform various
-tasks for localization. There are functions for formatting numbers, 
-dates etc. according to the current set localization-settings. The syntax
-of these ~inline~ functions is as follows:
-
-..  source: html
-
-    {{_('[monf, _1] ([monf, _2] brutto)', 19.90, 21.29)}}
-
-This would produce different output according to the local setting, for
-example:
-
-_en_US:_
+The compressor will now optimize this and remove duplicate file inclusions:
 
 ..  source: html
 
-    $19.90 ($21.29 brutto)
-    
-_de_DE:_
+    <!-- main.html -->
+    <html>
+        <body>
+            <p>
+                <script type="text/javascript" src="inc1.js"></script>
+                <script type="text/javascript" src="inc2.js"></script>
+                <script type="text/javascript" src="inc3.js"></script>
+                ...
+            </p>
+            <p>
+                <script type="text/javascript" src="inc5.js"></script>
+                ...
+            </p>
+        </body>
+    </html>
+
+As the next step the optimizer will combine the inclusions, so there are actually
+only two required includes left:
 
 ..  source: html
 
-    19,90€ (21,29€ brutto)
+    <!-- main.html -->
+    <html>
+        <body>
+            <p>
+                <script type="text/javascript" src="combined.js"></script>
+                ...
+            </p>
+            <p>
+                <script type="text/javascript" src="inc5.js"></script>
+                ...
+            </p>
+        </body>
+    </html>
 
-An ~inline~ function is defined between the brackets '[' and ']'. The Parameters
-for an ~inline~ function are seperated by ','. The first Parameter always defines
-the name of the function, the following parameters are for providing values to the
-function. The values can be either fixed ...
-
-..  source: html
-
-    {{_('[numf, 10.254]')}}
-    
-... or variable, specified by additional parameters to the translation function '_':
-
-..  source: html
-
-    {{_('[numf, _1]', 10.254)}}
-
-In the latter case, the parameter '_1' defines the position of the translation
-function's parameter to use as value for the ~inline~ function. This makes it 
-possible to use multiple parameters for an ~inline~ function and even to use 
-multiple ~inline~ functions inside of one message:
-
-_Example:_
+Sometimes it is required to include a javascript multiple times. This can be
+achiefed simply by adding a unique identifier to the filename. For example: 
 
 ..  source: html
 
-                +----------------------------+
-                |           +----------------|------+
-                |           |                |      |
-                |           |                V      V
-    {{_('[monf, _1] ([monf, _2] brutto)', 19.90, 21.29)}}
+    <!-- main.html -->
+    <html>
+        <body>
+            <p>
+                <script type="text/javascript" src="inc1.js"></script>
+                <script type="text/javascript" src="inc2.js"></script>
+                <script type="text/javascript" src="inc3.js"></script>
+                ...
+            </p>
+            <p>
+                <script type="text/javascript" src="inc1.js?{{@uniqid()}}"></script>
+                <script type="text/javascript" src="inc2.js?{{@uniqid()}}"></script>
+                <script type="text/javascript" src="inc5.js"></script>
+                ...
+            </p>
+        </body>
+    </html>
 
-The example above visualizes which ~inline~ function's parameter uses which
-localization function's parameter.
-
-The template engine defines the following ~inline~ functions.
-
-monf
-~~~~
-
-This functions purpose is the formatting of money values, including the 
-currency sign of according to the local setting:
-
-..  source: html
-
-    {{_('[monf, _1]', $value)}}
-
-_Parameter:_
-
-+---------------+-----------+-----------------------------------------------------------+
-| Name          | Type      | Description                                               |
-+===============+=======================================================================+
-| value         | float     | value to format as money                                  |
-+---------------+-----------+-----------------------------------------------------------+
-
-numf
-~~~~
-
-This function is somehow similar to monf. It's for localization numbers,
-without adding currency symbol:
+~inc1.js~ and ~inc2.js~ from the second snippet will be treated as different
+include files. So the resulting snippet after optimizing is:
 
 ..  source: html
 
-    {{_('[numf, _1, _2]', $value, $prec)}}
+    <!-- main.html -->
+    <html>
+        <body>
+            <p>
+                <script type="text/javascript" src="combined1.js"></script>
+                ...
+            </p>
+            <p>
+                <script type="text/javascript" src="combined2.js"></script>
+                ...
+            </p>
+        </body>
+    </html>
+
+Compressing Javascript and CSS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The compressor uses YUI Compressor to compress javascript and CSS files.
 
-_Parameter:_
-
-+---------------+-----------+-----------------------------------------------------------+
-| Name          | Type      | Description                                               |
-+===============+=======================================================================+
-| value         | float     | value to format as number                                 |
-+---------------+-----------+-----------------------------------------------------------+
-| prec          | int       | (optional) precision                                      |
-+---------------+-----------+-----------------------------------------------------------+
-
-datef
-~~~~~
-
-This function's purpose is to format date, time and date/time values:
-
-..  source: html
-
-    {{_('[datef, _1, _2]', $value, $format)}}
-
-_Parameter:_
-
-+---------------+-----------+-----------------------------------------------------------+
-| Name          | Type      | Description                                               |
-+===============+=======================================================================+
-| value         | float     | date/time value as unix timestamp or ISO date/time string |
-+---------------+-----------+-----------------------------------------------------------+
-| format        | int       | (optional) date/time format setting                       |
-+---------------+-----------+-----------------------------------------------------------+
-
-Default format is ~T_DATETIME_MEDIUM~. The following formatting constants are defined, 
-in a template it's required to set the integer value instead of the PHP constant name:
-
-+---------------------------------------+-------+
-| Constant                              | Value |
-+=======================================+=======+
-| lima_type_datetime::T_DATE_FULL       | 1     |
-+---------------------------------------+-------+
-| lima_type_datetime::T_DATE_LONG       | 2     |
-+---------------------------------------+-------+
-| lima_type_datetime::T_DATE_MEDIUM     | 4     |
-+---------------------------------------+-------+
-| lima_type_datetime::T_DATE_SHORT      | 8     |
-+---------------------------------------+-------+
-|                                       |       |
-+---------------------------------------+-------+
-| lima_type_datetime::T_TIME_FULL       | 16    |
-+---------------------------------------+-------+
-| lima_type_datetime::T_TIME_LONG       | 32    |
-+---------------------------------------+-------+
-| lima_type_datetime::T_TIME_MEDIUM     | 64    |
-+---------------------------------------+-------+
-| lima_type_datetime::T_TIME_SHORT      | 128   |
-+---------------------------------------+-------+
-|                                       |       |
-+---------------------------------------+-------+
-| lima_type_datetime::T_DATETIME_FULL   | 17    |
-+---------------------------------------+-------+
-| lima_type_datetime::T_DATETIME_LONG   | 34    |
-+---------------------------------------+-------+
-| lima_type_datetime::T_DATETIME_MEDIUM | 68    |
-+---------------------------------------+-------+
-| lima_type_datetime::T_DATETIME_SHORT  | 136   |
-+---------------------------------------+-------+
-
-It's possible to generate a string of T_DATE_LONG in combination with 
-T_TIME_SHORT by calculating the corresponding value using bit operators.
-
-yesno
-~~~~~
-
-This function makes it possible to return two different values according to if
-the first parameter of the function is (bool) ~true~ or (bool) ~false~:
-
-..  source: html
-
-    {{_('[yesno, _1, _2, _3]', $value, $first, $second)}}
-
-_Parameter:_
-
-+---------------+-----------+-----------------------------------------------------------+
-| Name          | Type      | Description                                               |
-+===============+=======================================================================+
-| value         | boolean   | value to check                                            |
-+---------------+-----------+-----------------------------------------------------------+
-| first         | string    | message to output, if ~value~ is ~true~                   |
-+---------------+-----------+-----------------------------------------------------------+
-| second        | string    | message to output, if ~value~ is ~false~                  |
-+---------------+-----------+-----------------------------------------------------------+
-
-enum and quant
-~~~~~~~~~~~~~~
-
-This functions return one of three messages, according to the value that is 
-specified as first parameter. The difference between ~quant~ and ~enum~ is,
-that it's possible to output ~value~ together with the message when using
-the function ~quant~. This can be achieved by placing ~%d~ somewhere in the
-message.
-
-..  source: html
-    
-    {{_('[enum, _1, _2, _3, _4]', $value, $first, $second, $third)}}
-    {{_('[quant, _1, _2, _3, _4]', $value, $first, $second, $third)}}
-
-_Parameter:_
-
-+---------------+-----------+-----------------------------------------------------------+
-| Name          | Type      | Description                                               |
-+===============+=======================================================================+
-| value         | float     | value to check                                            |
-+---------------+-----------+-----------------------------------------------------------+
-| first         | string    | message to output, if ~value~ == ~1~                      |
-+---------------+-----------+-----------------------------------------------------------+
-| second        | string    | message to output, if ~value~ != ~1~ and ~value~ != ~0~   |
-+---------------+-----------+-----------------------------------------------------------+
-| third         | string    | message to output, if ~value~ == ~0~                      |
-+---------------+-----------+-----------------------------------------------------------+
-
-_Example for ~enum~:_
-
-..  source: html
-
-    {{_('[enum, _1, one, many, no]', $value)}}
-    
-_Example for ~quant~:_
-
-..  source: html
-
-    {{_('[quant, _1, %d item, %d items, %d items]', $value)}}
-
-comify
-~~~~~~
-
-This function accepts an array as first parameter and concatenates the items of 
-the array except the last one using a custom seperator character. The last item
-will be concatenated by a custom string:
-
-..  source: html
-
-    {{_('[comify, _1, _2, _3]', $list, $word, $sep)}}
-
-_Parameter:_
-
-+---------------+-----------+-----------------------------------------------------------+
-| Name          | Type      | Description                                               |
-+===============+=======================================================================+
-| list          | array     | array of values to concatenate                            |
-+---------------+-----------+-----------------------------------------------------------+
-| word          | string    | the word to concatenate the last array item with the rest |
-+---------------+-----------+-----------------------------------------------------------+
-| sep           | string    | (optional) character to use as concatenator (default: ,)  |
-+---------------+-----------+-----------------------------------------------------------+
-
-_Example:_
-
-..  source: html
-
-    {{_('[comify, _1, and]', $array)}}
-    
-For an array with the items ...
-
-..  source: php
-
-    $value = array('one', 'two', 'three', 'four', 'five');
-    
-... this would produce the following output:
-
-..  source: html
-
-    one, two, three, four and five
-    
-gender
-~~~~~~
-
-This function is used to output different messages according to a specified 
-gender:
-
-..  source: html
-
-    {{_('[gender, _1, _2, _3, _4]', $val, $undefined, $male, $female)}}
-    
-_Parameter:_
-
-+---------------+-----------+-----------------------------------------------------------+
-| Name          | Type      | Description                                               |
-+===============+=======================================================================+
-| value         | mixed     | gender                                                    |   
-+---------------+-----------+-----------------------------------------------------------+
-| undefined     | string    | message to output, if gender is not identifiable          |
-+---------------+-----------+-----------------------------------------------------------+
-| male          | string    | message to output, if gender is male                      |
-+---------------+-----------+-----------------------------------------------------------+
-| female        | string    | message to output, if gender is female                    |
-+---------------+-----------+-----------------------------------------------------------+
-
-The following is a lookup table of values to the corresponding gender:
-
-+---------------+-------------------+
-| Gender        | Values            |
-+===============+===+===+===+===+===+
-| *male*        | M | m | 1 |   |   |
-+---------------+---+---+---+---+---+
-| *female*      | F | f | W | w | 2 |
-+---------------+-----------+---+---+
-| *undefined*   | N | n | 0 |   |   |
-+---------------+-----------+---+---+
-
-Template Engine
-===============
-
-Block commands
---------------
-
-#if(...)
-~~~~~~~~
-
-#foreach()
-~~~~~~~~~~
-
-
-Math functions
---------------
-
-add
-~~~
-
-Add two or more parameters.
-
-..  source: php
-
-    add
-
-
-
-*   context awareness: html / xml, javascript, text ...
-
-    this is needed to apply auto-escaping and context-aware escaping to values:
-    
-    *   http://googleonlinesecurity.blogspot.com/2009/03/reducing-xss-by-way-of-automatic.html
-
-*   variable scopes for template
-
-    tpl::setValue(name, value, scope = '')
-
-    class ... {
-        $tpl->setValue('name', 'value', $this);
-    }
-
-    setvalue expects string or object of instance 'page' as 3rd paramter. extracts page name of class name of object.
-    
-    access in template:
-    
-    {{$scope:variable}}
-    
-    questions:
-    
-    *   how can we handle nested scopes and the possibility to leave name of scope away when trying to fetch variable 
-        in this way in template?
-
-*   Every Variable in the Template is an object. The following Objects
-    are available:
-    
-    *   String
-    *   Number
-    *   Money
-    *   Collection
-    
-    The template variable types are inherited from the core variable types.
-
-Syntax
-------
-
-..  source: plain
-
-    {{$variable}}                   // casted to string
-
-    {{$object->property}}           // object property casted to string
-
-    ::($variable->default('...'))     // string object
-
-Blocks
-------
-
-..  source: plain
-    
-    :(foreach())
-    :(end)
-    
-    :‚‚IF(...)}}
-    {{ELSEIF(...)}}
-    {{END}}
-
-    {{IF(...)}}
-    {{ELSEIF(...)}}
-    {{END}}
-
-
-compressor 
-
-- compressor optimizes javascript/css inclusion. the same file will only be 
-  included one time. to force including multiple times, just add a request 
-  parameter:
-  
-  <script src="...?{{@uniqid()}}"
