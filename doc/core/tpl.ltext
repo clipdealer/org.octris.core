@@ -398,9 +398,354 @@ Functions
 
 The template engine provides several built-in functions. Besides the built-in
 functions it's possible to register additional functions that can be used in
-a template.
+a template. The built-in functions are rewritten to optimized PHP code at compile
+time, but all parameters are resolved at request time. Because of this, almost all
+types of parameters are allowed:
+
+*   variable
+*   constant
+*   method
+*   string
+*   number
+*   bool
 
 The template has the following built-in functions:
+
+Comparison -- eq
+~~~~~~~~~~~~~~~~
+
+
+
+Logic -- and
+~~~~~~~~~~~~
+
+This method takes two or more parameters and returns ~true~, if *all* parameters are
+~true~.
+
+..  source: html
+
+    {{and($a, $b [, ...])}}
+
++---------------+-----------+-----------+-----------------------------------------------+
+| Name          | Type      | Mandatory | Description                                   |
++===============+=======================================================================+
+| $a            | mixed     | x         | first term                                    |
++---------------+-----------+-----------+-----------------------------------------------+
+| $b            | mixed     | x         | second term                                   |
++---------------+-----------+-----------+-----------------------------------------------+
+| $c, ...       | mixed     | -         | more optional terms                           |
++---------------+-----------+-----------+-----------------------------------------------+
+
+_Example:_
+
+..  source: html
+
+    <!-- output: 1 and 0 = false -->
+    {{and(1, 0)}}
+
+    <!-- output: 1 and 1 = true -->
+    {{and(1, 1)}}
+
+
+Logic -- not
+~~~~~~~~~~~~
+
+This method takes one parameters and returns ~true~, if the paramet is not true and ~false~,
+if the parameter is true.
+
+..  source: html
+
+    {{not($a)}}
+
++---------------+-----------+-----------+-----------------------------------------------+
+| Name          | Type      | Mandatory | Description                                   |
++===============+=======================================================================+
+| $a            | mixed     | x         | first term                                    |
++---------------+-----------+-----------+-----------------------------------------------+
+
+_Example:_
+
+..  source: html
+
+    <!-- output: not 0 = 1 -->
+    {{not(0)}}
+
+    <!-- output: not 1 = 0 -->
+    {{not(1)}}
+
+
+Logic -- or
+~~~~~~~~~~~
+
+This method takes two or more parameters and returns ~true~, if *one* parameter is ~true~.
+
+..  source: html
+
+    {{or($a, $b [, ...])}}
+
++---------------+-----------+-----------+-----------------------------------------------+
+| Name          | Type      | Mandatory | Description                                   |
++===============+=======================================================================+
+| $a            | mixed     | x         | first term                                    |
++---------------+-----------+-----------+-----------------------------------------------+
+| $b            | mixed     | x         | second term                                   |
++---------------+-----------+-----------+-----------------------------------------------+
+| $c, ...       | mixed     | -         | more optional terms                           |
++---------------+-----------+-----------+-----------------------------------------------+
+
+_Example:_
+
+..  source: html
+
+    <!-- output: 0 or 0 = false -->
+    {{or(0, 0)}}
+
+    <!-- output: 1 or 1 = true -->
+    {{or(1, 0)}}
+
+
+Logic -- xor
+~~~~~~~~~~~~
+
+This method takes two parameters and returns ~true~, if *only one* parameter is ~true~.
+
+..  source: html
+
+    {{xor($a, $b)}}
+
++---------------+-----------+-----------+-----------------------------------------------+
+| Name          | Type      | Mandatory | Description                                   |
++===============+=======================================================================+
+| $a            | mixed     | x         | first term                                    |
++---------------+-----------+-----------+-----------------------------------------------+
+| $b            | mixed     | x         | second term                                   |
++---------------+-----------+-----------+-----------------------------------------------+
+
+_Example:_
+
+..  source: html
+
+    <!-- output: 1 xor 1 = false -->
+    {{xor(0, 0)}}
+
+    <!-- output: 1 xor 0 = true -->
+    {{xor(1, 0)}}
+
+
+Math -- add
+~~~~~~~~~~~
+
+This method takes two or more parameters and add them returning the result.
+
+..  source: html
+
+    {{add($a, $b [, ...])}}
+
++---------------+-----------+-----------+-----------------------------------------------+
+| Name          | Type      | Mandatory | Description                                   |
++===============+=======================================================================+
+| $a            | mixed     | x         | first term                                    |
++---------------+-----------+-----------+-----------------------------------------------+
+| $b            | mixed     | x         | second term                                   |
++---------------+-----------+-----------+-----------------------------------------------+
+| $c, ...       | mixed     | -         | more optional terms                           |
++---------------+-----------+-----------+-----------------------------------------------+
+
+_Example:_
+
+..  source: html
+
+    <!-- output: 1 + 2 + 3 + 4 = 10 -->
+    {{add(1, 2, 3, 4)}}
+
+
+Math -- decr
+~~~~~~~~~~~~
+
+This method takes one or two parameters. If one parameter is specified, the input variable
+will be decreased by ~1~, otherwise a second parameter can be specified to define the amount
+the input variable should be decreased by.
+
+..  source: html
+
+    {{decr($a [, $b])}}
+    
++---------------+-----------+-----------+-----------------------------------------------+
+| Name          | Type      | Mandatory | Description                                   |
++===============+=======================================================================+
+| $a            | mixed     | x         | input variable                                |
++---------------+-----------+-----------+-----------------------------------------------+
+| $b            | mixed     | -         | optional amount for decreasing (default: 1)   |
++---------------+-----------+-----------+-----------------------------------------------+
+
+    _Example:_
+
+    ..  source: html
+
+        <!-- output: 5 - 2 = 3 -->
+        {{decr(5, 2)}}
+
+
+Math -- div
+~~~~~~~~~~~
+
+This method takes two or more parameters and devides them in the specified order returning the result.
+
+..  source: html
+
+    {{div($a, $b [, ...])}}
+
++---------------+-----------+-----------+-----------------------------------------------+
+| Name          | Type      | Mandatory | Description                                   |
++===============+=======================================================================+
+| $a            | mixed     | x         | first term                                    |
++---------------+-----------+-----------+-----------------------------------------------+
+| $b            | mixed     | x         | second term                                   |
++---------------+-----------+-----------+-----------------------------------------------+
+| $c, ...       | mixed     | -         | more optional terms                           |
++---------------+-----------+-----------+-----------------------------------------------+
+
+_Example:_
+
+..  source: html
+
+    <!-- output: 8 / 4 / 2 = 1 -->
+    {{div(8, 4, 2)}}
+
+
+Math -- incr
+~~~~~~~~~~~~
+
+This method takes one or two parameters. If one parameter is specified, the input variable
+will be increased by ~1~, otherwise a second parameter can be specified to define the amount
+the input variable should be increased by.
+
+..  source: html
+
+    {{incr($a [, $b])}}
+
++---------------+-----------+-----------+-----------------------------------------------+
+| Name          | Type      | Mandatory | Description                                   |
++===============+=======================================================================+
+| $a            | mixed     | x         | input variable                                |
++---------------+-----------+-----------+-----------------------------------------------+
+| $b            | mixed     | -         | optional amount for increasing (default: 1)   |
++---------------+-----------+-----------+-----------------------------------------------+
+
+    _Example:_
+
+    ..  source: html
+
+        <!-- output: 5 + 2 = 7 -->
+        {{incr(5, 2)}}
+
+
+Math -- mod
+~~~~~~~~~~~
+
+This method takes two or more parameters and calculates the remainder of a division.
+
+..  source: html
+
+    {{mod($a, $b [, ...])}}
+
++---------------+-----------+-----------+-----------------------------------------------+
+| Name          | Type      | Mandatory | Description                                   |
++===============+=======================================================================+
+| $a            | mixed     | x         | first term                                    |
++---------------+-----------+-----------+-----------------------------------------------+
+| $b            | mixed     | x         | second term                                   |
++---------------+-----------+-----------+-----------------------------------------------+
+| $c, ...       | mixed     | -         | more optional terms                           |
++---------------+-----------+-----------+-----------------------------------------------+
+
+_Example:_
+
+..  source: html
+
+    <!-- output: 5 % 2 = 1 -->
+    {{mod(5, 2)}}
+
+
+Math -- mul
+~~~~~~~~~~~
+
+This method takes two or more parameters and multiplies them in the specified order returning the result.
+
+..  source: html
+
+    {{mul($a, $b [, ...])}}
+
++---------------+-----------+-----------+-----------------------------------------------+
+| Name          | Type      | Mandatory | Description                                   |
++===============+=======================================================================+
+| $a            | mixed     | x         | first term                                    |
++---------------+-----------+-----------+-----------------------------------------------+
+| $b            | mixed     | x         | second term                                   |
++---------------+-----------+-----------+-----------------------------------------------+
+| $c, ...       | mixed     | -         | more optional terms                           |
++---------------+-----------+-----------+-----------------------------------------------+
+
+_Example:_
+
+..  source: html
+
+    <!-- output: 4 * 3 * 2 = 24 -->
+    {{mul(4, 3, 2)}}
+
+
+Math -- neg
+~~~~~~~~~~~
+
+This method negates a value.
+
+..  source: html
+
+    {{neg($a)}}
+
++---------------+-----------+-----------+-----------------------------------------------+
+| Name          | Type      | Mandatory | Description                                   |
++===============+=======================================================================+
+| $a            | mixed     | x         | value to negate                               |
++---------------+-----------+-----------+-----------------------------------------------+
+
+_Example:_
+
+..  source: html
+
+    <!-- output: -10 -->
+    {{neg(10)}}
+
+
+Math -- sub
+~~~~~~~~~~~
+
+This method takes two or more parameters and subtracts them from each other returning the result.
+
+..  source: html
+
+    {{sub($a, $b [, ...])}}
+
++---------------+-----------+-----------+-----------------------------------------------+
+| Name          | Type      | Mandatory | Description                                   |
++===============+=======================================================================+
+| $a            | mixed     | x         | first term                                    |
++---------------+-----------+-----------+-----------------------------------------------+
+| $b            | mixed     | x         | second term                                   |
++---------------+-----------+-----------+-----------------------------------------------+
+| $c, ...       | mixed     | -         | more optional terms                           |
++---------------+-----------+-----------+-----------------------------------------------+
+
+_Example:_
+
+..  source: html
+
+    <!-- output: 1 - 2 - 3 - 4 = -8 -->
+    {{sub(1, 2, 3, 4)}}
+
+
+
+
 
 
 
@@ -409,8 +754,8 @@ Javascript & CSS compressor
 
 The compressor is called after all macros and constants in a template are resolved
 and the template was converted to PHP code. The compressor looks through the html
-template and optimizes optimizes Javascript and CSS inclusion. The following tasks
-are fulfilled:
+template and optimizes Javascript and CSS inclusion. The following tasks are 
+performed:
 
 *   optimizing includes reducing necessary HTTP requests
 *   compressing Javascript and CSS
@@ -466,7 +811,7 @@ _after:_
     </html>
 
 In addition, each file will be included only once. This is very useful, when you
-use sub-templates and wan't be sure, that every javascript required by the sub-
+use sub-templates and want to be sure, that every javascript required by the sub-
 template is included and additionally make sure, that it was not already included
 by an other template. The following example uses three templates -- main.html, 
 sub1.html and sub2.html:
@@ -559,8 +904,12 @@ only two required includes left:
         </body>
     </html>
 
+In the example above the file ~combined.js~ contains all three ~inc1.js~, ~inc2.js~ and
+~inc3.js~. The second block was reduced to only include ~inc5.js~, because it's the only
+javascript include still missing for the page.
+
 Sometimes it is required to include a javascript multiple times. This can be
-achiefed simply by adding a unique identifier to the filename. For example: 
+achieved simply by adding a unique identifier to the filename. For example: 
 
 ..  source: html
 
@@ -582,8 +931,9 @@ achiefed simply by adding a unique identifier to the filename. For example:
         </body>
     </html>
 
-~inc1.js~ and ~inc2.js~ from the second snippet will be treated as different
-include files. So the resulting snippet after optimizing is:
+~inc1.js~ and ~inc2.js~ from the second block will be treated as different include files 
+than ~inc1.js~ and ~inc2.js~ from the first block even if they have same content -- just 
+because it's a different URL. So the resulting snippet after optimizing is:
 
 ..  source: html
 
@@ -605,4 +955,3 @@ Compressing Javascript and CSS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The compressor uses YUI Compressor to compress javascript and CSS files.
-
