@@ -23,18 +23,6 @@ namespace org\octris\core\validate {
          *      stores validation options
          ****
          */
-    
-        /****v* type/$pattern
-         * SYNOPSIS
-         */
-        protected $pattern = '';
-        /*
-         * FUNCTION
-         *      Validation pattern -- regular expression. If this is an
-         *      empty string, the validation can only be performed server-
-         *      side.
-         ****
-         */
         
         /****m* type/__construct
          * SYNOPSIS
@@ -86,23 +74,6 @@ namespace org\octris\core\validate {
             return $value;
         }
     
-        /****m* type/postValidate
-         * SYNOPSIS
-         */
-        public function postValidate($value)
-        /*
-         * FUNCTION
-         *      
-         * INPUTS
-         *      
-         * OUTPUTS
-         *      
-         ****
-         */
-        {
-            return $value;
-        }
-    
         /****m* type/getOptions
          * SYNOPSIS
          */
@@ -114,19 +85,6 @@ namespace org\octris\core\validate {
          */
         {
             return $this->options;
-        }
-    
-        /****m* type/getPattern
-         * SYNOPSIS
-         */
-        public function getPattern()
-        /*
-         * FUNCTION
-         *      returns a validation pattern.
-         ****
-         */
-        {
-            return $this->pattern;
         }
     }
 }
