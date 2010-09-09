@@ -411,9 +411,13 @@ types of parameters are allowed:
 
 The template has the following built-in functions:
 
+Localization -- _
+~~~~~~~~~~~~~~~~~
+
+Localization is only 
+
 Comparison -- eq
 ~~~~~~~~~~~~~~~~
-
 
 
 Logic -- and
