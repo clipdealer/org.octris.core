@@ -547,7 +547,7 @@ namespace org\octris\core {
         /****m* l10n/negotiateLanguage
          * SYNOPSIS
          */
-        static function negotiateLanguage($supported, $default) 
+        public static function negotiateLanguage($supported, $default) 
         /*
          * FUNCTION
          *      uses HTTP_ACCEPT_LANGUAGE to negotiate accepted language
