@@ -28,7 +28,11 @@ namespace org\octris\core\validate\type {
          ****
          */
         {
-            return ctype_xdigit($value);
+            if (($return = ctype_xdigit($value)) && isset($this->options['length'])) {
+                $return = (strlen($value) == $this->options['length']);
+            }
+
+            return $return;
         }
     }
 }
