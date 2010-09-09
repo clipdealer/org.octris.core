@@ -27,7 +27,7 @@ namespace org\octris\core\validate\type {
         /****m* alpha/validate
          * SYNOPSIS
          */
-        function validate($value)
+        public function validate($value)
         /*
          * FUNCTION
          *      validate an alpha value
