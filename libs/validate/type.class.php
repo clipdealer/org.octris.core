@@ -39,7 +39,7 @@ namespace org\octris\core\validate {
         /****m* type/__construct
          * SYNOPSIS
          */
-        function __construct(array $options = array())
+        public function __construct(array $options = array())
         /*
          * FUNCTION
          *      constructor
@@ -54,7 +54,7 @@ namespace org\octris\core\validate {
         /****m* type/validate
          * SYNOPSIS
          */
-        abstract function validate($value);
+        abstract public function validate($value);
         /*
          * FUNCTION
          *      abstract methods must be implemented by subclasses
@@ -64,7 +64,7 @@ namespace org\octris\core\validate {
         /****m* type/preFilter
          * SYNOPSIS
          */
-        function preFilter($value)
+        public function preFilter($value)
         /*
          * FUNCTION
          *      pre filter values
@@ -89,7 +89,7 @@ namespace org\octris\core\validate {
         /****m* type/postValidate
          * SYNOPSIS
          */
-        function postValidate($value)
+        public function postValidate($value)
         /*
          * FUNCTION
          *      
