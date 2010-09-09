@@ -1,12 +1,15 @@
-{{let($a, 'a')}}
+{{@import('tpl2.html')}}
 
-{{$a}}
+{#{let($a, 'a')}}
 
-{{_('hallo world!')}}
+{#{$a}}
 
-{{_('hallo [_1]!', 'Harald')}}
+{#{_('hallo world!')}}
 
-{{#if($a)}}
-    {{#foreach($a, $b)}}
-    {{#end}}
-{{#end}}
+{#{_('hallo [_1]!', 'Harald')}}
+
+{#{#if($a)}}
+    {#{#foreach($a, $b)}}
+    {#{#end}}
+{#{#end}}
+
