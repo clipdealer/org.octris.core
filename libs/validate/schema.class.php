@@ -223,11 +223,13 @@ namespace org\octris\core\validate {
                         break;
                     default:
                         // type validation
-                        $class    = 'type\\\\' . $t;
-                        $instance = new $class();
-                        $v        = $instance->preFilter($v);
-                        $return   = ($instance->validate($v) && $instance->postValidate());
+                        $o = (isset($schema[$k]['options']) && is_array($schema[$k]['options'])
+                                ? $schema[$k]['options']
+                                : array());
                         
+                        $instance = new $t($o);
+                        $v        = $instance->preFilter($v);
+                        $return   = $instance->validate($v);
                         break;
                     }
                 }
@@ -241,26 +243,24 @@ namespace org\octris\core\validate {
         /****m* schema/validate
          * SYNOPSIS
          */
-        function validate($value)
+        function validate(\org\octris\core\validate\wrapper $wrapper)
         /*
          * FUNCTION
-         *      validate an schema value
+         *      apply validation schema to wrapped values and validate them.
          * INPUTS
-         *      * $value (mixed) -- value to validate
+         *      * $wrapper (wrapper) -- wrapped values to validate
          * OUTPUTS
-         *      (bool) -- returns true, if value is valid
+         *      (bool) -- returns true, if schema validates
          ****
          */
         {
-            print_r($value);
+            print_r($wrapper);
             
-            if (($return = (is_array($value) || ($value instanceof \Traversable) || ($value instanceof \ArrayAccess)))) {
-                $return = $this->_validator(
-                    $value, 
-                    $this->type,
-                    $this->schema['default']
-                );
-            }
+            $return = $this->_validator(
+                $wrapper, 
+                $this->type,
+                $this->schema['default']
+            );
 
             return $return;
         }
