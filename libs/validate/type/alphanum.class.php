@@ -14,16 +14,6 @@ namespace org\octris\core\validate\type
      */
 
     class alphanum extends \org\octris\core\validate\type {
-        /****v* alphanum/$pattern
-         * SYNOPSIS
-         */
-        protected $pattern = '/^[0-9a-zA-Z]+$/';
-        /*
-         * FUNCTION
-         *      validation pattern
-         ****
-         */
-    
         /****m* alphanum/validate
          * SYNOPSIS
          */
