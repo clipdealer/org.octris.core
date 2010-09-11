@@ -84,7 +84,7 @@ namespace org\octris\core\validate {
          *      validation modes: 
          *      *   T_STRICT:   fields not in schema will raise a validation error (default)
          *      *   T_CLEANUP:  fields not in schema will be removed
-         *      *   T_IGNORE:   fields to silently ignore if not in schema
+         *      *   T_IGNORE:   fields not in schema will be silently ignored
          ****
          */
     
