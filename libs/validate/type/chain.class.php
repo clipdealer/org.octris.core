@@ -13,7 +13,7 @@ namespace org\octris\core\validate\type {
      ****
      */
 
-    class chain {
+    class chain extends \org\octris\core\validate\type {
         /****m* chain/__construct
          * SYNOPSIS
          */
