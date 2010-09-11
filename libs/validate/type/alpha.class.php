@@ -14,16 +14,6 @@ namespace org\octris\core\validate\type {
      */
 
     class alpha extends \org\octris\core\validate\type {
-        /****v* alpha/$pattern
-         * SYNOPSIS
-         */
-        protected $pattern = '/^[a-zA-Z]+$/';
-        /*
-         * FUNCTION
-         *      validation pattern
-         ****
-         */
-    
         /****m* alpha/validate
          * SYNOPSIS
          */
