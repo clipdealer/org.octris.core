@@ -24,11 +24,11 @@ namespace org\octris\core {
          ****
          */
         
-        /****d* validate/T_STRUCT_OBJECT, T_STRUCT_ARRAY
+        /****d* validate/T_OBJECT, T_ARRAY
          * SYNOPSIS
          */
-        const T_STRUCT_OBJECT = 'object';
-        const T_STRUCT_ARRAY  = 'array';
+        const T_OBJECT = 1;
+        const T_ARRAY  = 2;
         /*
          * FUNCTION
          *      schema structure types
