@@ -1,11 +1,18 @@
-Template Engine
-===============
+Template Engine -- Overview
+===========================
 
 The octris framework provides an own template engine, which works independet of the structure of a template. It does
-not matter, if the template is a simple text file or in HTML or XML format. 
+not matter, if the template is a simple text file or in HTML or XML format. The template engine converts template
+markup to cacheable PHP code. It's not intended to compile the templates at runtime, but at deploy-time. So the
+template compiler should only run ones, and a request should use the cached PHP converted templates for
+displaying content.
 
-The template engine converts templates to cacheable PHP code.
+Besides converting template syntax to PHP, the template engine performs the following tasks:
 
+*   pre-localization of templates
+*   compiling of "localization inline functions"
+*   optimizing HTTP requests for including external Javascript and CSS files
+*   compressing external Javascript and CSS files (YUICompressor required)
 
 Template element syntax
 -----------------------
@@ -53,8 +60,8 @@ _Example:_
         </body>
     </html>
 
-Template Constants
-------------------
+Constants
+---------
 
 Template constants are written in the form the following example, where ~CONSTANT~ is a fully
 qualified name of an existing template constant:
@@ -65,8 +72,24 @@ qualified name of an existing template constant:
 
 The template engine defines the following constants:
 
-Template block commands
------------------------
+Strings
+-------
+
+Strings in templates are either enclosed by ' or " and are only allowed as parameters
+for macros and methods.
+
+..  source: html
+
+    <!-- allowed -->
+    {{write("testtext")}}
+    {{write('testtext')}}
+    
+    <!-- forbidden -->
+    {{"testtext"}}
+    {{'testtext'}}
+
+Block commands
+--------------
 
 A block encloses a part of a template and executes different actions of the enclosed template part:
 
@@ -77,6 +100,19 @@ A block encloses a part of a template and executes different actions of the encl
     {{#end}}
 
 The template engine supports the following block commands:
+
+
+
+Pre-localization of templates
+=============================
+
+
+
+Template language reference
+===========================
+
+Block commands
+--------------
 
 #copy
 ~~~~~
@@ -416,6 +452,13 @@ Localization -- _
 
 Localization is only 
 
+Strings may also contain inline functions, when used with the localization function '_'.
+In this case a string specified as first parameter will be processed by at compile time
+with an own parser/converter for inline functions. See the "Inline function reference"
+for more details.
+
+..  source: html
+
 Comparison -- eq
 ~~~~~~~~~~~~~~~~
 
@@ -748,9 +791,12 @@ _Example:_
     {{sub(1, 2, 3, 4)}}
 
 
+String inline functions
+-----------------------
 
 
-
+EBNF of template syntax
+=======================
 
 
 Javascript & CSS compressor
