@@ -1,14 +1,6 @@
 Parameter validation using schemas
 ==================================
 
-How to implement rule chaining, to apply multiple rules on one
-parameter?
-
-*   type: chain?
-    rules: validation rules chain
-    
-*   required / invalid
-
 Field validation rules
 ~~~~~~~~~~~~~~~~~~~~~~
 
@@ -25,7 +17,7 @@ Example shows required schema for validating login credentials:
     
     $schema = array(
         'default' => array(                        // entry point, always required!
-            'type'          => validate::T_STRUCT_OBJECT,
+            'type'          => validate::T_OBJECT,
             'properties'    => array(
                 'username' => array(                // field: username
                     'type'  => validate::T_PRINT
@@ -47,7 +39,7 @@ Example shows required schema for user-registration data containing a list of up
 
     $schema = array(
         'default' => array(
-            'type'       => validate::T_STRUCT_OBJECT,
+            'type'       => validate::T_OBJECT,
             'properties' => array(
                 'username' => array(
                     'type'  => validate::T_PRINT
@@ -64,7 +56,7 @@ Example shows required schema for user-registration data containing a list of up
                     )
                 ),
                 'websites' => array(
-                    'type'      => validate::T_STRUCT_ARRAY,
+                    'type'      => validate::T_ARRAY,
                     'items'     => array('url'),
                     'min_items' => 0,
                     'max_items' => 5
@@ -97,7 +89,7 @@ names:
 
     $schema = array(
         'default' => array(
-            'type'       => validate::T_STRUCT_OBJECT,
+            'type'       => validate::T_OBJECT,
             'properties' => array(
                 'username' => array(
                     'type'      => validate::T_CHAIN,
