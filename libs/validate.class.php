@@ -47,6 +47,7 @@ namespace org\octris\core {
         const T_PATTERN  = '\org\octris\core\validate\type\pattern';
         const T_PRINT    = '\org\octris\core\validate\type\print';
         const T_XDIGIT   = '\org\octris\core\validate\type\xdigit';
+        const T_URL      = '\org\octris\core\validate\type\url';
         /*
          * FUNCTION
          *      available validation types
