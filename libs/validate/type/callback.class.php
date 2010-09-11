@@ -14,7 +14,7 @@ namespace org\octris\core\validate\type {
      ****
      */
 
-    class callback {
+    class callback extends \org\octris\core\validate\type {
         /****m* callback/__construct
          * SYNOPSIS
          */
