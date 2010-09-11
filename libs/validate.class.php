@@ -23,6 +23,17 @@ namespace org\octris\core {
          *      instance of validator
          ****
          */
+        
+        /****d* validate/T_STRUCT_OBJECT, T_STRUCT_ARRAY
+         * SYNOPSIS
+         */
+        const T_STRUCT_OBJECT = 'object';
+        const T_STRUCT_ARRAY  = 'array';
+        /*
+         * FUNCTION
+         *      schema structure types
+         ****
+         */
          
         /****d* validate/T_ALPHA, T_ALPHANUM, T_BOOL, T_CALLBACK, T_PATH, T_PRINT, T_XDIGIT
          * SYNOPSIS
