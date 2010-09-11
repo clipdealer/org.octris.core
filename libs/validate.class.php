@@ -33,6 +33,7 @@ namespace org\octris\core {
         const T_CALLBACK = '\org\octris\core\validate\type\callback';
         const T_CHAIN    = '\org\octris\core\validate\type\chain';
         const T_PATH     = '\org\octris\core\validate\type\path';
+        const T_PATTERN  = '\org\octris\core\validate\type\pattern';
         const T_PRINT    = '\org\octris\core\validate\type\print';
         const T_XDIGIT   = '\org\octris\core\validate\type\xdigit';
         /*
@@ -55,7 +56,7 @@ namespace org\octris\core {
         /****m* validate/getInstance
          * SYNOPSIS
          */
-        final function getInstance()
+        final public function getInstance()
         /*
          * FUNCTION
          *      return instance of validator
@@ -74,7 +75,7 @@ namespace org\octris\core {
         /****m* validate/getKey
          * SYNOPSIS
          */
-        function getKey(\org\octris\core\page $page, $action)
+        public function getKey(\org\octris\core\page $page, $action)
         /*
          * FUNCTION
          *      calculate a key based on a page object and an action
@@ -90,7 +91,7 @@ namespace org\octris\core {
         /****m* validate/registerRuleset
          * SYNOPSIS
          */
-        function registerRuleset(\org\octris\core\page $page, $action, \org\octris\core\wrapper $wrapper, array $ruleset)
+        public function registerRuleset(\org\octris\core\page $page, $action, \org\octris\core\wrapper $wrapper, array $ruleset)
         /*
          * FUNCTION
          *      register validation ruleset
@@ -112,7 +113,7 @@ namespace org\octris\core {
         /****m* validate/validate
          * SYNOPSIS
          */
-        function validate(\org\octris\core\page $page, $action)
+        public function validate(\org\octris\core\page $page, $action)
         /*
          * FUNCTION
          *      apply registered validation ruleset
