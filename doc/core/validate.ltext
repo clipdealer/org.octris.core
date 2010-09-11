@@ -7,6 +7,10 @@ parameter?
 *   type: chain?
     rules: validation rules chain
     
+    validation chaining is achieved by the 'chain' validator, which accepts
+    an array with multiple types/options to validate in chain. the chain validation
+    stops, if any of the validators in the chain fails.
+    
 *   required / invalid
 
 Field validation rules
@@ -24,7 +28,7 @@ Example shows required schema for validating login credentials:
     <?php
     
     $schema = array(
-        '_schema_' => array(                        // entry point, always required!
+        'default' => array(                        // entry point, always required!
             'type'          => 'object',
             'properties'    => array(
                 'username' => array(                // field: username
@@ -48,19 +52,21 @@ Example shows required schema for user-registration data containing a list of up
     <?php
     
     $schema = array(
-        '_schema_' => array(
+        'default' => array(
             'type'       => 'object',
             'properties' => array(
                 'username' => array(
                     'type'  => 'print'
                 ),
                 'password' => array(
-                    'type'    => 'print',
+                    'type'  => 'print',
                 ),
-                'pwdcmp'   => array(                // field: a second password field to compare to
-                    'type'    => 'compare',
-                    'options' => array(
-                        'compare' => 'pwdcmp'
+                'password2' => array(           // a second password field to compare to
+                    'type'      => 'callback',
+                    'options'   => array(
+                        'callback' => function($value) {
+                            return ($value === $_POST->get('password')->value);
+                        }
                     )
                 ),
                 'websites' => array(
@@ -78,3 +84,38 @@ Example shows required schema for user-registration data containing a list of up
             )
         )
     )
+
+_Example #3:_
+
+Validation chaining in this example to demonstrate how to use it for example
+to validate usernames in a registration form to contain only printable characters
+and to exclude certain names:
+
+..  source: php
+
+    $schema = array(
+        'default' => array(
+            'type'       => 'object',
+            'properties' => array(
+                'username' => array(
+                    'type'      => 'chain',
+                    'options'   => array(
+                        'chain' => array(
+                            array(
+                                'type'      => 'print'
+                            ),
+                            array(
+                                'type'      => 'callback',
+                                'options'   => array(
+                                    'callback'  => function($value) {
+                                        return !in_array($value, array('admin', 'chef'));
+                                    }
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+    
