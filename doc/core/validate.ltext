@@ -7,10 +7,6 @@ parameter?
 *   type: chain?
     rules: validation rules chain
     
-    validation chaining is achieved by the 'chain' validator, which accepts
-    an array with multiple types/options to validate in chain. the chain validation
-    stops, if any of the validators in the chain fails.
-    
 *   required / invalid
 
 Field validation rules
@@ -25,23 +21,21 @@ Example shows required schema for validating login credentials:
 
 ..  source: php
 
-    <?php
+    use \org\octris\core\validate as validate;
     
     $schema = array(
         'default' => array(                        // entry point, always required!
-            'type'          => 'object',
+            'type'          => validate::T_STRUCT_OBJECT,
             'properties'    => array(
                 'username' => array(                // field: username
-                    'type'  => 'print'
+                    'type'  => validate::T_PRINT
                 ),
                 'password' => array(                // field: password
-                    'type'  => 'print'
+                    'type'  => validate::T_PRINT
                 )
             )
         )
     );
-    
-    ?>
 
 _Example: #2:_
 
@@ -49,20 +43,20 @@ Example shows required schema for user-registration data containing a list of up
 
 ..  source: php
 
-    <?php
-    
+    use \org\octris\core\validate as validate;
+
     $schema = array(
         'default' => array(
-            'type'       => 'object',
+            'type'       => validate::T_STRUCT_OBJECT,
             'properties' => array(
                 'username' => array(
-                    'type'  => 'print'
+                    'type'  => validate::T_PRINT
                 ),
                 'password' => array(
-                    'type'  => 'print',
+                    'type'  => validate::T_PRINT,
                 ),
                 'password2' => array(           // a second password field to compare to
-                    'type'      => 'callback',
+                    'type'      => validate::T_CALLBACK,
                     'options'   => array(
                         'callback' => function($value) {
                             return ($value === $_POST->get('password')->value);
@@ -70,7 +64,7 @@ Example shows required schema for user-registration data containing a list of up
                     )
                 ),
                 'websites' => array(
-                    'type'      => 'array',
+                    'type'      => validate::T_STRUCT_ARRAY,
                     'items'     => array('url'),
                     'min_items' => 0,
                     'max_items' => 5
@@ -80,32 +74,40 @@ Example shows required schema for user-registration data containing a list of up
         
         'url' => array(                         // name of schema: url
             'url' => array(
-                'type' => 'url'
+                'type' => validate::T_URL
             )
         )
     )
 
-_Example #3:_
+Validation chaining
+~~~~~~~~~~~~~~~~~~~
 
-Validation chaining in this example to demonstrate how to use it for example
-to validate usernames in a registration form to contain only printable characters
-and to exclude certain names:
+Validation chaining is achieved by the 'chain' validator, which accepts
+an array with multiple types/options to validate in chain as option parameter. 
+The validation chain stops, if a validator fails or after all steps of the chain
+succeeded.
+
+In the example below validation chaining is used to validate usernames first if 
+it contains only printable characters and additionally if it doesn't match invalid
+names:
 
 ..  source: php
 
+    use \org\octris\core\validate as validate;
+
     $schema = array(
         'default' => array(
-            'type'       => 'object',
+            'type'       => validate::T_STRUCT_OBJECT,
             'properties' => array(
                 'username' => array(
-                    'type'      => 'chain',
+                    'type'      => validate::T_CHAIN,
                     'options'   => array(
                         'chain' => array(
                             array(
-                                'type'      => 'print'
+                                'type'      => validate::T_PRINT
                             ),
                             array(
-                                'type'      => 'callback',
+                                'type'      => validate::T_CALLBACK,
                                 'options'   => array(
                                     'callback'  => function($value) {
                                         return !in_array($value, array('admin', 'chef'));
