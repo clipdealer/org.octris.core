@@ -92,45 +92,50 @@ namespace org\octris\core\app {
             }
 
             $args = $argv;
-
             array_shift($args);
+
             $opts = array();
-            $key = '';
+            $key  = '';
 
             foreach ($args as $arg) {
-                if (preg_match('/^--?[^-]/', $arg) && $key != '') {
-                    $opts[$key] = true;
-                    $key = '';
-                }
+                print "$arg\n";
                 
                 if (preg_match('/^-([a-zA-Z]+)$/', $arg, $match)) {
                     // short option, combined short options
-                    if (strlen($match[1]) > 1) {
-                        $tmp  = str_split($match[1], 1);
-                        $opts = array_merge($opts, array_combine($tmp, array_fill(0, count($tmp), true)));
-                    } else {
-                        $key = $match[1];
-                    }
+                    $tmp  = str_split($match[1], 1);
+                    $opts = array_merge(array_combine($tmp, array_fill(0, count($tmp), true)), $opts);
+                    $key  = array_pop($tmp);
                     
                     continue;
                 } elseif (preg_match('/^--([a-zA-Z][a-zA-Z0-9]+)(=.*|)$/', $arg, $match)) {
                     // long option
-                    $key = $match[1];
-                    
-                    if (strlen($match[2]) == 0) {
+                    $key  = $match[1];
+                    $opts = array_merge(array($key => true), $opts);
+
+                    if (strlen($match[2]) != 0) {
                         continue;
                     }
-                    
+
                     $arg = substr($match[2], 1);
                 } elseif (substr($arg, 0, 1) == '-') {
-                    throw new Exception('wrong parameter format "' . $arg . '"');
+                    // invalid option format
+                    throw new \Exception('invalid option format "' . $arg . '"');
                 }
-                
+
                 if ($key == '') {
-                    throw new Exception('wrong parameter format "' . $arg . '"');
+                    // unknown option
+                    throw new \Exception('invalid option format "' . $arg . '"');
                 } else {
-                    $opts[$key] = $arg;
-                    $key        = '';
+                    if (!is_bool($opts[$key])) {
+                        // multiple values for this option
+                        if (!is_array($opts[$key])) {
+                            $opts[$key] = array($opts[$key]);
+                        }
+                        
+                        $opts[$key][] = $arg;
+                    } else {
+                        $opts[$key] = $arg;
+                    }
                 }
             }
 
@@ -145,7 +150,7 @@ namespace org\octris\core\app {
         $_SERVER  = new validate\wrapper($_SERVER);
         $_ENV     = new validate\wrapper($_ENV);
         $_GET     = new validate\wrapper(cli::getOptions());
-    
+            
         unset($_POST);
         unset($_REQUEST);
         unset($_COOKIE);
