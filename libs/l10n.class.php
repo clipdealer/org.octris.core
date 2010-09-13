@@ -1,7 +1,6 @@
 <?php
 
 namespace org\octris\core {
-    use \org\octris\core\app as app;
     use \org\octris\core\config as config;
 
     /****c* core/l10n
@@ -17,20 +16,10 @@ namespace org\octris\core {
      */
 
     class l10n {
-        /****v* l10n/$instance
-         * SYNOPSIS
-         */
-        private static $instance = null;
-        /*
-         * FUNCTION
-         *      stores instance of l10n
-         ****
-         */
-
         /****v* l10n/$lc
          * SYNOPSIS
          */
-        protected $lc = null;
+        protected static $lc = null;
         /*
          * FUNCTION
          *      locale string
@@ -40,77 +29,33 @@ namespace org\octris\core {
         /****v* l10n/$lc_mem
          * SYNOPSIS
          */
-        protected $lc_mem = array();
+        protected static $lc_mem = array();
         /*
          * FUNCTION
          *      stores language codes for restoreLocale
          ****
          */
 
-        /****v* l10n/$func
+        /****v* l10n/$cache
          * SYNOPSIS
          */
-        private $func = array();
+        protected $cache = array();
         /*
          * FUNCTION
-         *      stored compiled gettext functions
+         *      compiled function cache
          ****
          */
 
-        /****m* l10n/__construct
-         * SYNOPSIS
-         */
-        protected function __construct($locale = null) 
         /*
-         * FUNCTION
-         *      constructor.
-         * INPUTS
-         *      * $locale (string) -- optional parameter for localisation in the form de_DE
-         * OUTPUTS
-         *      (object) -- new instance of l10n object
-         ****
+         * prevent instance creation
          */
-        {
-            if (!is_null($locale)) {
-                $this->setLocale($locale);
-
-                if (app::getContext() == app\T_CONTEXT_WEB) {
-                    app::getInstance()->addHeader(
-                        'Content-Type', 
-                        'text/html; charset="' . nl_langinfo(CODESET) . '"'
-                    );
-                }
-            }
-        }
-        
-        protected function __clone() {        
-        }
-
-        /****m* l10n/getInstance
-         * SYNOPSIS
-         */
-        public static function getInstance($locale = null) 
-        /*
-         * FUNCTION
-         *      singleton. this method is used to get instance of l10n.
-         * INPUTS
-         *      * $locale (string) -- optional parameter for localisation in the form de_DE
-         * OUTPUTS
-         *      (object) -- new instance of l10n object
-         ****
-         */
-        {
-            if (is_null(self::$instance)) {
-                self::$instance = new static($locale);
-            }
-
-            return self::$instance;
-        }
+        protected function __construct() {}
+        protected function __clone() {}
 
         /****m* l10n/setLocale
          * SYNOPSIS
          */
-        function setLocale($locale) 
+        public static function setLocale($locale) 
         /*
          * FUNCTION
          *      change locale setting
@@ -122,15 +67,15 @@ namespace org\octris\core {
          */
         {
             $ret      = $this->lc;
-            $this->lc = $locale;
+            self::$lc = $locale;
 
-            array_push($this->lc_mem, $ret);
+            array_push(self::$lc_mem, $ret);
 
             putenv('LANG=' . $locale);
             putenv('LC_MESSAGES=' . $locale);
             setlocale(LC_MESSAGES, $locale);
 
-            $this->bindTextDomain(
+            self::bindTextDomain(
                 'messages',
                 config::getPath(config::T_PATH_LOCALE)
             );
@@ -141,7 +86,7 @@ namespace org\octris\core {
         /****m* l10n/getLocale
          * SYNOPSIS
          */
-        function getLocale() 
+        public static function getLocale() 
         /*
          * FUNCTION
          *      get current locale setting
@@ -150,13 +95,13 @@ namespace org\octris\core {
          ****
          */
         {
-            return $this->lc;
+            return self::$lc;
         }
 
         /****m* l10n/getLanguageCode
          * SYNOPSIS
          */
-        function getLanguageCode($code = null)
+        public static function getLanguageCode($code = null)
         /*
          * FUNCTION
          *      return language code from locale (eg: 'de' from 'de_DE')
@@ -167,7 +112,7 @@ namespace org\octris\core {
          ****
          */
         {
-            $parts = explode('_', (is_null($code) ? $this->lc : $code));
+            $parts = explode('_', (is_null($code) ? self::$lc : $code));
 
             return strtolower($parts[0]);
         }
@@ -175,7 +120,7 @@ namespace org\octris\core {
         /****m* l10n/getCountryCode
          * SYNOPSIS
          */
-        function getCountryCode($code = null)
+        public static function getCountryCode($code = null)
         /*
          * FUNCTION
          *      return country code from locale (eg: 'DE' from 'de_DE')
@@ -186,7 +131,7 @@ namespace org\octris\core {
          ****
          */
         {
-            $parts = explode('_', (is_null($code) ? $this->lc : $code));
+            $parts = explode('_', (is_null($code) ? self::$lc : $code));
 
             return strtoupper(array_pop($parts));
         }
@@ -194,22 +139,22 @@ namespace org\octris\core {
         /****m* l10n/restoreLocale
          * SYNOPSIS
          */
-        function restoreLocale() 
+        public static function restoreLocale() 
         /*
          * FUNCTION
          *      one level restoring locale setting, when a setting was overwritten using setLocale.
          ****
          */
         {
-            if (count($this->lc_mem) > 0) {
-                $this->setLocale(array_pop($this->lc_mem));
+            if (count(self::$lc_mem) > 0) {
+                self::setLocale(array_pop(self::$lc_mem));
             }
         }
 
         /****m* l10n/monf
          * SYNOPSIS
          */
-        function monf($money, $context = 'text/html')
+        public static function monf($money, $context = 'text/html')
         /*
          * FUNCTION
          *      money formatter
@@ -232,7 +177,7 @@ namespace org\octris\core {
         /****m* l10n/numf
          * SYNOPSIS
          */
-        function numf($number, $prec = null, $len = null) 
+        public static function numf($number, $prec = null, $len = null) 
         /*
          * FUNCTION
          *      number formatter
@@ -259,7 +204,7 @@ namespace org\octris\core {
         /****m* l10n/datef
          * SYNOPSIS
          */
-        function datef($datetime, $format = 68) 
+        public static function datef($datetime, $format = 68) 
         /*
          * FUNCTION
          *      date formatter
@@ -281,7 +226,7 @@ namespace org\octris\core {
         /****m* l10n/yesno
          * SYNOPSIS
          */
-        function yesno($val, $first, $second = '')
+        public static function yesno($val, $first, $second = '')
         /*
          * FUNCTION
          *      if $val display $fists, otherwise $second
@@ -294,7 +239,7 @@ namespace org\octris\core {
         /****m* l10n/quant
          * SYNOPSIS
          */
-        function quant($val, $first, $second = null, $third = null) 
+        public static function quant($val, $first, $second = null, $third = null) 
         /*
          * FUNCTION
          *      quantisation
@@ -322,7 +267,7 @@ namespace org\octris\core {
         /****m* l10n/comify
          * SYNOPSIS
          */
-        function comify(array $list, $word, $sep = ', ')
+        public static function comify(array $list, $word, $sep = ', ')
         /*
          * FUNCTION
          *      writes out a list of values seperated by ', ' and the last one
@@ -350,7 +295,7 @@ namespace org\octris\core {
         /****m* l10n/gender
          * SYNOPSIS
          */
-        function gender($val, $undefined, $male, $female) 
+        public static function gender($val, $undefined, $male, $female) 
         /*
          * FUNCTION
          *      returns text according to specified gender
@@ -389,7 +334,7 @@ namespace org\octris\core {
         /****m* l10n/bindTextDomain
          * SYNOPSIS
          */
-        function bindTextDomain($pkg, $localedir) 
+        protected static function bindTextDomain($pkg, $localedir) 
         /*
          * FUNCTION
          *      bind localisation to a specified domain (package and directory with locale texts)
@@ -412,7 +357,7 @@ namespace org\octris\core {
         /****m* l10n/gettext
          * SYNOPSIS
          */
-        function gettext() 
+        public static function gettext() 
         /*
          * FUNCTION
          *      lookup a message for current locale dictionary - alias for _
@@ -424,17 +369,13 @@ namespace org\octris\core {
          ****
          */
         {
-            $args = func_get_args();
-
-            if (is_array($args[0])) $args = $args[0];
-
-            $this->_($args);
+            self::_(func_get_args());
         }
 
         /****m* l10n/_
          * SYNOPSIS
          */
-        function _() 
+        public static function _() 
         /*
          * FUNCTION
          *      lookup a message for current locale dictionary
@@ -454,15 +395,76 @@ namespace org\octris\core {
 
             // get localized text from dictionary
             if ($txt !== '') {
-                $txt = $this->lookup($txt);
+                $txt = self::lookup($txt);
             }
 
             // compile included function calls if not in cache
-            if (!array_key_exists($txt, $this->func)) {
-                $this->func[$txt] = $this->compile($txt);
+            if (!isset(self::$cache[$txt])) {
+                self::$cache[$txt] = self::compile($txt);
             }
 
-            return $this->func[$txt]($this, $args);
+            return self::$cache[$txt]($args);
+        }
+
+        /****m* l10n/compile
+         * SYNOPSIS
+         */
+        protected static function compile($txt)
+        /*
+         * FUNCTION
+         *      gettext message compiler
+         * INPUTS
+         *      * $txt (string) -- text to compile
+         * OUTPUTS
+         *      (callback) -- compiled code for gettext
+         ****
+         */
+        {
+            $txt  = '\'' . str_replace("'", "\'", $txt) . '\'';
+
+            $pattern = '/\[(?:(_\d+)|(?:([^,]+))(?:,(.*?))?(?<!\\\))\]/sie';
+            
+            if (preg_match_all($pattern, $txt, $match, PREG_SET_ORDER)) {
+                foreach ($match as $m) {
+                    $str = $m[0];
+                    $cmd = '';
+    
+                    if (isset($m[2])) {
+                        $cmd = $m[2];
+                        unset($m[2]);
+                    }
+                    $par = array_pop($m);
+    
+                    $params = array();
+                    $arr    = preg_split('/(?<!\\\),/', $par);
+    
+                    foreach ($arr as $a) {
+                        $a = trim($a);
+    
+                        if (preg_match('/^_(\d+)$/', $a, $tmp)) {
+                            $params[] = '$args[' . ($tmp[1] - 1) . ']';
+                        } else {
+                            $params[] = '\'' . $a . '\'';
+                        }
+                    }
+    
+                    if ($cmd && !method_exists($l10n, $cmd)) {
+                        die('unknown method ' . $cmd);
+                    } elseif ($cmd) {
+                        $code = $chr . ' . \org\octris\core\l10n::' . $cmd . '(' . join(',', $params) . ') . ' . $chr;
+                    } else {
+                        $code = $chr . ' . ' . array_shift($params) . ' . ' . $chr;
+                    }
+    
+                    $txt = str_replace($str, $code, $txt);
+                }
+        
+                $return = create_function('$args', 'return ' . $txt . ';');
+            } else {
+                $return = function($args) use ($txt) { return $txt; };
+            }
+            
+            return $return;
         }
 
         /****m* l10n/negotiateLanguage
@@ -538,33 +540,3 @@ namespace org\octris\core {
         }
     }
 }
-
-/****f* l10n/translate
- * SYNOPSIS
- */
-function translate() 
-/*
- * FUNCTION
- *      global scope function as a wrapper for lima_l10n::getInstance()->_(...)
- * INPUTS
- *      * $msg (string) -- message to translate
- *      * ... (mixed) -- optional arguments e.g. as parameters for inline functions 
- * OUTPUTS
- *      (string) -- translated message
- ****
- */
-{
-    $args = func_get_args();
-    $msg = '';
-
-    if (func_num_args() > 0) {
-        if (is_array($args[0])) {
-            $args = $args[0];            
-        }
-
-        $msg = lima_l10n::getInstance()->_($args);
-    }
-
-    return $msg;
-}
-
