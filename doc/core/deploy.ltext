@@ -1,4 +1,8 @@
 Deployment strategy
 ===================
 
-*   
+*   etc is an own directory, the configuration files are edited by hand in it -- there should be only
+    sample configuration files in the repository
+
+*   green / blue deployment
+
