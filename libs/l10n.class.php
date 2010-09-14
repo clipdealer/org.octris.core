@@ -16,10 +16,20 @@ namespace org\octris\core {
      */
 
     class l10n {
+        /****v* l10n/$instance
+         * SYNOPSIS
+         */
+        private $instance = null;
+        /*
+         * FUNCTION
+         *      instance of l10n class
+         ****
+         */
+        
         /****v* l10n/$lc
          * SYNOPSIS
          */
-        protected static $lc = null;
+        protected $lc = null;
         /*
          * FUNCTION
          *      locale string
@@ -29,7 +39,7 @@ namespace org\octris\core {
         /****v* l10n/$lc_mem
          * SYNOPSIS
          */
-        protected static $lc_mem = array();
+        protected $lc_mem = array();
         /*
          * FUNCTION
          *      stores language codes for restoreLocale
@@ -46,16 +56,64 @@ namespace org\octris\core {
          ****
          */
 
-        /*
-         * prevent instance creation
+        /****v* l10n/$directory
+         * SYNOPSIS
          */
-        protected function __construct() {}
-        protected function __clone() {}
+        protected $directory = '';
+        /*
+         * FUNCTION
+         *      directory of dictionary
+         ****
+         */
+
+        /****m* l10n/__construct
+         * SYNOPSIS
+         */
+        protected function __construct()
+        /*
+         * FUNCTION
+         *      constructor
+         ****
+         */
+        {
+        }
+        
+        /****m* l10n/setLocalePath
+         * SYNOPSIS
+         */
+        public function setDirectory($directory)
+        /*
+         * FUNCTION
+         *      directory to lookup dictionary in
+         * INPUTS
+         *      * $directory (string) -- name of directory to set
+         ****
+         */
+        {
+            $this->directory = $directory;
+        }
+
+        /****m* l10n/getInstance
+         * SYNOPSIS
+         */
+        public static function getInstance()
+        /*
+         * FUNCTION
+         *      create new instance of class
+         ****
+         */
+        {
+            if (is_null(self::$instance)) {
+                self::$instance = new static();
+            }
+            
+            return self::$instance;
+        }
 
         /****m* l10n/setLocale
          * SYNOPSIS
          */
-        public static function setLocale($locale) 
+        public function setLocale($locale) 
         /*
          * FUNCTION
          *      change locale setting
@@ -67,18 +125,15 @@ namespace org\octris\core {
          */
         {
             $ret      = $this->lc;
-            self::$lc = $locale;
+            $this->lc = $locale;
 
-            array_push(self::$lc_mem, $ret);
+            array_push($this->lc_mem, $ret);
 
             putenv('LANG=' . $locale);
             putenv('LC_MESSAGES=' . $locale);
             setlocale(LC_MESSAGES, $locale);
 
-            self::bindTextDomain(
-                'messages',
-                config::getPath(config::T_PATH_LOCALE)
-            );
+            $this->bindTextDomain('messages', $this->directory);
 
             return $ret;
         }
@@ -86,7 +141,7 @@ namespace org\octris\core {
         /****m* l10n/getLocale
          * SYNOPSIS
          */
-        public static function getLocale() 
+        public function getLocale() 
         /*
          * FUNCTION
          *      get current locale setting
@@ -95,13 +150,13 @@ namespace org\octris\core {
          ****
          */
         {
-            return self::$lc;
+            return $this->lc;
         }
 
         /****m* l10n/getLanguageCode
          * SYNOPSIS
          */
-        public static function getLanguageCode($code = null)
+        public function getLanguageCode($code = null)
         /*
          * FUNCTION
          *      return language code from locale (eg: 'de' from 'de_DE')
@@ -112,7 +167,7 @@ namespace org\octris\core {
          ****
          */
         {
-            $parts = explode('_', (is_null($code) ? self::$lc : $code));
+            $parts = explode('_', (is_null($code) ? $this->lc : $code));
 
             return strtolower($parts[0]);
         }
@@ -120,7 +175,7 @@ namespace org\octris\core {
         /****m* l10n/getCountryCode
          * SYNOPSIS
          */
-        public static function getCountryCode($code = null)
+        public function getCountryCode($code = null)
         /*
          * FUNCTION
          *      return country code from locale (eg: 'DE' from 'de_DE')
@@ -131,7 +186,7 @@ namespace org\octris\core {
          ****
          */
         {
-            $parts = explode('_', (is_null($code) ? self::$lc : $code));
+            $parts = explode('_', (is_null($code) ? $this->lc : $code));
 
             return strtoupper(array_pop($parts));
         }
@@ -139,22 +194,22 @@ namespace org\octris\core {
         /****m* l10n/restoreLocale
          * SYNOPSIS
          */
-        public static function restoreLocale() 
+        public function restoreLocale() 
         /*
          * FUNCTION
          *      one level restoring locale setting, when a setting was overwritten using setLocale.
          ****
          */
         {
-            if (count(self::$lc_mem) > 0) {
-                self::setLocale(array_pop(self::$lc_mem));
+            if (count($this->lc_mem) > 0) {
+                $this->setLocale(array_pop($this->lc_mem));
             }
         }
 
         /****m* l10n/monf
          * SYNOPSIS
          */
-        public static function monf($money, $context = 'text/html')
+        public function monf($money, $context = 'text/html')
         /*
          * FUNCTION
          *      money formatter
@@ -177,7 +232,7 @@ namespace org\octris\core {
         /****m* l10n/numf
          * SYNOPSIS
          */
-        public static function numf($number, $prec = null, $len = null) 
+        public function numf($number, $prec = null, $len = null) 
         /*
          * FUNCTION
          *      number formatter
@@ -204,7 +259,7 @@ namespace org\octris\core {
         /****m* l10n/datef
          * SYNOPSIS
          */
-        public static function datef($datetime, $format = 68) 
+        public function datef($datetime, $format = 68) 
         /*
          * FUNCTION
          *      date formatter
@@ -226,7 +281,7 @@ namespace org\octris\core {
         /****m* l10n/yesno
          * SYNOPSIS
          */
-        public static function yesno($val, $first, $second = '')
+        public function yesno($val, $first, $second = '')
         /*
          * FUNCTION
          *      if $val display $fists, otherwise $second
@@ -239,7 +294,7 @@ namespace org\octris\core {
         /****m* l10n/quant
          * SYNOPSIS
          */
-        public static function quant($val, $first, $second = null, $third = null) 
+        public function quant($val, $first, $second = null, $third = null) 
         /*
          * FUNCTION
          *      quantisation
@@ -267,7 +322,7 @@ namespace org\octris\core {
         /****m* l10n/comify
          * SYNOPSIS
          */
-        public static function comify(array $list, $word, $sep = ', ')
+        public function comify(array $list, $word, $sep = ', ')
         /*
          * FUNCTION
          *      writes out a list of values seperated by ', ' and the last one
@@ -295,7 +350,7 @@ namespace org\octris\core {
         /****m* l10n/gender
          * SYNOPSIS
          */
-        public static function gender($val, $undefined, $male, $female) 
+        public function gender($val, $undefined, $male, $female) 
         /*
          * FUNCTION
          *      returns text according to specified gender
@@ -334,19 +389,20 @@ namespace org\octris\core {
         /****m* l10n/bindTextDomain
          * SYNOPSIS
          */
-        protected static function bindTextDomain($pkg, $localedir) 
+        protected function bindTextDomain($pkg, $localedir, $codeset = 'ISO-8859-15') 
         /*
          * FUNCTION
          *      bind localisation to a specified domain (package and directory with locale texts)
          * INPUTS
          *      * $pkg (string) -- name of package (normally application name)
          *      * $localedir (string) -- base directory for localized text packages
+         *      * $codeset (string) -- (optional) codeset of text domain
          * OUTPUTS
          *      (string) -- current set directory
          ****
          */
         {
-            bind_textdomain_codeset($pkg, 'ISO-8859-15'); //''UTF-8');
+            bind_textdomain_codeset($pkg, $codeset);
             $domain = bindtextdomain($pkg, $localedir);
 
             textdomain($pkg);
@@ -357,7 +413,7 @@ namespace org\octris\core {
         /****m* l10n/gettext
          * SYNOPSIS
          */
-        public static function gettext() 
+        public function gettext() 
         /*
          * FUNCTION
          *      lookup a message for current locale dictionary - alias for _
@@ -369,13 +425,13 @@ namespace org\octris\core {
          ****
          */
         {
-            self::_(func_get_args());
+            $this->_(func_get_args());
         }
 
         /****m* l10n/_
          * SYNOPSIS
          */
-        public static function _() 
+        public function _() 
         /*
          * FUNCTION
          *      lookup a message for current locale dictionary
@@ -395,21 +451,39 @@ namespace org\octris\core {
 
             // get localized text from dictionary
             if ($txt !== '') {
-                $txt = self::lookup($txt);
+                $txt = $this->lookup($txt);
             }
 
             // compile included function calls if not in cache
-            if (!isset(self::$cache[$txt])) {
-                self::$cache[$txt] = self::compile($txt);
+            if (!isset($this->cache[$txt])) {
+                $this->cache[$txt] = $this->compile($txt);
             }
 
-            return self::$cache[$txt]($args);
+            return $this->cache[$txt]($this, $args);
+        }
+
+        /****m* l10n/lookup
+         * SYNOPSIS
+         */
+        function lookup($txt)
+        /*
+         * FUNCTION
+         *      lookup a message and return translation. this method differs from _ and gettext 
+         *      in that it won't compile any inline functions.
+         * INPUTS
+         *      * $txt (string) -- text to lookup
+         * OUTPUTS
+         *      (string) -- translation for the specified string
+         ****
+         */
+        {
+            return ($txt !== '' && (($out = gettext($txt)) !== '') ? $out : $txt);
         }
 
         /****m* l10n/compile
          * SYNOPSIS
          */
-        protected static function compile($txt)
+        protected function compile($txt)
         /*
          * FUNCTION
          *      gettext message compiler
@@ -451,7 +525,7 @@ namespace org\octris\core {
         /****m* l10n/negotiateLanguage
          * SYNOPSIS
          */
-        public static function negotiateLanguage($supported, $default) 
+        public function negotiateLanguage($supported, $default) 
         /*
          * FUNCTION
          *      uses HTTP_ACCEPT_LANGUAGE to negotiate accepted language
