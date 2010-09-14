@@ -595,3 +595,26 @@ namespace org\octris\core {
         }
     }
 }
+
+/*
+ * put translate function into global namespace
+ */
+namespace {
+    /****f* l10n/translate
+     * SYNOPSIS
+     */
+    function translate()
+    /*
+     * FUNCTION
+     *      global translate function
+     * INPUTS
+     *      * $txt (string) -- text to lookup in dictionary
+     *      * ... (mixed) -- additional optional parameters for embedded functions
+     * OUTPUTS
+     *      (string) -- text from dictionary or txt, if text was not found in dictionary
+     ****
+     */
+    {
+        return \org\octris\core\l10n::getInstance()->gettext(func_get_args());
+    }
+}
