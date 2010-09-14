@@ -4,14 +4,14 @@
 
 {#{$a}}
 
-{#{_('hallo world!')}}
+{{_('hallo world!')}}
 
-{#{_('hallo [_1]!', 'Harald')}}
+{{_('hallo [_1]!', 'Harald')}}
 
 {#{#if($a)}}
     {#{#foreach($a, $b)}}
     {#{#end}}
 {#{#end}}
 
-{{"string"}}
+{{_("string")}}
 
