@@ -215,24 +215,6 @@ deploy: onlydevelopment
 	fi; \
 	$(CURSYMDIR)/../../tools/deploy/deploy.sh -p $(project) -t $(target)
 
-#****t* Makefile/dist
-# SYNOPSIS
-#	make dist
-# FUNCTION
-#	create distribution package of project for manual deployment
-#****
-dist: onlydevelopment
-	@$(CURSYMDIR)/../../tools/deploy/deploy.sh -p $(project)
-
-#****t* Makefile/cloc
-# SYNOPSIS
-#	make cloc
-# FUNCTION
-#	create statistics about lines of code used in a project
-#****
-cloc:
-	@$(CURSYMDIR)/../../tools/project/cloc.pl $(CURSYMDIR)
-
 #****t* Makefile/onlyroot
 # SYNOPSIS
 #	make onlyroot
