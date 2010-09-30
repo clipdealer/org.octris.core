@@ -67,7 +67,7 @@ namespace org\octris\core\app {
         /****m* cli/getOptions
          * SYNOPSIS
          */
-        static function getOptions()
+        public static function getOptions()
         /*
          * FUNCTION
          *      parse command line options and return array of it. The

@@ -23,7 +23,7 @@ namespace org\octris\core\app\test {
         /****m* wrapper/offsetGet
          * SYNOPSIS
          */
-        function offsetGet($offs)
+        public function offsetGet($offs)
         /*
          * FUNCTION
          *      return array entry of specified offset

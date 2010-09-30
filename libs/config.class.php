@@ -67,7 +67,7 @@ namespace org\octris\core {
         /****m* config/set
          * SYNOPSIS
          */
-        static function set($name, $value)
+        public static function set($name, $value)
         /*
          * FUNCTION
          *      sets an array of values
@@ -83,7 +83,7 @@ namespace org\octris\core {
         /****m* config/get
          * SYNOPSIS
          */
-        static function get($name)
+        public static function get($name)
         /*
          * FUNCTION
          *      return value of spacified setting
@@ -106,7 +106,7 @@ namespace org\octris\core {
         /****m* config/getSet
          * SYNOPSIS
          */
-        static function getSet($prefix)
+        public static function getSet($prefix)
         /*
          * FUNCTION
          *      return a set of configuration options
@@ -134,7 +134,7 @@ namespace org\octris\core {
         /****m* config/getPath
          * SYNOPSIS
          */
-        static function getPath($type, $module = '')
+        public static function getPath($type, $module = '')
         /*
          * FUNCTION
          *      returns path for specified type for current application
@@ -160,7 +160,7 @@ namespace org\octris\core {
         /****m* config/load
          * SYNOPSIS
          */
-        static function load($module = '')
+        public static function load($module = '')
         /*
          * FUNCTION
          *      Loads the configuration file(s) for app configured in 

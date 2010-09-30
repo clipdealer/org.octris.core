@@ -73,7 +73,7 @@ namespace org\octris\core\data
         /****m* get_config/__construct
          * SYNOPSIS
          */
-        function __construct($name, $base, $devel)
+        public function __construct($name, $base, $devel)
         /*
          * FUNCTION
          *      constructor
@@ -88,7 +88,7 @@ namespace org\octris\core\data
         /****m* get_config/loads
          * SYNOPSIS
          */
-        function load($app, $path = NULL, $name = 'config')
+        public function load($app, $path = NULL, $name = 'config')
         /*
          * FUNCTION
          *      loads yaml configuration file(s)

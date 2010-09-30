@@ -27,7 +27,7 @@ namespace org\octris\core {
         /****m* dbo/__construct
          * SYNOPSIS
          */
-        function __construct()
+        public function __construct()
         /*
          * FUNCTION
          *      constructor -- to be overwritten by a sub-class
@@ -40,7 +40,7 @@ namespace org\octris\core {
         /****m* dbo/getConnection
          * SYNOPSIS
          */
-        function getConnection($type)
+        public function getConnection($type)
         /*
          * FUNCTION
          *      returns connection to a database

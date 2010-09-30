@@ -20,7 +20,7 @@ namespace org\octris\core {
         /****v* cache/$caches
          * SYNOPSIS
          */
-        static protected $caches = array();
+        protected static $caches = array();
         /*
          * FUNCTION
          *      caches available
@@ -30,7 +30,7 @@ namespace org\octris\core {
         /****v* cache/$strategies
          * SYNOPSIS
          */
-        static protected $strategies = array();
+        protected static $strategies = array();
         /*
          * FUNCTION
          *      registered cache strategies
@@ -52,7 +52,7 @@ namespace org\octris\core {
         /****m* cache/addCache
          * SYNOPSIS
          */
-        static function addCache($cache)
+        public static function addCache($cache)
         /*
          * FUNCTION
          *      add instance of cache backend
@@ -95,7 +95,7 @@ namespace org\octris\core {
         /****m* cache/getInstance
          * SYNOPSIS
          */
-        static function getInstance($type, array $params = NULL) 
+        public static function getInstance($type, array $params = NULL) 
         /*
          * FUNCTION
          *      returns (new) instance of cache object. for each cache type only one instance will
