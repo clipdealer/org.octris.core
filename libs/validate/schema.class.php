@@ -91,7 +91,7 @@ namespace org\octris\core\validate {
         /****m* type/__construct
          * SYNOPSIS
          */
-        function __construct(array $schema, $type, $mode = self::T_STRICT)
+        public function __construct(array $schema, $type, $mode = self::T_STRICT)
         /*
          * FUNCTION
          *      constructor
@@ -243,7 +243,7 @@ namespace org\octris\core\validate {
         /****m* schema/validate
          * SYNOPSIS
          */
-        function validate(\org\octris\core\validate\wrapper $wrapper)
+        public function validate(\org\octris\core\validate\wrapper $wrapper)
         /*
          * FUNCTION
          *      apply validation schema to wrapped values and validate them.
