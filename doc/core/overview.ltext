@@ -3,6 +3,8 @@
     org.octris.core 
         |
         +-\
+          +-\bin            // tools
+          +-\etc            // configuration files
           +-\host           // host directory
           +-\libs           // application libraries
           +-\libsjs         // javascript libraries
