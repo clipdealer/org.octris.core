@@ -186,14 +186,4 @@ namespace org\octris\core {
             }
         }
     }
-    
-    if (!$_ENV['OCTRIS_APP']->isSet || !$_ENV['OCTRIS_BASE']->isSet) {
-        die("unable to import OCTRIS_APP or OCTRIS_BASE!\n");
-    }
-
-    if (!$_ENV->validate('OCTRIS_APP', validate::T_ALPHANUM) || !$_ENV->validate('OCTRIS_BASE', validate::T_PRINT)) {
-        die("unable to import OCTRIS_APP or OCTRIS_BASE - invalid settings!\n");
-    }
-    
-    $_ENV['OCTRIS_DEVEL']->value = ($_ENV->validate('OCTRIS_DEVEL', validate::T_BOOL) && $_ENV['OCTRIS_DEVEL']->value);
 }
