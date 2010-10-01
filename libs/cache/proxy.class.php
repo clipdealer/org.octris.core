@@ -24,9 +24,9 @@ namespace org\octris\core\cache {
          * FUNCTION
          *      default lifetime of cache in production environment:
          *
-         *      * lifetime > 0 -- the lifetime in seconds
-         *      * lifetime = 0 -- the data doesn't expire
-         *      * lifetime < 0 -- data should not be cached
+         *      *   lifetime > 0 -- the lifetime in seconds
+         *      *   lifetime = 0 -- the data doesn't expire
+         *      *   lifetime < 0 -- data should not be cached
          ****
          */
     
