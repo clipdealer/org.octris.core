@@ -1,5 +1,9 @@
-Parameter validation using schemas
-==================================
+Parameter importing and validating using validation schemas
+===========================================================
+
+The OCTRiS framework provides powerful functionality for validating parameters -- request parameters, server
+and environment variables, command line options. The OCTRiS validation schemas support validation from simple values
+to complex arrays.
 
 Field validation rules
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -53,7 +57,8 @@ Example shows required schema for user-registration data containing a list of up
                         'callback' => function($value) {
                             return ($value === $_POST->get('password')->value);
                         }
-                    )
+                    ),
+                    'required'  => true
                 ),
                 'websites' => array(
                     'type'      => validate::T_ARRAY,
