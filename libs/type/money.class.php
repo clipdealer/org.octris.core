@@ -27,7 +27,7 @@ namespace org\octris\core\type {
         /****m* money/__construct
          * SYNOPSIS
          */
-        function __construct($value = 0, $currency = NULL, $lc = NULL)
+        public function __construct($value = 0, $currency = NULL, $lc = NULL)
         /*
          * FUNCTION
          *      constructor. note, that a money object can have a currency, which is not associated to a local.
@@ -71,7 +71,7 @@ namespace org\octris\core\type {
         /****m* datetime/getInstance
          * SYNOPSIS
          */
-        static function getInstance($value = 0, $currency = NULL, $lc = NULL)
+        public static function getInstance($value = 0, $currency = NULL, $lc = NULL)
         /*
          * FUNCTION
          *      to provide more convenient way to acces eg. formatting methods
@@ -89,7 +89,7 @@ namespace org\octris\core\type {
         /****m* number/__tostring
          * SYNOPSIS
          */
-        function __toString() 
+        public function __toString() 
         /*
          * FUNCTION
          *      method is called, when number object is casted to a string.
@@ -135,7 +135,7 @@ namespace org\octris\core\type {
         /****m* money/exchange
          * SYNOPSIS
          */
-        function exchange($currency, $rate = 1)
+        public function exchange($currency, $rate = 1)
         /*
          * FUNCTION
          *      convert money object currency to an other currency
@@ -155,7 +155,7 @@ namespace org\octris\core\type {
         /****m* money/convert
          * SYNOPSIS
          */
-        function convert($currency, $rate = 1)
+        public function convert($currency, $rate = 1)
         /*
          * FUNCTION
          *      convert money object currency to an other currency -- alias for exchange
@@ -173,7 +173,7 @@ namespace org\octris\core\type {
         /****m* money/format
          * SYNOPSIS
          */
-        function format($context = 'text/html')
+        public function format($context = 'text/html')
         /*
          * FUNCTION
          *      return locale / currency formatted object value
@@ -203,7 +203,7 @@ namespace org\octris\core\type {
         /****m* money/addVat
          * SYNOPSIS
          */
-        function addVat($vat) 
+        public function addVat($vat) 
         /*
          * FUNCTION
          *      add VAT to amount of money. the new value is stored in the money object.
@@ -218,7 +218,7 @@ namespace org\octris\core\type {
         /****m* money/subDiscount
          * SYNOPSIS
          */
-        function subDiscount($discount) 
+        public function subDiscount($discount) 
         /*
          * FUNCTION
          *      subtract discount from amount of money. the new value is stored in the money object. 
@@ -233,7 +233,7 @@ namespace org\octris\core\type {
         /****m* money/get
          * SYNOPSIS
          */
-        function get() 
+        public function get() 
         /*
          * FUNCTION
          *      return amount of money
@@ -259,7 +259,7 @@ namespace org\octris\core\type {
         /****m* money/add
          * SYNOPSIS
          */
-        function add($amount) 
+        public function add($amount) 
         /*
          * FUNCTION
          *      add money
@@ -276,7 +276,7 @@ namespace org\octris\core\type {
         /****m* money/sub
          * SYNOPSIS
          */
-        function sub($amount) 
+        public function sub($amount) 
         /*
          * FUNCTION
          *      substract money
@@ -293,7 +293,7 @@ namespace org\octris\core\type {
         /****m* money/mul
          * SYNOPSIS
          */
-        function mul($amount) 
+        public function mul($amount) 
         /*
          * FUNCTION
          *      multiplicate money
@@ -310,7 +310,7 @@ namespace org\octris\core\type {
         /****m* money/div
          * SYNOPSIS
          */
-        function div($amount) 
+        public function div($amount) 
         /*
          * FUNCTION
          *      divide money
@@ -331,7 +331,7 @@ namespace org\octris\core\type {
         /****m* money/mod
          * SYNOPSIS
          */
-        function mod($amount) 
+        public function mod($amount) 
         /*
          * FUNCTION
          *      modulo
@@ -348,7 +348,7 @@ namespace org\octris\core\type {
         /****m* money/getCurrency
          * SYNOPSIS
          */
-        function getCurrency()
+        public function getCurrency()
         /*
          * FUNCTION
          *      return currency of money object
