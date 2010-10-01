@@ -7,7 +7,7 @@ namespace org\octris\core\validate {
      * FUNCTION
      *      enable validation for arrays
      * COPYRIGHT
-     *      copyright (c) 2006-2010 by Harald Lapp
+     *      copyright (c) 2010 by Harald Lapp
      * AUTHOR
      *      Harald Lapp <harald.lapp@gmail.com>
      ****
@@ -33,7 +33,7 @@ namespace org\octris\core\validate {
         /****m* wrapper/__constructor
          * SYNOPSIS
          */
-        function __construct($source)
+        public function __construct($source)
         /*
          * FUNCTION
          *      constructor
@@ -59,7 +59,7 @@ namespace org\octris\core\validate {
         /****m* wrapper/validate
          * SYNOPSIS
          */
-        function validate($name, $type, array $options = array())
+        public function validate($name, $type, array $options = array())
         /*
          * FUNCTION
          *      validate and untained a value
@@ -95,7 +95,7 @@ namespace org\octris\core\validate {
         /****m* wrapper/offsetGet
          * SYNOPSIS
          */
-        function offsetGet($offs)
+        public function offsetGet($offs)
         /*
          * FUNCTION
          *      return array entry of specified offset
@@ -121,7 +121,7 @@ namespace org\octris\core\validate {
         /****m* wrapper/offsetSet
          * SYNOPSIS
          */
-        function offsetSet($offs, $value)
+        public function offsetSet($offs, $value)
         /*
          * FUNCTION
          *      overwrite collection's offsetSet to store value with meta data
