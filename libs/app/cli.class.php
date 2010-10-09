@@ -110,7 +110,7 @@ namespace org\octris\core\app {
                     $key  = $match[1];
                     $opts = array_merge(array($key => true), $opts);
 
-                    if (strlen($match[2]) != 0) {
+                    if (strlen($match[2]) == 0) {
                         continue;
                     }
 
