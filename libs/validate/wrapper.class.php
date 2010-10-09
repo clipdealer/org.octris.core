@@ -77,7 +77,7 @@ namespace org\octris\core\validate {
                     $instance = new $type($options);
                     $value    = $instance->preFilter($this->data[$name]->tainted);
                     
-                    if (($valid = ($instance->validate($value) && $instance->postValidate($value)))) {
+                    if (($valid = $instance->validate($value))) {
                         $this->data[$name]->value = $value;
                     }
                     
