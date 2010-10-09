@@ -98,8 +98,6 @@ namespace org\octris\core\app {
             $key  = '';
 
             foreach ($args as $arg) {
-                print "$arg\n";
-                
                 if (preg_match('/^-([a-zA-Z]+)$/', $arg, $match)) {
                     // short option, combined short options
                     $tmp  = str_split($match[1], 1);
