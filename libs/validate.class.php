@@ -100,6 +100,31 @@ namespace org\octris\core {
             return get_class($page) . '.' . $action;
         }
 
+        /****m* validate/getRuleset
+         * SYNOPSIS
+         */
+        public function getRuleset(\org\octris\core\page $page, $action)
+        /*
+         * FUNCTION
+         *      return a registered validation ruleset
+         * INPUTS
+         *      * $page (page) -- page ruleset was registered for
+         *      * $action (string) -- action ruleset was registered for
+         * OUTPUTS
+         *      (array) -- ruleset, array is empty, if no ruleset for specified properties was registered
+         ****
+         */
+        {
+            $key    = $this->getKey($page, $action);
+            $return = array();
+
+            if (isset($this->rulesets[$key])) {
+                $return = $this->rulesets[$key]['ruleset'];
+            }
+
+            return $return;
+        }
+
         /****m* validate/registerRuleset
          * SYNOPSIS
          */
