@@ -15,25 +15,33 @@
 
 require_once(__DIR__ . '/../libs/app/cli.class.php');
 
+\org\octris\core\config::load('org.octris.core');
+
+
 $data = array(
-    'company'   => 'ClipDealer GmbH',
-    'author'    => 'Harald Lapp',
-    'email'     => 'h.lapp@clipdealer.de',
-    'year'      => date('Y'),
-    'domain'    => 'clipdealer.de'
+    'company' => '',
+    'author'  => '',
+    'email'   => '',
+    'domain'  => ''
 );
 
-// $data = array(
-//     'domain'    => 'org.octris',
-//     'module'    => 'skel'
-// );
-// 
-// $data['project']   = sprintf('%s.%s', $data['domain'], $data['module']);
-// $data['namespace'] = str_replace('.', '\\', $data['project']);
+print "octris -- create new project\n";
+print "=====================================================================\n";
 
-$info = posix_getpwuid(posix_getuid());
+$fp = fopen('php://stdin', 'r');
 
-$yaml = yaml_emit($data);
+foreach ($data as $k => $v) {
+    printf("%s [%s]: ", $k, $v);
+    
+    $input = fgets($fp, 50);
+}
 
-print_r($info);
-print_r($yaml);
+fclose($fp);
+
+$data = array_merge($data, array(
+    'module'    => '',
+    'namespace' => '\\' . implode('\\', array_reverse(explode('.', $data['domain'])))
+));
+
+print config::
+print_r($data);
