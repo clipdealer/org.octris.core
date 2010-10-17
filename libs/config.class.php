@@ -1,8 +1,7 @@
 <?php
 
 namespace org\octris\core {
-    use \org\octris\core\validate as validate;
-    use \org\octris\core\cache\proxy as proxy;
+    use \org\octris\core\type\collection as collection;
     
     /****c* core/config
      * NAME
@@ -10,7 +9,7 @@ namespace org\octris\core {
      * FUNCTION
      *      handles application configuration
      * COPYRIGHT
-     *      copyright (c) 2007-2010 by Harald Lapp
+     *      copyright (c) 2010 by Harald Lapp
      * AUTHOR
      *      Harald Lapp <harald@octris.org>
      ****
@@ -106,12 +105,13 @@ namespace org\octris\core {
         /****m* config/getSet
          * SYNOPSIS
          */
-        public static function getSet($prefix)
+        public static function getSet($prefix, $deflatten = false)
         /*
          * FUNCTION
          *      return a set of configuration options
          * INPUTS
-         *      * $prefix (string) -- prefix to search for
+         *      *   $prefix (string) -- prefix to search for
+         *      *   $deflatten (bool) -- whether to deflatten result
          * OUTPUTS
          *      (array) -- set of matching options
          ****
@@ -157,6 +157,71 @@ namespace org\octris\core {
             return realpath($return);
         }
 
+        /****m* config/_load
+         * SYNOPSIS
+         */
+        protected static function _load($module)
+        /*
+         * FUNCTION
+         *      actually load configuration file. the loader looks in the
+         *      following places, loads the configuration file and merges
+         *      them in specified lookup order:
+         *
+         *      *   ~/.octris/config.yml
+         *      *   T_PATH_ETC/config.yml
+         *      *   T_PATH_ETC/config_local.yml
+         * INPUTS
+         *      *   $module (string) -- name of module to laod configuration for
+         * OUTPUTS
+         *      (mixed) -- either a collection representation of the loaded
+         *      configuration file or false, if a configuration could not be loaded
+         ****
+         */
+        {
+            $module = ($module == '' ? $_ENV['OCTRIS_APP']->value : $module);
+            
+            self::$data['common.app.name']  = $module;
+            self::$data['common.app.base']  = $_ENV['OCTRIS_BASE']->value;
+            self::$data['common.app.devel'] = $_ENV['OCTRIS_DEVEL']->value;
+
+            $cfg = new collection();
+            $ret = false;
+
+            // load global framework configuration
+            $info = posix_getpwuid(posix_getuid());
+            $file = $info['dir'] . '/.octris/config.yml';
+            
+            if (is_readable($file) && ($tmp = yaml_parse_file($file)) && !is_null($tmp)) {
+                $tmp = new collection($tmp);
+                $cfg->merge($tmp->flatten());
+                
+                $ret = true;
+            }
+
+            // load default module config file
+            $path = self::getPath(self::T_PATH_ETC, $module);
+            $file = $path . '/config.yml';
+            
+            if (is_readable($file) && ($tmp = yaml_parse_file($file)) && !is_null($tmp)) {
+                $tmp = new collection($tmp);
+                $cfg->merge($tmp->flatten());
+                
+                $ret = true;
+            }
+
+            // load local config file
+            $file = $path . '/config.yml';
+            
+            if (is_readable($file) && ($tmp = yaml_parse_file($file)) && !is_null($tmp)) {
+                $tmp = new collection($tmp);
+                $cfg->merge($tmp->flatten());
+                
+                $ret = true;
+            }
+        
+            return ($ret ? $cfg : false);
+        }
+
         /****m* config/load
          * SYNOPSIS
          */
@@ -173,16 +238,8 @@ namespace org\octris\core {
          ****
          */
         {
-            $module = ($module == '' ? $_ENV['OCTRIS_APP']->value : $module);
-            
-            self::$data['common.app.name']  = $module;
-            self::$data['common.app.base']  = $_ENV['OCTRIS_BASE']->value;
-            self::$data['common.app.devel'] = $_ENV['OCTRIS_DEVEL']->value;
-
-            $ds = new \org\octris\core\data\config();
-            
-            if (($tmp = proxy::getProxy($ds))->load(self::$data['common.app.name'], self::$data['common.app.base'])) {
-                self::$data = array_merge($tmp, self::$data);
+            if (($cfg = self::_load($module)) !== false) {
+                self::$data = $cfg;
             }
         }
     }
