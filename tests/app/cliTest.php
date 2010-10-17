@@ -12,13 +12,15 @@ class cliTest extends PHPUnit_Framework_TestCase {
             '--option8', 'test', '--option9', 'with whitespace'
         );
 
-        $options = \org\octris\core\app\cli::getOptions();
-
-        $this->assertEquals(array(
+        $test = array(
           'option1' => true, 'option2' => 'test', 'option3' => 'test test',
           'o' => true, 'p' => 'option5', 'q' => 'option6 test',
           'a' => true, 'b' => true, 'c' => true,
           'option8' => 'test', 'option9' => 'with whitespace',
-        ), $options);
+        );
+
+        $options = \org\octris\core\app\cli::getOptions();
+
+        $this->assertEquals($options, $test);
     }
 }
