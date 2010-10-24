@@ -236,7 +236,7 @@ namespace org\octris\core\type {
         {
             $tmp = array();
 
-            $array = new RecursiveIteratorIterator(new RecursiveArrayIterator($this->data), RecursiveIteratorIterator::SELF_FIRST);
+            $array = new \RecursiveIteratorIterator(new \RecursiveArrayIterator($this->data), \RecursiveIteratorIterator::SELF_FIRST);
             $d = 0;
 
             $property = array();
