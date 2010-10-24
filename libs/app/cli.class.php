@@ -64,6 +64,24 @@ namespace org\octris\core\app {
             $next_page->render($this);
         }
         
+        /****m* cli/hline
+         * SYNOPSIS
+         */
+        public static function hline($chr = '=')
+        /*
+         * FUNCTION
+         *      print a horizontal line, or specified characters
+         * INPUTS
+         *      * $char (string) -- (optional) character to print
+         ****
+         */
+        {
+            $cols = (int)`tput cols`;
+            $cols = ($cols > 0 ? $cols : 80);
+            
+            print substr(str_repeat($chr, $cols), 0, $cols) . "\n";
+        }
+        
         /****m* cli/getOptions
          * SYNOPSIS
          */
