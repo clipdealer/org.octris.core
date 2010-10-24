@@ -17,6 +17,7 @@ require_once(__DIR__ . '/../../libs/app/cli.class.php');
 
 \org\octris\core\config::load('org.octris.core');
 
+use \org\octris\core\app\cli as cli;
 
 $data = array(
     'company' => '',
@@ -26,22 +27,17 @@ $data = array(
 );
 
 print "octris -- create new project\n";
-print "=====================================================================\n";
+cli::hline(); 
 
-$fp = fopen('php://stdin', 'r');
+$prompt = new cli\readline();
 
 foreach ($data as $k => $v) {
-    printf("%s [%s]: ", $k, $v);
-    
-    $input = fgets($fp, 50);
+    $input = $prompt->get(sprintf("%s [%s]: ", $k, $v));
 }
-
-fclose($fp);
 
 $data = array_merge($data, array(
     'module'    => '',
     'namespace' => '\\' . implode('\\', array_reverse(explode('.', $data['domain'])))
 ));
 
-print config::
 print_r($data);
