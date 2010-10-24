@@ -1,9 +1,9 @@
 #!/usr/bin/env php
 <?php
 
-/****h* bin/newproject
+/****h* project/create
  * NAME
- *      newproject.php
+ *      create.php
  * FUNCTION
  *      creates a new project from project skeleton
  * COPYRIGHT
@@ -13,7 +13,7 @@
  ****
  */
 
-require_once(__DIR__ . '/../libs/app/cli.class.php');
+require_once(__DIR__ . '/../../libs/app/cli.class.php');
 
 \org\octris\core\config::load('org.octris.core');
 
