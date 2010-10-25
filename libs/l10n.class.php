@@ -516,7 +516,7 @@ namespace org\octris\core {
             }, $txt, -1, $cnt = 0);
 
             if ($cnt == 0) {
-                return function($args) use ($txt) { return $txt; };
+                return function($obj, $args) use ($txt) { return $txt; };
             } else {
                 return create_function('$obj, $args', 'return ' . $txt . ';');
             }
