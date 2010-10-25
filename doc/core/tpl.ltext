@@ -791,6 +791,29 @@ _Example:_
     {{sub(1, 2, 3, 4)}}
 
 
+Misc -- include
+~~~~~~~~~~~~~~~
+
+This function is used to include a (static) file. The include is resolved
+at runtime and therefore any embedded template code will not be parsed, instead
+the file is treated like a simple text file.
+
+..  source: html
+
+    {{include($file)}}
+
++---------------+-----------+-----------+-----------------------------------------------+
+| Name          | Type      | Mandatory | Description                                   |
++===============+=======================================================================+
+| $file         | string    | x         | file to include                               |
++---------------+-----------+-----------+-----------------------------------------------+
+
+_Example:_
+
+..  source: html
+
+    {{include('static/text.html')}}
+
 String inline functions
 -----------------------
 

@@ -236,7 +236,7 @@ namespace org\octris\core\type {
         {
             $tmp = array();
 
-            $array = new RecursiveIteratorIterator(new RecursiveArrayIterator($this->data), RecursiveIteratorIterator::SELF_FIRST);
+            $array = new \RecursiveIteratorIterator(new \RecursiveArrayIterator($this->data), \RecursiveIteratorIterator::SELF_FIRST);
             $d = 0;
 
             $property = array();
@@ -290,6 +290,36 @@ namespace org\octris\core\type {
             }
 
             return new collection($tmp);
+        }
+        
+        /****m* collection/merge
+         * SYNOPSIS
+         */
+        public function merge()
+        /*
+         * FUNCTION
+         *       merge current collection with one or multiple others
+         * INPUTS
+         *      * $arg1 (mixed) -- array or collection to merge
+         *      * ...
+         ****
+         */
+        {
+            for ($i = 0, $cnt = func_num_args(); $i < $cnt; ++$i) {
+                $arg = func_get_arg($i);
+                
+                if (is_array($arg)) {
+                    $this->data = array_merge($this->data, $arg);
+                } elseif (is_object($arg)) {
+                    if (($arg instanceof collection) || ($arg instanceof collection\Iterator) || ($arg instanceof \ArrayIterator)) {
+                        $arg = $arg->getArrayCopy();
+                    } else {
+                        $arg = (array)$arg;
+                    }
+
+                    $this->data = array_merge($this->data, $arg);
+                }
+            }
         }
         
         /****m* collection/utf8Encode

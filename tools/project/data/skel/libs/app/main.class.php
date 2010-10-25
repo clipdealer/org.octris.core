@@ -1,6 +1,6 @@
 <?php
 
-namespace %%SKEL_NAMESPACE%%\app {
+namespace {{$SKEL_NAMESPACE}}\app {
     /****c* app/main
      * NAME
      *      main
@@ -9,9 +9,9 @@ namespace %%SKEL_NAMESPACE%%\app {
      *      first request to the web application and therefore no other page (next_page) 
      *      is specified through the application state, this entry page is required.
      * COPYRIGHT
-     *      copyright (c) %%SKEL_YEAR%% by %%SKEL_COMPANY%%
+     *      copyright (c) {{$SKEL_YEAR}} by {{$SKEL_COMPANY}}
      * AUTHOR
-     *      %%SKEL_AUTHOR%% <%%SKEL_EMAIL%%>
+     *      {{$SKEL_AUTHOR}} <{{$SKEL_EMAIL}}>
      ****
      */
 

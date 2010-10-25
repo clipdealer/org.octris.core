@@ -1,21 +1,28 @@
 ..  source: plain
 
-    org.octris.core 
+    org.octris....
         |
         +-\
-          +-\bin            // tools
           +-\etc            // configuration files
           +-\host           // host directory
           +-\libs           // application libraries
+            +-\app          // application pages
+            +-\
           +-\libsjs         // javascript libraries
           +-\resources      // binary resources
           +-\static         // static files
           +-\styles         // css styles
           +-\templates      // templates
+          +-\tools          // commandline tools
+            +-\...          // name of tool (collection)
+              +-\bin        // main appliction of tool
+              +-\libs       // tool libraries
+                +-\app      // application pages
+                +-\libs     // misc tool specific libraries
           +-Makefile        // makefile
 
           
-      org.octris.core 
+      org.octris...
           |
           +-\
             +-\host           

@@ -64,6 +64,24 @@ namespace org\octris\core\app {
             $next_page->render($this);
         }
         
+        /****m* cli/hline
+         * SYNOPSIS
+         */
+        public static function hline($chr = '=')
+        /*
+         * FUNCTION
+         *      print a horizontal line, or specified characters
+         * INPUTS
+         *      * $char (string) -- (optional) character to print
+         ****
+         */
+        {
+            $cols = (int)`tput cols`;
+            $cols = ($cols > 0 ? $cols : 80);
+            
+            print substr(str_repeat($chr, $cols), 0, $cols) . "\n";
+        }
+        
         /****m* cli/getOptions
          * SYNOPSIS
          */
@@ -98,8 +116,6 @@ namespace org\octris\core\app {
             $key  = '';
 
             foreach ($args as $arg) {
-                print "$arg\n";
-                
                 if (preg_match('/^-([a-zA-Z]+)$/', $arg, $match)) {
                     // short option, combined short options
                     $tmp  = str_split($match[1], 1);
@@ -112,7 +128,7 @@ namespace org\octris\core\app {
                     $key  = $match[1];
                     $opts = array_merge(array($key => true), $opts);
 
-                    if (strlen($match[2]) != 0) {
+                    if (strlen($match[2]) == 0) {
                         continue;
                     }
 

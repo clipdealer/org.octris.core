@@ -1,20 +1,20 @@
 <?php
 
-namespace %%SKEL_NAMESPACE%%\app {
-    /****c* app/index
+namespace {{$SKEL_NAMESPACE}}\app {
+    /****c* app/entry
      * NAME
-     *      index
+     *      entry
      * FUNCTION
-     *      index page
+     *      entry page
      * COPYRIGHT
-     *      copyright (c) %%SKEL_YEAR%% by %%SKEL_COMPANY%%
+     *      copyright (c) {{$SKEL_YEAR}} by {{$SKEL_COMPANY}}
      * AUTHOR
-     *      %%SKEL_AUTHOR%% <%%SKEL_EMAIL%%>
+     *      {{$SKEL_AUTHOR}} <{{$SKEL_EMAIL}}>
      ****
      */
 
-    class index extends \org\octris\core\app\page {
-        /****v* index/$next_pages
+    class entry extends \org\octris\core\app\page {
+        /****v* entry/$next_pages
          * SYNOPSIS
          */
         protected $next_pages = array(
@@ -22,12 +22,12 @@ namespace %%SKEL_NAMESPACE%%\app {
         );
         /*
          * FUNCTION
-         *      the index points to which the current page should allow requests 
+         *      the entry points to which the current page should allow requests 
          *      to, have to be defined through this array.
          ****
          */
 
-        /****m* index/__construct
+        /****m* entry/__construct
          * SYNOPSIS
          */
         public function __construct(\org\octris\core\app $app) 
@@ -36,14 +36,14 @@ namespace %%SKEL_NAMESPACE%%\app {
          *      constructor. the constructor is used to setup common settings for example
          *      validation rulesets must be defined through the page object constructor.
          * INPUTS
-         *      *   $app (\org\octris\core\app) -- application object
+         *      * $app (\org\octris\core\app) -- application object
          ****
          */
         {
             parent::__construct($app);
         }
 
-        /****m* index/prepareRender
+        /****m* entry/prepareRender
          * SYNOPSIS
          */
         public function prepareRender(\org\octris\core\app $app, \org\octris\core\app\page $last_page, $action) 
@@ -52,8 +52,8 @@ namespace %%SKEL_NAMESPACE%%\app {
          *      prepare rendering for a page. this method is called _BEFORE_ rendering 
          *      a page.
          * INPUTS
-         *      *   $app (\org\octris\core\app) -- application object
-         *      *   $last_page (\org\octris\core\app\page) -- last page that was active before current page has been activated
+         *      * $app (\org\octris\core\app) -- application object
+         *      * $last_page (\org\octris\core\app\page) -- last page that was active before current page has been activated
          * OUTPUTS
          *      a page can be returned
          ****
@@ -61,7 +61,7 @@ namespace %%SKEL_NAMESPACE%%\app {
         {        
         }
 
-        /****m index/render
+        /****m entry/render
          * SYNOPSIS
          */
         public function render(\org\octris\core\app $app) 
@@ -70,7 +70,7 @@ namespace %%SKEL_NAMESPACE%%\app {
          *      this method is used to populate a template with data and send it to the 
          *      web browser.
          * INPUTS
-         *      *   $app (\org\octris\core\app) -- application object
+         *      * $app (\org\octris\core\app) -- application object
          ****
          */
         {
