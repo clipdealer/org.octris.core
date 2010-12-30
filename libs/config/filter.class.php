@@ -43,6 +43,41 @@ namespace org\octris\core\config {
             $this->rewind();
         }
 
+        /****m* filter/getArrayCopy
+         * SYNOPSIS
+         */
+        public function getArrayCopy($clean = false)
+        /*
+         * FUNCTION
+         *      get copy of filtered array
+         * INPUTS
+         *      * $clean (bool) -- if true, remote prefix from keys
+         * OUTPUTS
+         *      (array) -- filtered array
+         ****
+         */
+        {
+            $this->rewind();
+
+            $data = array();
+            
+            if ($clean) {
+                $len = strlen($this->prefix);
+                
+                foreach ($this as $k => $v) {
+                    $data[substr($k, $len)] = $v;
+                }
+            } else {
+                foreach ($this as $k => $v) {
+                    $data[$k] = $v;
+                }
+            }
+
+            $this->rewind();
+            
+            return $data;
+        }
+
         /****m* filter/accept
          * SYNOPSIS
          */
