@@ -16,27 +16,7 @@ namespace org\octris\core {
      ****
      */
 
-    class config {
-        /****v* config/$instances
-         * SYNOPSIS
-         */
-        private static $instances = array();
-        /*
-         * FUNCTION
-         *      class instances
-         ****
-         */
-        
-        /****v* config/$data
-         * SYNOPSIS
-         */
-        protected $data = array();
-        /*
-         * FUNCTION
-         *      stores data of config (namespace)
-         ****
-         */
-
+    class config extends \org\octris\core\type\collection {
         /****v* config/$module
          * SYNOPSIS
          */
@@ -60,108 +40,39 @@ namespace org\octris\core {
         /****m* config/__construct
          * SYNOPSIS
          */
-        private function __construct($module, $name, $data) 
+        public function __construct($module, $name) 
         /*
          * FUNCTION
-         *      private constructor. Class instance may only be created by 
-         *      static factory method 'load'.
+         *      constructor
          * INPUTS
          *      * $module (string) -- name of module configuration belongs to
          *      * $name (string) -- name of configuration file
-         *      * $data (collection) -- configuration data
          ****
          */
         {
             $this->module = $module;
             $this->name   = $name;
-            $this->data   = $data;
-        }
-
-        /****m* collection/defaults
-         * SYNOPSIS
-         */
-        public function defaults(array $data)
-        /*
-         * FUNCTION
-         *      set default values. values are only set, if not already present
-         *      in collection.
-         * INPUTS
-         *      * $data (array) -- data to set
-         ****
-         */
-        {
-            $cfg = new collection($data);
-            $cfg = $cfg->flatten();
             
-            $this->data = $cfg->merge($this->data);
-        }
-        
-        /****m* config/set
-         * SYNOPSIS
-         */
-        public function set($name, $value)
-        /*
-         * FUNCTION
-         *      sets an array of values
-         * INPUTS
-         *      * $name (string) -- name of property to set
-         *      * $value (mixed) -- value to set for specified property
-         ****
-         */
-        {
-            $this->data[$name] = $value;
+            $data = self::load($name, $module);
+            
+            parent::__construct($data);
         }
 
-        /****m* config/get
+        /****m* config/filter
          * SYNOPSIS
          */
-        public function get($name)
+        public function filter($prefix)
         /*
          * FUNCTION
-         *      return value of spacified setting
+         *      filter configuration for prefix
          * INPUTS
-         *      * $name (string) -- name of setting to return
+         *      * $prefix (string) -- prefix to use for filter
          * OUTPUTS
-         *      (string) -- returns setting for specified name
+         *      (Iterator) -- filter iterator
          ****
          */
         {
-            $return = null;
-
-            if (array_key_exists($name, $this->data)) {
-                $return =& $this->data[$name];
-            }
-
-            return $return;
-        }
-
-        /****m* config/getSet
-         * SYNOPSIS
-         */
-        public function getSet($prefix, $deflatten = false)
-        /*
-         * FUNCTION
-         *      return a set of configuration options
-         * INPUTS
-         *      *   $prefix (string) -- prefix to search for
-         *      *   $deflatten (bool) -- whether to deflatten result
-         * OUTPUTS
-         *      (array) -- set of matching options
-         ****
-         */
-        {
-            $prefix = rtrim($prefix, '.') . '.';
-
-            $len = strlen($prefix);
-            $set = array();
-
-            foreach ($this->data as $k => $v) {
-                if (substr($k, 0, $len) == $prefix) {
-                    $set[substr($k, $len)] = $v;
-                }
-            }
-
-            return $set;
+            return new \org\octris\core\config\filter($this->getIterator(), $prefix);
         }
 
         /****m* config/save
@@ -192,13 +103,15 @@ namespace org\octris\core {
                 }
             }
             
-            file_put_contents($file, yaml_emit($this->data->deflatten());
+            file_put_contents($file, yaml_emit(
+                $this->deflatten()->getArrayCopy()
+            ));
         }
 
         /****m* config/_load
          * SYNOPSIS
          */
-        protected static function _load($module, $name)
+        private static function load($name = 'config', $module = '')
         /*
          * FUNCTION
          *      actually load configuration file. the loader looks in the
@@ -209,8 +122,8 @@ namespace org\octris\core {
          *      *   T_PATH_ETC/config.yml
          *      *   T_PATH_ETC/config_local.yml
          * INPUTS
-         *      *   $module (string) -- name of module to laod configuration for
-         *      *   $name (string) -- name of configuration file to load
+         *      *   $name (string) -- (optional) name of configuration file to load
+         *      *   $module (string) -- (optional) name of module to laod configuration for
          * OUTPUTS
          *      (collection) -- collection representation of the loaded
          *      configuration file
@@ -218,18 +131,17 @@ namespace org\octris\core {
          ****
          */
         {
-            $cfg = new collection();
-            $ret = false;
+            // initialization
+            $module = ($module == '' ? $_ENV['OCTRIS_APP']->value : $module);
+            $cfg    = new collection();
 
             // load default module config file
-            $path = self::getPath(self::T_PATH_ETC, $module);
+            $path = app::getPath(app::T_PATH_ETC, $module);
             $file = $path . '/' . $name . '.yml';
             
             if (is_readable($file) && ($tmp = yaml_parse_file($file)) && !is_null($tmp)) {
                 $tmp = new collection($tmp);
                 $cfg->merge($tmp->flatten());
-                
-                $ret = true;
             }
 
             // load local config file
@@ -238,8 +150,6 @@ namespace org\octris\core {
             if (is_readable($file) && ($tmp = yaml_parse_file($file)) && !is_null($tmp)) {
                 $tmp = new collection($tmp);
                 $cfg->merge($tmp->flatten());
-                
-                $ret = true;
             }
         
             // load global framework configuration
@@ -249,48 +159,9 @@ namespace org\octris\core {
             if (is_readable($file) && ($tmp = yaml_parse_file($file)) && !is_null($tmp)) {
                 $tmp = new collection($tmp);
                 $cfg->merge($tmp->flatten());
-                
-                $ret = true;
             }
 
-            return array($cfg, $ret);
-        }
-
-        /****m* config/load
-         * SYNOPSIS
-         */
-        public static function load($module = '', $name = 'config')
-        /*
-         * FUNCTION
-         *      Loads the configuration file(s) for app configured in 
-         *      the environment variable OCTRIS_APP or for module specified
-         *      by a parameter.
-         * 
-         *      Factory pattern -- loads each configuration file only one time.
-         * INPUTS
-         *      * $module (string) -- (optional) name of module to load config file(s) for
-         *      * $name (string) -- (optional) name of configuration file to load
-         * OUTPUTS
-         *      (config) -- instance of configuration class
-         *      (bool) -- false, if configuration file could not be loaded.
-         ****
-         */
-        {
-            $module   = ($module == '' ? $_ENV['OCTRIS_APP']->value : $module);
-            $key      = md5($module . '|' . $name);
-            $instance = (isset(self::$instances[$key])
-                         ? self::$instances[$key]
-                         : null);
-            
-            if ($instance == null) {
-                list($cfg, $err) = self::_load($module, $name);
-                
-                if ($err !== false) {
-                    $instance = self::$instances[$key] = new static($module, $name, $cfg);
-                }
-            }
-            
-            return array($instance, $err);
+            return $cfg;
         }
     }
 }
