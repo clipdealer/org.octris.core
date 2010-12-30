@@ -29,28 +29,35 @@ namespace org\octris\core\app\cli {
         /****m* readline/get
          * SYNOPSIS
          */
-        public function get($prompt = '', $default = '')
+        public function get($prompt = '', $default = '', $force = false)
         /*
          * FUNCTION
          *      get user input from stdin
          * INPUTS
          *      * $prompt (string) -- (optional) prompt to print
          *      * $default (string) -- (optional) default value
+         *      * $force (bool) -- (optional) whether to force input
          * OUTPUTS
          *      (string) -- read user input
          ****
          */
         {
-            $return = false;
+            $return   = false;
+            $iterator = 3;
             
-            printf($prompt, $default);
+            do {
+                printf($prompt, $default);
+
+                if (($fh = fopen('php://stdin', 'r'))) {
+                    $return = rtrim(fgets($fh), "\r\n");
+                    fclose($fh);
+                }
+                
+                $return = ($return == '' ? $default : trim($return));
+                --$iterator;
+            } while($force && $return == '' && $iterator > 0);
             
-            if (($fh = fopen('php://stdin', 'r'))) {
-                $return = rtrim(fgets($fh), "\r\n");
-                fclose($fh);
-            }
-            
-            return ($return == '' ? $default : trim($return));
+            return $return;
         }
     }
 }
