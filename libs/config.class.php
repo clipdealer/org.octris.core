@@ -1,6 +1,7 @@
 <?php
 
 namespace org\octris\core {
+    use \org\octris\core\app as app;
     use \org\octris\core\type\collection as collection;
     
     /****c* core/config
@@ -16,57 +17,89 @@ namespace org\octris\core {
      */
 
     class config {
-        /****d* config/T_PATH_CACHE, T_PATH_DATA, T_PATH_ETC, T_PATH_HOST, T_PATH_LIBS, T_PATH_LIBSJS, T_PATH_LOCALE, T_PATH_RESOURCES, T_PATH_STYLES, T_PATH_LOG, T_PATH_WORK, T_PATH_WORK_LIBSJS, T_PATH_WORK_RESOURCES, T_PATH_WORK_STYLES, T_PATH_WORK_TPL
+        /****v* config/$instances
          * SYNOPSIS
          */
-        const T_PATH_CACHE          = '%s/cache/%s';
-        const T_PATH_DATA           = '%s/data/%s';
-        const T_PATH_ETC            = '%s/etc/%s';
-        const T_PATH_HOST           = '%s/host/%s';
-        const T_PATH_LIBS           = '%s/libs/%s';
-        const T_PATH_LIBSJS         = '%s/host/%s/libsjs';
-        const T_PATH_LOCALE         = '%s/locale/%s';
-        const T_PATH_LOG            = '%s/log/%s';
-        const T_PATH_RESOURCES      = '%s/host/%s/resources';
-        const T_PATH_STYLES         = '%s/host/%s/styles';
-        const T_PATH_TOOLS          = '%s/tools/%s';
-        const T_PATH_WORK           = '%s/work/%s';
-        const T_PATH_WORK_LIBS      = '%s/work/%s/libs';
-        const T_PATH_WORK_LIBSJS    = '%s/work/%s/libsjs';
-        const T_PATH_WORK_RESOURCES = '%s/work/%s/resources';
-        const T_PATH_WORK_STYLES    = '%s/work/%s/styles';
-        const T_PATH_WORK_TPL       = '%s/work/%s/templates';
+        private static $instances = array();
         /*
          * FUNCTION
-         *      used in combination with app/getPath to determine path
+         *      class instances
          ****
          */
-
+        
         /****v* config/$data
          * SYNOPSIS
          */
-        protected static $data = array();
+        protected $data = array();
         /*
          * FUNCTION
          *      stores data of config (namespace)
          ****
          */
 
+        /****v* config/$module
+         * SYNOPSIS
+         */
+        protected $module = '';
+        /*
+         * FUNCTION
+         *      name of module configuration belongs to
+         ****
+         */
+        
+        /****v* config/$name
+         * SYNOPSIS
+         */
+        protected $name = '';
+        /*
+         * FUNCTION
+         *      name of configuration file
+         ****
+         */
+        
         /****m* config/__construct
          * SYNOPSIS
          */
-        private function __construct() {}
-        private function __clone() {}
+        private function __construct($module, $name, $data) 
         /*
          * FUNCTION
-         *      private to make class static
+         *      private constructor. Class instance may only be created by 
+         *      static factory method 'load'.
+         * INPUTS
+         *      * $module (string) -- name of module configuration belongs to
+         *      * $name (string) -- name of configuration file
+         *      * $data (collection) -- configuration data
          ****
          */
+        {
+            $this->module = $module;
+            $this->name   = $name;
+            $this->data   = $data;
+        }
 
+        /****m* collection/defaults
+         * SYNOPSIS
+         */
+        public function defaults(array $data)
+        /*
+         * FUNCTION
+         *      set default values. values are only set, if not already present
+         *      in collection.
+         * INPUTS
+         *      * $data (array) -- data to set
+         ****
+         */
+        {
+            $cfg = new collection($data);
+            $cfg = $cfg->flatten();
+            
+            $this->data = $cfg->merge($this->data);
+        }
+        
         /****m* config/set
          * SYNOPSIS
          */
-        public static function set($name, $value)
+        public function set($name, $value)
         /*
          * FUNCTION
          *      sets an array of values
@@ -76,13 +109,13 @@ namespace org\octris\core {
          ****
          */
         {
-            self::$data[$name] = $value;
+            $this->data[$name] = $value;
         }
 
         /****m* config/get
          * SYNOPSIS
          */
-        public static function get($name)
+        public function get($name)
         /*
          * FUNCTION
          *      return value of spacified setting
@@ -95,8 +128,8 @@ namespace org\octris\core {
         {
             $return = null;
 
-            if (array_key_exists($name, self::$data)) {
-                $return =& self::$data[$name];
+            if (array_key_exists($name, $this->data)) {
+                $return =& $this->data[$name];
             }
 
             return $return;
@@ -105,7 +138,7 @@ namespace org\octris\core {
         /****m* config/getSet
          * SYNOPSIS
          */
-        public static function getSet($prefix, $deflatten = false)
+        public function getSet($prefix, $deflatten = false)
         /*
          * FUNCTION
          *      return a set of configuration options
@@ -122,7 +155,7 @@ namespace org\octris\core {
             $len = strlen($prefix);
             $set = array();
 
-            foreach (self::$data as $k => $v) {
+            foreach ($this->data as $k => $v) {
                 if (substr($k, 0, $len) == $prefix) {
                     $set[substr($k, $len)] = $v;
                 }
@@ -131,36 +164,41 @@ namespace org\octris\core {
             return $set;
         }
 
-        /****m* config/getPath
+        /****m* config/save
          * SYNOPSIS
          */
-        public static function getPath($type, $module = '')
+        public function save($file = '')
         /*
          * FUNCTION
-         *      returns path for specified type for current application
+         *      save configuration file to destination. if destination is not
+         *      specified, try to save in ~/config/<module>/<name>.yml
          * INPUTS
-         *      * $type (string) -- type of path to return
-         *      * $module (string) -- (optional) name of module to return path for. default is: current application name
-         * OUTPUTS
-         *      (string) -- existing path or empty string, if path does not exist
+         *      * $file (string) -- (otional) destination to save configuration to
          ****
          */
         {
-            $return = sprintf(
-                $type,
-                self::$data['common.app.path'],
-                ($module 
-                    ? $module 
-                    : self::$data['common.app.name'])
-            );
+            if ($file == '') {
+                $info = posix_getpwuid(posix_getuid());
+                $file = $info['dir'] . '/.octris/' . $this->module . '/' . $this->name . '.yml';
+            } else {
+                $info = parse_url($file);
+            }
 
-            return realpath($return);
+            if (!isset($info['scheme'])) {
+                $path = dirname($file);
+
+                if (!is_dir($path)) {
+                    mkdir($path, 0755, true);
+                }
+            }
+            
+            file_put_contents($file, yaml_emit($this->data->deflatten());
         }
 
         /****m* config/_load
          * SYNOPSIS
          */
-        protected static function _load($module)
+        protected static function _load($module, $name)
         /*
          * FUNCTION
          *      actually load configuration file. the loader looks in the
@@ -172,35 +210,20 @@ namespace org\octris\core {
          *      *   T_PATH_ETC/config_local.yml
          * INPUTS
          *      *   $module (string) -- name of module to laod configuration for
+         *      *   $name (string) -- name of configuration file to load
          * OUTPUTS
-         *      (mixed) -- either a collection representation of the loaded
-         *      configuration file or false, if a configuration could not be loaded
+         *      (collection) -- collection representation of the loaded
+         *      configuration file
+         *      (bool) -- false, if a configuration could not be loaded
          ****
          */
         {
-            $module = ($module == '' ? $_ENV['OCTRIS_APP']->value : $module);
-            
-            self::$data['common.app.name']  = $module;
-            self::$data['common.app.base']  = $_ENV['OCTRIS_BASE']->value;
-            self::$data['common.app.devel'] = $_ENV['OCTRIS_DEVEL']->value;
-
             $cfg = new collection();
             $ret = false;
 
-            // load global framework configuration
-            $info = posix_getpwuid(posix_getuid());
-            $file = $info['dir'] . '/.octris/config.yml';
-            
-            if (is_readable($file) && ($tmp = yaml_parse_file($file)) && !is_null($tmp)) {
-                $tmp = new collection($tmp);
-                $cfg->merge($tmp->flatten());
-                
-                $ret = true;
-            }
-
             // load default module config file
             $path = self::getPath(self::T_PATH_ETC, $module);
-            $file = $path . '/config.yml';
+            $file = $path . '/' . $name . '.yml';
             
             if (is_readable($file) && ($tmp = yaml_parse_file($file)) && !is_null($tmp)) {
                 $tmp = new collection($tmp);
@@ -210,7 +233,7 @@ namespace org\octris\core {
             }
 
             // load local config file
-            $file = $path . '/config.yml';
+            $file = $path . '/' . $name . '_local.yml';
             
             if (is_readable($file) && ($tmp = yaml_parse_file($file)) && !is_null($tmp)) {
                 $tmp = new collection($tmp);
@@ -219,28 +242,55 @@ namespace org\octris\core {
                 $ret = true;
             }
         
-            return ($ret ? $cfg : false);
+            // load global framework configuration
+            $info = posix_getpwuid(posix_getuid());
+            $file = $info['dir'] . '/.octris/' . $module . '/' . $name . '.yml';
+            
+            if (is_readable($file) && ($tmp = yaml_parse_file($file)) && !is_null($tmp)) {
+                $tmp = new collection($tmp);
+                $cfg->merge($tmp->flatten());
+                
+                $ret = true;
+            }
+
+            return array($cfg, $ret);
         }
 
         /****m* config/load
          * SYNOPSIS
          */
-        public static function load($module = '')
+        public static function load($module = '', $name = 'config')
         /*
          * FUNCTION
          *      Loads the configuration file(s) for app configured in 
          *      the environment variable OCTRIS_APP or for module specified
          *      by a parameter.
+         * 
+         *      Factory pattern -- loads each configuration file only one time.
          * INPUTS
          *      * $module (string) -- (optional) name of module to load config file(s) for
+         *      * $name (string) -- (optional) name of configuration file to load
          * OUTPUTS
-         *      (bool) -- returns true, if config file was load successful
+         *      (config) -- instance of configuration class
+         *      (bool) -- false, if configuration file could not be loaded.
          ****
          */
         {
-            if (($cfg = self::_load($module)) !== false) {
-                self::$data = $cfg;
+            $module   = ($module == '' ? $_ENV['OCTRIS_APP']->value : $module);
+            $key      = md5($module . '|' . $name);
+            $instance = (isset(self::$instances[$key])
+                         ? self::$instances[$key]
+                         : null);
+            
+            if ($instance == null) {
+                list($cfg, $err) = self::_load($module, $name);
+                
+                if ($err !== false) {
+                    $instance = self::$instances[$key] = new static($module, $name, $cfg);
+                }
             }
+            
+            return array($instance, $err);
         }
     }
 }
