@@ -172,6 +172,10 @@ namespace org\octris\core\app {
         unset($_COOKIE);
         unset($_SESSION);
         unset($_FILES);
+        
+        if (!$_ENV->validate('OCTRIS_BASE', validate::T_PATH)) {
+            die("OCTRIS_BASE is not set\n");
+        }
     }
 }
 
