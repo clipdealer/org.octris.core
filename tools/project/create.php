@@ -15,13 +15,14 @@
 
 require_once(__DIR__ . '/../../libs/app/cli.class.php');
 
+// initialization
 use \org\octris\core\app\cli as cli;
 use \org\octris\core\config as config;
 
 $cfg = new config('org.octris.core');
 $prj = new config('org.octris.core', 'project.create');
 
-print "octris -- create new project\n";
+print "\noctris -- create new project\n";
 cli::hline(); 
 
 $prj->defaults(array(
@@ -31,6 +32,7 @@ $prj->defaults(array(
     'info.domain'  => ''
 ));
 
+// collect information and create configuration for new project
 $prompt = new cli\readline();
 
 $filter = $prj->filter('info');
@@ -44,7 +46,8 @@ $prj->save();
 $module = $prompt->get("\nmodule [%s]: ");
 
 $ns = '\\' . implode('\\', array_reverse(explode('.', $prj['info.domain']))) . '\\' . $module;
-$data = array_merge($prj->getArrayCopy(), array(
+
+$data = array_merge($prj->filter('info')->getArrayCopy(true), array(
     'module'    => $module,
     'namespace' => $ns,
     'directory' => str_replace('\\', '.', ltrim($ns, '\\'))
