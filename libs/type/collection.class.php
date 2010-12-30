@@ -292,6 +292,31 @@ namespace org\octris\core\type {
             return new collection($tmp);
         }
         
+        /****m* collection/defaults
+         * SYNOPSIS
+         */
+        public function defaults($arg)
+        /*
+         * FUNCTION
+         *      sets defaults for collection only if values are not already set
+         * INPUTS
+         *      * $arg (mixed) -- array or collection to merge
+         ****
+         */
+        {
+            if (is_array($arg)) {
+                $this->data = array_merge($arg, $this->data);
+            } elseif (is_object($arg)) {
+                if (($arg instanceof collection) || ($arg instanceof collection\Iterator) || ($arg instanceof \ArrayIterator)) {
+                    $arg = $arg->getArrayCopy();
+                } else {
+                    $arg = (array)$arg;
+                }
+
+                $this->data = array_merge($arg, $this->data);
+            }
+        }
+        
         /****m* collection/merge
          * SYNOPSIS
          */
