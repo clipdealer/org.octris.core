@@ -1,6 +1,6 @@
 <?php
 
-namespace org\octris\core\validate\path
+namespace org\octris\core\validate\type {
     /****c* type/path
      * NAME
      *      path
