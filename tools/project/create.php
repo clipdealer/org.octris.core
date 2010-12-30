@@ -43,7 +43,12 @@ foreach ($filter as $k => $v) {
 
 $prj->save();
 
-$module = $prompt->get("\nmodule [%s]: ");
+print "\n";
+$module = $prompt->get('module [%s]: ', '', true);
+
+if ($module == '') {
+    die("a module name is required!\n");
+}
 
 $ns = '\\' . implode('\\', array_reverse(explode('.', $prj['info.domain']))) . '\\' . $module;
 
@@ -52,5 +57,12 @@ $data = array_merge($prj->filter('info')->getArrayCopy(true), array(
     'namespace' => $ns,
     'directory' => str_replace('\\', '.', ltrim($ns, '\\'))
 ));
+
+// setup destination directory
+$dir = cli::getPath(cli::T_PATH_WORK, '') . '/' . $data['directory'];
+
+if (is_dir($dir)) {
+    die(sprintf("there seems to be already a project at '%s'\n", $dir));
+}
 
 print_r($data);
