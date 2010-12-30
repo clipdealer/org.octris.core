@@ -15,29 +15,39 @@
 
 require_once(__DIR__ . '/../../libs/app/cli.class.php');
 
-\org\octris\core\config::load('org.octris.core');
-
 use \org\octris\core\app\cli as cli;
+use \org\octris\core\config as config;
 
-$data = array(
-    'company' => '',
-    'author'  => '',
-    'email'   => '',
-    'domain'  => ''
-);
+$cfg = new config('org.octris.core');
+$prj = new config('org.octris.core', 'project.create');
 
 print "octris -- create new project\n";
 cli::hline(); 
 
+$prj->defaults(array(
+    'info.company' => '',
+    'info.author'  => '',
+    'info.email'   => '',
+    'info.domain'  => ''
+));
+
 $prompt = new cli\readline();
 
-foreach ($data as $k => $v) {
-    $input = $prompt->get(sprintf("%s [%s]: ", $k, $v));
+$filter = $prj->filter('info');
+
+foreach ($filter as $k => $v) {
+    $prj[$k] = $prompt->get(sprintf("%s [%%s]: ", $k), $v);
 }
 
-$data = array_merge($data, array(
-    'module'    => '',
-    'namespace' => '\\' . implode('\\', array_reverse(explode('.', $data['domain'])))
+$prj->save();
+
+$module = $prompt->get("\nmodule [%s]: ");
+
+$ns = '\\' . implode('\\', array_reverse(explode('.', $prj['info.domain']))) . '\\' . $module;
+$data = array_merge($prj->getArrayCopy(), array(
+    'module'    => $module,
+    'namespace' => $ns,
+    'directory' => str_replace('\\', '.', ltrim($ns, '\\'))
 ));
 
 print_r($data);
