@@ -1,15 +1,15 @@
 <?php
 
-namespace {{$SKEL_NAMESPACE}} {
+namespace {{$namespace}} {
     /****c* host/index
      * NAME
      *      index
      * FUNCTION
      *      application loader
      * COPYRIGHT
-     *      copyright (c) {{$SKEL_YEAR}} by {{$SKEL_COMPANY}}
+     *      copyright (c) {{$year}} by {{$company}}
      * AUTHOR
-     *      {{$SKEL_AUTHOR}} <{{$SKEL_EMAIL}}>
+     *      {{$author}} <{{$email}}>
      ****
      */
 
@@ -17,7 +17,7 @@ namespace {{$SKEL_NAMESPACE}} {
     require_once('org.octris.core/app/web.class.php');
     
     // load application configuration
-    \org\octris\core\config::load('{{$SKEL}}');
+    \org\octris\core\config::load('{{$directory}}');
 
     // run application
     app\main::getInstance()->process();

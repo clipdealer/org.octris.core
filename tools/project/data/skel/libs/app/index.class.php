@@ -1,15 +1,15 @@
 <?php
 
-namespace {{$SKEL_NAMESPACE}}\app {
+namespace {{$namespace}}\app {
     /****c* app/index
      * NAME
      *      index
      * FUNCTION
      *      index page
      * COPYRIGHT
-     *      copyright (c) {{$SKEL_YEAR}} by {{$SKEL_COMPANY}}
+     *      copyright (c) {{$year}} by {{$company}}
      * AUTHOR
-     *      {{$SKEL_AUTHOR}} <{{$SKEL_EMAIL}}>
+     *      {{$author}} <{{$email}}>
      ****
      */
 
