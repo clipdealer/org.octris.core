@@ -4,51 +4,43 @@ namespace org\octris\core {
     use \org\octris\core\app as app;
     use \org\octris\core\type\collection as collection;
     
-    /****c* core/config
-     * NAME
-     *      config
-     * FUNCTION
-     *      handles application configuration
-     * COPYRIGHT
-     *      copyright (c) 2010 by Harald Lapp
-     * AUTHOR
-     *      Harald Lapp <harald@octris.org>
-     ****
+    /**
+     * class: core/config
+     *
+     * handles application configuration
+     *
+     * @copyright   (c) 2010 by Harald Lapp
+     * @author      Harald Lapp <harald@octris.org>
      */
 
     class config extends \org\octris\core\type\collection {
-        /****v* config/$module
-         * SYNOPSIS
+        /**
+         * property: config/$module
+         *
+         * name of module the configuration belongs to
          */
         protected $module = '';
-        /*
-         * FUNCTION
-         *      name of module configuration belongs to
-         ****
-         */
+        /****/
         
-        /****v* config/$name
-         * SYNOPSIS
+        
+        /**
+         * property: config/$name
+         *
+         * name of configuration file
          */
         protected $name = '';
-        /*
-         * FUNCTION
-         *      name of configuration file
-         ****
-         */
+        /****/
         
-        /****m* config/__construct
-         * SYNOPSIS
+        /**
+         * method: config/__construct
+         *
+         * constructor
+         *
+         * @param   string  $module     name of module configuration belongs to
+         * @param   string  $name       name of configuration file
          */
         public function __construct($module, $name) 
-        /*
-         * FUNCTION
-         *      constructor
-         * INPUTS
-         *      * $module (string) -- name of module configuration belongs to
-         *      * $name (string) -- name of configuration file
-         ****
-         */
+        /****/
         {
             $this->module = $module;
             $this->name   = $name;
@@ -58,35 +50,30 @@ namespace org\octris\core {
             parent::__construct($data);
         }
 
-        /****m* config/filter
-         * SYNOPSIS
+        /**
+         * method: config/filter
+         *
+         * filter configuration for prefix
+         *
+         * @param   string      $prefix     prefix to use for filter
+         * @return  Iterator                filter iterator
          */
         public function filter($prefix)
-        /*
-         * FUNCTION
-         *      filter configuration for prefix
-         * INPUTS
-         *      * $prefix (string) -- prefix to use for filter
-         * OUTPUTS
-         *      (Iterator) -- filter iterator
-         ****
-         */
+        /****/
         {
             return new \org\octris\core\config\filter($this->getIterator(), $prefix);
         }
 
-        /****m* config/save
-         * SYNOPSIS
+        /**
+         * method: config/save
+         *
+         * save configuration file to destination. if destination is not
+         * specified, try to save in ~/config/<module>/<name>.yml
+         *
+         * @param   string  $file       otional destination to save configuration to
          */
         public function save($file = '')
-        /*
-         * FUNCTION
-         *      save configuration file to destination. if destination is not
-         *      specified, try to save in ~/config/<module>/<name>.yml
-         * INPUTS
-         *      * $file (string) -- (otional) destination to save configuration to
-         ****
-         */
+        /****/
         {
             if ($file == '') {
                 $info = posix_getpwuid(posix_getuid());
@@ -108,28 +95,22 @@ namespace org\octris\core {
             ));
         }
 
-        /****m* config/_load
-         * SYNOPSIS
+        /**
+         * method: config/_load
+         *
+         * load configuration file. the loader looks in the following places, 
+         * loads the configuration file and merges them in specified lookup order:
+         *
+         * - T_PATH_ETC/config.yml
+         * - T_PATH_ETC/config_local.yml
+         * - ~/.octris/config.yml
+         *
+         * @param   string      $name   optional name of configuration file to load
+         * @param   string      $module optional name of module to laod
+         * @return  collection  contents of the configuration file
          */
         private static function load($name = 'config', $module = '')
-        /*
-         * FUNCTION
-         *      actually load configuration file. the loader looks in the
-         *      following places, loads the configuration file and merges
-         *      them in specified lookup order:
-         *
-         *      *   ~/.octris/config.yml
-         *      *   T_PATH_ETC/config.yml
-         *      *   T_PATH_ETC/config_local.yml
-         * INPUTS
-         *      *   $name (string) -- (optional) name of configuration file to load
-         *      *   $module (string) -- (optional) name of module to laod configuration for
-         * OUTPUTS
-         *      (collection) -- collection representation of the loaded
-         *      configuration file
-         *      (bool) -- false, if a configuration could not be loaded
-         ****
-         */
+        /****/
         {
             // initialization
             $module = ($module == '' ? $_ENV['OCTRIS_APP']->value : $module);
