@@ -1,41 +1,35 @@
 <?php
 
 namespace org\octris\core\config {
-    /****c* config/filter
-     * NAME
-     *      filter
-     * FUNCTION
-     *      implements FilterInterator for filtering configuration
-     * COPYRIGHT
-     *      copyright (c) 2010 by Harald Lapp
-     * AUTHOR
-     *      Harald Lapp <harald@octris.org>
-     ****
+    /**
+     * class: config/filter
+     *
+     * implements FilterInterator for filtering configuration
+     * 
+     * @copyright   copyright (c) 2010 by Harald Lapp
+     * @author      Harald Lapp <harald@octris.org>
+     **
      */
      
     class filter extends \FilterIterator {
-        /****v* filter/$prefix
-         * SYNOPSIS
+        /**
+         * property: filter/$prefix
+         *
+         * prefix to use as filter
          */
         private $prefix = '';
-        /*
-         * FUNCTION
-         *      prefix to use as filter
-         ****
-         */
+        /**/
         
-        /****m* filter/__construct
-         * SYNOPSIS
+        /**
+         * method: filter/__construct
+         *
+         * constructor
+         *
+         * @param   Iterator    $iterator   iterator of collection to filter
+         * @param   string      $prefix     prefix to filter for
          */
         public function __construct(Iterator $iterator, $prefix)
-        /*
-         * FUNCTION
-         *      constructor
-         * INPUTS
-         *      * $iterator (Iterator) -- iterator of collection to filter
-         *      * $prefix (string) -- prefix to filter for
-         ****
-         */
+        /**/
         {
             parent::__construct($iterator);
 
@@ -43,19 +37,16 @@ namespace org\octris\core\config {
             $this->rewind();
         }
 
-        /****m* filter/getArrayCopy
-         * SYNOPSIS
+        /**
+         * method: filter/getArrayCopy
+         *
+         * get copy of filtered array
+         *
+         * @param   bool    $clean      if true, remote prefix from keys
+         * @return  array               filtered array
          */
         public function getArrayCopy($clean = false)
-        /*
-         * FUNCTION
-         *      get copy of filtered array
-         * INPUTS
-         *      * $clean (bool) -- if true, remote prefix from keys
-         * OUTPUTS
-         *      (array) -- filtered array
-         ****
-         */
+        /**/
         {
             $this->rewind();
 
@@ -78,17 +69,15 @@ namespace org\octris\core\config {
             return $data;
         }
 
-        /****m* filter/accept
-         * SYNOPSIS
+        /**
+         * method: filter/accept
+         *
+         * filter implementation
+         *
+         * @return  bool        returns true, if element should be part of result
          */
         public function accept()
-        /*
-         * FUNCTION
-         *      filter implementation
-         * OUTPUTS
-         *      (bool) -- returns true, if element should be part of result
-         ****
-         */
+        /**/
         {
             return (substr($this->key(), 0, strlen($this->prefix)) == $this->prefix);
         }

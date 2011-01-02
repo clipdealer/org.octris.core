@@ -11,6 +11,7 @@ namespace org\octris\core {
      *
      * @copyright   (c) 2010 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
+     **
      */
 
     class config extends \org\octris\core\type\collection {
@@ -20,8 +21,7 @@ namespace org\octris\core {
          * name of module the configuration belongs to
          */
         protected $module = '';
-        /****/
-        
+        /**/
         
         /**
          * property: config/$name
@@ -29,7 +29,7 @@ namespace org\octris\core {
          * name of configuration file
          */
         protected $name = '';
-        /****/
+        /**/
         
         /**
          * method: config/__construct
@@ -40,7 +40,7 @@ namespace org\octris\core {
          * @param   string  $name       name of configuration file
          */
         public function __construct($module, $name) 
-        /****/
+        /**/
         {
             $this->module = $module;
             $this->name   = $name;
@@ -59,7 +59,7 @@ namespace org\octris\core {
          * @return  Iterator                filter iterator
          */
         public function filter($prefix)
-        /****/
+        /**/
         {
             return new \org\octris\core\config\filter($this->getIterator(), $prefix);
         }
@@ -73,7 +73,7 @@ namespace org\octris\core {
          * @param   string  $file       otional destination to save configuration to
          */
         public function save($file = '')
-        /****/
+        /**/
         {
             if ($file == '') {
                 $info = posix_getpwuid(posix_getuid());
@@ -110,7 +110,7 @@ namespace org\octris\core {
          * @return  collection  contents of the configuration file
          */
         private static function load($name = 'config', $module = '')
-        /****/
+        /**/
         {
             // initialization
             $module = ($module == '' ? $_ENV['OCTRIS_APP']->value : $module);
