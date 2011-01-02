@@ -1,6 +1,8 @@
 Template Engine -- Overview
 ===========================
 
+(c) 2010 by Harald Lapp <harald@octris.org>
+
 The octris framework provides an own template engine, which works independet of the structure of a template. It does
 not matter, if the template is a simple text file or in HTML or XML format. The template engine converts template
 markup to cacheable PHP code. It's not intended to compile the templates at runtime, but at deploy-time. So the

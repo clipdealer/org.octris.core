@@ -1,6 +1,8 @@
 Parameter importing and validating using validation schemas
 ===========================================================
 
+(c) 2010 by Harald Lapp <harald@octris.org>
+
 The OCTRiS framework provides powerful functionality for validating parameters -- request parameters, server
 and environment variables, command line options. The OCTRiS validation schemas support validation from simple values
 to complex arrays.
