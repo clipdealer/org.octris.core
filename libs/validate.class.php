@@ -1,42 +1,38 @@
 <?php
 
 namespace org\octris\core {
-    /****c* core/validate
-     * NAME
-     *      validate
-     * FUNCTION
-     *      validation base class
-     * COPYRIGHT
-     *      copyright (c) 2010 by Harald Lapp
-     * AUTHOR
-     *      Harald Lapp <harald@octris.org>
-     ****
+    /**
+     * Validation base class.
+     *
+     * octdoc       c:core/validate
+     * @copyright   copyright (c) 2010-2011 by Harald Lapp
+     * @author      Harald Lapp <harald.lapp@gmail.com>
      */
-
-    class validate {
-        /****v* validate/$instance
-         * SYNOPSIS
+    class validate 
+    /**/
+    {
+        /**
+         * Instance of validate object.
+         *
+         * @octdoc  v:validate/$instance
+         * @var     \org\octris\core\validate
          */
         private $instance = null;
-        /*
-         * FUNCTION
-         *      instance of validator
-         ****
-         */
+        /**/
         
-        /****d* validate/T_OBJECT, T_ARRAY
-         * SYNOPSIS
+        /**
+         * Schema structure types.
+         *
+         * @octdoc  d:validate/T_OBJECT, T_ARRAY
          */
         const T_OBJECT = 1;
         const T_ARRAY  = 2;
-        /*
-         * FUNCTION
-         *      schema structure types
-         ****
-         */
+        /**/
          
-        /****d* validate/T_ALPHA, T_ALPHANUM, T_BOOL, T_CALLBACK, T_PATH, T_PRINT, T_XDIGIT
-         * SYNOPSIS
+        /**
+         * Available validation types.
+         *
+         * @octdoc  d:validate/T_ALPHA, T_ALPHANUM, T_BOOL, T_CALLBACK, T_PATH, T_PRINT, T_XDIGIT
          */
         const T_ALPHA    = '\org\octris\core\validate\type\alpha';
         const T_ALPHANUM = '\org\octris\core\validate\type\alphanum';
@@ -48,34 +44,25 @@ namespace org\octris\core {
         const T_PRINT    = '\org\octris\core\validate\type\print';
         const T_XDIGIT   = '\org\octris\core\validate\type\xdigit';
         const T_URL      = '\org\octris\core\validate\type\url';
-        /*
-         * FUNCTION
-         *      available validation types
-         ****
-         */
+        /**/
         
-        /****m* validate/__construct, __clone
-         * SYNOPSIS
+        /**
+         * Private constructor and magic clone method to prevent existance of multiple instances.
+         *
+         * @octdoc  m:validate/__construct, __clone
          */
         protected function __construct() {}
         protected function __clone() {}
-        /*
-         * FUNCTION
-         *      prevent constructing multiple instances and cloning
-         ****
-         */
+        /**/
          
-        /****m* validate/getInstance
-         * SYNOPSIS
+        /**
+         * Return instance of validate object.
+         *
+         * @octdoc  m:validate/getInstance
+         * @return  \org\octris\core\validate       Instance of validate object.
          */
-        final public function getInstance()
-        /*
-         * FUNCTION
-         *      return instance of validator
-         * OUTPUTS
-         *      (validate) -- instance of validation class
-         ****
-         */
+        public final function getInstance()
+        /**/
         {
             if (is_null(self::$instance)) {
                 self::$instance = new static();
@@ -84,36 +71,30 @@ namespace org\octris\core {
             return self::$instance;
         }
         
-        /****m* validate/getKey
-         * SYNOPSIS
+        /**
+         * Calculate a key based on a page object and an action.
+         *
+         * @octdoc  m:validate/getKey
+         * @param   \org\octris\core\page   $page       Instance of some page.
+         * @param   string                  $action     Name of an action.
          */
         public function getKey(\org\octris\core\page $page, $action)
-        /*
-         * FUNCTION
-         *      calculate a key based on a page object and an action
-         * INPUTS
-         *      * $page (object) -- page object
-         *      * $action (string) -- name of action
-         ****
-         */
+        /**/
         {
             return get_class($page) . '.' . $action;
         }
 
-        /****m* validate/getRuleset
-         * SYNOPSIS
+        /**
+         * Return a registered validation ruleset.
+         *
+         * @octdoc  m:validate/getRuleset
+         * @param   \org\octris\core\page   $page       Instance of page the ruleset was registered for.
+         * @param   string                  $action     Name of action the ruleset was registered for.
+         * @return  array                               Ruleset. array is empty, if no ruleset for specified 
+         *                                              properties was registered.
          */
         public function getRuleset(\org\octris\core\page $page, $action)
-        /*
-         * FUNCTION
-         *      return a registered validation ruleset
-         * INPUTS
-         *      * $page (page) -- page ruleset was registered for
-         *      * $action (string) -- action ruleset was registered for
-         * OUTPUTS
-         *      (array) -- ruleset, array is empty, if no ruleset for specified properties was registered
-         ****
-         */
+        /**/
         {
             $key    = $this->getKey($page, $action);
             $return = array();
@@ -125,19 +106,16 @@ namespace org\octris\core {
             return $return;
         }
 
-        /****m* validate/registerRuleset
-         * SYNOPSIS
+        /**
+         * Register validation ruleset.
+         *
+         * @octdoc  m:validate/registerRuleset
+         * @param   \org\octris\core\page       $page       Instance of page ruleset applies to.
+         * @param   \org\octris\core\wrapper    $wrapper    Instance of wrapped parameters to validate.
+         * @param   array                       $ruleset    Validation ruleset.
          */
         public function registerRuleset(\org\octris\core\page $page, $action, \org\octris\core\wrapper $wrapper, array $ruleset)
-        /*
-         * FUNCTION
-         *      register validation ruleset
-         * INPUTS
-         *      * $page (page) -- page ruleset applies to
-         *      * $wrapper (wrapper) -- wrapped parameters to validate
-         *      * $ruleset (array) -- validation ruleset
-         ****
-         */
+        /**/
         {
             $key = $this->getKey($page, $action);
 
@@ -147,20 +125,15 @@ namespace org\octris\core {
             );
         }
         
-        /****m* validate/validate
-         * SYNOPSIS
+        /**
+         * Apply registered validation ruleset.
+         *
+         * @octdoc  m:validate/validate
+         * @param   \org\octris\core\page       $page       Instance of page object of registered ruleset.
+         * @param   string                      $action     Action of registered ruleset.
          */
         public function validate(\org\octris\core\page $page, $action)
-        /*
-         * FUNCTION
-         *      apply registered validation ruleset
-         * INPUTS
-         *      * $page (page) -- page object of registered ruleset
-         *      * $action (string) -- action of registered ruleset
-         * OUTPUTS
-         *      (bool) -- returns true, if all rules validated or if no rules are defined for case
-         ****
-         */
+        /**/
         {
             $key = $this->getKey($page, $action);
             $ret = true;
