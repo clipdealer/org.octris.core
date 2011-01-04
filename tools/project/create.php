@@ -86,13 +86,13 @@ if ($module == '' || $year == '') {
     die("'module' and 'year' are required!\n");
 }
 
-$ns = '\\' . implode('\\', array_reverse(explode('.', $prj['info.domain']))) . '\\' . $module;
+$ns = implode('\\', array_reverse(explode('.', $prj['info.domain']))) . '\\' . $module;
 
 $data = array_merge($prj->filter('info')->getArrayCopy(true), array(
     'year'      => $year,
     'module'    => $module,
     'namespace' => $ns,
-    'directory' => str_replace('\\', '.', ltrim($ns, '\\'))
+    'directory' => str_replace('\\', '.', $ns)
 ));
 
 // setup destination directory
