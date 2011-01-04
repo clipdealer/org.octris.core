@@ -1,34 +1,26 @@
 <?php
 
 namespace org\octris\core\validate\type {
-    /****c* validate/print
-     * NAME
-     *      print
-     * FUNCTION
-     *      validate for printable values
-     * COPYRIGHT
-     *      copyright 2010 by Harald Lapp
-     * AUTHOR
-     *      Harald Lapp <harald@octris.org>
-     ****
+    /**
+     * Validate values containing only printable characters.
+     *
+     * @octdoc      c:validate/printable
+     * @copyright   copyright (c) 2011 by Harald Lapp
+     * @author      Harald Lapp <harald@octris.org>
      */
-
-    class print extends \org\octris\core\validate\type {
-        /****m* print/validate
-         * SYNOPSIS
+    class printable extends \org\octris\core\validate\type
+    /**/
+    {
+        /**
+         * Validate value containing only printable characters.
+         *
+         * @octdoc  m:printable/validate
+         * @param   mixed       $value      Value to validate.
          */
         public function validate($value)
-        /*
-         * FUNCTION
-         *      validate an print value
-         * INPUTS
-         *      * $value (mixed) -- value to validate
-         * OUTPUTS
-         *      (bool) -- returns true, if value is valid
-         ****
-         */
+        /**/
         {
-        	return !preg_match('/[\f\n\r\t]/', $value);
+            return !preg_match('/[\f\n\r\t]/', $value);
         }
     }
 }
