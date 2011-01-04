@@ -14,7 +14,7 @@ namespace {{$namespace}} {
     require_once('org.octris.core/app/web.class.php');
     
     // load application configuration
-    $registry = new \org\octris\core\registry::getInstance();
+    $registry = \org\octris\core\registry::getInstance();
     $registry->set('config', function() {
         return new \org\octris\core\config('{{$directory}}');
     }, \org\octris\core\registry::T_SHARED | \org\octris\core\registry::T_READONLY);
