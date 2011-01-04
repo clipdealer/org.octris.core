@@ -1,14 +1,11 @@
-/****c* libsjs/{{$directory}}
- * NAME
- *      {{$directory}}.js
- * FUNCTION
- *      main javascript library for {{$directory}}
- * COPYRIGHT
- *      copyright (c) {{$year}} by {{$company}}
- * AUTHOR
- *      {{$author}} <{{$email}}>
- ****
+/**
+ * Main javascript library for {{$directory}}.
+ *
+ * @octdoc      c:libsjs/{{$directory}}
+ * @copyright   copyright (c) {{$year}} by {{$company}}
+ * @author      {{$author}} <{{$email}}>
  */
+/**/
 
 {{#foreach($ns, explode('.', $directory), $meta)}}{{#if($meta:is_first)}}
 if (!('{{$ns}}' in window)) window['{{$ns}}'] = {};

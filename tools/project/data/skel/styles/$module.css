@@ -1,12 +1,8 @@
-/****h* styles/{{$module}}
- * NAME
- *      {{$module}}.css
- * FUNCTION
- *      main stylesheet for {{$directory}}
- * COPYRIGHT
- *      copyright (c) {{$year}} by {{$company}}
- * AUTHOR
- *      {{$author}} <{{$email}}>
- ****
+/**
+ * Main stylesheet for {{$directory}}.
+ *
+ * @octdoc      h:styles/{{$modules}}
+ * @copyright   copyright (c) {{$year}} by {{$company}}
+ * @author      {{$author}} <{{$email}}>
  */
-
+/**/
