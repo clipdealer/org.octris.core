@@ -12,6 +12,20 @@
 
 require_once(__DIR__ . '/../../libs/app/cli.class.php');
 
+// process commandline parameters
+if ($_GET->validate(
+    'p', 
+    \org\octris\core\validate::T_PATTERN, 
+    array('pattern' => '/^[a-z]{2,4}\.[a-z0-9]+([a-z0-9\-]*[a-z0-9]+|)\.[a-z]+$/')
+)) {
+    $tmp    = explode('.', $_GET['p']->value);
+    $module = array_pop($tmp);
+    $domain = implode('.', array_reverse($tmp));
+} else {
+    $module = '';
+    $domain = '';
+}
+
 // helper function to check if file is binary
 function is_binary($file) {
     $return = false;
@@ -46,8 +60,12 @@ $prj->defaults(array(
     'info.company' => '',
     'info.author'  => '',
     'info.email'   => '',
-    'info.domain'  => ''
+    'info.domain'  => $domain
 ));
+
+if ($domain != '') {
+    $prj['info.domain'] = $domain;
+}
 
 // collect information and create configuration for new project
 $prompt = new cli\readline();
@@ -61,7 +79,7 @@ foreach ($filter as $k => $v) {
 $prj->save();
 
 print "\n";
-$module = $prompt->get('module [%s]: ', 'mod', true);
+$module = $prompt->get('module [%s]: ', $module, true);
 $year   = $prompt->get('year [%s]: ', date('Y'), true);
 
 if ($module == '' || $year == '') {
