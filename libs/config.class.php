@@ -5,39 +5,39 @@ namespace org\octris\core {
     use \org\octris\core\type\collection as collection;
     
     /**
-     * class: core/config
-     *
      * handles application configuration
      *
-     * @copyright   (c) 2010 by Harald Lapp
+     * @octdoc      c:core/config
+     * @copyright   (c) 2010-2011 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
-     **
      */
-
-    class config extends \org\octris\core\type\collection {
+    class config extends \org\octris\core\type\collection 
+    /**/
+    {
         /**
-         * property: config/$module
+         * Name of module the configuration belongs to.
          *
-         * name of module the configuration belongs to
+         * @octdoc  v:config/$module
+         * @var     string
          */
         protected $module = '';
         /**/
         
         /**
-         * property: config/$name
+         * Name of configuration file.
          *
-         * name of configuration file
+         * @octdoc  v:config/$name
+         * @var     string
          */
         protected $name = '';
         /**/
         
         /**
-         * method: config/__construct
+         * Constructor.
          *
-         * constructor
-         *
-         * @param   string  $module     name of module configuration belongs to
-         * @param   string  $name       name of configuration file
+         * @octdoc  m:config/__construct
+         * @param   string  $module     Name of module configuration belongs to.
+         * @param   string  $name       Name of configuration file.
          */
         public function __construct($module, $name) 
         /**/
@@ -51,12 +51,11 @@ namespace org\octris\core {
         }
 
         /**
-         * method: config/filter
+         * Filter configuration for prefix.
          *
-         * filter configuration for prefix
-         *
-         * @param   string      $prefix     prefix to use for filter
-         * @return  Iterator                filter iterator
+         * @octdoc  m:config/filter
+         * @param   string                              $prefix     Prefix to use for filter.
+         * @return  \org\octris\core\config\filter                  Filter iterator.
          */
         public function filter($prefix)
         /**/
@@ -65,12 +64,12 @@ namespace org\octris\core {
         }
 
         /**
-         * method: config/save
+         * Save configuration file to destination. if destination is not
+         * specified, try to save in ~/config/<module>/<name>.yml.
          *
-         * save configuration file to destination. if destination is not
-         * specified, try to save in ~/config/<module>/<name>.yml
-         *
-         * @param   string  $file       otional destination to save configuration to
+         * @octdoc  m:config/save
+         * @param   string  $file       Optional destination to save configuration to.
+         * @return  bool                Returns TRUE on success, otherwise FALSE.
          */
         public function save($file = '')
         /**/
@@ -90,24 +89,23 @@ namespace org\octris\core {
                 }
             }
             
-            file_put_contents($file, yaml_emit(
+            return file_put_contents($file, yaml_emit(
                 $this->deflatten()->getArrayCopy()
             ));
         }
 
         /**
-         * method: config/_load
-         *
-         * load configuration file. the loader looks in the following places, 
+         * Load configuration file. the loader looks in the following places, 
          * loads the configuration file and merges them in specified lookup order:
          *
          * - T_PATH_ETC/config.yml
          * - T_PATH_ETC/config_local.yml
          * - ~/.octris/config.yml
          *
-         * @param   string      $name   optional name of configuration file to load
-         * @param   string      $module optional name of module to laod
-         * @return  collection  contents of the configuration file
+         * @octdoc  m:config/_load
+         * @param   string                              $name       Optional name of configuration file to load.
+         * @param   string                              $module     Optional name of module to laod.
+         * @return  \org\octris\core\type\collection                Contents of the configuration file.
          */
         private static function load($name = 'config', $module = '')
         /**/
