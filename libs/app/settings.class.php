@@ -1,6 +1,6 @@
 <?php
 
-namespace org\octris\core\app\web
+namespace org\octris\core\app
     /**
      * user specific application settings handling
      *
