@@ -1,17 +1,14 @@
 #!/usr/bin/env php
 <?php
 
-/****h* project/create
- * NAME
- *      create.php
- * FUNCTION
- *      creates a new project from project skeleton
- * COPYRIGHT
- *      copyright (c) 2010 by Harald Lapp
- * AUTHOR
- *      Harald Lapp <harald@octris.org>
- ****
+/**
+ * Tool for creating a new project using a project skeleton.
+ *
+ * @octdoc      h:project/create
+ * @copyright   copyright (c) 2011 by Harald Lapp
+ * @author      Harald Lapp <harald@octris.org>
  */
+/**/
 
 require_once(__DIR__ . '/../../libs/app/cli.class.php');
 
