@@ -37,4 +37,4 @@ new:
 		echo ""; \
 		exit 1; \
 	fi	
-	@../../tools/org.octris.core/project/init.sh $(project)
+	@../../tools/org.octris.core/project/create.php -p $(project)
