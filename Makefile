@@ -1,28 +1,23 @@
 # vim:set noexpandtab:
-#
 
-#****h* Makefile
-# NAME
-#	Makefile
-# FUNCTION
-#	Makefile for handling targets only available for core project
-# COPYRIGHT
-#	copyright (c) 2006-2010 by Harald Lapp
-# AUTHOR
-#	Harald Lapp <harald.lapp@gmail.com>
-#****
+#**
+# Makefile for handling targets only available for core project.
 #
+# @octdoc       h:./Makefile
+# @copyright    copyright (c) 2006-2011 by Harald Lapp
+# @author       Harald Lapp <harald@octris.org>
+#**
 
 include Makefile.core
 
+project = "org.octris.core"
 target = ""
 
-#****t* Makefile/new
-# NAME
-#	make new
-# FUNCTION
-#	create and initialize a new project
-#****
+#**
+# Create and initialize a new project.
+#
+# @octdoc       t:Makefile/new
+#**
 new:
 	@if [ "$(project)" = "org.octris.core" ]; then \
 		echo ""; \
