@@ -18,6 +18,11 @@ namespace org\octris\core\app {
      */
 
     class cli extends \org\octris\core\app {
+        protected function initialize()
+        {
+            
+        }
+        
         /****m* cli/process
          * SYNOPSIS
          */
