@@ -1,30 +1,24 @@
 <?php
 
 namespace org\octris\core\validate\type {
-    /****c* type/chain
-     * NAME
-     *      chain
-     * FUNCTION
-     *      implements validation chaining -- chaining of multiple validation rules.
-     * COPYRIGHT
-     *      copyright (c) 2010 by Harald Lapp
-     * AUTHOR
-     *      Harald Lapp <harald@octris.org>
-     ****
+    /**
+     * Validator for chaining multiple validation rules.
+     *
+     * @octdoc      c:type/chain
+     * @copyright   copyright (c) 2010-2011 by Harald Lapp
+     * @author      Harald Lapp <harald@octris.org>
      */
-
-    class chain extends \org\octris\core\validate\type {
-        /****m* chain/__construct
-         * SYNOPSIS
+    class chain extends \org\octris\core\validate\type 
+    /**/
+    {
+        /**
+         * Constructor.
+         *
+         * @octdoc  m:chain/__construct
+         * @param   array       $options        Options required by validator.
          */
         public function __construct(array $options)
-        /*
-         * FUNCTION
-         *      constructor
-         * INPUTS
-         *      * $options (array) -- options for validator
-         ****
-         */
+        /**/
         {
             if (!isset($options['chain']) || !is_array($options['chain'])) {
                 throw new \Exception('no chain provided');
@@ -33,19 +27,15 @@ namespace org\octris\core\validate\type {
             parent::__construct($options);
         }
         
-        /****m* chain/validate
-         * SYNOPSIS
+        /**
+         * Validator implementation.
+         *
+         * @octdoc  m:chain/validate
+         * @param   mixed       $value          Value to validate.
+         * @return  bool                        Returns true if value is valid.
          */
         public function validate($value)
-        /*
-         * FUNCTION
-         *      validate value
-         * INPUTS
-         *      * $value (mixed) -- value to validate
-         * OUTPUTS
-         *      (bool) -- returns true, if value is valid
-         ****
-         */
+        /**/
         {
             $return = true;
             

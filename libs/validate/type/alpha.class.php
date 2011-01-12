@@ -1,32 +1,25 @@
 <?php
 
 namespace org\octris\core\validate\type {
-    /****c* type/alpha
-     * NAME
-     *      alpha
-     * FUNCTION
-     *      validate for string containing only a-zA-Z characters
-     * COPYRIGHT
-     *      copyright 2008-2010 by Harald Lapp
-     * AUTHOR
-     *      Harald Lapp <harald@octris.org>
-     ****
+    /**
+     * Validator for strings containing only letters as characters (a-zA-Z).
+     *
+     * @octdoc      c:type/alpha
+     * @copyright   copyright (c) 2010-2011 by Harald Lapp
+     * @author      Harald Lapp <harald@octris.org>
      */
-
-    class alpha extends \org\octris\core\validate\type {
-        /****m* alpha/validate
-         * SYNOPSIS
+    class alpha extends \org\octris\core\validate\type
+    /**/
+    {
+        /**
+         * Validator implementation.
+         *
+         * @octdoc  m:alpha/validate
+         * @param   mixed       $value          Value to validate.
+         * @return  bool                        Returns true if value is valid.
          */
         public function validate($value)
-        /*
-         * FUNCTION
-         *      validate an alpha value
-         * INPUTS
-         *      * $value (mixed) -- value to validate
-         * OUTPUTS
-         *      (bool) -- returns true, if value is valid
-         ****
-         */
+        /**/
         {
             return ctype_alpha($value);
         }

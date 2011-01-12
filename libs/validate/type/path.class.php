@@ -1,32 +1,25 @@
 <?php
 
 namespace org\octris\core\validate\type {
-    /****c* type/path
-     * NAME
-     *      path
-     * FUNCTION
-     *      validate if a string is a valid path
-     * COPYRIGHT
-     *      copyright (c) 2010 by Harald Lapp
-     * AUTHOR
-     *      Harald Lapp <harald@octris.org>
-     ****
+    /**
+     * Validator for testing if a string contains a valid (existing) path.
+     *
+     * @octdoc      c:type/path
+     * @copyright   copyright (c) 2010-2011 by Harald Lapp
+     * @author      Harald Lapp <harald@octris.org>
      */
-
-    class path extends \org\octris\core\validate\type {
-        /****m* path/validate
-         * SYNOPSIS
+    class path extends \org\octris\core\validate\type 
+    /**/
+    {
+        /**
+         * Validator implementation.
+         *
+         * @octdoc  m:path/validate
+         * @param   mixed       $value          Value to validate.
+         * @return  bool                        Returns true if value is valid.
          */
         public function validate($value)
-        /*
-         * FUNCTION
-         *      validate a path
-         * INPUTS
-         *      * $value (mixed) -- value to validate
-         * OUTPUTS
-         *      (bool) -- returns true, if value is valid
-         ****
-         */
+        /**/
         {
             return (is_dir($value));
         }

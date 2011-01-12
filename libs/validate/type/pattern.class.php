@@ -1,30 +1,24 @@
 <?php
 
 namespace org\octris\core\validate\type {
-    /****c* type/pattern
-     * NAME
-     *      pattern
-     * FUNCTION
-     *      pattern validation
-     * COPYRIGHT
-     *      copyright (c) 2010 by Harald Lapp
-     * AUTHOR
-     *      Harald Lapp <harald@octris.org>
-     ****
+    /**
+     * Validator for testing if a string matches a custom regular expression pattern.
+     *
+     * @octdoc      c:type/pattern
+     * @copyright   copyright (c) 2010-2011 by Harald Lapp
+     * @author      Harald Lapp <harald@octris.org>
      */
-
-    class pattern extends \org\octris\core\validate\type {
-        /****m* pattern/__construct
-         * SYNOPSIS
+    class pattern extends \org\octris\core\validate\type 
+    /**/
+    {
+        /**
+         * Constructor.
+         *
+         * @octdoc  m:pattern/__construct
+         * @param   array       $options        Options required by validator.
          */
-        public function __construct(array $options = array())
-        /*
-         * FUNCTION
-         *      constructor
-         * INPUTS
-         *      * $options (array) -- optional options
-         ****
-         */
+        public function __construct(array $options)
+        /**/
         {
             if (!isset($options['pattern'])) {
                 throw new \Exception('no pattern provided');
@@ -33,19 +27,15 @@ namespace org\octris\core\validate\type {
             parent::__construct($options);
         }
 
-        /****m* pattern/validate
-         * SYNOPSIS
+        /**
+         * Validator implementation.
+         *
+         * @octdoc  m:pattern/validate
+         * @param   mixed       $value          Value to validate.
+         * @return  bool                        Returns true if value is valid.
          */
         public function validate($value)
-        /*
-         * FUNCTION
-         *      validate an pattern value
-         * INPUTS
-         *      * $value (mixed) -- value to validate
-         * OUTPUTS
-         *      (bool) -- returns true, if value is valid
-         ****
-         */
+        /**/
         {
             return preg_match($this->options['pattern'], $value);
         }

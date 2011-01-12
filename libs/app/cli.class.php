@@ -5,44 +5,38 @@ namespace org\octris\core\app {
     
     require_once('org.octris.core/app.class.php');
 
-    /****c* app/cli
-     * NAME
-     *      cli
-     * FUNCTION
-     *      core class for CLI applications
-     * COPYRIGHT
-     *      copyright (c) 2010 by Harald Lapp
-     * AUTHOR
-     *      Harald Lapp <harald@octris.org>
-     ****
+    /**
+     * Core class for CLI applications.
+     *
+     * @octdoc      c:app/cli
+     * @copyright   copyright (c) 2011 by Harald Lapp
+     * @author      Harald Lapp <harald@octris.org>
      */
-
-    class cli extends \org\octris\core\app {
+    class cli extends \org\octtris\core\app
+    /**/
+    {
         protected function initialize()
         {
             
         }
         
-        /****m* cli/process
-         * SYNOPSIS
+        /**
+         * Main application processor. This is the only method that needs to be called to
+         * invoke an application. Internally this method determines the last visited page
+         * and handles everything required to determine the next page to display.
+         *
+         * The following example shows how to invoke an application, assuming that 'test'
+         * implements an application based on \org\octris\core\app.
+         *
+         * <code>
+         * $app = test::getInstance();
+         * $app->process();
+         * </code>
+         *
+         * @octdoc  m:cli/process
          */
         public function process()
-        /*
-         * FUNCTION
-         *      Main application processor. This is the only method that needs to
-         *      be called to invoke an application. Internally this method determines
-         *      the last visited page and handles everything required to determine
-         *      the next page to display.
-         * EXAMPLE
-         *      simple example to invoke an application, assuming that "test" implements
-         *      an application base on lima_apps
-         *
-         *      ..  source: php
-         *
-         *          $app = new test();
-         *          $app->process();
-         ****
-         */
+        /**/
         {
             $last_page = $this->getLastPage();
             $action    = $last_page->getAction();
@@ -69,42 +63,36 @@ namespace org\octris\core\app {
             $next_page->render($this);
         }
         
-        /****m* cli/hline
-         * SYNOPSIS
+        /**
+         * Print a horizontal line of characters.
+         *
+         * @octdoc  m:cli/hline
+         * @param   string      $chr        Optional character to use for printing line.
          */
         public static function hline($chr = '=')
-        /*
-         * FUNCTION
-         *      print a horizontal line, or specified characters
-         * INPUTS
-         *      * $char (string) -- (optional) character to print
-         ****
-         */
+        /**/
         {
             $cols = (int)`tput cols`;
             $cols = ($cols > 0 ? $cols : 80);
             
             print substr(str_repeat($chr, $cols), 0, $cols) . "\n";
         }
-        
-        /****m* cli/getOptions
-         * SYNOPSIS
-         */
-        public static function getOptions()
-        /*
-         * FUNCTION
-         *      parse command line options and return array of it. The
-         *      parameters are required to have the following format:
+
+        /**
+         * Parse command line options and return Array of them. The parameters are required to have
+         * the following format:
          *
-         *      *   short options: -l -a -b
-         *      *   short options combined: -lab
-         *      *   short options with value: -l val -a val -b "with whitespace"
-         *      *   long options: --option1 --option2
-         *      *   long options with value: --option=value --option value --option "with whitespace"
-         * OUTPUTS
-         *      (array) -- parsed command line parameters
-         ****
+         * - short options: -l -a -b
+         * - short options combined: -lab
+         * - short options with value: -l val -a val -b "with whitespace"
+         * - long options: --option1 --option2
+         * - long options with value: --option=value --option value --option "with whitespace"
+         *
+         * @octdoc  m:cli/getOptions
+         * @return  array                               Parsed command line parameters.
          */
+        public function getOptions()
+        /**/
         {
             global $argv;
             static $opts = null;

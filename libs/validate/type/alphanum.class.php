@@ -1,32 +1,25 @@
 <?php
 
 namespace org\octris\core\validate\type
-    /****c* type/alphanum
-     * NAME
-     *      alphanum
-     * FUNCTION
-     *      validate string with characters 0-9a-zA-Z
-     * COPYRIGHT
-     *      copyright (c) 2008-2010 by Harald Lapp
-     * AUTHOR
-     *      Harald Lapp <harald@octris.org>
-     ****
+    /**
+     * Validator for strings containing letters and numbers as characters (a-zA-Z0-9).
+     *
+     * @octdoc      c:type/alphanum
+     * @copyright   copyright (c) 2010-2011 by Harald Lapp
+     * @author      Harald Lapp <harald@octris.org>
      */
-
-    class alphanum extends \org\octris\core\validate\type {
-        /****m* alphanum/validate
-         * SYNOPSIS
+    class alphanum extends \org\octris\core\validate\type
+    /**/
+    {
+        /**
+         * Validator implementation.
+         *
+         * @octdoc  m:alphanum/validate
+         * @param   mixed       $value          Value to validate.
+         * @return  bool                        Returns true if value is valid.
          */
         public function validate($value)
-        /*
-         * FUNCTION
-         *      validate an alphanum value
-         * INPUTS
-         *      * $value (mixed) -- value to validate
-         * OUTPUTS
-         *      (bool) -- returns true, if value is valid
-         ****
-         */
+        /**/
         {
             return ctype_alnum($value);
         }
