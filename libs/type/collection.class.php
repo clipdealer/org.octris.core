@@ -1,149 +1,123 @@
 <?php
 
 namespace org\octris\core\type {
-    /****c* type/collection
-     * NAME
-     *      collection
-     * FUNCTION
-     *      collection type -- implements special access on array
-     *      objects
-     * COPYRIGHT
-     *      copyright (c) 2010 by Harald Lapp
-     * AUTHOR
-     *      Harald Lapp <harald@octris.org>
-     ****
+    /**
+     * Collection type. Implements special access on array objects.
+     *
+     * @octdoc      c:type/collection
+     * @copyright   copyright (c) 2010-2011 by Harald Lapp
+     * @author      Harald Lapp <harald@octris.org>
      */
-
-    class collection implements \IteratorAggregate, \ArrayAccess, \Serializable, \Countable {
-        /****v* collection/$data
-         * SYNOPSIS
+ class collection implements \IteratorAggregate, \ArrayAccess, \Serializable, \Countable
+    /**/
+    {
+        /**
+         * Collection data.
+         *
+         * @octdoc  v:collection/$data
+         * @var     array
          */
         protected $data = array();
-        /*
-         * FUNCTION
-         *      collection data
-         ****
-         */
+        /**/
 
-        /****v* collection/$keys
-         * SYNOPSIS
+        /**
+         * Keys of collection data.
+         *
+         * @octdoc  v:collection/$keys
+         * @var     array
          */
         protected $keys = array();
-        /*
-         * FUNCTION
-         *      parameter names
-         ****
+        /**/
+
+        /**
+         * Constructor.
+         *
+         * @octdoc  m:collection/__construct
+         * @param   mixed       $value      Optional value to initialize collection with.
          */
-        
-        /****m* collection/__construct
-         * SYNOPSIS
-         */
-        public function __construct($array = null)
-        /*
-         * FUNCTION
-         *      constructor
-         * INPUTS
-         *      * $array (mixed) -- (optional) array to construct
-         ****
-         */
+        public function __construct($value = null)
+        /**/
         {
-            if (is_null($array)) {
-                $array = array();
-            } elseif (is_scalar($array)) {
+            if (is_null($value)) {
+                $value = array();
+            } elseif (is_scalar($value)) {
                 // a scalar will be splitted into bytes
-                $array = str_split((string)$array, 1);
-            } elseif (is_object($array)) {
-                if (($array instanceof collection) || ($array instanceof collection\Iterator) || ($array instanceof \ArrayIterator)) {
-                    $array = $array->getArrayCopy();
+                $value = str_split((string)$value, 1);
+            } elseif (is_object($value)) {
+                if (($value instanceof collection) || ($value instanceof collection\Iterator) || ($value instanceof \ArrayIterator)) {
+                    $value = $value->getArrayCopy();
                 } else {
-                    $array = (array)$array;
+                    $value = (array)$value;
                 }
-            } elseif (!is_array($array)) {
+            } elseif (!is_array($value)) {
                 throw new Exception('don\'t know how to handle parameter of type "' . gettype($array) . '"');
             }
         
-            $this->keys = array_keys($array);
-            $this->data = $array;
+            $this->keys = array_keys($value);
+            $this->data = $value;
         }
     
-        /****m* collection/getIterator
-         * SYNOPSIS
+        /**
+         * Returns iterator object for collection.
+         *
+         * @octdoc  m:collection/getIterator
+         * @return  \ArrayIterator                  Instance of iterator.
          */
         public function getIterator()
-        /*
-         * FUNCTION
-         *      returns iterator object for collection
-         * OUTPUTS
-         *      (iterator) -- iterator object
-         ****
-         */
+        /**/
         {
             return new \ArrayIterator($this->data);
         }
         
-        /****m* collection/getArrayCopy
-         * SYNOPSIS
+        /**
+         * Returns copy of collection data as PHP array.
+         *
+         * @octdoc  m:collection/getArrayCopy
+         * @return  array                           Collection data.
          */
         public function getArrayCopy()
-        /*
-         * FUNCTION
-         *      returns copy of data as PHP array
-         * OUTPUTS
-         *      (array) -- collection data
-         ****
-         */
+        /**/
         {
             return $this->data;
         }
-        
-        /****m* collection/offsetExists
-         * SYNOPSIS
+
+        /**
+         * Whether a specified offset exists in collection data.
+         *
+         * @octdoc  m:collection/offsetExists
+         * @param   string      $offs       Offset to test.
+         * @return  bool                    Returns true if offset exists.
          */
         public function offsetExists($offs)
-        /*
-         * FUNCTION
-         *      whether a offset exists
-         * INPUTS
-         *      * $offs (string) -- offset to test
-         * OUTPUTS
-         *      (bool) -- returns true, if offset exists
-         ****
-         */
+        /**/
         {
             return (in_array($offs, $this->keys));
         }
 
-        /****m* collection/offsetGet
-         * SYNOPSIS
+        /**
+         * Return data for specified offset from collection.
+         *
+         * @octdoc  m:collection/offsetGet
+         * @param   string      $offs       Offset to retrieve.
+         * @return  mixed                   Value stored at specified offset or 'false'.
          */
         public function offsetGet($offs)
-        /*
-         * FUNCTION
-         *      offset to retrieve
-         * INPUTS
-         *      * $offs (string) -- offset to retrieve
-         * OUTPUTS
-         *      (mixed) -- array value for offset
-         ****
-         */
+        /**/
         {
             $idx = array_search($offs, $this->keys, true);
         
             return ($idx !== false ? $this->data[$this->keys[$idx]] : false);
         }
 
-        /****m* collection/offsetSet
-         * SYNOPSIS
+        /**
+         * Set value in collection at specified offset.
+         *
+         * @octdoc  m:collection/offsetSet
+         * @param   string      $offs       Offset to set value at.
+         * @param   mixed       $value      Value to set at offset.
          */
         public function offsetSet($offs, $value)
-        /*
-         * FUNCTION
-         *      offset to set
-         * INPUTS
-         *      * $offs (string) -- offset to set
-         *      * $value (mixed) -- value for offset to set
-         ****
-         */
+        /**/
         {
             // is_null implements $...[] = ...
             if (!is_null($offs) && ($idx = array_search($offs, $this->keys, true)) !== false) {
@@ -153,18 +127,15 @@ namespace org\octris\core\type {
                 $this->data[$offs] = $value;
             }
         }
-        
-        /****m* collection/offsetUnset
-         * SYNOPSIS
+
+        /**
+         * Unset data in collection at specified offset.
+         *
+         * @octdoc  m:collection/offsetUnset
+         * @param   string      $offs       Offset to unset.
          */
         public function offsetUnset($offs)
-        /*
-         * FUNCTION
-         *      offset to unset
-         * INPUTS
-         *      * $offs (string) -- offset to unset
-         ****
-         */
+        /**/
         {
             $idx = array_search($offs, $this->keys, true);
         
@@ -174,65 +145,51 @@ namespace org\octris\core\type {
             }
         }
 
-        /****m* collection/serialize
-         * SYNOPSIS
+        /**
+         * Implements serialization of collection data.
+         *
+         * @octdoc  m:collection/serialize
+         * @return  string                  Serialized collection data.
          */
         public function serialize()
-        /*
-         * FUNCTION
-         *      when serializing collection
-         * OUTPUTS
-         *      (string) -- serialized collection data
-         ****
-         */
+        /**/
         {
             return serialize($this->data);
         }
 
-        /****m* collection/unserialize
-         * SYNOPSIS
+        /**
+         * Implements unserialization of collection data.
+         *
+         * @octdoc  m:collection/unserialize
+         * @param   string      $data       Serialized data to unserialize and push into collection.
          */
         public function unserialize($data)
-        /*
-         * FUNCTION
-         *      when collection data is unserialized
-         * INPUTS
-         *      * $data (string) -- serialized data to unserialize und pull into collection
-         ****
-         */
+        /**/
         {
             $this->__construct(unserialize($data));
         }
 
-        /****m* collection/count
-         * SYNOPSIS
+        /**
+         * Returns number of items stored in collection.
+         *
+         * @octdoc  m:collection/count
+         * @return  int                 Number of items in collection.
          */
         public function count()
-        /*
-         * FUNCTION
-         *      count items in collection
-         * OUTPUTS
-         *      (int) -- items in collection
-         ****
-         */
+        /**/
         {
             return count($this->data);
         }
-        
-        /****m* collection/flatten
-         * SYNOPSIS
+
+        /**
+         * Flatten a collection. Convert a (nested) collection into a flat collection with expanded keys
+         *
+         * @octdoc  m:collection/flatten
+         * @param   string      $sep                    Optional separator for expanding keys.
+         * @return  \org\octris\core\type\collection    Flattened collection.
          */
-        public function flatten($sep = '.') 
-        /*
-         * FUNCTION
-         *      flatten an array. convert a recursive index or key/value based array into a flat array with expanded
-         *      keys.
-         * INPUTS
-         *      * $sep (string) -- (optional) separator for expanding keys
-         * OUTPUTS
-         *      (collection) -- flattened array
-         ****
-         */
+        public function flatten($sep = '.')
+        /**/
         {
             $tmp = array();
 
@@ -262,15 +219,14 @@ namespace org\octris\core\type {
             return new collection($tmp);
         }
 
-        /****m* collection/deflatten
-         * SYNOPSIS
+        /**
+         * Deflatten a flat collection.
+         *
+         * @octdoc  m:collection/deflatten
+         * @return  \org\octris\core\type\collection    Deflattened collection.
          */
         public function deflatten()
-        /*
-         * FUNCTION
-         *      deflatten an array, which was flattened with flatten method
-         ****
-         */
+        /**/
         {
             $tmp = array();
 
@@ -292,43 +248,36 @@ namespace org\octris\core\type {
             return new collection($tmp);
         }
         
-        /****m* collection/defaults
-         * SYNOPSIS
+        /**
+         * Sets defaults for collection. Values are only set, if the keys of the values are not already available in collection.
+         *
+         * @octdoc  m:collection/defaults
+         * @param   mixed       $value      Value(s) to set as default(s).
          */
-        public function defaults($arg)
-        /*
-         * FUNCTION
-         *      sets defaults for collection only if values are not already set
-         * INPUTS
-         *      * $arg (mixed) -- array or collection to merge
-         ****
-         */
+        public function defaults($value)
+        /**/
         {
-            if (is_array($arg)) {
-                $this->data = array_merge($arg, $this->data);
-            } elseif (is_object($arg)) {
-                if (($arg instanceof collection) || ($arg instanceof collection\Iterator) || ($arg instanceof \ArrayIterator)) {
-                    $arg = $arg->getArrayCopy();
+            if (is_array($value)) {
+                $this->data = array_merge($value, $this->data);
+            } elseif (is_object($value)) {
+                if (($value instanceof collection) || ($value instanceof collection\Iterator) || ($value instanceof \ArrayIterator)) {
+                    $value = $value->getArrayCopy();
                 } else {
-                    $arg = (array)$arg;
+                    $value = (array)$value;
                 }
 
-                $this->data = array_merge($arg, $this->data);
+                $this->data = array_merge($value, $this->data);
             }
         }
         
-        /****m* collection/merge
-         * SYNOPSIS
+        /**
+         * Merge current collection with one or multiple others.
+         *
+         * @octdoc  m:collection/merge
+         * @param   mixed       $arg1, ...      Array(s) / collection(s) to merge.
          */
         public function merge()
-        /*
-         * FUNCTION
-         *       merge current collection with one or multiple others
-         * INPUTS
-         *      * $arg1 (mixed) -- array or collection to merge
-         *      * ...
-         ****
-         */
+        /**/
         {
             for ($i = 0, $cnt = func_num_args(); $i < $cnt; ++$i) {
                 $arg = func_get_arg($i);
@@ -347,17 +296,14 @@ namespace org\octris\core\type {
             }
         }
         
-        /****m* collection/utf8Encode
-         * SYNOPSIS
+        /**
+         * UTF-8 encode collection values.
+         *
+         * @octdoc  m:collection/utf8Encode
+         * @return  \org\octris\core\type\collection    Encoded data.
          */
         public function utf8Encode()
-        /*
-         * FUNCTION
-         *      utf8 encode collection values
-         * OUTPUTS
-         *      (collection) -- encoded data
-         ****
-         */
+        /**/
         {
             $tmp = $this->data;
             
@@ -379,17 +325,14 @@ namespace org\octris\core\type {
             return new collection($tmp);
         }
 
-        /****m* collection/utf8Decode
-         * SYNOPSIS
+        /**
+         * UTF-8 decode collection values.
+         *
+         * @octdoc  m:collection/utf8Decode
+         * @return  \org\octris\core\type\collection    Decoded data.
          */
         public function utf8Decode()
-        /*
-         * FUNCTION
-         *      utf8 decode collection
-         * OUTPUTS
-         *      (collection) -- decoded data
-         ****
-         */
+        /**/
         {
             $tmp = $this->data;
             

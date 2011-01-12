@@ -1,45 +1,36 @@
 <?php
 
 namespace org\octris\core\type {
-    /****c* type/money
-     * NAME
-     *      money
-     * FUNCTION
-     *      money type
-     * COPYRIGHT
-     *      copyright (c) 2010 by Harald Lapp
-     * AUTHOR
-     *      Harald Lapp <harald@octris.org>
-     ****
+    /**
+     * Money type.
+     *
+     * @octdoc      c:type/money
+     * @copyright   copyright (c) 2010-2011 by Harald Lapp
+     * @author      Harald Lapp <harald@octris.org>
      */
-
-    class money extends \org\octris\core\type\number {
-        /****v* money/$currency
-         * SYNOPSIS
+    class money extends \org\octris\core\type\number
+    /**/
+    {
+        /**
+         * Currency of money object (ISO 4217)
+         *
+         * @octdoc  v:money/$currency
+         * @var     string
          */
         protected $currency;
-        /*
-         * FUNCTION
-         *      currency of money object (ISO 4217)
-         ****
-         */
+        /**/
 
-        /****m* money/__construct
-         * SYNOPSIS
+        /**
+         * Constructor. Note that a money object can have a currency, which is not bound to the 
+         * currently set locale.
+         *
+         * @octdoc  m:money/__construct
+         * @param   float       $value      Optional value for money object without locale specific characters.
+         * @param   string      $currency   Optional curreny (ISO 4217) to set.
+         * @param   string      $lc         Optional locale to set.
          */
-        public function __construct($value = 0, $currency = NULL, $lc = NULL)
-        /*
-         * FUNCTION
-         *      constructor. note, that a money object can have a currency, which is not associated to a local.
-         * INPUTS
-         *      * $value (float) -- (optional) float value for money object without locale specific characters
-         *      * $currency (string) -- (optional) currency (ISO 4217) to set for object. if no currency 
-         *        is specified, the currency of current set locale will be used
-         *      * $lc (string) -- (optional) locale setting
-         * SEE ALSO
-         *      money/prepare
-         ****
-         */
+        public function __construct($value = 0, $currency = null, $lc = null)
+        /**/
         {
             if (is_null($currency)) {
                 // TODO: need to detect currency of currently set locale

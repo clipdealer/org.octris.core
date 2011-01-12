@@ -1,130 +1,117 @@
 <?php
 
 namespace org\octris\core\validate {
-    /****c* validate/schema
-     * NAME
-     *      schema
-     * FUNCTION
-     *      validate by providing a validation schema
-     * COPYRIGHT
-     *      copyright 2010 by Harald Lapp
-     * AUTHOR
-     *      Harald Lapp <harald@octris.org>
-     * EXAMPLE
-     *      ..  source: php
-     *          $v = new lima_validate_schema(array(
-     *              'default' => array(
-     *                  'name' => array('type' => 'alpha')
-     *              )
-     *          ));
+    /**
+     * Validate by providing a validation schema.
      *
-     *          $r = $v->validate(array(
-     *              'name' => 'Harald'
-     *          ));
-     *
-     *          $r = $v->validate(array(
-     *              'name' => 'Harald'
-     *          ));
-     *          print (int)$r;
-     *
-     *          $v = new lima_validate_schema(array(
-     *              'default' => array(
-     *                  'names' => array('type' => 'array', 'items' => array('person'))
-     *              ),
-     *              'person' => array(
-     *                  'name' => array('type' => 'alpha')
-     *              )
-     *          ));
-     *          $r = $v->validate(array(
-     *              'names' => array(array('name' => 'Harald'), array('name' => 'Nungki'))
-     *          ));
-     *          print (int)$r;
-     ****
+     * <code>
+     * $v = new lima_validate_schema(array(
+     *     'default' => array(
+     *         'name' => array('type' => 'alpha')
+     *     )
+     * ));
+     * 
+     * $r = $v->validate(array(
+     *     'name' => 'Harald'
+     * ));
+     * 
+     * $r = $v->validate(array(
+     *     'name' => 'Harald'
+     * ));
+     * print (int)$r;
+     * 
+     * $v = new lima_validate_schema(array(
+     *     'default' => array(
+     *         'names' => array('type' => 'array', 'items' => array('person'))
+     *     ),
+     *     'person' => array(
+     *         'name' => array('type' => 'alpha')
+     *     )
+     * ));
+     * $r = $v->validate(array(
+     *     'names' => array(array('name' => 'Harald'), array('name' => 'Nungki'))
+     * ));
+     * print (int)$r;
+     * </code>
+     * 
+     * @octdoc      c:validate/schema
+     * @copyright   copyright (c) 2010-2011 by Harald Lapp
+     * @author      Harald Lapp <harald@octris.org>
      */
-
-    class schema {
-        /****v* schema/$schema
-         * SYNOPSIS
+    class schema
+    /**/
+    {
+        /**
+         * Validation schema.
+         *
+         * @octdoc  v:schema/$schema
+         * @var     array
          */
         protected $schema = array();
-        /*
-         * FUNCTION
-         *      validation schema
-         ****
-         */
-    
-        /****v* schema/$type
-         * SYNOPSIS
+        /**/
+
+        /**
+         * Schema base type.
+         *
+         * @octdoc  v:schema/$type
+         * @var     string
          */
         protected $type = '';
-        /*
-         * FUNCTION
-         *      schema base type
-         ****
-         */
-    
-        /****v* schema/$mode
-         * SYNOPSIS
+        /**/
+
+        /**
+         * Validation mode.
+         *
+         * @octdoc  v:schema/$mode
+         * @var     int
          */
         protected $mode;
-        /*
-         * FUNCTION
-         *      validation mode
-         ****
-         */
-    
-        /****d* schema/T_STRICT, T_CLEANUP, T_IGNORE
-         * SYNOPSIS
+        /**/
+
+        /**
+         * Available validation modes:
+         *
+         * - T_STRICT:  fields not in schema will raise a validation error (default)
+         * - T_CLEANUP: fields not in schema will be removed
+         * - T_IGNORE:  fields not in schema will be silently ignored
+         *
+         * @octdoc  d:schema/T_STRING, T_CLEANUP, T_IGNORE
          */
         const T_STRICT  = 1;
         const T_CLEANUP = 2;
         const T_IGNORE  = 3;
-        /*
-         * FUNCTION
-         *      validation modes: 
-         *      *   T_STRICT:   fields not in schema will raise a validation error (default)
-         *      *   T_CLEANUP:  fields not in schema will be removed
-         *      *   T_IGNORE:   fields not in schema will be silently ignored
-         ****
-         */
-    
-        /****m* type/__construct
-         * SYNOPSIS
+        /**/
+
+        /**
+         * Constructor.
+         *
+         * @octdoc  m:schema/__construct
+         * @param   array       $schema     Schema to use for validation.
+         * @param   string      $type       Type of base value ('object' or 'array')
+         * @param   int         $mode       Optional schema validation mode.
          */
         public function __construct(array $schema, $type, $mode = self::T_STRICT)
-        /*
-         * FUNCTION
-         *      constructor
-         * INPUTS
-         *      *   $schema (array) -- (required) schema to use for validation
-         *      *   $type (string) -- (required) type of base value (object/array)
-         *      *   $mode (int) -- (optional) schema validation mode (default: T_STRICT)
-         ****
-         */
+        /**/
         {
             $this->schema = $schema;
             $this->type   = $type;
             $this->mode   = $mode;
         }
  
-        /****m* schema/_validator
-         * SYNOPSIS
+        /**
+         * Schema validator.
+         *
+         * @octdoc  m:schema/_validator
+         * @param   array       $value      Value to validate.
+         * @param   string      $type       Type of value.
+         * @param   array       $schema     Expected schema of value.
+         * @param   int         $level      Current depth in value.
+         * @param   array       $options    Additional options.
+         * @param   int         $max_depth  Parameter for specifying max. allowed depth of nested sub-elements.
+         * @return  bool                    Returns true if validation succeeded.
          */
         protected function _validator(&$value, $type, array $schema, $level = 0, array $options = array(), $max_depth = 0)
-        /*
-         * FUNCTION
-         *      schema validator
-         * INPUTS
-         *      * $value (array) -- value to validate
-         *      * $type (string) -- type of value
-         *      * $schema (array) -- expected schema of value
-         *      * $level (int) -- (optional) current depth in value
-         *      * $options (array) -- (optional) additional options
-         *      * $max_depth (array) -- (optional) for specifying maximal depth of nested sub-elements
-         * OUTPUTS
-         *      (bool) -- true: validation successful, false: validation failed
-         ****
-         */
+        /**/
         {
             $return = ($max_depth == 0 || $level <= $max_depth);
         
@@ -240,22 +227,16 @@ namespace org\octris\core\validate {
             return $return;
         }
  
-        /****m* schema/validate
-         * SYNOPSIS
+        /**
+         * Apply validation schema to specified wrapped values.
+         *
+         * @octdoc  m:schema/validate
+         * @param   \org\octris\core\validate\wrapper   $wrapper    Wrapped values to validate.
+         * @return  bool                                            Returns true if value is valid compared to the schema configured in the validator instance.
          */
         public function validate(\org\octris\core\validate\wrapper $wrapper)
-        /*
-         * FUNCTION
-         *      apply validation schema to wrapped values and validate them.
-         * INPUTS
-         *      * $wrapper (wrapper) -- wrapped values to validate
-         * OUTPUTS
-         *      (bool) -- returns true, if schema validates
-         ****
-         */
+        /**/
         {
-            print_r($wrapper);
-            
             $return = $this->_validator(
                 $wrapper, 
                 $this->type,
