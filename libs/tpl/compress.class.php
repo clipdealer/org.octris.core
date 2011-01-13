@@ -1,73 +1,48 @@
 <?php
 
 namespace org\octris\core\tpl {
-    /****c* tpl/compress
-     * NAME
-     *      compress
-     * FUNCTION
-     *      Compress javascript and css files. This is a static class. This class makes use of 
-     *      the yuicompressor.
-     * COPYRIGHT
-     *      copyright (c) 2010 by Harald Lapp
-     * AUTHOR
-     *      Harald Lapp <harald@octris.org>
-     * REFERENCE
-     *      http://developer.yahoo.com/yui/compressor/
-     ****
+    /**
+     * Compress javascript and css files. This is a static class. This class makes use 
+     * the {@link http://developer.yahoo.com/yui/compressor/ yuicompressor}.
+     *
+     * @octdoc      c:tpl/compress
+     * @copyright   copyright (c) 2010-2011 by Harald Lapp
+     * @author      Harald Lapp <harald@octris.org>
      */
-
-    class compress {
-        /****v* compress/$path
-         * SYNOPSIS
-         */
-        protected $path = array(
-            'js'    => '/tmp',      // output path for compressed javascript
-            'css'   => '/tmp'       // output path for compressed css
-        );
-        /*
-         * FUNCTION
-         *      output path for various file types
-         ****
-         */
-        
-        /****v* compress/$defaults
-         * SYNOPSIS
+    class compress
+    /**/
+    {
+        /**
+         * Default options for yuicompressor.
+         *
+         * @octdoc  v:compress/$defaults
+         * @var     array
          */
         protected static $defaults = array('js' => array(), 'css' => array());
-        /*
-         * FUNCTION
-         *      default options for yuicompressor
-         ****
+        /**/
+
+        /**
+         * Constructor.
+         *
+         * @octdoc  m:compress/__construct
          */
-        
-        /****m* compress/__construct
-         * SYNOPSIS
-         */
-        public function __construct() 
-        /*
-         * FUNCTION
-         *      constructor
-         ****
-         */
+        public function __construct()
+        /**/
         {
         }
 
-        /****m* compress/exec
-         * SYNOPSIS
+        /**
+         * Execute yuicompressor.
+         *
+         * @octdoc  m:compress/exec
+         * @param   array       $files      Files to compress.
+         * @param   string      $out        Name of path to store file in.
+         * @param   string      $type       Type of files to compress.
+         * @param   array       $options    Optional additional options for yuicompressor.
+         * @return  string                  Name of created file.
          */
         protected static function exec($files, $out, $type, array $options = array())
-        /*
-         * FUNCTION
-         *      execute yuicompressor
-         * INPUTS
-         *      * $files (array) -- files to compress
-         *      * $out (string) -- name of path to store file in
-         *      * $type (string) -- type of files to compress
-         *      * $options (array) -- (optional) additional options for yuicompressor
-         * OUTPUTS
-         *      (string) -- name of created filename
-         ****
-         */
+        /**/
         {
             array_walk($files, function(&$file) {
                 $file = escapeshellarg($file);
@@ -96,57 +71,45 @@ namespace org\octris\core\tpl {
             return $tmp;
         }
         
-        /****m* compress/compressCSS
-         * SYNOPSIS
+        /**
+         * Compress external CSS files.
+         *
+         * @octdoc  m:compress/compressCSS
+         * @param   array       $files      Array of files to load and compress.
+         * @param   string      $out        Name of path to store file in.
+         * @return  string                  Filename of compressed CSS files.
          */
         public static function compressCSS(array $files, $out)
-        /*
-         * FUNCTION
-         *      compress external css files
-         * INPUTS
-         *      * $files (array) -- array of files to load and compress
-         *      * $out (string) -- name of path to store file in
-         * OUTPUTS
-         *      (string) -- filename of compressed javascript file
-         ****
-         */
+        /**/
         {
             return self::exec($files, $out, 'css');
         }
 
-        /****m* compress/compressJS
-         * SYNOPSIS
+        /**
+         * Compress external Javascript files.
+         *
+         * @octdoc  m:compress/compressJS
+         * @param   array       $files      Array of files to load and compress.
+         * @param   string      $out        Name of path to store file in.
+         * @return  string                  Filename of compressed Javascript files.
          */
         public static function compressJS(array $files, $out)
-        /*
-         * FUNCTION
-         *      compress external JS files
-         * INPUTS
-         *      * $files (array) -- array of files to load and merge
-         *      * $out (string) -- name of path to store file in
-         * OUTPUTS
-         *      (string) -- filename of compressed javascript file
-         ****
-         */
+        /**/
         {
             return self::exec($files, $out, 'js');
         }
 
-        /****m* compress/process
-         * SYNOPSIS
+        /**
+         * Process a template and compress all external CSS and Javascript files.
+         *
+         * @octdoc  m:compress/process
+         * @param   string      $tpl        Template to compress
+         * @param   string      $out_js     Path to output compressed Javascript in.
+         * @param   string      $out_css    Path to output compressed CSS in.
+         * @return  string                  Processed template.
          */
         public function process($tpl, $out_js, $out_css)
-        /*
-         * FUNCTION
-         *      compress file
-         * INPUTS
-         *      * $tpl (string) -- template to compress
-         *      * $out_js (string) -- path to output compressed javascript
-         *      * $out_css (string) -- path to output compressed css
-         * OUTPUTs
-         *      (string) -- processed template
-         ****
-         */
+        /**/
         {
             // methods purpose is to collection script/style blocks and extract all included external files. the function
             // makes sure, that files are not included multiple times
