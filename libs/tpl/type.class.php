@@ -1,19 +1,15 @@
 <?php
 
 namespace org\octris\core\tpl {
-    /****c* tpl/type
-     * NAME
-     *      type
-     * FUNCTION
-     *      core type of template engine
-     * COPYRIGHT
-     *      copyright (c) 2010 by Harald Lapp
-     * AUTHOR
-     *      Harald Lapp <harald@octris.org>
-     ****
+    /**
+     * Core type of template engine types.
+     *
+     * @octdoc      c:tpl/type
+     * @copyright   copyright (c) 2010-2011 by Harald Lapp
+     * @author      Harald Lapp <harald@octris.org>
      */
-
-    class type {
-        
+    class type
+    /**/
+    {
     }
 }
