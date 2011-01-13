@@ -3,105 +3,90 @@
 namespace org\octris\core {
     use \org\octris\core\config as config;
 
-    /****c* core/l10n
-     * NAME
-     *      l10n
-     * FUNCTION
-     *      localisation
-     * COPYRIGHT
-     *      copyright (c) 2010 by Harald Lapp
-     * AUTHOR
-     *      Harald Lapp <harald@octris.org>
-     ****
+    /**
+     * Localisation library.
+     *
+     * @octdoc      c:core/l10n
+     * @copyright   copyright (c) 2010-2011 by Harald Lapp
+     * @author      Harald Lapp <harald@octris.org>
      */
-
-    class l10n {
-        /****v* l10n/$instance
-         * SYNOPSIS
+    class l10n
+    /**/
+    {
+        /**
+         * Instance of l10n class for singleton pattern.
+         *
+         * @octdoc  v:l10n/$instance
+         * @var     \org\octris\core\l10n
          */
         private $instance = null;
-        /*
-         * FUNCTION
-         *      instance of l10n class
-         ****
-         */
-        
-        /****v* l10n/$lc
-         * SYNOPSIS
+        /**/
+
+        /**
+         * Locale string.
+         *
+         * @octdoc  v:l10n/$lc
+         * @var     string
          */
         protected $lc = null;
-        /*
-         * FUNCTION
-         *      locale string
-         ****
-         */
+        /**/
 
-        /****v* l10n/$lc_mem
-         * SYNOPSIS
+        /**
+         * Stores language codes for restoreLocale
+         *
+         * @octdoc  v:l10n/$lc_mem
+         * @var     array
          */
         protected $lc_mem = array();
-        /*
-         * FUNCTION
-         *      stores language codes for restoreLocale
-         ****
-         */
+        /**/
 
-        /****v* l10n/$cache
-         * SYNOPSIS
+        /**
+         * Gettext compiler cache.
+         *
+         * @octdoc  v:l10n/$cache
+         * @var     array
          */
         protected $cache = array();
-        /*
-         * FUNCTION
-         *      compiled function cache
-         ****
-         */
+        /**/
 
-        /****v* l10n/$directory
-         * SYNOPSIS
+        /**
+         * Directory of dictionary
+         *
+         * @octdoc  v:l10n/$directory
+         * @var     string
          */
         protected $directory = '';
-        /*
-         * FUNCTION
-         *      directory of dictionary
-         ****
-         */
+        /**/
 
-        /****m* l10n/__construct
-         * SYNOPSIS
+        /**
+         * Protected constructor and magic clone method. L10n is a singleton.
+         *
+         * @octdoc  m:l10n/__construct
          */
-        protected function __construct()
-        /*
-         * FUNCTION
-         *      constructor
-         ****
-         */
-        {
-        }
-        
-        /****m* l10n/setLocalePath
-         * SYNOPSIS
+        protected function __construct() {}
+        protected function __clone() {}
+        /**/
+
+        /**
+         * Directory to lookup dictionary in.
+         *
+         * @octdoc  m:l10n/setDirectory
+         * @param   string      $directory      Name of directory to set for looking up dictionary.
          */
         public function setDirectory($directory)
-        /*
-         * FUNCTION
-         *      directory to lookup dictionary in
-         * INPUTS
-         *      * $directory (string) -- name of directory to set
-         ****
-         */
+        /**/
         {
             $this->directory = $directory;
         }
 
-        /****m* l10n/getInstance
-         * SYNOPSIS
+        /**
+         * Return instance of localization class.
+         *
+         * @octdoc  m:l10n/getInstance
+         * @return  \org\octris\core\l10n       Instance of localization class.
          */
         public static function getInstance()
-        /*
-         * FUNCTION
-         *      create new instance of class
-         ****
-         */
+        /**/
         {
             if (is_null(self::$instance)) {
                 self::$instance = new static();
@@ -110,19 +95,15 @@ namespace org\octris\core {
             return self::$instance;
         }
 
-        /****m* l10n/setLocale
-         * SYNOPSIS
+        /**
+         * Change locale setting for application.
+         *
+         * @octdoc  m:l10n/setLocale
+         * @param   string      $locale         Localization string in the form of language_COUNTRY (e.g.: de_DE, en_US, ...).
+         * @return  string                      Returns old localisation setting.
          */
-        public function setLocale($locale) 
-        /*
-         * FUNCTION
-         *      change locale setting
-         * INPUTS
-         *      * $locale (string) -- localisation string in the form of de_DE
-         * OUTPUTS
-         *      (string) -- returns old localisation setting
-         ****
-         */
+        public function setLocale($locale)
+        /**/
         {
             $ret      = $this->lc;
             $this->lc = $locale;
@@ -138,68 +119,55 @@ namespace org\octris\core {
             return $ret;
         }
 
-        /****m* l10n/getLocale
-         * SYNOPSIS
+        /**
+         * Get current localisation setting.
+         *
+         * @octdoc  m:l10n/getLocale
+         * @return  string                      Current localization setting in the form of language_COUNTRY (e.g.: de_DE, en_US, ...).
          */
-        public function getLocale() 
-        /*
-         * FUNCTION
-         *      get current locale setting
-         * OUTPUTS
-         *      (string) -- current localisation in the form de_DE
-         ****
-         */
+        public function getLocale()
+        /**/
         {
             return $this->lc;
         }
 
-        /****m* l10n/getLanguageCode
-         * SYNOPSIS
+        /**
+         * Return language code from current set locale or from specified locale.
+         *
+         * @octdoc  m:l10n/getLanguageCode
+         * @param   string      $code           Optional code to parse.
+         * @return  string                      Language code.
          */
         public function getLanguageCode($code = null)
-        /*
-         * FUNCTION
-         *      return language code from locale (eg: 'de' from 'de_DE')
-         * INPUTS
-         *      * $code (string) -- (optional) code to parse
-         * OUTPUTS
-         *      (string) -- current set language code
-         ****
-         */
+        /**/
         {
             $parts = explode('_', (is_null($code) ? $this->lc : $code));
 
             return strtolower($parts[0]);
         }
 
-        /****m* l10n/getCountryCode
-         * SYNOPSIS
+        /**
+         * Return country code from current set locale or form specified locale.
+         *
+         * @octdoc  m:l10n/getCountryCode
+         * @param   string      $code           Optional code to parse.
+         * @return  string                      Country code.
          */
         public function getCountryCode($code = null)
-        /*
-         * FUNCTION
-         *      return country code from locale (eg: 'DE' from 'de_DE')
-         * INPUTS
-         *      * $code (string) -- (optional) code to parse
-         * OUTPUTS
-         *      (string) -- current set country code
-         ****
-         */
+        /**/
         {
             $parts = explode('_', (is_null($code) ? $this->lc : $code));
 
             return strtoupper(array_pop($parts));
         }
 
-        /****m* l10n/restoreLocale
-         * SYNOPSIS
+        /**
+         * One level restoring locale setting, when a setting was overwritten using setLocale.
+         *
+         * @octdoc  m:l10n/restoreLocale
          */
-        public function restoreLocale() 
-        /*
-         * FUNCTION
-         *      one level restoring locale setting, when a setting was overwritten using setLocale.
-         ****
-         */
+        public function restoreLocale()
+        /**/
         {
             if (count($this->lc_mem) > 0) {
                 $this->setLocale(array_pop($this->lc_mem));
