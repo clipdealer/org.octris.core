@@ -53,7 +53,7 @@ namespace org\octris\core\tpl\type\collection {
          * @octdoc  m:iterator/__construct
          * @param   mixed       $data       Collection data for iterating.
          */
-        function __construct($data)
+        public function __construct($data)
         /**/
         {
             $this->position = 0;
@@ -68,7 +68,7 @@ namespace org\octris\core\tpl\type\collection {
          * @octdoc  m:iterator/current
          * @return  mixed                   Value of current collection item.
          */
-        function current()
+        public function current()
         /**/
         {
             return $this->getItem($this->position);
@@ -77,7 +77,7 @@ namespace org\octris\core\tpl\type\collection {
         /****m* iterator/key
          * SYNOPSIS
          */
-        function key()
+        public function key()
         /*
          * FUNCTION
          *      return key of current array entry
@@ -92,7 +92,7 @@ namespace org\octris\core\tpl\type\collection {
         /****m* iterator/next
          * SYNOPSIS
          */
-        function next()
+        public function next()
         /*
          * FUNCTION
          *      move to next entry
@@ -105,7 +105,7 @@ namespace org\octris\core\tpl\type\collection {
         /****m* iterator/rewind
          * SYNOPSIS
          */
-        function rewind()
+        public function rewind()
         /*
          * FUNCTION
          *      rewind array back to the start
@@ -118,7 +118,7 @@ namespace org\octris\core\tpl\type\collection {
         /****m* iterator/valid
          * SYNOPSIS
          */
-        function valid()
+        public function valid()
         /*
          * FUNCTION
          *      test if the current position is valid
@@ -133,7 +133,7 @@ namespace org\octris\core\tpl\type\collection {
         /****m* iterator/seek
          * SYNOPSIS
          */
-        function seek($position)
+        public function seek($position)
         /*
          * FUNCTION
          *      seek to position
