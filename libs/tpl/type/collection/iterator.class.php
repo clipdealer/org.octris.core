@@ -1,70 +1,60 @@
 <?php
 
 namespace org\octris\core\tpl\type\collection {
-    /****c* collection/iterator
-     * NAME
-     *      iterator
-     * FUNCTION
-     *      implements functionality for iterating a tpl-type collection
-     * COPYRIGHT
-     *      copyright (c) 2010 by Harald Lapp
-     * AUTHOR
-     *      Harald Lapp <harald@octris.org>
-     ****
+    /**
+     * Implements functionality for iterating a template-type collection.
+     *
+     * @octdoc      c:collection/iterator
+     * @copyright   copyright (c) 2010-2011 by Harald Lapp
+     * @author      Harald Lapp <harald@octris.org>
      */
-
-    class iterator implements \Iterator, \SeekableIterator, \Countable {
-        /****v* iterator/$position
-         * SYNOPSIS
+    class iterator implements \Iterator, \SeekableIterator, \Countable
+    /**/
+    {
+        /**
+         * Iterator position.
+         *
+         * @octdoc  v:iterator/$position
+         * @var     int
          */
         protected $position = 0;
-        /*
-         * FUNCTION
-         *      iterator position
-         ****
-         */
-        
-        /****v* iterator/$keys
-         * SYNOPSIS
+        /**/
+
+        /**
+         * Keys of collection data.
+         *
+         * @octdoc  v:iterator/$keys
+         * @var     array
          */
         protected $keys = array();
-        /*
-         * FUNCTION
-         *      keys of data
-         ****
-         */
-        
-        /****v* iterator/$data
-         * SYNOPSIS
+        /**/
+
+        /**
+         * Collection data.
+         *
+         * @octdoc  v:iterator/$data
+         * @var     array
          */
         protected $data = array();
-        /*
-         * FUNCTION
-         *      iterator data
-         ****
-         */
-        
-        /****v* iterator/$count
-         * SYNOPSIS
+        /**/
+
+        /**
+         * Number of items in collection.
+         *
+         * @octdoc  v:iterator/$count
+         * @var     int
          */
         protected $count = 0;
-        /*
-         * FUNCTION
-         *      number of items
-         ****
-         */
-        
-        /****m* iterator/__construct
-         * SYNOPSIS
+        /**/
+
+        /**
+         * Constructor.
+         *
+         * @octdoc  m:iterator/__construct
+         * @param   mixed       $data       Collection data for iterating.
          */
         function __construct($data)
-        /*
-         * FUNCTION
-         *      constructor
-         * INPUTS
-         *      * $data (mixed) -- data for iterating over
-         ****
-         */
+        /**/
         {
             $this->position = 0;
             $this->keys     = array_keys($data);
@@ -72,17 +62,14 @@ namespace org\octris\core\tpl\type\collection {
             $this->count    = count($this->keys);
         }
         
-        /****m* iterator/current
-         * SYNOPSIS
+        /**
+         * Return current collection item.
+         *
+         * @octdoc  m:iterator/current
+         * @return  mixed                   Value of current collection item.
          */
         function current()
-        /*
-         * FUNCTION
-         *      return current array entry
-         * OUTPUTS
-         *      (mixed) -- value of current entry
-         ****
-         */
+        /**/
         {
             return $this->getItem($this->position);
         }
