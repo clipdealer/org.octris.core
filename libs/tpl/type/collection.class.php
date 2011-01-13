@@ -18,7 +18,7 @@ namespace org\octris\core\tpl\type {
          * @octdoc  m:collection/getIterator
          * @return  \org\octris\core\tpl\type\collection\iterator       Iterator instance.
          */
-        function getIterator()
+        public function getIterator()
         /**/
         {
             return new collection\iterator($this->data);
