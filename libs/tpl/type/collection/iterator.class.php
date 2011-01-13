@@ -74,105 +74,85 @@ namespace org\octris\core\tpl\type\collection {
             return $this->getItem($this->position);
         }
         
-        /****m* iterator/key
-         * SYNOPSIS
+        /**
+         * Return key of current collection item.
+         *
+         * @octdoc  m:iterator/key
+         * @return  string                  Key of current collection item.
          */
         public function key()
-        /*
-         * FUNCTION
-         *      return key of current array entry
-         * OUTPUTS
-         *      (string) -- key of current array entry
-         ****
-         */
+        /**/
         {
             return $this->keys[$this->position];
         }
-        
-        /****m* iterator/next
-         * SYNOPSIS
+
+        /**
+         * Move cursor to next collection item.
+         *
+         * @octdoc  m:iterator/next
          */
         public function next()
-        /*
-         * FUNCTION
-         *      move to next entry
-         ****
-         */
+        /**/
         {
             ++$this->position;
         }
         
-        /****m* iterator/rewind
-         * SYNOPSIS
+        /**
+         * Rewind collection back to first item.
+         *
+         * @octdoc  m:iterator/rewind
          */
         public function rewind()
-        /*
-         * FUNCTION
-         *      rewind array back to the start
-         ****
-         */
+        /**/
         {
             $this->position = 0;
         }
-        
-        /****m* iterator/valid
-         * SYNOPSIS
+
+        /**
+         * Test if the current cursor position is valid. The position is valid, if the cursors points to an existing item.
+         *
+         * @octdoc  m:iterator/valid
+         * @return  bool                    Returns true for valid positions.
          */
         public function valid()
-        /*
-         * FUNCTION
-         *      test if the current position is valid
-         * OUTPUTS
-         *      (bool) -- returns true for valid positions
-         ****
-         */
+        /**/
         {
             return ($this->position < $this->count);
         }
-        
-        /****m* iterator/seek
-         * SYNOPSIS
+
+        /**
+         * Seek to specified position in collection.
+         *
+         * @octdoc  m:iterator/seek
+         * @param   int     $position       Position to seek to.
          */
         public function seek($position)
-        /*
-         * FUNCTION
-         *      seek to position
-         * INPUTS
-         *      * $position (int) -- position to seek to
-         ****
-         */
+        /**/
         {
             $this->position = $position;
         }
-        
-        /****m* iterator/count
-         * SYNOPSIS
+
+        /**
+         * Returns number of elements in collection.
+         *
+         * @octdoc  m:iterator/count
+         * @return  int                     Number of elements in collection.
          */
         public function count()
-        /*
-         * FUNCTION
-         *      returns number of elements
-         * OUTPUTS
-         *      (int) -- number of elements of collection
-         ****
-         */
+        /**/
         {
             return $this->count;
         }
-        
-        /****m* iterator/getItem
-         * SYNOPSIS
+
+        /**
+         * Return item for specified position.
+         *
+         * @octdoc  m:iterator/getItem
+         * @param   int     $pos            Position to return item for.
+         * @return  mixed                   Item value.
          */
         protected function getItem($pos)
-        /*
-         * FUNCTION
-         *      return item for specified position
-         * INPUTS
-         *      * $pos (int) -- position to return item for
-         * OUTPUTS
-         *      (mixed) -- item value
-         ****
-         */
+        /**/
         {
             $item = $this->data[$this->keys[$pos]];
             
