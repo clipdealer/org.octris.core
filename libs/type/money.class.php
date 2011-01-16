@@ -17,7 +17,7 @@ namespace org\octris\core\type {
          * @octdoc  v:money/$currency
          * @var     string
          */
-        protected $currency;
+        protected $currency = 'EUR';
         /**/
 
         /**
@@ -27,14 +27,13 @@ namespace org\octris\core\type {
          * @octdoc  m:money/__construct
          * @param   float       $value      Optional value for money object without locale specific characters.
          * @param   string      $currency   Optional curreny (ISO 4217) to set.
-         * @param   string      $lc         Optional locale to set.
+         * @param   string      $lc         Optional locale to set. -> SET LC in format!??
          */
         public function __construct($value = 0, $currency = null, $lc = null)
         /**/
         {
-            if (is_null($currency)) {
-                // TODO: need to detect currency of currently set locale
-                $this->currency = 'EUR';
+            if (!is_null($currency)) {
+                $this->currency = $currency;
             }
 
             $value = $this->prepare($value);
@@ -59,106 +58,69 @@ namespace org\octris\core\type {
             }
         }
 
-        /****m* datetime/getInstance
-         * SYNOPSIS
+        /**
+         * Set currency for money object.
+         *
+         * @octdoc  m:money/setCurrency
+         * @param   string      $currency           Currency (ISO 4217) to set.
          */
-        public static function getInstance($value = 0, $currency = NULL, $lc = NULL)
-        /*
-         * FUNCTION
-         *      to provide more convenient way to acces eg. formatting methods
-         * INPUTS
-         *      * $value (float) -- (optional) float value for money object without locale specific characters
-         *      * $currency (string) -- (optional) currency (ISO 4217) to set for object. if no currency 
-         *        is specified, the currency of current set locale will be used
-         *      * $lc (string) -- (optional) locale setting
-         ****
+        public function setCurrency($currency)
+        /**/
+        {
+            $this->currency = $currency;
+        }
+        
+        /**
+         * Return currency of money object.
+         *
+         * @octdoc  m:money/getCurrency
+         * @return  string                          Currency (ISO 4217).
          */
+        public function getCurrency($currency)
+        /**/
+        {
+            return $this->currency;
+        }
+
+        /**
+         * Provide a sometimes more convenient way get a new instance of a
+         * money object.
+         *
+         * @octdoc  m:money/getInstance
+         * @param   float       $value      Optional value for money object.
+         * @param   string      $currency   Optional currency (ISO 4217) to set.
+         * @param   string      $lc         Optional locale string.
+         */
+        public function getInstance($value = 0, $currency = null, $lc = null)
+        /**/
         {
             return new static($value, $currency, $lc);
         }
 
-        /****m* number/__tostring
-         * SYNOPSIS
+        /**
+         * Method is called, when money object is casted to a string.
+         *
+         * @octdoc  m:money/__toString
+         * @return  string                      Formatted output.
          */
-        public function __toString() 
-        /*
-         * FUNCTION
-         *      method is called, when number object is casted to a string.
-         * OUTPUTS
-         *      (string) -- formatted output of number object
-         ****
-         */
+        public function __toString()
+        /**/
         {
             return $this->format();
         }
 
-        /****m* money/prepare
-         * SYNOPSIS
-         */
-        private function prepare($money) 
-        /*
-         * FUNCTION
-         *      prepare money amount or object
-         * INPUTS
-         *      * $money (mixed) -- an numeric money value or an money object
-         * OUTPUTS
-         *      (float) -- returns amount of money
-         ****
-         */
-        {
-            if (is_object($money) && $money instanceof lima_type_money) {
-                // parameter is a money object
-                if ($this->currency != $money->getCurrency()) {
-                    throw new Exception('different currencies!');
-                } else {
-                    $ret = $money->getValue();
-                }
-            } elseif (is_numeric($money)) {
-                // parameter is a valid numeric value
-                $ret = $money;
-            } else {
-                $ret = 0;
-            }
-
-            return $ret;
-        }
-
-        /****m* money/exchange
-         * SYNOPSIS
+        /**
+         * Convert money object to an other currency using specified exchange rate.
+         *
+         * @octdoc  m:money/exchange
+         * @param   string      $currency           Currency to convert to.
+         * @param   float       $rate               Optional exchange rate.
+         * @return  \org\octris\core\type\money     New instance of money object.
          */
         public function exchange($currency, $rate = 1)
-        /*
-         * FUNCTION
-         *      convert money object currency to an other currency
-         * INPUTS
-         *      * $currency (string) -- currency to convert money object to
-         *      * $rate (float) -- exchange rate
-         * OUTPUTS
-         *      (object) -- returns a new money object 
-         * TODO
-         *      * implementing a datasource to fetch valid exchange rates
-         ****
-         */
+        /**/
         {
-            return new lima_money_object($this->value * $rate, $currency, $this->lc);
-        }
-
-        /****m* money/convert
-         * SYNOPSIS
-         */
-        public function convert($currency, $rate = 1)
-        /*
-         * FUNCTION
-         *      convert money object currency to an other currency -- alias for exchange
-         * INPUTS
-         *      * $currency (string) -- currency to convert money object to
-         *      * $rate (float) -- exchange rate
-         * OUTPUTS
-         *      (object) -- returns a new money object 
-         ****
-         */
-        {
-            return $this->exchange($currency, $rate);
+            return new static($this->value * $rate, $currency, $this->lc);
         }
 
         /****m* money/format
