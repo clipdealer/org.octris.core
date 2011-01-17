@@ -1,0 +1,5 @@
+<?php
+ return array (
+  'nso' => 'Sesotho sa Leboa',
+)
+?>
