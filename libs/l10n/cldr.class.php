@@ -11,6 +11,26 @@ namespace org\octris\core\l10n {
     class cldr
     /**/
     {
+        /**
+         * Data cache.
+         *
+         * @octdoc  v:cldr/$cache
+         * @var     array
+         */
+        protected static $cache = array();
+        /**/
+        
+        /**
+         * Number formatter.
+         *
+         * @octdoc  m:cldr/numberFormat
+         * @param   
+         */
+        public function numberFormat()
+        /**/
+        {
+            
+        }
         
     }
     
