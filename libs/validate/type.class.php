@@ -48,7 +48,7 @@ namespace org\octris\core\validate {
          * @param   mixed       $value          Value to filter.
          * @return  mixed                       Filtered value.
          */
-        public function preFilter()
+        public function preFilter($value)
         /**/
         {
             // strip magic quotes, if enabled
