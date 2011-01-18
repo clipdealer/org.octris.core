@@ -12,7 +12,7 @@ namespace org\octris\core\app {
      * @copyright   copyright (c) 2011 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    class cli extends \org\octtris\core\app
+    class cli extends \org\octris\core\app
     /**/
     {
         protected function initialize()
