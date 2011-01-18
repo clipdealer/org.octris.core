@@ -68,7 +68,10 @@ namespace org\octris\core\validate {
          * @octdoc  m:type/getOptions
          * @return  array                       Validator options.
          */
-        protected getOptions;
+        protected function getOptions()
         /**/
+        {
+            return $this->options;
+        }
     }
 }
