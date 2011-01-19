@@ -819,6 +819,39 @@ _Example:_
 String inline functions
 -----------------------
 
+Array inline functions
+----------------------
+
+cycle
+~~~~~
+
+This command is normally used inside of a block, which is repeated by commands 
+like ~#foreach~ and ~#loop~. ~cycle~ iterates over the provided list of values
+each time it is called the internal pointer will be moved to the next element
+and this value will be handed over to the control variable. If the pointer
+reaches the end of the list it will be reset to the first list item unless the
+parameter ~pingpong~ is set to true. In this case the pointer will move backwards.
+
+..  source: html
+
+    {{cycle($list [, $pingpong [, $reset]])}}
+    
+_Parameter:_
+
++---------------+-----------+-----------+-----------------------------------------------+
+| Name          | Type      | Mandatory | Description                                   |
++===============+=======================================================================+
+| $list         | array     | x         | array of items to use for iteration           |
++---------------+-----------+-----------+-----------------------------------------------+
+| $pingpong     | bool      | -         | go back and forth instead of moving pointer   |
+|               |           |           | to the first list item, if end is reached     |
++---------------+-----------+-----------+-----------------------------------------------+
+| $reset        | mixed     | -         | optional variable may be used to reset the    |
+|               |           |           | pointer. if the value of ~reset~ changes      |
+|               |           |           | between two steps, the pointer will be        |
+|               |           |           | resetted                                      |
++---------------+-----------+-----------+-----------------------------------------------+
+
 
 EBNF of template syntax
 =======================
