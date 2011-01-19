@@ -1,6 +1,6 @@
 <?php
 
-namespace \org\octris\core {
+namespace org\octris\core {
     /**
      * Type superclass.
      *
