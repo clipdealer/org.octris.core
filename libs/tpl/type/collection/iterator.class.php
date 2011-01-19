@@ -98,6 +98,17 @@ namespace org\octris\core\tpl\type\collection {
         }
         
         /**
+         * Move cursor to previous collection item
+         *
+         * @octdoc  m:iterator/prev
+         */
+        public function prev()
+        /**/
+        {
+            --$this->position;
+        }
+        
+        /**
          * Rewind collection back to first item.
          *
          * @octdoc  m:iterator/rewind
