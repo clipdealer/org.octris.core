@@ -1,63 +1,57 @@
 <?php
 
 namespace org\octris\core\app\cli {
-    /****c* cli/readline
-     * NAME
-     *      readline
-     * FUNCTION
-     *      readline wrapper and fallback, if no readline is available
-     * COPYRIGHT
-     *      copyright (c) 2010 by Harald Lapp
-     * AUTHOR
-     *      Harald Lapp <harald@octris.org>
-     ****
+    /**
+     * Provides readline functionality either by using built-in readline
+     * capabilities or by an emulation, if built-in functionality is not
+     * available.
+     *
+     * @octdoc      c:cli/readline
+     * @copyright   copyright (c) 2011 by Harald Lapp
+     * @author      Harald Lapp <harald@octris.org>
      */
-
-    class readline {
-        /****m* readline/__construct
-         * SYNOPSIS
+    abstract class readline
+    /**/
+    {
+        /**
+         * Class to use for new instance.
+         *
+         * @octdoc  v:readline/$class
+         * @var     \org\octris\core\app\cli\readline
          */
-        public function __construct()
-        /*
-         * FUNCTION
-         *      constructor
-         ****
-         */
-        {
-        }
+        protected static $class = null;
+        /**/
         
-        /****m* readline/get
-         * SYNOPSIS
+        /**
+         * Get method.
+         *
+         * @octdoc  m:readline/get
+         * @abstract
          */
-        public function get($prompt = '', $default = '', $force = false)
-        /*
-         * FUNCTION
-         *      get user input from stdin
-         * INPUTS
-         *      * $prompt (string) -- (optional) prompt to print
-         *      * $default (string) -- (optional) default value
-         *      * $force (bool) -- (optional) whether to force input
-         * OUTPUTS
-         *      (string) -- read user input
-         ****
+        abstract public function get($prompt = '', $default = '', $force = false);
+        /**/
+        
+        /**
+         * Returns a new instance of readline.
+         *
+         * @octdoc  m:readline/getInstance
+         * @return  \org\octris\core\app\cli\readlin        Instance of readline.
          */
+        public final static function getInstance()
+        /**/
         {
-            $return   = false;
-            $iterator = 3;
-            
-            do {
-                printf($prompt, $default);
-
-                if (($fh = fopen('php://stdin', 'r'))) {
-                    $return = rtrim(fgets($fh), "\r\n");
-                    fclose($fh);
+            if (is_null(self::$class)) {
+                // detect and decide whether to use native or emulated readline
+                if (function_exists('readline')) {
+                    self::$class = '\org\octris\core\app\cli\readline\native';
+                } else {
+                    self::$class = '\org\octris\core\app\cli\readline\emulated';
                 }
-                
-                $return = ($return == '' ? $default : trim($return));
-                --$iterator;
-            } while($force && $return == '' && $iterator > 0);
+            }
             
-            return $return;
+            $class = self::$class;
+            
+            return new $class();
         }
     }
 }
