@@ -1,35 +1,43 @@
 #!/usr/bin/env php
 <?php
 
-/**
- * Octris framework shell.
- *
- * @octdoc      h:tools/octsh
- * @copyright   copyright (c) 2011 by Harald Lapp
- * @author      Harald Lapp <harald@octris.org>
- */
-/**/
+namespace org\octris\core\octsh {
+    /**
+     * Octris framework shell.
+     *
+     * @octdoc      h:tools/octsh
+     * @copyright   copyright (c) 2011 by Harald Lapp
+     * @author      Harald Lapp <harald@octris.org>
+     */
+    /**/
 
-require_once('org.octris.core/app/cli.class.php');
-// require_once(__DIR__ . '/libs/plugin.class.php');
+    $_ENV['OCTRIS_APP'] = 'org.octris.core';
+    $_ENV['OCTRIS_BASE'] = '/Users/harald/Projects';
 
-print "pre";
-
-use \org\octris\core\tools\octsh\libs\main as main;
-
-main::test();
-print "OK!";
-die;
-
-$info    = posix_getpwuid(posix_getuid());
-$history = $info['dir'] . '/.octris/octsh_history';
-
-$prompt   = 'octsh> ';
-$readline = \org\octris\core\app\cli\readline::getInstance($history);
-
-
-do {
-    $return = $readline->readline($prompt);
+    // include core cli application library
+    require_once('org.octris.core/app/cli.class.php');
     
-    if ($return == 'quit') break;
-} while(true);
+    // load application configuration
+    // $registry = \org\octris\core\registry::getInstance();
+    // $registry->set('config', function() {
+    //     return new \org\octris\core\config('{{$directory}}');
+    // }, \org\octris\core\registry::T_SHARED | \org\octris\core\registry::T_READONLY);
+
+    // run application
+    print "start\n";
+    app\main::getInstance()->process();
+    print "end\n";
+    
+    // $info    = posix_getpwuid(posix_getuid());
+    // $history = $info['dir'] . '/.octris/octsh_history';
+    // 
+    // $prompt   = 'octsh> ';
+    // $readline = \org\octris\core\app\cli\readline::getInstance($history);
+    // 
+    // 
+    // do {
+    //     $return = $readline->readline($prompt);
+    //     
+    //     if ($return == 'quit') break;
+    // } while(true);
+}
