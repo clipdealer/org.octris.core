@@ -47,6 +47,7 @@ function is_binary($file) {
 
 // initialization
 use \org\octris\core\app\cli as cli;
+use \org\octris\core\app\cli\stdio as stdio;
 use \org\octris\core\config as config;
 use \org\octris\core\tpl as tpl;
 
@@ -54,7 +55,7 @@ $cfg = new config('org.octris.core');
 $prj = new config('org.octris.core', 'project.create');
 
 print "\noctris -- create new project\n";
-cli::hline(); 
+stdio::hline(); 
 
 $prj->defaults(array(
     'info.company' => '',
@@ -68,12 +69,10 @@ if ($domain != '') {
 }
 
 // collect information and create configuration for new project
-$prompt = new cli\readline();
-
 $filter = $prj->filter('info');
 
 foreach ($filter as $k => $v) {
-    $prj[$k] = $prompt->get(sprintf("%s [%%s]: ", $k), $v);
+    $prj[$k] = stdio::getPrompt(sprintf("%s [%%s]: ", $k), $v);
 }
 
 $prj->save();
