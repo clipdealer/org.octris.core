@@ -4,6 +4,7 @@ namespace org\octris\core\app {
     use \org\octris\core\validate as validate;
     
     require_once('org.octris.core/app.class.php');
+    require_once('org.octris.core/app/cli/autoloader.class.php');
 
     /**
      * Core class for CLI applications.
