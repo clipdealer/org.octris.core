@@ -24,8 +24,8 @@ namespace org\octris\core\app\cli {
             $path = $_ENV['OCTRIS_BASE']->value . '/tools/';
             
             $pkg = $path . preg_replace('|\\\\|', '/', preg_replace('|\\\\|', '.', ltrim($classpath, '\\\\'), 2)) . '.class.php';
-            
-            require_once($pkg);
+
+            @include_once($pkg);
         }
     }
 
