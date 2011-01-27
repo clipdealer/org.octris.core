@@ -78,8 +78,8 @@ foreach ($filter as $k => $v) {
 $prj->save();
 
 print "\n";
-$module = $prompt->get('module [%s]: ', $module, true);
-$year   = $prompt->get('year [%s]: ', date('Y'), true);
+$module = stdio::getPrompt('module [%s]: ', $module, true);
+$year   = stdio::getPrompt('year [%s]: ', date('Y'), true);
 
 if ($module == '' || $year == '') {
     die("'module' and 'year' are required!\n");
