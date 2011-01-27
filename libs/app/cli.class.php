@@ -64,21 +64,6 @@ namespace org\octris\core\app {
         }
         
         /**
-         * Print a horizontal line of characters.
-         *
-         * @octdoc  m:cli/hline
-         * @param   string      $chr        Optional character to use for printing line.
-         */
-        public static function hline($chr = '=')
-        /**/
-        {
-            $cols = (int)`tput cols`;
-            $cols = ($cols > 0 ? $cols : 80);
-            
-            print substr(str_repeat($chr, $cols), 0, $cols) . "\n";
-        }
-
-        /**
          * Parse command line options and return Array of them. The parameters are required to have
          * the following format:
          *

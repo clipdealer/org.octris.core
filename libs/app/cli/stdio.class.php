@@ -12,6 +12,21 @@ namespace org\octris\core\app\cli {
     /**/
     {
         /**
+         * Print a horizontal line of characters.
+         *
+         * @octdoc  m:readline/hline
+         * @param   string      $chr        Optional character to use for printing line.
+         */
+        public static function hline($chr = '=')
+        /**/
+        {
+            $cols = (int)`tput cols`;
+            $cols = ($cols > 0 ? $cols : 80);
+            
+            print substr(str_repeat($chr, $cols), 0, $cols) . "\n";
+        }
+
+        /**
          * Get user input from STDIN.
          *
          * @octdoc  m:readline/get
