@@ -16,10 +16,16 @@ namespace org\octris\core\app {
     class cli extends \org\octris\core\app
     /**/
     {
-        protected function initialize()
-        {
-            
-        }
+        /**
+         * Mapping of an option to an application class
+         *
+         * @octdoc  v:cli/$option_map
+         * @var     
+         */
+        protected $option_map = array();
+        /**/
+        
+        protected function initialize() {}
         
         /**
          * Main application processor. This is the only method that needs to be called to
@@ -39,29 +45,27 @@ namespace org\octris\core\app {
         public function process()
         /**/
         {
-            $last_page = $this->getLastPage();
-            $action    = $last_page->getAction();
-            $last_page->validate($this, $action);
-
-            $next_page = $last_page->getNextPage($this, $this->entry_page);
-
-            $max = 3;
-
-            do {
-                $redirect_page = $next_page->prepareRender($this, $last_page, $action);
-
-                if (is_object($redirect_page) && $next_page != $redirect_page) {
-                    $next_page = $redirect_page;
-                } else {
-                    break;
+            $this->processOptions();
+        }
+        
+        /**
+         * Process command line options and call mapped class for each command
+         * line option.
+         *
+         * @octdoc  m:cli/processOptions
+         */
+        public function processOptions()
+        /**/
+        {
+            print_r($_GET);
+            
+            foreach ($this->option_map as $option) {
+                if (isset($_GET[$option])) {
+                    $class    = $this->option_map[$option];
+                    $instance = new $class();
+                    $instance->prepare();
                 }
-            } while (--$max);
-
-            // process with page
-            $this->setLastPage($next_page);
-
-            $next_page->prepareMessages($this);
-            $next_page->render($this);
+            }
         }
         
         /**
@@ -89,10 +93,9 @@ namespace org\octris\core\app {
             }
 
             $args = $argv;
-            array_shift($args);
-
-            $opts = array();
+            $opts = array(array_shift($args));
             $key  = '';
+            $idx  = 1;
 
             foreach ($args as $arg) {
                 if (preg_match('/^-([a-zA-Z]+)$/', $arg, $match)) {
@@ -112,14 +115,14 @@ namespace org\octris\core\app {
                     }
 
                     $arg = substr($match[2], 1);
-                } elseif (substr($arg, 0, 1) == '-') {
+                } elseif (strlen($arg) > 1 && substr($arg, 0, 1) == '-') {
                     // invalid option format
                     throw new \Exception('invalid option format "' . $arg . '"');
                 }
 
                 if ($key == '') {
-                    // unknown option
-                    throw new \Exception('invalid option format "' . $arg . '"');
+                    // no option name, add as numeric option
+                    $opts[$idx++] = $arg;
                 } else {
                     if (!is_bool($opts[$key])) {
                         // multiple values for this option
