@@ -8,7 +8,9 @@ namespace org\octris\core\validate {
      * @copyright   copyright (c) 2010-2011 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    abstract class type {
+    abstract class type
+    /**/
+    {
         /**
          * Stores validation options.
          *
