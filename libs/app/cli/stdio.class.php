@@ -14,7 +14,7 @@ namespace org\octris\core\app\cli {
         /**
          * Print a horizontal line of characters.
          *
-         * @octdoc  m:readline/hline
+         * @octdoc  m:stdio/hline
          * @param   string      $chr        Optional character to use for printing line.
          */
         public static function hline($chr = '=')
@@ -29,7 +29,7 @@ namespace org\octris\core\app\cli {
         /**
          * Get user input from STDIN.
          *
-         * @octdoc  m:readline/get
+         * @octdoc  m:stdio/get
          * @param   string      $prompt     Optional prompt to print.
          * @param   string      $default    Optional default value.
          * @param   bool        $force      Optional flag to indicate whether to
