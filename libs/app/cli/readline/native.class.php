@@ -12,27 +12,95 @@ namespace org\octris\core\app\cli\readline {
     /**/
     {
         /**
-         * Get user input from STDIN.
+         * Name of history file that was used for previous call to readline.
          *
-         * @octdoc  m:native/get
-         * @param   string      $prompt     Optional prompt to print.
-         * @param   string      $default    Optional default value.
-         * @param   bool        $force      Optional flag to indicate whether to
-         *                                  force input.
-         * @return  string                  User input.
+         * @octdoc  v:native/$last_history
+         * @var     string
          */
-        public function get($prompt = '', $default = '', $force = false)
+        private static $last_history = '';
+        /**/
+        
+        /**
+         * Detect native readline support.
+         *
+         * @octdoc  m:native/detect
+         * @return  mixed                   Returns either bool false, if native readline support is available or an array with
+         *                                  two boolean values. First one is true, second one is set to true only, if history is
+         *                                  supported by readline driver.
+         */
+        public static function detect()
         /**/
         {
-            $return   = false;
-            $iterator = 3;
+            $history = false;
             
-            do {
-                $return = readline(sprintf($prompt, $default));
-                $return = ($return == '' ? $default : trim($return));
-
-                --$iterator;
-            } while($force && $return == '' && $iterator > 0);
+            if (($detected = function_exists('readline'))) {
+                $history = function_exists('readline_read_history');
+            }
+            
+            return ($detected ? array(true, $history) : false);
+        }
+        
+        /**
+         * Destructor writes history to history file.
+         *
+         * @octdoc  m:native/__destruct
+         */
+        public function __destruct()
+        /**/
+        {
+            if ($this->history_file != '') {
+                readline_write_history($this->history_file);
+            }
+        }
+        
+        /**
+         * Change history.
+         *
+         * @octdoc  m:native/switchHistory
+         */
+        private function switchHistory()
+        /**/
+        {
+            if ($this->history_file != self::$last_history) {
+                if ($this->history_file == '') {
+                    readline_clear_history();
+                } else {
+                    readline_read_history($this->history_file);
+                }
+                
+                self::$last_history = $this->history_file;
+            }
+        }
+        
+        /**
+         * Add string to the history file.
+         *
+         * @octdoc  m:native/addHistory
+         * @param   string      $line       Line to add to the history file.
+         */
+        public function addHistory($line)
+        /**/
+        {
+            if ($this->history_file) {
+                readline_add_history($line);
+            }
+        }
+        
+        /**
+         * Get user input using native readline extension.
+         *
+         * @octdoc  m:native/readline
+         * @param   string      $prompt     Optional prompt to print.
+         * @return  string                  User input.
+         */
+        public function readline($prompt = '')
+        /**/
+        {
+            $this->switchHistory();
+            
+            $return = ltrim(\readline($prompt));
+            
+            $this->addHistory($return);
             
             return $return;
         }
