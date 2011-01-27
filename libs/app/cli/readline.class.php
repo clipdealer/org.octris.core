@@ -95,7 +95,7 @@ namespace org\octris\core\app\cli {
         {
             if (is_null(self::$instances[$history])) {
                 if (is_null(self::$class)) {
-                    // detect and decide whether to use native or emulated readline
+                    // detect and decide wich readline driver to use
                     foreach (self::$drivers as $driver) {
                         if (list(, self::$history) = $driver::detect()) {
                             self::$class = $driver;
