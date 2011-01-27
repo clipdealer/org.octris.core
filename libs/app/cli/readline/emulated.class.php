@@ -2,8 +2,9 @@
 
 namespace org\octris\core\app\cli\readline {
     /**
-     * Emulated readline support, should be only used, if built-in 
-     * readline-support is not available.
+     * Emulated readline support, should be only used, if built-in
+     * readline-support or readline using bash is not available. The
+     * emulated readline support does not support a history file.
      *
      * @octdoc      c:readline/emulated
      * @copyright   copyright (c) 2011 by Harald Lapp
@@ -13,32 +14,34 @@ namespace org\octris\core\app\cli\readline {
     /**/
     {
         /**
-         * Get user input from STDIN.
+         * Detect emulated readline support. This is only a dummy, because emulated readline is
+         * always available.
          *
-         * @octdoc  m:readline/get
-         * @param   string      $prompt     Optional prompt to print.
-         * @param   string      $default    Optional default value.
-         * @param   bool        $force      Optional flag to indicate whether to
-         *                                  force input.
-         * @return  string                  User input.
+         * @octdoc  m:native/detect
+         * @return  array                   Returns an array with two boolean values.
          */
-        public function get($prompt = '', $default = '', $force = false)
+        public static function detect()
         /**/
         {
-            $return   = false;
-            $iterator = 3;
+            return array(true, false);
+        }
+        
+        /**
+         * Get user input from STDIN.
+         *
+         * @octdoc  m:native/readline
+         * @param   string      $prompt     Optional prompt to print.
+         * @return  string                  User input.
+         */
+        public function readline($prompt = '')
+        /**/
+        {
+            print $prompt;
             
-            do {
-                printf($prompt, $default);
-
-                if (($fh = fopen('php://stdin', 'r'))) {
-                    $return = rtrim(fgets($fh), "\r\n");
-                    fclose($fh);
-                }
-                
-                $return = ($return == '' ? $default : trim($return));
-                --$iterator;
-            } while($force && $return == '' && $iterator > 0);
+            if (($fh = fopen('php://stdin', 'r'))) {
+                $return = ltrim(rtrim(fgets($fh), "\r\n"));
+                fclose($fh);
+            }
             
             return $return;
         }
