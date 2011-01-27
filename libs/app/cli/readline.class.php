@@ -19,39 +19,108 @@ namespace org\octris\core\app\cli {
          * @octdoc  v:readline/$class
          * @var     \org\octris\core\app\cli\readline
          */
-        protected static $class = null;
+        private static $class = null;
+        /**/
+
+        /**
+         * Instances of readline. Each history-file has it's own instance.
+         *
+         * @octdoc  v:readline/$instances
+         * @var     array
+         */
+        private static $instances = array();
+        /**/
+
+        /**
+         * Whether readline history is supported.
+         *
+         * @octdoc  v:readline/$history
+         * @var     bool
+         */
+        private static $history = false;
         /**/
         
         /**
-         * Get method.
+         * Available readline drivers.
          *
-         * @octdoc  m:readline/get
+         * @octdoc  v:readline/$drivers
+         * @var     array
+         */
+        private static $drivers = array(
+            '\org\octris\core\app\cli\readline\native',
+            '\org\octris\core\app\cli\readline\bash',
+            '\org\octris\core\app\cli\readline\emulated',
+        );
+        /**/
+
+        /**
+         * Number of commands allowed in history file. This is globally the same value for all readline drivers and all
+         * readline instances.
+         *
+         * @octdoc  v:readline/$history_size
+         * @var     int
+         */
+        protected static $history_size = 30;
+        /**/
+        
+        /**
+         * History file bound to instance of readline. If no file is specified, the history will not be used.
+         *
+         * @octdoc  v:readline/$history_file
+         * @var     string
+         */
+        protected $history_file = '';
+        /**/
+
+        /**
+         * Abstract methods
+         *
+         * @octdoc  m:readline/get, detect
          * @abstract
          */
-        abstract public function get($prompt = '', $default = '', $force = false);
+        abstract public static function detect();
+        abstract public function readline($prompt = '');
         /**/
         
         /**
-         * Returns a new instance of readline.
+         * Returns a new instance of readline. Note that no history functionality is available, if no
+         * history path is provided.
          *
          * @octdoc  m:readline/getInstance
+         * @param   string          $history                Optional path to a history file.
          * @return  \org\octris\core\app\cli\readlin        Instance of readline.
          */
-        public final static function getInstance()
+        public final static function getInstance($history = '')
         /**/
         {
-            if (is_null(self::$class)) {
-                // detect and decide whether to use native or emulated readline
-                if (function_exists('readline')) {
-                    self::$class = '\org\octris\core\app\cli\readline\native';
-                } else {
-                    self::$class = '\org\octris\core\app\cli\readline\emulated';
+            if (is_null(self::$instances[$history])) {
+                if (is_null(self::$class)) {
+                    // detect and decide whether to use native or emulated readline
+                    foreach (self::$drivers as $driver) {
+                        if (list(, self::$history) = $driver::detect()) {
+                            self::$class = $driver;
+                            break;
+                        }
+                    }
                 }
+                
+                self::$instances[$history] = new self::$class((self::$history && !!$history ? $history : ''));
             }
             
-            $class = self::$class;
-            
-            return new $class();
+            return self::$instances[$history];
+        }
+        
+        /**
+         * Default constructor. This method is protected to force using readline::getInstance for instance
+         * creation.
+         *
+         * @octdoc  m:readline/__construct
+         * @param   string          $history                History file to use for this readline instance.
+         */
+        protected function __construct($history = '')
+        /**/
+        {
+            $this->history_file = $history;
         }
     }
 }
