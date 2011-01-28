@@ -58,6 +58,10 @@ namespace org\octris\core\octsh\app {
             $args = explode(' ', $return);
             $cmd  = array_shift($args);
 
+            if (!isset($this->next_pages[$cmd])) {
+                $cmd = 'error';
+            }
+
             return $cmd;
         }
     }
