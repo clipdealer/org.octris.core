@@ -45,23 +45,9 @@ namespace org\octris\core\app {
         public function process()
         /**/
         {
-            $this->processOptions();
-        }
-        
-        /**
-         * Process command line options and call mapped class for each command
-         * line option.
-         *
-         * @octdoc  m:cli/processOptions
-         */
-        public function processOptions()
-        /**/
-        {
-            print_r($_GET);
-            
-            foreach ($this->option_map as $option) {
+            // handle command line options
+            foreach ($this->option_map as $option => $class) {
                 if (isset($_GET[$option])) {
-                    $class    = $this->option_map[$option];
                     $instance = new $class();
                     $instance->prepare();
                 }
