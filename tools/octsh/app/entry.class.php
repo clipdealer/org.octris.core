@@ -31,7 +31,7 @@ namespace org\octris\core\octsh\app {
          * @param   string                          $action         Action that led to current page.
          * @return  mixed                                           Returns either page to redirect to or null.
          */
-        public function prepare(\org\octris\core\app\web\page $last_page, $action)
+        public function prepare(\org\octris\core\app\page $last_page, $action)
         /**/
         {
         }
