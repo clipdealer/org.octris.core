@@ -12,7 +12,6 @@ namespace org\octris\core\octsh {
     /**/
 
     $_ENV['OCTRIS_APP'] = 'org.octris.core';
-    $_ENV['OCTRIS_BASE'] = '/Users/harald/Projects';
 
     // include core cli application library
     require_once('org.octris.core/app/cli.class.php');
