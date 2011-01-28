@@ -20,7 +20,9 @@ namespace org\octris\core\octsh\app {
          * @octdoc  v:shell/$next_page
          * @var     array
          */
-        protected $next_pages = array();
+        protected $next_pages = array(
+            'quit'  => '\org\octris\core\octsh\app\quit'
+        );
         /**/
 
         /**
@@ -34,19 +36,13 @@ namespace org\octris\core\octsh\app {
         public function prepare(\org\octris\core\app\page $last_page, $action)
         /**/
         {
-            if ($return != '') {
-                if (isset($this->next_pages[$cmd])) {
-                    return new $this->next_pages[$cmd]();
-                } elseif ($return != 'quit' && $return != 'exit') {
-                    return new \org\octris\core\octsh\app\error();
-                }
-            }
         }
 
         /**
          * Render page.
          *
          * @octdoc  m:entry/render
+         * @return  string                                          Action that was triggered by the dialog.
          */
         public function dialog()
         /**/
@@ -60,9 +56,8 @@ namespace org\octris\core\octsh\app {
 
             $args = explode(' ', $return);
             $cmd  = array_shift($args);
-            
-            $state = app::getInstance()->getState();
-            $state['ACTION'] = $cmd;
+
+            return $cmd;
         }
     }
 }
