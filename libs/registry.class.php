@@ -52,7 +52,7 @@ namespace org\octris\core {
          * @octdoc  v:registry/$instance
          * @var     \org\octris\core\registry
          */
-        protected $instance = null;
+        private static $instance = null;
         /**/
         
         /**
