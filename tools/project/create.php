@@ -103,12 +103,12 @@ if (is_dir($dir)) {
 
 // process skeleton and write project files
 $tpl = new tpl();
-$tpl->addSearchPath(__DIR__ . '/data/skel/');
+$tpl->addSearchPath(__DIR__ . '/data/skel/web/');
 $tpl->setValues($data);
 
 $box = new tpl\sandbox();
 
-$src = __DIR__ . '/data/skel/';
+$src = __DIR__ . '/data/skel/web/';
 $len = strlen($src);
 
 mkdir($dir, 0755);
