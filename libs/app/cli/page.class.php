@@ -8,7 +8,7 @@ namespace org\octris\core\app\cli {
      * @copyright   copyright (c) 2011 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    abstract class page
+    abstract class page #extends \org\octris\core\app\page
     /**/
     {
         /**
