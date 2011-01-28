@@ -19,5 +19,25 @@ namespace org\octris\core\app\cli {
          */
         protected $next_page = array();
         /**/
+        
+        /**
+         * Abstract method definition.
+         *
+         * @octdoc  m:page/dialog
+         */
+        abstract public function dialog();
+        /**/
+        
+        /**
+         * Implements render page of core page class. Make it final, because
+         * render should not be used for cli application pages. Instead the 
+         * abstract method 'dialog' must be implemented.
+         *
+         * @octdoc  m:page/render
+         */
+        public final function render()
+        /**/
+        {
+        }
     }
 }
