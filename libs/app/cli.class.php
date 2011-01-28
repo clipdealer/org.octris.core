@@ -65,7 +65,7 @@ namespace org\octris\core\app {
             }
 
             // handle page flow
-            $action = '';
+            $action = 'default';
             
             do {
                 $last_page = $this->getLastPage();
@@ -85,7 +85,8 @@ namespace org\octris\core\app {
                 
                 $this->setLastPage($next_page);
                 
-                $action = $next_page->dialog();
+                $action = $next_page->dialog($action);
+                $action = ($action != '' ? $action : 'default');
             } while (true);
         }
         
