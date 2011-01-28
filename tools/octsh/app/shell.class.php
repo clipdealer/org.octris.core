@@ -22,9 +22,37 @@ namespace org\octris\core\octsh\app {
          */
         protected $next_pages = array(
             'quit'  => '\org\octris\core\octsh\app\quit',
-            'error' => '\org\octris\core\octsh\app\error'
+            'help'  => '\org\octris\core\octsh\app\help',
+            'clear' => '\org\octris\core\octsh\app\clear',
+            'error' => '\org\octris\core\octsh\app\error',
         );
         /**/
+
+        /**
+         * Constructor.
+         *
+         * @octdoc  m:shell/__construct
+         */
+        public function __construct()
+        /**/
+        {
+            parent::__construct();
+            
+            $registry = \org\octris\core\registry::getInstance();
+            
+            if (!isset($registry->commands)) {
+                // make commands and command classes available through registry
+                $commands = $this->next_pages;
+                unset($commands['error']);
+                ksort($commands);
+                
+                $registry->set(
+                    'commands', 
+                    $commands,
+                    \org\octris\core\registry::T_SHARED | \org\octris\core\registry::T_READONLY
+                );
+            }
+        }
 
         /**
          * Prepare page.
