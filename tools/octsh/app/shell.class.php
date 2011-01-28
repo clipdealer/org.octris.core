@@ -1,6 +1,8 @@
 <?php
 
 namespace org\octris\core\octsh\app {
+    use \org\octris\core\app as app;
+    
     /**
      * Implements command line shell.
      *
@@ -18,11 +20,7 @@ namespace org\octris\core\octsh\app {
          * @octdoc  v:shell/$next_page
          * @var     array
          */
-         protected $next_pages = array(
-             'quit' => '\org\octris\octsh\app\quit',
-             'exit' => '\org\octris\octsh\app\quit',
-             
-         );
+        protected $next_pages = array();
         /**/
 
         /**
@@ -36,6 +34,13 @@ namespace org\octris\core\octsh\app {
         public function prepare(\org\octris\core\app\page $last_page, $action)
         /**/
         {
+            if ($return != '') {
+                if (isset($this->next_pages[$cmd])) {
+                    return new $this->next_pages[$cmd]();
+                } elseif ($return != 'quit' && $return != 'exit') {
+                    return new \org\octris\core\octsh\app\error();
+                }
+            }
         }
 
         /**
@@ -43,23 +48,21 @@ namespace org\octris\core\octsh\app {
          *
          * @octdoc  m:entry/render
          */
-        public function render()
+        public function dialog()
         /**/
         {
             $readline = \org\octris\core\app\cli\readline::getInstance('/tmp/octsh.txt');
             $prompt   = 'octsh> ';
-            
+
             do {
-                $return = $readline->readline($prompt);
+                $return = trim($readline->readline($prompt));
+            } while ($return == '');
 
-                if ($return != '') {
-                    
-                }
-
-                $return = ($return == '' ? $default : trim($return));
-                
-                usleep(1);
-            } while(true);
+            $args = explode(' ', $return);
+            $cmd  = array_shift($args);
+            
+            $state = app::getInstance()->getState();
+            $state['ACTION'] = $cmd;
         }
     }
 }
