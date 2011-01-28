@@ -69,7 +69,7 @@ namespace org\octris\core\app {
                 $action = $this->getAction();
 
                 $last_page = $this->getLastPage();
-                $next_page = $last_page->getNextPage($this->entry_page);
+                $next_page = $last_page->getNextPage($action, $this->entry_page);
             
                 $max = 3;
                 
@@ -87,7 +87,7 @@ namespace org\octris\core\app {
                 
                 $next_page->render();
                 
-                usleep(10);
+                sleep(1);
             } while (true);
         }
         
@@ -100,19 +100,11 @@ namespace org\octris\core\app {
         public function getAction()
         /**/
         {
-            static $action = '';
-
-            if ($action == '') {
-                if (isset($this->state['ACTION'])) {
-                    $action = $this->state['ACTION'];
-                }
-
-                if ($action == '') {
-                    $action = 'default';
-                }
+            if (isset($this->state['ACTION'])) {
+                $action = $this->state['ACTION'];
             }
 
-            return $action;
+            return ($action == '' ? 'default' : $action);
         }
 
         /**
