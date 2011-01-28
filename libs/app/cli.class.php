@@ -20,7 +20,7 @@ namespace org\octris\core\app {
          * Mapping of an option to an application class
          *
          * @octdoc  v:cli/$option_map
-         * @var     
+         * @var     array
          */
         protected $option_map = array();
         /**/
