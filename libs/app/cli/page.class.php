@@ -29,13 +29,13 @@ namespace org\octris\core\app\cli {
         /**/
         
         /**
-         * Implements render page of core page class. Make it final, because
-         * render should not be used for cli application pages. Instead the 
-         * abstract method 'dialog' must be implemented.
+         * Implements render page of core page class, because this method is
+         * optional for cli application pages. Instead the abstract method 
+         * 'dialog' is required to be implemented for any cli application page.
          *
          * @octdoc  m:page/render
          */
-        public final function render()
+        public function render()
         /**/
         {
         }
