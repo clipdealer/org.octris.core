@@ -21,7 +21,8 @@ namespace org\octris\core\octsh\app {
          * @var     array
          */
         protected $next_pages = array(
-            'quit'  => '\org\octris\core\octsh\app\quit'
+            'quit'  => '\org\octris\core\octsh\app\quit',
+            'error' => '\org\octris\core\octsh\app\error'
         );
         /**/
 
