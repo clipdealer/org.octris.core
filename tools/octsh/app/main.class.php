@@ -12,6 +12,15 @@ namespace org\octris\core\octsh\app {
     /**/
     {
         /**
+         * Entry page to use if no other page is loaded. To be overwritten by applications' main class.
+         *
+         * @octdoc  v:app/$entry_page
+         * @var     string
+         */
+        protected $entry_page = '';
+        /**/
+
+        /**
          * Mapping of an option to an application class
          *
          * @octdoc  v:cli/$option_map
