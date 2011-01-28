@@ -76,7 +76,7 @@ namespace org\octris\core\app {
          * @octdoc  m:cli/getOptions
          * @return  array                               Parsed command line parameters.
          */
-        public function getOptions()
+        public static function getOptions()
         /**/
         {
             global $argv;
