@@ -65,12 +65,12 @@ namespace org\octris\core\app {
             }
 
             // handle page flow
+            $action = '';
+            
             do {
-                $action = $this->getAction();
-
                 $last_page = $this->getLastPage();
                 $next_page = $last_page->getNextPage($action, $this->entry_page);
-            
+
                 $max = 3;
                 
                 do {
@@ -82,12 +82,10 @@ namespace org\octris\core\app {
                         break;
                     }
                 } while (--$max);
-
+                
                 $this->setLastPage($next_page);
                 
-                $next_page->render();
-                
-                sleep(1);
+                $action = $next_page->dialog();
             } while (true);
         }
         
