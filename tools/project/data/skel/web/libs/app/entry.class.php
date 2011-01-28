@@ -28,26 +28,23 @@ namespace {{$namespace}}\app {
          * through the page object constructor.
          *
          * @octdoc  m:entry/__construct
-         * @param   \org\octris\core\app    $app    Instance of application.
          */
-        public function __construct(\org\octris\core\app $app) 
+        public function __construct() 
         /**/
         {
-            parent::__construct($app);
+            parent::__construct();
         }
 
         /**
          * Prepare rendering of a page. this method is called _BEFORE_ rendering a page.
          *
-         * @octdoc  m:entry/prepareRender
-         * @param   \org\octris\core\app            $app        Instance of application.
+         * @octdoc  m:entry/prepare
          * @param   \org\octris\core\app\page       $last_page  Instance of the page that was active before this one
          * @return  null|\org\octris\core\app\page              A page can be returned.
          */
-        public function prepareRender(\org\octris\core\app $app, \org\octris\core\app\page $last_page, $action)
+        public function prepare(\org\octris\core\app\page $last_page, $action)
         /**/
         {
-            
         }
 
         /**
@@ -55,9 +52,8 @@ namespace {{$namespace}}\app {
          * the entry page. Otherwise the application is propably broken.
          *
          * @octdoc  m:entry/render
-         * @param   \org\octris\core\app            $app        Instance of application.
          */
-        public function render(\org\octris\core\app $app)
+        public function render()
         /**/
         {
             die('error!');

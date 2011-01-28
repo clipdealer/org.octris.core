@@ -28,35 +28,31 @@ namespace {{$namespace}}\app {
          * through the page object constructor.
          *
          * @octdoc  m:index/__construct
-         * @param   \org\octris\core\app    $app    Instance of application.
          */
-        public function __construct(\org\octris\core\app $app) 
+        public function __construct() 
         /**/
         {
-            parent::__construct($app);
+            parent::__construct();
         }
 
         /**
          * Prepare rendering of a page. this method is called _BEFORE_ rendering a page.
          *
-         * @octdoc  m:index/prepareRender
-         * @param   \org\octris\core\app            $app        Instance of application.
+         * @octdoc  m:index/prepare
          * @param   \org\octris\core\app\page       $last_page  Instance of the page that was active before this one
          * @return  null|\org\octris\core\app\page              A page can be returned.
          */
-        public function prepareRender(\org\octris\core\app $app, \org\octris\core\app\page $last_page, $action)
+        public function prepare(\org\octris\core\app\page $last_page, $action)
         /**/
         {
-            
         }
 
         /**
          * This method is used to populate a template with data and render it.
          *
          * @octdoc  m:index/render
-         * @param   \org\octris\core\app            $app        Instance of application.
          */
-        public function render(\org\octris\core\app $app)
+        public function render()
         /**/
         {
         }
