@@ -21,11 +21,11 @@ namespace org\octris\core\app\cli {
         public static function autoload($classpath)
         /**/
         {
-            $path = $_ENV['OCTRIS_BASE']->value . '/tools/';
-            
-            $pkg = $path . preg_replace('|\\\\|', '/', preg_replace('|\\\\|', '.', ltrim($classpath, '\\\\'), 2)) . '.class.php';
+            $pkg = preg_replace('|\\\\|', '/', preg_replace('|\\\\|', '.', ltrim($classpath, '\\\\'), 2)) . '.class.php';
 
-            @include_once($pkg);
+            $pkg = $_ENV['OCTRIS_BASE']->value . '/tools/' . $pkg;
+
+            include_once($pkg);
         }
     }
 
