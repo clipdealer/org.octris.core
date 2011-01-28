@@ -27,7 +27,7 @@ namespace org\octris\core\octsh\app {
          * @var     
          */
         protected $option_map = array(
-            '--help'    => 'org\octris\core\octsh\app\clihelp'
+            '--help'    => '\org\octris\core\octsh\app\clihelp'
         );
         /**/
     }
