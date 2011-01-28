@@ -65,38 +65,55 @@ namespace org\octris\core\app {
             }
 
             // handle page flow
-            $last_page = $this->getLastPage();
-            $last_page->validate();
+            do {
+                $action = $this->getAction();
+
+                $last_page = $this->getLastPage();
+                $next_page = $last_page->getNextPage($this->entry_page);
             
-            // $action = self::getAction();
-            // 
-            // $last_page = $this->getLastPage();
-            // $last_page->validate($action);
-            // 
-            // $next_page = $last_page->getNextPage($this->entry_page);
-            // 
-            // $max = 3;
-            // 
-            // do {
-            //     $redirect_page = $next_page->prepare($last_page, $action);
-            // 
-            //     if (is_object($redirect_page) && $next_page != $redirect_page) {
-            //         $next_page = $redirect_page;
-            //     } else {
-            //         break;
-            //     }
-            // } while (--$max);
-            // 
-            // // process with page
-            // $this->setLastPage($next_page);
-            // 
-            // // $next_page->prepareMessages($this);
-            // // $next_page->sendHeaders($this->headers);
-            //         
-            // $next_page->render();
+                $max = 3;
+                
+                do {
+                    $redirect_page = $next_page->prepare($last_page, $action);
+                    
+                    if (is_object($redirect_page) && $next_page != $redirect_page) {
+                        $next_page = $redirect_page;
+                    } else {
+                        break;
+                    }
+                } while (--$max);
+
+                $this->setLastPage($next_page);
+                
+                $next_page->render();
+                
+                usleep(10);
+            } while (true);
         }
         
-        function getAction() { return ''; }
+        /**
+         * Determine the action the page was called with.
+         *
+         * @octdoc  m:cli/getAction
+         * @return  string                                  Name of action.
+         */
+        public function getAction()
+        /**/
+        {
+            static $action = '';
+
+            if ($action == '') {
+                if (isset($this->state['ACTION'])) {
+                    $action = $this->state['ACTION'];
+                }
+
+                if ($action == '') {
+                    $action = 'default';
+                }
+            }
+
+            return $action;
+        }
 
         /**
          * Parse command line options and return Array of them. The parameters are required to have
