@@ -30,5 +30,20 @@ namespace org\octris\core\octsh\app {
             '--help'    => '\org\octris\core\octsh\app\clihelp'
         );
         /**/
+        
+        /**
+         * Overwrite process method of cli application controller to provide a nice header message
+         * when starting shell.
+         *
+         * @octdoc  m:main/process
+         */
+        public function process()
+        /**/
+        {
+            print "Welcome to the OCTRiS shell.\n";
+            print "enter 'quit' to exit the shell or 'help' to get any further usage help.\n\n";
+            
+            parent::process();
+        }
     }
 }
