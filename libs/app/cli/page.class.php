@@ -25,7 +25,7 @@ namespace org\octris\core\app\cli {
          *
          * @octdoc  m:page/dialog
          */
-        abstract public function dialog();
+        abstract public function dialog($action);
         /**/
         
         /**

@@ -18,7 +18,7 @@ namespace org\octris\core\octsh\app {
          * @octdoc  v:error/$next_page
          * @var     array
          */
-         protected $next_pages = array();
+        protected $next_pages = array();
         /**/
 
         /**
@@ -38,12 +38,15 @@ namespace org\octris\core\octsh\app {
          * Abstract method definition
          *
          * @octdoc  m:error/render
-         * @abstract   
+         * @param   string                          $action         Action that led to current page.
+         * @return  string                                          empty string.
          */
-        public function render()
+        public function dialog($action)
         /**/
         {
             print "ERROR: unknown command\n";
+            
+            return '';
         }
     }
 }

@@ -42,9 +42,10 @@ namespace org\octris\core\octsh\app {
          * Render page.
          *
          * @octdoc  m:entry/render
+         * @param   string                          $action         Action that led to current page.
          * @return  string                                          Action that was triggered by the dialog.
          */
-        public function dialog()
+        public function dialog($action)
         /**/
         {
             $readline = \org\octris\core\app\cli\readline::getInstance('/tmp/octsh.txt');

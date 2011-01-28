@@ -18,9 +18,9 @@ namespace org\octris\core\octsh\app {
          * @octdoc  v:entry/$next_page
          * @var     array
          */
-         protected $next_pages = array(
-             'default' => '\org\octris\core\octsh\app\shell',
-         );
+        protected $next_pages = array(
+            'default' => '\org\octris\core\octsh\app\shell',
+        );
         /**/
 
         /**
@@ -37,12 +37,12 @@ namespace org\octris\core\octsh\app {
         }
 
         /**
-         * Abstract method definition
+         * Dialog of entry page should never be called.
          *
-         * @octdoc  m:entry/render
-         * @abstract   
+         * @octdoc  m:entry/dialog
+         * @param   string                          $action         Action that led to current page.
          */
-        public function render()
+        public function dialog($action)
         /**/
         {
             die('error!');

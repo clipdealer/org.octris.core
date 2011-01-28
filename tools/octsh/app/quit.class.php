@@ -38,8 +38,9 @@ namespace org\octris\core\octsh\app {
          * Implements dialog.
          *
          * @octdoc  m:quit/dialog
+         * @param   string                          $action         Action that led to current page.
          */
-        public function dialog()
+        public function dialog($action)
         /**/
         {
             print "Good bye!\n";
