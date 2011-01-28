@@ -56,7 +56,7 @@ namespace org\octris\core\app {
         {
             // handle command line options
             foreach ($this->option_map as $option => $class) {
-                if (isset($_GET[$option])) {
+                if ($_GET[$option]->isSet) {
                     $instance = new $class();
                     
                     $instance->prepare();
