@@ -17,7 +17,7 @@ namespace org\octris\core\octsh\app {
          * @octdoc  v:app/$entry_page
          * @var     string
          */
-        protected $entry_page = '\org\octris\core\octsh\app\entry';
+        protected $entry_page = '\org\octris\core\octsh\app\shell';
         /**/
 
         /**
