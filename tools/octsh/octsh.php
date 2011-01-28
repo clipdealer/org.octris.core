@@ -24,9 +24,7 @@ namespace org\octris\core\octsh {
     // }, \org\octris\core\registry::T_SHARED | \org\octris\core\registry::T_READONLY);
 
     // run application
-    print "start\n";
     app\main::getInstance()->process();
-    print "end\n";
     
     // $info    = posix_getpwuid(posix_getuid());
     // $history = $info['dir'] . '/.octris/octsh_history';
