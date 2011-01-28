@@ -35,7 +35,7 @@
  *
  */
 
-namespace org\octris\core\registry {
+namespace org\octris\core {
     /**
      * Implementation of a central registry uses DI container as storage
      *
