@@ -1,6 +1,6 @@
 <?php
 
-namespace org\octris\core\validate\type
+namespace org\octris\core\validate\type {
     /**
      * Validator for strings containing letters and numbers as characters (a-zA-Z0-9).
      *
