@@ -17,7 +17,7 @@ namespace org\octris\core\app {
     /**/
     {
         /**
-         * Mapping of an option to an application class
+         * Mapping of an option to an application page class.
          *
          * @octdoc  v:cli/$option_map
          * @var     array
@@ -58,11 +58,46 @@ namespace org\octris\core\app {
             foreach ($this->option_map as $option => $class) {
                 if (isset($_GET[$option])) {
                     $instance = new $class();
+                    
                     $instance->prepare();
+                    $instance->render();
                 }
             }
+
+            // handle page flow
+            $last_page = $this->getLastPage();
+            $last_page->validate();
+            
+            // $action = self::getAction();
+            // 
+            // $last_page = $this->getLastPage();
+            // $last_page->validate($action);
+            // 
+            // $next_page = $last_page->getNextPage($this->entry_page);
+            // 
+            // $max = 3;
+            // 
+            // do {
+            //     $redirect_page = $next_page->prepare($last_page, $action);
+            // 
+            //     if (is_object($redirect_page) && $next_page != $redirect_page) {
+            //         $next_page = $redirect_page;
+            //     } else {
+            //         break;
+            //     }
+            // } while (--$max);
+            // 
+            // // process with page
+            // $this->setLastPage($next_page);
+            // 
+            // // $next_page->prepareMessages($this);
+            // // $next_page->sendHeaders($this->headers);
+            //         
+            // $next_page->render();
         }
         
+        function getAction() { return ''; }
+
         /**
          * Parse command line options and return Array of them. The parameters are required to have
          * the following format:
