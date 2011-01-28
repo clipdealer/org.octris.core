@@ -25,7 +25,16 @@ namespace org\octris\core\app {
         protected $option_map = array();
         /**/
         
-        protected function initialize() {}
+        /**
+         * Initialization of cli application.
+         *
+         * @octdoc  m:cli/initialization
+         */
+        protected function initialize()
+        /**/
+        {
+            $this->state = new \org\octris\core\app\state();
+        }
         
         /**
          * Main application processor. This is the only method that needs to be called to
