@@ -27,6 +27,19 @@ namespace org\octris\core\app\cli {
         }
 
         /**
+         * Clear screen.
+         *
+         * @octdoc  m:stdio/clear
+         */
+        public static function clear()
+        /**/
+        {
+            foreach (array(27, 91, 72, 27, 91, 50, 74) as $code) {
+                print chr($code);
+            }
+        }
+
+        /**
          * Get user input from STDIN.
          *
          * @octdoc  m:stdio/get
