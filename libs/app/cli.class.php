@@ -17,12 +17,12 @@ namespace org\octris\core\app {
     /**/
     {
         /**
-         * Stack of last pages
+         * Last page
          *
          * @octdoc  v:cli/$last_pages
-         * @var     array
+         * @var     \org\octris\core\cli\page
          */
-        private $last_pages = array();
+        private $last_pages = null;
         /**/
         
         /**
@@ -128,7 +128,9 @@ namespace org\octris\core\app {
         protected function getLastPage()
         /**/
         {
-            if (!($last_page = array_pop($this->last_pages))) {
+            if (($last_page = $this->last_page)) {
+                $this->last_page = null;
+            } else {
                 $last_page = new $this->entry_page();
             }
             
@@ -145,7 +147,7 @@ namespace org\octris\core\app {
         protected function setLastPage(\org\octris\core\app\page $page)
         /**/
         {
-            $this->last_pages[] = $page;
+            $this->last_page = $page;
         }
 
         /**
