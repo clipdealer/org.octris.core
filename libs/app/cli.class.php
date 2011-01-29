@@ -65,12 +65,26 @@ namespace org\octris\core\app {
             }
 
             // handle page flow
-            $action = 'default';
+            $action    = 'default';
+            $parameter = array();
             
             do {
+                // determine next page to display
                 $last_page = $this->getLastPage();
                 $next_page = $last_page->getNextPage($action, $this->entry_page);
-
+                
+                // parameter validation for next page
+                $redirect_page = $next_page->validate(
+                    $last_page,
+                    $action,
+                    (is_array($parameter) ? $parameter : array())
+                );
+                
+                if (is_object($redirect_page) && $next_page != $redirect_page) {
+                    $next_page = $last_page;
+                }
+                
+                // perform possible redirects
                 $max = 3;
                 
                 do {
@@ -83,10 +97,12 @@ namespace org\octris\core\app {
                     }
                 } while (--$max);
                 
+                // perform next page
                 $this->setLastPage($next_page);
                 
+                $next_page->showErrors();
+
                 list($action, $parameter) = $next_page->dialog($action);
-                $this->state['parameter'] = $parameter;
                 
                 $action = ($action != '' ? $action : 'default');
             } while (true);
