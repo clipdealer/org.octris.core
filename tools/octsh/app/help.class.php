@@ -1,6 +1,8 @@
 <?php
 
 namespace org\octris\core\octsh\app {
+    use \org\octris\core\app as app;
+    
     /**
      * Help system for the shell.
      *
@@ -22,6 +24,15 @@ namespace org\octris\core\octsh\app {
         /**/
 
         /**
+         * Command to display help for.
+         *
+         * @octdoc  v:help/$command
+         * @var     string
+         */
+        protected $command = '';
+        /**/
+
+        /**
          * Prepare page
          *
          * @octdoc  m:help/prepare
@@ -35,6 +46,38 @@ namespace org\octris\core\octsh\app {
         }
 
         /**
+         * Validate help parameters.
+         *
+         * @octdoc  m:help/validate
+         * @param   \org\octris\core\app\cli\page   $last_page      Instance of last called page.
+         * @param   string                          $action         Action to select ruleset for.
+         * @param   array                           $parameters     Parameters to validate.
+         * @return  \org\octris\core\app\cli\page                   Returns page to display errors for.
+         */
+        public function validate(\org\octris\core\app\cli\page $last_page, $action, array $parameters = array())
+        /**/
+        {
+            $registry = \org\octris\core\registry::getInstance();
+            $command  = array_shift($parameters);
+            
+            if (is_scalar($command)) {
+                if (!isset($registry->commands)) {
+                    $last_page->addError('help is not available');
+                } elseif (!isset($registry->commands[$command])) {
+                    $last_page->addError("no help for unknown command '$command' available");
+                } else {
+                    $last_page->command = $command;
+                }
+            } elseif (is_array($command)) {
+                $last_page->addError("usage: 'help' or 'help <command>'");
+            }
+            
+            return (count($last_page->errors) == 0
+                    ? null
+                    : $last_page);
+        }
+
+        /**
          * Implements dialog.
          *
          * @octdoc  m:help/dialog
@@ -45,9 +88,7 @@ namespace org\octris\core\octsh\app {
         {
             $registry = \org\octris\core\registry::getInstance();
             
-            if (!isset($registry->commands)) {
-                print "ERROR: help is not available\n";
-            } else {
+            if ($this->command == '') {
                 print "List of all OCTRiS shell commands:\n\n";
                 
                 foreach ($registry->commands as $command => $class) {
@@ -56,6 +97,8 @@ namespace org\octris\core\octsh\app {
                 
                 print "\n";
                 print "Enter 'help <command>' for more information on a specific command.\n";
+            } else {
+                printf("Help for command '%s':\n\n", $this->command);
             }
         }
     }
