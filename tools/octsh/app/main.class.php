@@ -32,6 +32,19 @@ namespace org\octris\core\octsh\app {
         /**/
         
         /**
+         * Initialization of shell.
+         *
+         * @octdoc  m:main/initialization
+         */
+        protected function initialize()
+        /**/
+        {
+            parent::initialize();
+            
+            $this->state['project'] = $_ENV['OCTRIS_APP'];
+        }
+        
+        /**
          * Overwrite process method of cli application controller to provide a nice header message
          * when starting shell.
          *
