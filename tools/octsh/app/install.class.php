@@ -1,6 +1,9 @@
 <?php
 
 namespace org\octris\core\octsh\app {
+    use \org\octris\core\app as app;
+    use \org\octris\core\cli\stdio as stdio;
+    
     /**
      * Implements installer for applications based on octris framework.
      *
@@ -22,6 +25,15 @@ namespace org\octris\core\octsh\app {
         /**/
 
         /**
+         * Name of project to install.
+         *
+         * @octdoc  v:install/$project
+         * @var     string
+         */
+        protected $project = '';
+        /**/
+
+        /**
          * Prepare page
          *
          * @octdoc  m:install/prepare
@@ -32,6 +44,89 @@ namespace org\octris\core\octsh\app {
         public function prepare(\org\octris\core\app\page $last_page, $action)
         /**/
         {
+            $project = $this->project;
+            $base    = $_ENV['OCTRIS_BASE']->value;
+            
+            // create directories
+            if ($project == 'org.octris.core') {
+                mkdir($base . '/cache',     0755, true);
+                mkdir($base . '/data',      0755, true);
+                mkdir($base . '/etc',       0755, true);
+                mkdir($base . '/host',      0755, true);
+                mkdir($base . '/libs',      0755, true);
+                mkdir($base . '/locale',    0755, true);
+                mkdir($base . '/log',       0755, true);
+                mkdir($base . '/templates', 0755, true);
+                mkdir($base . '/tools',     0755, true);
+            } elseif (!is_dir($base . '/host')) {
+                $last_page->addError("You have to install 'org.octris.core' first");
+                
+                return $last_page;
+            } else {
+                mkdir($base . '/host/' . $project,             0755, true);
+                mkdir($base . '/host/' . $project . '/libsjs', 0777, true);
+                mkdir($base . '/host/' . $project . '/styles', 0777, true);
+            }
+            
+            mkdir($base . '/cache/' . $project . '/data',        0777, true);
+            mkdir($base . '/cache/' . $project . '/templates_c', 0777, true);
+            
+            // create symlinks
+            $work = app::getPath(app::T_PATH_WORK, $project);
+            
+            symlink($work . '/data',        $base . '/data/' . $project);
+            symlink($work . '/etc',         $base . '/etc/' . $project);
+            symlink($work . '/libs',        $base . '/libs/' . $project);
+            symlink($work . '/locale',      $base . '/locale/' . $project);
+            symlink($work . '/templates',   $base . '/templates/' . $project);
+
+            if ($project != 'org.octris.core') {
+                if (is_file($work . '/host/index.php')) {
+                    symlink($work . '/host/index.php',  $base . '/host/' . $project . '/index.php');
+                }
+                if (is_file($work . '/host/robots.txt')) {
+                    symlink($work . '/host/robots.txt', $base . '/host/' . $project . '/robots.txt');
+                }
+                if (is_dir($work . '/host/error')) {
+                    symlink($work . '/host/error',      $base . '/host/' . $project . '/error');
+                }
+                if (is_dir($work . '/host/resources')) {
+                    symlink($work . '/host/resources',  $base . '/host/' . $project . '/resources');
+                }
+            }
+        }
+
+        /**
+         * Validate help parameters.
+         *
+         * @octdoc  m:help/validate
+         * @param   \org\octris\core\app\cli\page   $last_page      Instance of last called page.
+         * @param   string                          $action         Action to select ruleset for.
+         * @param   array                           $parameters     Parameters to validate.
+         * @return  \org\octris\core\app\cli\page                   Returns page to display errors for.
+         */
+        public function validate(\org\octris\core\app\cli\page $last_page, $action, array $parameters = array())
+        /**/
+        {
+            $project = array_shift($parameters);
+            
+            if (is_scalar($project)) {
+                if (!is_dir(app::getPath(app::T_PATH_WORK, $project))) {
+                    $last_page->addError("unable to locate project '$project'");
+                } else {
+                    $this->project = $project;
+                }
+            } elseif (is_array($project)) {
+                $last_page->addError("usage: 'install [<path-of-project>]'");
+            } else {
+                $state = app::getInstance()->getState();
+                
+                $this->project = $state['project']->value;
+            }
+            
+            return (count($last_page->errors) == 0
+                    ? null
+                    : $last_page);
         }
 
         /**
@@ -46,51 +141,3 @@ namespace org\octris\core\octsh\app {
         }
     }
 }
-
-// install:: createdirs
-//  @echo $(CURSYMDIR)
-//  @echo $(project)
-//  @ln -snf $(CURSYMDIR)/data              ../../data/$(project)
-//  @ln -snf $(CURSYMDIR)/etc               ../../etc/$(project)
-//  @ln -snf $(CURSYMDIR)/libs              ../../libs/$(project)
-//  @ln -snf $(CURSYMDIR)/locale            ../../locale/$(project)
-//  @ln -snf $(CURSYMDIR)/templates         ../../templates/$(project)
-//  @ln -snf $(CURSYMDIR)/tools             ../../tools/$(project)
-//  @if [ "$(project)" != "org.octris.core" ]; then \
-//      if [ -e $(CURSYMDIR)/host/index.php ]; then \
-//          ln -snf $(CURSYMDIR)/host/index.php                 ../../host/$(project)/index.php; \
-//      fi; \
-//      if [ -d $(CURSYMDIR)/host/robots.txt ]; then \
-//          ln -snf $(CURSYMDIR)/host/robots.txt                ../../host/$(project)/robots.txt; \
-//      fi; \
-//      if [ -d $(CURSYMDIR)/host/error ]; then \
-//          ln -snf $(CURSYMDIR)/host/error                     ../../host/$(project)/error; \
-//      fi; \
-//      if [ -d $(CURSYMDIR)/resources ]; then \
-//          ln -snf $(CURSYMDIR)/resources                      ../../host/$(project)/resources; \
-//      fi; \
-//  fi; \
-// 
-//  @if [ "$(project)" = "org.octris.core" ]; then \
-//      mkdir -p ../../cache; \
-//      mkdir -p ../../data; \
-//      mkdir -p ../../etc; \
-//      mkdir -p ../../host; \
-//      mkdir -p ../../libs; \
-//      mkdir -p ../../locale; \
-//      mkdir -p ../../log; \
-//      mkdir -p ../../templates; \
-//      mkdir -p ../../tools; \
-//  elif [ ! -d ../../host ]; then \
-//      echo ""; \
-//      echo "You have to install 'org.octris.core' first!"; \
-//      echo ""; \
-//      exit 1; \
-//  elif [ -d $(CURSYMDIR)/host ]; then \
-//      mkdir -p ../../host/$(project); \
-//      mkdir -p -m 0777 ../../host/$(project)/libsjs; \
-//      mkdir -p -m 0777 ../../host/$(project)/styles; \
-//      mkdir -p -m 0777 ../../log/$(project); \
-//  fi; \
-//  mkdir -p -m 0777 ../../cache/$(project)/data; \
-//  mkdir -p -m 0777 ../../cache/$(project)/templates_c; \
