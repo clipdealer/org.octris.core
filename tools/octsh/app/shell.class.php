@@ -78,15 +78,25 @@ namespace org\octris\core\octsh\app {
         public function dialog($action)
         /**/
         {
-            $readline = \org\octris\core\app\cli\readline::getInstance('/tmp/octsh.txt');
-            $prompt   = 'octsh> ';
+            if (posix_isatty(STDIN)) {
+                // octsh is called from a tty
+                $readline = \org\octris\core\app\cli\readline::getInstance('/tmp/octsh.txt');
+                $prompt   = 'octsh> ';
 
-            do {
-                $return = trim($readline->readline($prompt));
-            } while ($return == '');
+                do {
+                    $return = trim($readline->readline($prompt));
+                } while ($return == '');
 
-            $args = explode(' ', $return);
-            $cmd  = array_shift($args);
+                $args = explode(' ', $return);
+                $cmd  = array_shift($args);
+            } else {
+                // octsh is called from a pipe
+                if (($cmd = fgets(STDIN))) {
+                    $cmd = trim($cmd);
+                } else {
+                    $cmd = 'quit';
+                }
+            }
 
             if (!isset($this->next_pages[$cmd])) {
                 $cmd = 'error';
