@@ -69,7 +69,6 @@ namespace org\octris\core\octsh\app {
                 } else {
                     $this->project = $project;
                 }
-
             } else {
                 $last_page->addError("usage: 'use <path-of-project>'");
             }
