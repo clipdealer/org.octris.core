@@ -115,14 +115,22 @@ namespace org\octris\core\octsh\app {
 
             if ($result['error']) {
                 // parser error
-                $command   = 'error';
-                $parameter = '';
+                $command = 'shell';
+
+                $this->addError(sprintf(
+                    'error in line %d at token %s: %s',
+                    $result['error']['line'],
+                    $result['error']['token'],
+                    $result['error']['payload']
+                ));
             } else {
                 $command   = array_shift($result['command']);
                 $parameter = $result['command'];
 
                 if (!isset($this->next_pages[$command])) {
-                    $command = 'error';
+                    $command = 'shell';
+                    
+                    $this->addError("unknown command '$command'");
                 }
             }
 
