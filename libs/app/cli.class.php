@@ -85,7 +85,9 @@ namespace org\octris\core\app {
                 
                 $this->setLastPage($next_page);
                 
-                $action = $next_page->dialog($action);
+                list($action, $parameter) = $next_page->dialog($action);
+                $this->state['parameter'] = $parameter;
+                
                 $action = ($action != '' ? $action : 'default');
             } while (true);
         }
