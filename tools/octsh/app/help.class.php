@@ -66,7 +66,7 @@ namespace org\octris\core\octsh\app {
                 } elseif (!isset($registry->commands[$command])) {
                     $last_page->addError("no help for unknown command '$command' available");
                 } else {
-                    $last_page->command = $command;
+                    $this->command = $command;
                 }
             } elseif (is_array($command)) {
                 $last_page->addError("usage: 'help' or 'help <command>'");
