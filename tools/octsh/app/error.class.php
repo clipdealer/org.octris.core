@@ -39,14 +39,16 @@ namespace org\octris\core\octsh\app {
          *
          * @octdoc  m:error/render
          * @param   string                          $action         Action that led to current page.
-         * @return  string                                          empty string.
          */
         public function dialog($action)
         /**/
         {
             print "ERROR: unknown command\n";
             
-            return '';
+            if (!posix_isatty(STDIN)) {
+                // exit with status code 1, if octsh is called through a pipe
+                exit(1);
+            }
         }
     }
 }
