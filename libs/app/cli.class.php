@@ -17,6 +17,15 @@ namespace org\octris\core\app {
     /**/
     {
         /**
+         * Stack of last pages
+         *
+         * @octdoc  v:cli/$last_pages
+         * @var     array
+         */
+        private $last_pages = array();
+        /**/
+        
+        /**
          * Mapping of an option to an application page class.
          *
          * @octdoc  v:cli/$option_map
@@ -108,6 +117,37 @@ namespace org\octris\core\app {
             } while (true);
         }
         
+        /**
+         * Try to determine the last visited page stored in the last pages stack. If the
+         * last visited page can't be determined (eg.: when entering the application),
+         * a new instance of the applications' entry page is created.
+         *
+         * @octdoc  m:cli/getLastPage
+         * @return  \org\octris\core\app\page           Returns instance of determined last visit page or instance of entry page.
+         */
+        protected function getLastPage()
+        /**/
+        {
+            if (!($last_page = array_pop($this->last_pages))) {
+                $last_page = new $this->entry_page();
+            }
+            
+            return $last_page;
+        }
+
+        /**
+         * Make a page the last visited page. This method is called internally by the 'process' method
+         * before aquiring an other application page.
+         *
+         * @octdoc  m:cli/setLastPage
+         * @param   \org\octris\core\app\page       $page           Page object to set as last visited page.
+         */
+        protected function setLastPage(\org\octris\core\app\page $page)
+        /**/
+        {
+            $this->last_pages[] = $page;
+        }
+
         /**
          * Determine the action the page was called with.
          *
