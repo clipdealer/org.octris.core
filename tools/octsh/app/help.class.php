@@ -8,7 +8,7 @@ namespace org\octris\core\octsh\app {
      * @copyright   copyright (c) 2011 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    class help extends \org\octris\core\app\cli\page
+    class help extends \org\octris\core\octsh\libs\plugin
     /**/
     {
         /**
