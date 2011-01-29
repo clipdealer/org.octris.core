@@ -24,7 +24,6 @@ namespace org\octris\core\octsh\app {
             'quit'      => '\org\octris\core\octsh\app\quit',
             'help'      => '\org\octris\core\octsh\app\help',
             'clear'     => '\org\octris\core\octsh\app\clear',
-            'error'     => '\org\octris\core\octsh\app\error',
             'install'   => '\org\octris\core\octsh\app\install',
         );
         /**/
@@ -44,7 +43,6 @@ namespace org\octris\core\octsh\app {
             if (!isset($registry->commands)) {
                 // make commands and command classes available through registry
                 $commands = $this->next_pages;
-                unset($commands['error']);
                 ksort($commands);
                 
                 $registry->set(
