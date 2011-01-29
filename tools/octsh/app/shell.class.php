@@ -21,10 +21,11 @@ namespace org\octris\core\octsh\app {
          * @var     array
          */
         protected $next_pages = array(
-            'quit'  => '\org\octris\core\octsh\app\quit',
-            'help'  => '\org\octris\core\octsh\app\help',
-            'clear' => '\org\octris\core\octsh\app\clear',
-            'error' => '\org\octris\core\octsh\app\error',
+            'quit'      => '\org\octris\core\octsh\app\quit',
+            'help'      => '\org\octris\core\octsh\app\help',
+            'clear'     => '\org\octris\core\octsh\app\clear',
+            'error'     => '\org\octris\core\octsh\app\error',
+            'install'   => '\org\octris\core\octsh\app\install',
         );
         /**/
 
