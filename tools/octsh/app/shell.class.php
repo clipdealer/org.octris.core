@@ -25,6 +25,7 @@ namespace org\octris\core\octsh\app {
             'help'      => '\org\octris\core\octsh\app\help',
             'clear'     => '\org\octris\core\octsh\app\clear',
             'install'   => '\org\octris\core\octsh\app\install',
+            'use'       => '\org\octris\core\octsh\app\useproject',
         );
         /**/
 
@@ -87,7 +88,9 @@ namespace org\octris\core\octsh\app {
                     $line = 1;
                     
                     $readline = \org\octris\core\app\cli\readline::getInstance('/tmp/octsh.txt');
-                    $prompt   = 'octsh> ';
+                    $state    = app::getInstance()->getState();
+            
+                    $prompt   = $state['project']->value . ':octsh> ';
 
                     do {
                         $input = trim($readline->readline($prompt));
