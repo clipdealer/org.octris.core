@@ -78,33 +78,55 @@ namespace org\octris\core\octsh\app {
         public function dialog($action)
         /**/
         {
+            static $line = 0;
+            
+            // get shell input
+            $input = '';
+            
             do {
                 if (posix_isatty(STDIN)) {
                     // octsh is called from a tty
+                    $line = 1;
+                    
                     $readline = \org\octris\core\app\cli\readline::getInstance('/tmp/octsh.txt');
                     $prompt   = 'octsh> ';
 
                     do {
-                        $return = trim($readline->readline($prompt));
-                    } while ($return == '');
+                        $input = trim($readline->readline($prompt));
+                    } while ($input == '');
 
                     $args = explode(' ', $return);
                     $cmd  = array_shift($args);
                 } else {
                     // octsh is called from a pipe
-                    if (($cmd = fgets(STDIN))) {
-                        $cmd = trim($cmd);
+                    ++$line;
+                    
+                    if (($input = fgets(STDIN))) {
+                        $input = trim($input);
                     } else {
-                        $cmd = 'quit';
+                        $input = 'quit';
                     }
                 }
-            } while(substr($cmd, 0, 1) == '#');
+            } while(substr($input, 0, 1) == '#');
 
-            if (!isset($this->next_pages[$cmd])) {
-                $cmd = 'error';
+            // process input
+            $parser = new \org\octris\core\octsh\libs\parser();
+            $result = $parser->parse($input, $line);
+
+            if ($result['error']) {
+                // parser error
+                $command   = 'error';
+                $parameter = '';
+            } else {
+                $command   = array_shift($result['command']);
+                $parameter = $result['command'];
+
+                if (!isset($this->next_pages[$command])) {
+                    $command = 'error';
+                }
             }
 
-            return $cmd;
+            return array($command, $parameter);
         }
     }
 }
