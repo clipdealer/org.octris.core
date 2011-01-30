@@ -1,148 +1,27 @@
 #!/usr/bin/env php
 <?php
 
-/**
- * Tool for creating a new project using a project skeleton.
- *
- * @octdoc      h:project/create
- * @copyright   copyright (c) 2011 by Harald Lapp
- * @author      Harald Lapp <harald@octris.org>
- */
-/**/
+namespace org\octris\core\project {
+    /**
+     * Octris framework shell.
+     *
+     * @octdoc      h:tools/octsh
+     * @copyright   copyright (c) 2011 by Harald Lapp
+     * @author      Harald Lapp <harald@octris.org>
+     */
+    /**/
 
-require_once(__DIR__ . '/../../libs/app/cli.class.php');
+    $_ENV['OCTRIS_APP'] = 'org.octris.core';
 
-// process commandline parameters
-if ($_GET->validate(
-    'p', 
-    \org\octris\core\validate::T_PATTERN, 
-    array('pattern' => '/^[a-z]{2,4}\.[a-z0-9]+([a-z0-9\-]*[a-z0-9]+|)\.[a-z]+$/')
-)) {
-    $tmp    = explode('.', $_GET['p']->value);
-    $module = array_pop($tmp);
-    $domain = implode('.', array_reverse($tmp));
-} else {
-    $module = '';
-    $domain = '';
-}
-
-// helper function to check if file is binary
-function is_binary($file) {
-    $return = false;
+    // include core cli application library
+    require_once('org.octris.core/app/cli.class.php');
     
-    if (is_file($file) && ($fp = fopen($file, 'r'))) {
-        $blk = fread($fp, 512);
-        fclose($fp); 
-        
-        clearstatcache();
-        
-        $return = (
-            substr_count($blk, '^ -~', "^\r\n") / 512 > 0.3 ||
-            substr_count($blk, "\x00") > 0 
-        ); 
-    }
-    
-    return $return;
+    // load application configuration
+    $registry = \org\octris\core\registry::getInstance();
+    $registry->set('config', function() {
+        return new \org\octris\core\config('org.octris.core');
+    }, \org\octris\core\registry::T_SHARED | \org\octris\core\registry::T_READONLY);
+
+    // run application
+    app\main::getInstance()->process();
 }
-
-// initialization
-use \org\octris\core\app\cli as cli;
-use \org\octris\core\app\cli\stdio as stdio;
-use \org\octris\core\config as config;
-use \org\octris\core\tpl as tpl;
-
-$cfg = new config('org.octris.core');
-$prj = new config('org.octris.core', 'project.create');
-
-print "\noctris -- create new project\n";
-stdio::hline(); 
-
-$prj->defaults(array(
-    'info.company' => '',
-    'info.author'  => '',
-    'info.email'   => '',
-    'info.domain'  => $domain
-));
-
-if ($domain != '') {
-    $prj['info.domain'] = $domain;
-}
-
-// collect information and create configuration for new project
-$filter = $prj->filter('info');
-
-foreach ($filter as $k => $v) {
-    $prj[$k] = stdio::getPrompt(sprintf("%s [%%s]: ", $k), $v);
-}
-
-$prj->save();
-
-print "\n";
-$module = stdio::getPrompt('module [%s]: ', $module, true);
-$year   = stdio::getPrompt('year [%s]: ', date('Y'), true);
-
-if ($module == '' || $year == '') {
-    die("'module' and 'year' are required!\n");
-}
-
-$ns = implode('\\', array_reverse(explode('.', $prj['info.domain']))) . '\\' . $module;
-
-$data = array_merge($prj->filter('info')->getArrayCopy(true), array(
-    'year'      => $year,
-    'module'    => $module,
-    'namespace' => $ns,
-    'directory' => str_replace('\\', '.', $ns)
-));
-
-// setup destination directory
-$dir = cli::getPath(cli::T_PATH_WORK, '') . '/' . $data['directory'];
-
-if (is_dir($dir)) {
-    die(sprintf("there seems to be already a project at '%s'\n", $dir));
-}
-
-// process skeleton and write project files
-$tpl = new tpl();
-$tpl->addSearchPath(__DIR__ . '/data/skel/web/');
-$tpl->setValues($data);
-
-$box = new tpl\sandbox();
-
-$src = __DIR__ . '/data/skel/web/';
-$len = strlen($src);
-
-mkdir($dir, 0755);
-
-$directories = array();
-$iterator    = new RecursiveIteratorIterator(
-    new RecursiveDirectoryIterator($src)
-);
-
-foreach ($iterator as $filename => $cur) {
-    $rel  = substr($filename, $len); 
-    $dst  = $dir . '/' . $rel;
-    $path = dirname($dst);
-    $base = basename($filename);
-    $ext  = preg_replace('/^\.?[^\.]+?(\..+|)$/', '\1', $base);
-    $base = basename($filename, $ext);
-    
-    if (substr($base, 0, 1) == '$' && isset($data[$base = ltrim($base, '$')])) {
-        // resolve variable in filename
-        $dst = $path . '/' . $data[$base] . $ext;
-    }
-    
-    if (!is_dir($path)) {
-        // create destination directory
-        mkdir($path, 0755, true);
-    }
-    
-    if (!is_binary($filename)) {
-        $cmp = $tpl->fetch($rel, tpl\sandbox::T_CONTEXT_TEXT);
-
-        file_put_contents($dst, $cmp);
-    } else {
-        copy($filename, $dst);
-    }
-}
-
-print "done.\n";
