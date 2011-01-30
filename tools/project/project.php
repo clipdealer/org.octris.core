@@ -3,7 +3,7 @@
 
 namespace org\octris\core\project {
     /**
-     * Octris framework shell.
+     * Octris framework project tool.
      *
      * @octdoc      h:tools/octsh
      * @copyright   copyright (c) 2011 by Harald Lapp
@@ -16,7 +16,7 @@ namespace org\octris\core\project {
     // include core cli application library
     require_once('org.octris.core/app/cli.class.php');
     
-    // load application configuration
+    // setup registry
     $registry = \org\octris\core\registry::getInstance();
     $registry->set('config', function() {
         return new \org\octris\core\config('org.octris.core');
