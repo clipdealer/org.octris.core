@@ -110,6 +110,7 @@ namespace org\octris\core\app {
                 $this->setLastPage($next_page);
                 
                 $next_page->showErrors();
+                $next_page->showMessages();
 
                 list($action, $parameter) = $next_page->dialog($action);
                 
