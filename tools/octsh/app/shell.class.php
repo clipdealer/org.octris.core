@@ -129,9 +129,9 @@ namespace org\octris\core\octsh\app {
                 $parameter = $result['command'];
 
                 if (!isset($this->next_pages[$command])) {
-                    $command = 'shell';
-                    
                     $this->addError("unknown command '$command'");
+
+                    $command = 'shell';
                 }
             }
 
