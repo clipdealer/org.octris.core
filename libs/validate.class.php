@@ -127,6 +127,28 @@ namespace org\octris\core {
         }
         
         /**
+         * Test a scalar value if it is of the specified type.
+         *
+         * @octdoc  m:validate/test
+         * @param   mixed           $value              Value to test.
+         * @param   string          $type               Validation type.
+         * @param   array           $options            Optional options for validator.
+         * @return  bool                                Returns true, if valid.
+         */
+        public static function test($value, $type, array $options = array())
+        /**/
+        {
+            $return = false;
+            
+            if (is_scalar($value)) {
+                $test   = new $type($options);
+                $return = $test->validate($value);
+            }
+            
+            return $return;
+        }
+        
+        /**
          * Apply registered validation ruleset.
          *
          * @octdoc  m:validate/validate
