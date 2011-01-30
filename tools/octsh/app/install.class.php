@@ -74,11 +74,21 @@ namespace org\octris\core\octsh\app {
             // create symlinks
             $work = app::getPath(app::T_PATH_WORK, $project);
             
-            symlink($work . '/data',        $base . '/data/' . $project);
-            symlink($work . '/etc',         $base . '/etc/' . $project);
-            symlink($work . '/libs',        $base . '/libs/' . $project);
-            symlink($work . '/locale',      $base . '/locale/' . $project);
-            symlink($work . '/templates',   $base . '/templates/' . $project);
+            if (is_dir($work . '/data')) {
+                symlink($work . '/data', $base . '/data/' . $project);
+            }
+            if (is_dir($work . '/etc')) {
+                symlink($work . '/etc', $base . '/etc/' . $project);
+            }
+            if (is_dir($work . '/libs')) {
+                symlink($work . '/libs', $base . '/libs/' . $project);
+            }
+            if (is_dir($work . '/locale')) {
+                symlink($work . '/locale', $base . '/locale/' . $project);
+            }
+            if (is_dir($work . '/templates')) {
+                symlink($work . '/templates', $base . '/templates/' . $project);
+            }
 
             if ($project != 'org.octris.core') {
                 if (is_file($work . '/host/index.php')) {
