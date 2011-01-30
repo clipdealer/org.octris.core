@@ -35,13 +35,15 @@ namespace org\octris\core\app\test {
          */
         {
             $trace = debug_backtrace();
-            
-            if (strpos($trace[0]['file'], '/PHPUnit/') !== false) {
-                // call from PHPUnit
-                return $this->data[$offs]->tainted;
-            } else {
-                return parent::offsetGet($offs);
+
+            foreach ($trace as $t) {
+                if (strpos($t['file'], '/PHPUnit/') !== false) {
+                    // call from PHPUnit
+                    return $this->data[$offs]->tainted;
+                }
             }
+            
+            return parent::offsetGet($offs);
         }
     }
 }
