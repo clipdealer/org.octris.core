@@ -30,9 +30,25 @@ namespace org\octris\core\app\cli {
         {
             if (count($this->errors > 0)) {
                 foreach ($this->errors as $error) {
-                    print "$error\n";
+                    printf("ERROR: %s\n", $error);
                 }
                 $this->errors = array();
+            }
+        }
+        
+        /**
+         * Display and purge notification messages.
+         *
+         * @octdoc  m:page/showMessages
+         */
+        public function showMessages()
+        /**/
+        {
+            if (count($this->messages > 0)) {
+                foreach ($this->messages as $message) {
+                    printf("NOTE: %s\n", $message);
+                }
+                $this->message = array();
             }
         }
         
