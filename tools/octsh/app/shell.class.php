@@ -119,7 +119,7 @@ namespace org\octris\core\octsh\app {
                 $command = 'shell';
 
                 $this->addError(sprintf(
-                    'error in line %d at token %s: %s',
+                    'in line %d at token %s, %s',
                     $result['error']['line'],
                     $result['error']['token'],
                     $result['error']['payload']
