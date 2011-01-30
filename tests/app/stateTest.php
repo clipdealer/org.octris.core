@@ -13,7 +13,7 @@ class stateTest extends PHPUnit_Framework_TestCase {
     
     public function testThaw() {
         $state = new \org\octris\core\app\state();
-        $state->push('test', 'test');
+        $state['test'] = 'test';
         
         $secret = 'origami';
         $frozen = $state->freeze($secret);
