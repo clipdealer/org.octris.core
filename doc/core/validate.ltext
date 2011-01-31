@@ -60,7 +60,7 @@ Example shows required schema for user-registration data containing a list of up
                 ),
                 'websites' => array(
                     'type'      => validate::T_ARRAY,
-                    'items'     => 'url',           // name of sub-schema
+                    'items'     => array('url'),    // names of allowed sub-schemas
                     'min_items' => 0,
                     'max_items' => 5
                 )
@@ -91,9 +91,28 @@ Example shows required schema for an array with 10 string values:
             'type'       => validate::T_ARRAY,
             'min_items'  => 10,
             'max_items'  => 10,
+            'items'      => array('printable')
+        ),
+        
+        'printable' => array(
+            'type'      => validate::T_PRINTABLE
+        )
+
+The example above could also be rewritten to:
+
+..  source: php
+    
+    $schema = array(
+        'default' => array(                         // default schema
+            'type'       => validate::T_ARRAY,
+            'min_items'  => 10,
+            'max_items'  => 10,
             'items'      => array(
-                'type'  => validate::T_PRINTABLE
+                array(
+                    'type'      => validate::T_PRINTABLE
+                )
             )
+        )
 
 _Example: #4:_
 
