@@ -192,9 +192,11 @@ namespace org\octris\core\app {
             }
 
             $args = $argv;
-            $opts = array(array_shift($args));
+            $opts = array();
             $key  = '';
             $idx  = 1;
+
+            array_shift($args);
 
             foreach ($args as $arg) {
                 if (preg_match('/^-([a-zA-Z]+)$/', $arg, $match)) {
