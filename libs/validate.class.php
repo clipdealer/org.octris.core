@@ -114,16 +114,18 @@ namespace org\octris\core {
          * @octdoc  m:validate/registerRuleset
          * @param   \org\octris\core\page       $page       Instance of page ruleset applies to.
          * @param   \org\octris\core\wrapper    $wrapper    Instance of wrapped parameters to validate.
-         * @param   array                       $ruleset    Validation ruleset.
+         * @param   array                       $rules      Validation rules.
+         * @param   int                         $mode       Validation mode.
          */
-        public function registerRuleset(\org\octris\core\page $page, $action, \org\octris\core\wrapper $wrapper, array $ruleset)
+        public function registerRuleset(\org\octris\core\page $page, $action, \org\octris\core\wrapper $wrapper, array $ruleset, $mode = \org\octris\core\validate\schema::T_STRICT)
         /**/
         {
             $key = $this->getKey($page, $action);
 
             $this->rulesets[$key] = array(
                 'wrapper' => $wrapper,
-                'ruleset' => $ruleset
+                'rules'   => $rules,
+                'mode'    => $mode
             );
         }
         
@@ -132,21 +134,15 @@ namespace org\octris\core {
          *
          * @octdoc  m:validate/test
          * @param   mixed           $value              Value to test.
-         * @param   string          $type               Validation type.
-         * @param   array           $options            Optional options for validator.
+         * @param   array           $schema             Validation schema.
          * @return  bool                                Returns true, if valid.
          */
-        public static function test($value, $type, array $options = array())
+        public static function test($value, array $schema)
         /**/
         {
-            $return = false;
+            $instance = new \org\octris\core\validate\schema($schema);
             
-            if (is_scalar($value)) {
-                $test   = new $type($options);
-                $return = $test->validate($value);
-            }
-            
-            return $return;
+            return $instance->validate($value);
         }
         
         /**
@@ -163,14 +159,17 @@ namespace org\octris\core {
             $ret = true;
 
             if (isset($this->rulesets[$key])) {
-                $ruleset = $this->ruleset[$key]['ruleset'];
+                $ruleset = $this->ruleset[$key];
                 
-                $v = new validate\schema(
-                    $ruleset['schema'],
-                    $ruleset['mode']
-                );
-                
-                $ret = $v->validate($this->ruleset[$key]['wrapper']);
+                foreach ($ruleset['rules'] as $rule) {
+                    $v = new validate\schema($rule, $ruleset['mode']);
+                    
+                    if ($v->validate($ruleset['wrapper'])) {
+                        // handle validation stuff
+                    } else {
+                        $ret = false;
+                    }
+                }
             }
 
             return $ret;
