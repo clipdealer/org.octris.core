@@ -49,7 +49,7 @@ Example shows required schema for user-registration data containing a list of up
                 'password' => array(
                     'type'  => validate::T_PRINTABLE,
                 ),
-                'password2' => array(           // a second password field to compare to
+                'password2' => array(               // a second password field to compare to
                     'type'      => validate::T_CALLBACK,
                     'options'   => array(
                         'callback' => function($value) {
@@ -60,7 +60,7 @@ Example shows required schema for user-registration data containing a list of up
                 ),
                 'websites' => array(
                     'type'      => validate::T_ARRAY,
-                    'items'     => array('url'),    // names of allowed sub-schemas
+                    'items'     => 'url',           // name of allowed sub-schema
                     'min_items' => 0,
                     'max_items' => 5
                 )
@@ -91,7 +91,7 @@ Example shows required schema for an array with 10 string values:
             'type'       => validate::T_ARRAY,
             'min_items'  => 10,
             'max_items'  => 10,
-            'items'      => array('printable')
+            'items'      => 'printable'
         ),
         
         'printable' => array(
@@ -108,9 +108,7 @@ The example above could also be rewritten to:
             'min_items'  => 10,
             'max_items'  => 10,
             'items'      => array(
-                array(
-                    'type'      => validate::T_PRINTABLE
-                )
+                'type'      => validate::T_PRINTABLE
             )
         )
 
@@ -135,14 +133,14 @@ The wrapper for command line parameters would produce the following internal arr
     
 Parameters without explicit parameter name would be assigned an ordered numeric key name. To make it possible
 to validate and grant access to these parameters, a naming for these parameters can be specified using the 
-keyrename feature:
+keyrename feature. Keyrename is currently only allowed for the default scheme, but not for sub-schemes.
 
 ..  source: php
 
     $schema = array(
         'default' => array(
             'type'       => validate::T_OBJECT,
-            'keyrename   => array(
+            'keyrename'  => array(
                 'input', 'output'
             ),
             'properties' => array(
@@ -173,8 +171,6 @@ it contains only printable characters and additionally if it doesn't match inval
 names:
 
 ..  source: php
-
-    use \org\octris\core\validate as validate;
 
     $schema = array(
         'default' => array(
