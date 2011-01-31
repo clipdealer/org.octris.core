@@ -146,6 +146,23 @@ namespace org\octris\core\type {
         }
 
         /**
+         * Rename keys of collection but preserve the ordering of the collection.
+         *
+         * @octdoc  m:collection/keyrename
+         * @param   array               $map                Map of origin name to new name.
+         * @return  \org\octris\core\type\collection        New collection with renamed keys.
+         */
+        public function keyrename($map)
+        /**/
+        {
+            return new collection(array_combine(array_map(function($v) use ($map) {
+                return (is_int($v) && isset($map[$v])
+                        ? $map[$v]
+                        : $v);
+            }, array_keys($arr)), array_values($arr)));
+        }
+
+        /**
          * Implements serialization of collection data.
          *
          * @octdoc  m:collection/serialize
