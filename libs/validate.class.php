@@ -167,9 +167,9 @@ namespace org\octris\core {
                 
                 $v = new validate\schema(
                     $ruleset['schema'],
-                    $ruleset['type'],
                     $ruleset['mode']
                 );
+                
                 $ret = $v->validate($this->ruleset[$key]['wrapper']);
             }
 
