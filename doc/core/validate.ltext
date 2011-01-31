@@ -1,7 +1,7 @@
 Parameter importing and validating using validation schemas
 ===========================================================
 
-(c) 2010 by Harald Lapp <harald@octris.org>
+(c) 2010-2011 by Harald Lapp <harald@octris.org>
 
 The OCTRiS framework provides powerful functionality for validating parameters -- request parameters, server
 and environment variables, command line options. The OCTRiS validation schemas support validation from simple values
@@ -19,17 +19,15 @@ Example shows required schema for validating login credentials:
 
 ..  source: php
 
-    use \org\octris\core\validate as validate;
-    
     $schema = array(
         'default' => array(                        // entry point, always required!
             'type'          => validate::T_OBJECT,
             'properties'    => array(
                 'username' => array(                // field: username
-                    'type'  => validate::T_PRINT
+                    'type'  => validate::T_PRINTABLE
                 ),
                 'password' => array(                // field: password
-                    'type'  => validate::T_PRINT
+                    'type'  => validate::T_PRINTABLE
                 )
             )
         )
@@ -41,17 +39,15 @@ Example shows required schema for user-registration data containing a list of up
 
 ..  source: php
 
-    use \org\octris\core\validate as validate;
-
     $schema = array(
-        'default' => array(
+        'default' => array(                         // default schema
             'type'       => validate::T_OBJECT,
             'properties' => array(
                 'username' => array(
-                    'type'  => validate::T_PRINT
+                    'type'  => validate::T_PRINTABLE
                 ),
                 'password' => array(
-                    'type'  => validate::T_PRINT,
+                    'type'  => validate::T_PRINTABLE,
                 ),
                 'password2' => array(           // a second password field to compare to
                     'type'      => validate::T_CALLBACK,
@@ -64,19 +60,86 @@ Example shows required schema for user-registration data containing a list of up
                 ),
                 'websites' => array(
                     'type'      => validate::T_ARRAY,
-                    'items'     => array('url'),
+                    'items'     => 'url',           // name of sub-schema
                     'min_items' => 0,
                     'max_items' => 5
                 )
             )
         ),
         
-        'url' => array(                         // name of schema: url
-            'url' => array(
-                'type' => validate::T_URL
+        'url' => array(                             // sub-schema: url
+            'type'       => validate::T_OBJECT,
+            'properties' => array(
+                'url'   => array(
+                    'type' => validate::T_URL
+                ),
+                'title' => array(
+                    'type' => validate::T_PRINTABLE
+                )
             )
         )
     )
+
+_Example: #3:_
+
+Example shows required schema for an array with 10 string values:
+
+..  source: php
+    
+    $schema = array(
+        'default' => array(                         // default schema
+            'type'       => validate::T_ARRAY,
+            'min_items'  => 10,
+            'max_items'  => 10,
+            'items'      => array(
+                'type'  => validate::T_PRINTABLE
+            )
+
+_Example: #4:_
+
+Example shows required schema for the feature keyrename. Consider a command line application receiving
+the following command line parameters:
+
+..  source: plain
+
+    ./test.php  --convert input-file output-file
+    
+The wrapper for command line parameters would produce the following internal array of parameters:
+
+..  source: php
+
+    array(
+        '--convert' => true,
+        0           => 'input-file',
+        1           => 'output-file'
+    )
+    
+Parameters without explicit parameter name would be assigned an ordered numeric key name. To make it possible
+to validate and grant access to these parameters, a naming for these parameters can be specified using the 
+keyrename feature:
+
+..  source: php
+
+    $schema = array(
+        'default' => array(
+            'type'       => validate::T_OBJECT,
+            'keyrename   => array(
+                'input', 'output'
+            ),
+            'properties' => array(
+                '--convert' => array(
+                    'type'  => validate::T_BOOL
+                ),
+                'input' => array(
+                    'type'  => validate::T_PRINTABLE,
+                ),
+                'output' => array(
+                    'type'  => validate::T_PRINTABLE,
+                )
+            )
+        )
+    )
+
 
 Validation chaining
 ~~~~~~~~~~~~~~~~~~~
@@ -103,7 +166,7 @@ names:
                     'options'   => array(
                         'chain' => array(
                             array(
-                                'type'      => validate::T_PRINT
+                                'type'      => validate::T_PRINTABLE
                             ),
                             array(
                                 'type'      => validate::T_CALLBACK,
