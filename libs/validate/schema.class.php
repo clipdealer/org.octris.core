@@ -4,36 +4,6 @@ namespace org\octris\core\validate {
     /**
      * Validate by providing a validation schema.
      *
-     * <code>
-     * $v = new lima_validate_schema(array(
-     *     'default' => array(
-     *         'name' => array('type' => 'alpha')
-     *     )
-     * ));
-     * 
-     * $r = $v->validate(array(
-     *     'name' => 'Harald'
-     * ));
-     * 
-     * $r = $v->validate(array(
-     *     'name' => 'Harald'
-     * ));
-     * print (int)$r;
-     * 
-     * $v = new lima_validate_schema(array(
-     *     'default' => array(
-     *         'names' => array('type' => 'array', 'items' => array('person'))
-     *     ),
-     *     'person' => array(
-     *         'name' => array('type' => 'alpha')
-     *     )
-     * ));
-     * $r = $v->validate(array(
-     *     'names' => array(array('name' => 'Harald'), array('name' => 'Nungki'))
-     * ));
-     * print (int)$r;
-     * </code>
-     * 
      * @octdoc      c:validate/schema
      * @copyright   copyright (c) 2010-2011 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
@@ -138,10 +108,13 @@ namespace org\octris\core\validate {
                 break;
             case 'object':
                 // validate if same properties are available in value and schema
+                print_r(array($schema, $value));
+                die;
+
                 $cnt1 = count($schema);
                 $cnt2 = count($value);
                 $cnt3 = count(array_intersect_key($schema, $value));
-
+                
                 if (!($return = ($cnt1 >= $cnt3 || ($cnt1 < $cnt2 && $this->options['mode'] != self::T_STRICT)))) {
                     break;
                 }
