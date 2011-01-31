@@ -6,15 +6,19 @@ use \org\octris\core\app\test as test;
 
 class collectionTest extends PHPUnit_Framework_TestCase {
     function dataProvider() {
-        // return array(
-        //     new \org\octris\core\type\collection(array(1, 2, 3)),
-        // return new \org\octris\core\type\collection(array(
-        //     'eins' => 1, 'zwei', 2, 3
-        // ));
-        // );
+        return array(
+            new \org\octris\core\type\collection(array(1, 2, 3)),
+            new \org\octris\core\type\collection(array(
+                'eins' => 1, 'zwei', 3, 'vier' => 4
+            ))
+        );
     }
     
     function assocCollection() {
+    }
+
+    function testKeyrename() {
+        
     }
 
     /**
