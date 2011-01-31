@@ -56,19 +56,18 @@ namespace org\octris\core\validate {
          *
          * @octdoc  m:wrapper/validate
          * @param   string      $name           Name of value to untaint.
-         * @param   string      $type           Type of value.
-         * @param   array       $options        Optional options for validating.
+         * @param   array       $schema         Validation schema.
          * @return  bool                        Returns TRUE if validation succeeded
          */
-        public function validate($name, $type, array $options = array())
+        public function validate($name, array $schema)
         /**/
         {
             if (($valid = isset($this->data[$name]))) {
                 if ($this->data[$name]->isTainted) {
-                    $instance = new $type($options);
-                    $value    = $instance->preFilter($this->data[$name]->tainted);
+                    $instance = new \org\octris\core\validate\schema($schema);
+                    $valid    = $instance->validate($this->data[$name]->tainted);
                     
-                    if (($valid = $instance->validate($value))) {
+                    if ($valid) {
                         $this->data[$name]->value = $value;
                     }
                     
