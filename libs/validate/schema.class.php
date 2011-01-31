@@ -108,9 +108,6 @@ namespace org\octris\core\validate {
                 break;
             case 'object':
                 // validate if same properties are available in value and schema
-                print_r(array($schema, $value));
-                die;
-
                 $cnt1 = count($schema);
                 $cnt2 = count($value);
                 $cnt3 = count(array_intersect_key($schema, $value));
