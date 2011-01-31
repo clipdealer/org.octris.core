@@ -1,6 +1,8 @@
 <?php
 
 namespace org\octris\core\validate {
+    use \org\octris\core\validate as validate;
+    
     /**
      * Validate by providing a validation schema.
      *
@@ -18,15 +20,6 @@ namespace org\octris\core\validate {
          * @var     array
          */
         protected $schema = array();
-        /**/
-
-        /**
-         * Schema base type.
-         *
-         * @octdoc  v:schema/$type
-         * @var     string
-         */
-        protected $type = '';
         /**/
 
         /**
@@ -57,15 +50,31 @@ namespace org\octris\core\validate {
          *
          * @octdoc  m:schema/__construct
          * @param   array       $schema     Schema to use for validation.
-         * @param   string      $type       Type of base value ('object' or 'array')
          * @param   int         $mode       Optional schema validation mode.
          */
-        public function __construct(array $schema, $type, $mode = self::T_STRICT)
+        public function __construct(array $schema, $mode = self::T_STRICT)
         /**/
         {
             $this->schema = $schema;
-            $this->type   = $type;
             $this->mode   = $mode;
+        }
+ 
+        /**
+         * Rename keys of specified array.
+         *
+         * @octdoc  m:schema/keyrename
+         * @param   array       $ary        Array to rename keys of.
+         * @param   array       $map        Map of array keys to rename array keys to.
+         * @return  array                   Array with renamed keys.
+         */
+        protected function keyrename(array $arr, array $map)
+        /**/
+        {
+            return (array_combine(array_map(function($v) use ($map) {
+                return (is_int($v) && isset($map[$v])
+                        ? $map[$v]
+                        : $v);
+            }, array_keys($arr)), array_values($arr)));
         }
  
         /**
@@ -73,46 +82,74 @@ namespace org\octris\core\validate {
          *
          * @octdoc  m:schema/_validator
          * @param   array       $value      Value to validate.
-         * @param   string      $type       Type of value.
          * @param   array       $schema     Expected schema of value.
          * @param   int         $level      Current depth in value.
-         * @param   array       $options    Additional options.
          * @param   int         $max_depth  Parameter for specifying max. allowed depth of nested sub-elements.
          * @return  bool                    Returns true if validation succeeded.
          */
-        protected function _validator(&$value, $type, array $schema, $level = 0, array $options = array(), $max_depth = 0)
+        protected function _validator(&$value, array $schema, $level = 0, $max_depth = 1)
         /**/
         {
-            $return = ($max_depth == 0 || $level <= $max_depth);
+            if (!($return = ($max_depth == 0 || $level <= $max_depth))) {
+                // max nested depth is reached 
+                return $return;
+            }
         
-            if (!$return) return $return;
+            if (isset($schema['keyrename'])) {
+                // rename keys first before continuing
+                $value = $this->keyrename($value, $schema['keyrename']);
+            }
+            
+            if ($schema['type'] == validate::T_ARRAY) {
+                // array validation
+                if (!($return = is_array($value))) {
+                    return false;
+                }
         
-            switch (strtolower($type)) {
-            case 'array':
                 $cnt = count($value);
-        
-                if (isset($options['max']) && $cnt > $options['max']) {
-                    $return = false;
-                    break;
+                    
+                if (isset($schema['max_items']) && $cnt > $schema['max_items']) {
+                    return false;
                 }
-                if (isset($options['min']) && $cnt < $options['min']) {
-                    $return = false;
-                    break;
+                if (isset($schema['min_items']) && $cnt < $schema['min_items']) {
+                    return false;
                 }
-        
+                    
+                if (is_array($schema['items'])) {
+                    $subschema = $schema['items'];
+                } elseif (is_scalar($schema['items']) && isset($this->schema[$schema['items']])) {
+                    $subschema = $this->schema[$schema['items']];
+                } else {
+                    // no sub-validation-schema available, continue
+                    return false;
+                }
+                
                 for ($i = 0; $i < $cnt; ++$i) {
-                    if (!($return = $this->_validator($value[$i], 'object', $schema, $level, array(), $max_depth))) {
-                        break;
-                    }
+                    $return = $this->_validator(
+                        $value[$i], 
+                        $subschema, 
+                        $level + 1, 
+                        (isset($schema['max_depth'])
+                         ? $level + $schema['max_depth']
+                         : $max_depth)
+                    );
+                    
+                    if (!$return) break;
                 }
-                break;
-            case 'object':
+            } elseif ($schema['type'] == validate::T_OBJECT) {
+                // object validation
+                if (!($return = is_array($value))) {
+                    return false;
+                }
+
                 // validate if same properties are available in value and schema
+                $schema = $schema['properties'];
+                
                 $cnt1 = count($schema);
                 $cnt2 = count($value);
                 $cnt3 = count(array_intersect_key($schema, $value));
                 
-                if (!($return = ($cnt1 >= $cnt3 || ($cnt1 < $cnt2 && $this->options['mode'] != self::T_STRICT)))) {
+                if (!($return = ($cnt1 >= $cnt3 || ($cnt1 < $cnt2 && $this->mode != self::T_STRICT)))) {
                     break;
                 }
 
@@ -129,87 +166,50 @@ namespace org\octris\core\validate {
                 foreach ($value as $k => &$v) {
                     if (!isset($schema[$k])) {
                         // unknown field
-                        if ($this->options['mode'] == self::T_CLEANUP) {
+                        if ($this->mode == self::T_CLEANUP) {
                             unset($value[$k]);
                         }
                     
                         continue;
                     }
                 
-                    $t = strtolower($schema[$k]['type']);
-
-                    switch ($t) {
-                    case 'object':
-                        // v needs to be an array to be valid
-                        if (!($return = is_array($v))) {
-                            break;
-                        }
+                    $return = $this->_validator($value[$k], $schema[$k], $level, $max_depth);
                     
-                        $return = $this->_validator($v, 'object', $schema[$k]['properties'], $level);
-                        break;
-                    case 'array':
-                        // v needs to be an array to be valid
-                        if (!($return = is_array($v))) {
-                            break;
-                        }
-                    
-                        // iterate over each possible allowed schema of sub-array, break if one is valid
-                        foreach ($schema[$k]['items'] as $s) {
-                            if (!($return = isset($this->options['schema'][$s]))) {
-                                // schema not available
-                                continue;
-                            }
-                        
-                            $o = (isset($schema[$k]['options'])
-                                  ? $schema[$k]['options']
-                                  : array());
-
-                            $return = $this->_validator(
-                                $v, 
-                                'array', 
-                                $this->options['schema'][$s], 
-                                $level + 1, 
-                                $o,
-                                (isset($o['max_depth'])
-                                 ? $level + $o['max_depth']
-                                 : $max_depth)
-                            );
-                        
-                            if ($return) break;
-                        }
-                        break;
-                    default:
-                        // type validation
-                        $o = (isset($schema[$k]['options']) && is_array($schema[$k]['options'])
-                                ? $schema[$k]['options']
-                                : array());
-                        
-                        $instance = new $t($o);
-                        $v        = $instance->preFilter($v);
-                        $return   = $instance->validate($v);
-                        break;
-                    }
+                    if (!$return) break;
                 }
+            } else {
+                // type validation
+                if (class_exists($schema['type'])) {
+                    $instance = new $schema['type'](
+                        (isset($schema['options']) && is_array($schema['options'])
+                                ? $schema['options']
+                                : array())
+                    );
 
-                break;
+                    $value  = $instance->preFilter($value);
+                    $return = $instance->validate($value);
+                }
             }
         
             return $return;
         }
  
         /**
-         * Apply validation schema to specified wrapped values.
+         * Apply validation schema to a specified array of values.
          *
          * @octdoc  m:schema/validate
-         * @param   \org\octris\core\validate\wrapper   $wrapper    Wrapped values to validate.
-         * @return  bool                                            Returns true if value is valid compared to the schema configured in the validator instance.
+         * @param   array           $values             Array of values to validate.
+         * @return  bool                                Returns true if value is valid compared to the schema configured in the validator instance.
          */
-        public function validate(\org\octris\core\validate\wrapper $wrapper)
+        public function validate(array &$values)
         /**/
         {
+            if (!isset($this->schema['default'])) {
+                throw new \Exception('no default schema specified!');
+            }
+            
             $return = $this->_validator(
-                $wrapper, 
-                $this->type,
+                $values,
                 $this->schema['default']
             );
 
