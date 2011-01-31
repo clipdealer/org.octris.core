@@ -55,7 +55,10 @@ namespace org\octris\core\validate {
         public function __construct(array $schema, $mode = self::T_STRICT)
         /**/
         {
-            $this->schema = $schema;
+            $this->schema = (!isset($schema['default']) && isset($schema['type'])
+                             ? array('default' => $schema)
+                             : $schema);
+            
             $this->mode   = $mode;
         }
  
