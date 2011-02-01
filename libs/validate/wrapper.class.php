@@ -37,35 +37,25 @@ namespace org\octris\core\validate {
         {
             if (($cnt = count($source)) > 0) {
                 $this->keys = array_keys($source);
-                $this->data = array();
-                
-                $me = $this;
-                
-                foreach ($source as $k => $v) {
-                    $this->data[$k] = (object)$this->defaults;
-                    $this->data[$k]->isSet   = true;
-                    $this->data[$k]->tainted = $v;
-                }
+                $this->data = $source;
             } else {
                 $this->data = array();
             }
         }
 
         /**
-         * Validate and untain a value.
+         * Validate wrapped structure.
          *
          * @octdoc  m:wrapper/validate
-         * @param   string      $name           Name of value to untaint.
          * @param   array       $schema         Validation schema.
          * @return  bool                        Returns TRUE if validation succeeded
          */
-        public function validate($name, array $schema)
+        public function validate(array $schema)
         /**/
         {
             if (($valid = isset($this->data[$name]))) {
-                if ($this->data[$name]->isTainted) {
-                    $instance = new \org\octris\core\validate\schema($schema);
-                    $valid    = $instance->validate($this->data[$name]->tainted);
+                $instance = new \org\octris\core\validate\schema($schema);
+                $valid    = $instance->validate($this->data[$name]->tainted);
                     
                     if ($valid) {
                         $this->data[$name]->value = $value;
