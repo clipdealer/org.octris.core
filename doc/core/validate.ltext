@@ -198,3 +198,70 @@ names:
         )
     )
     
+Event hooks
+~~~~~~~~~~~
+
+It's allowed to define event callbacks, that will be triggered during validation.
+The following events are available:
+
+*   onFailure -- triggered, when a value is missing or a value is invalid
+*   onSuccess -- triggered, when a valid exists and the value is valid
+
+This is useful for example to collect validation failures to present an overview
+of failed input fields. 
+
+The registration example from above would change to look like:
+
+..  source: php
+
+    $errors = array();
+
+    $schema = array(
+        'default' => array(                         // default schema
+            'type'       => validate::T_OBJECT,
+            'properties' => array(
+                'username' => array(
+                    'type'      => validate::T_PRINTABLE,
+                    'onFailure' => function() use (&$errors) {
+                        $errors[] = 'Username missing or invalid';
+                    }
+                ),
+                'password' => array(
+                    'type'  => validate::T_PRINTABLE,
+                ),
+                'password2' => array(               // a second password field to compare to
+                    'type'      => validate::T_CALLBACK,
+                    'options'   => array(
+                        'callback' => function($value) {
+                            return ($value === $_POST->get('password')->value);
+                        }
+                    ),
+                    'required'  => true
+                    'onFailure' => function() use (&$errors) {
+                        $errors[] = 'Password missing or invalid';
+                    }
+                ),
+                'websites' => array(
+                    'type'      => validate::T_ARRAY,
+                    'items'     => 'url',           // name of allowed sub-schema
+                    'min_items' => 0,
+                    'max_items' => 5
+                )
+            )
+        ),
+    
+        'url' => array(                             // sub-schema: url
+            'type'       => validate::T_OBJECT,
+            'properties' => array(
+                'url'   => array(
+                    'type'      => validate::T_URL
+                    'onFailure' => function() use (&$errors) {
+                        $errors[] = 'URL is invalid';
+                    }
+                ),
+                'title' => array(
+                    'type' => validate::T_PRINTABLE
+                )
+            )
+        )
+    )
