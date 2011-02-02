@@ -80,6 +80,27 @@ namespace org\octris\core\app {
         }
 
         /**
+         * Prepare schema to somehow validate it and make it more easy to work with it.
+         *
+         * @octdoc  m:validate/prepareSchema
+         * @param   array                       §schema         Validation schema
+         * @return  array                                       Prepared validation schema
+         */
+        public function prepareSchema(array $schema)
+        /**/
+        {
+            $schema = (!isset($schema['default']) && isset($schema['type'])
+                       ? array('default' => $schema)
+                       : $schema);
+            
+            if (!isset($schema['default']['type']) || $schema['default']['type'] != \org\octris\core\validate::T_OBJECT || !isset($schema['default']['type']['properties'])) {
+                throw new \Exception('invalid validation scheme');
+            }
+            
+            return $schema;
+        }
+        
+        /**
          * Register validation schema.
          *
          * @octdoc  m:validate/addSchema
@@ -93,17 +114,9 @@ namespace org\octris\core\app {
         {
             $key = $this->getKey($page, $action);
 
-            $this->schema = (!isset($schema['default']) && isset($schema['type'])
-                             ? array('default' => $schema)
-                             : $schema);
-            
-            if (!isset($schema['default']['type']) || $schema['default']['type'] != \org\octris\core\validate::T_OBJECT || !isset($schema['default']['type']['properties'])) {
-                throw new \Exception('invalid validation scheme');
-            }
-            
             $this->rulesets[$key] = array(
                 'wrapper' => $wrapper,
-                'schema'  => $schema,
+                'schema'  => $this->prepareSchema($schema),
                 'mode'    => $mode
             );
         }
