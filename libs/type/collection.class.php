@@ -91,7 +91,7 @@ namespace org\octris\core\type {
         public function offsetExists($offs)
         /**/
         {
-            return (in_array($offs, $this->keys));
+            return (in_array($offs, $this->keys, true));
         }
 
         /**
