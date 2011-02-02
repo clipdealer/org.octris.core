@@ -44,6 +44,15 @@ namespace org\octris\core\validate {
         /**/
 
         /**
+         * Collected errors.
+         *
+         * @octdoc  v:schema/$errors
+         * @var     array
+         */
+        protected $errors = array();
+        /**/
+
+        /**
          * Available validation modes:
          *
          * - T_STRICT:  fields not in schema will raise a validation error (default)
