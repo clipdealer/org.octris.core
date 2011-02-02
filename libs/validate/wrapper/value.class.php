@@ -73,6 +73,18 @@ namespace org\octris\core\validate\wrapper {
         }
         
         /**
+         * Return value if instance is casted to a string.
+         *
+         * @octdoc  m:value/__toString
+         * @return  string                          Stored value as string.
+         */
+        public function __toString()
+        /**/
+        {
+            return (string)$this->value;
+        }
+        
+        /**
          * Validate value with specified schema.
          *
          * @octdoc  m:value/validate
