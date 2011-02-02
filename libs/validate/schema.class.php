@@ -274,6 +274,19 @@ namespace org\octris\core\validate {
                         }
                     }
                 } while(false);
+            } elseif ($schema['type'] == validate::T_CHAIN) {
+                // validation chain
+                if (!isset($schema['chain'])) {
+                    throw new \Exception("schema error -- no chain available");
+                }
+                
+                $schema = $schema['chain'];
+            
+                foreach ($schema['chain'] as $item) {
+                    if (!($return = $this->_validator($value, $item, $level, $max_depth))) {
+                        break;
+                    }
+                }
             } else {
                 // type validation
                 if (class_exists($schema['type'])) {
