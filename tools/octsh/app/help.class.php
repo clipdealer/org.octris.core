@@ -33,6 +33,18 @@ namespace org\octris\core\octsh\app {
         /**/
 
         /**
+         * Constructor.
+         *
+         * @octdoc  m:page/__construct
+         */
+        public function __construct()
+        /**/
+        {
+            $v = app\validate::getInstance();
+            $v->addSchema()
+        }
+
+        /**
          * Prepare page
          *
          * @octdoc  m:help/prepare
@@ -41,20 +53,6 @@ namespace org\octris\core\octsh\app {
          * @return  mixed                                           Returns either page to redirect to or null.
          */
         public function prepare(\org\octris\core\app\page $last_page, $action)
-        /**/
-        {
-        }
-
-        /**
-         * Validate help parameters.
-         *
-         * @octdoc  m:help/validate
-         * @param   \org\octris\core\app\cli\page   $last_page      Instance of last called page.
-         * @param   string                          $action         Action to select ruleset for.
-         * @param   array                           $parameters     Parameters to validate.
-         * @return  \org\octris\core\app\cli\page                   Returns page to display errors for.
-         */
-        public function validate(\org\octris\core\app\cli\page $last_page, $action, array $parameters = array())
         /**/
         {
             $registry = \org\octris\core\registry::getInstance();
@@ -75,6 +73,20 @@ namespace org\octris\core\octsh\app {
             return (count($last_page->errors) == 0
                     ? null
                     : $last_page);
+        }
+
+        /**
+         * Validate help parameters.
+         *
+         * @octdoc  m:help/validate
+         * @param   \org\octris\core\app\cli\page   $last_page      Instance of last called page.
+         * @param   string                          $action         Action to select ruleset for.
+         * @param   array                           $parameters     Parameters to validate.
+         * @return  \org\octris\core\app\cli\page                   Returns page to display errors for.
+         */
+        public function validate(\org\octris\core\app\cli\page $last_page, $action, array $parameters = array())
+        /**/
+        {
         }
 
         /**
