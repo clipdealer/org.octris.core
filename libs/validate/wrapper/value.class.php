@@ -35,7 +35,7 @@ namespace org\octris\core\validate\wrapper {
          * @octdoc  v:value/$value
          * @var     mixed
          */
-        public $value = null;
+        protected $value = null;
         /**/
         
         /**
