@@ -4,7 +4,7 @@ namespace org\octris\core\octsh\libs {
     /**
      * Shell command parser for shell. The parser is able to parse the following commands:
      *
-     * <command>[ <subcommand>[ <parameter>=<value> [...]] [...]]
+     * <command> [<value> | <name>=<value>] [...]
      *
      * @octdoc      c:libs/parser
      * @copyright   copyright (c) 2011 by Harald Lapp
@@ -167,10 +167,8 @@ namespace org\octris\core\octsh\libs {
         public function convert(array $tokens)
         /**/
         {
-            $parts = array();
-            $refs  = array();
-            $param = '';
-            $idx   = 0;
+            $return = array();
+            $name   = '';
 
             foreach ($tokens as $current) {
                 extract($current);
@@ -179,43 +177,26 @@ namespace org\octris\core\octsh\libs {
                 case static::T_WHITESPACE:
                     continue;
                 case static::T_PARAMETER:
-                    $param = substr($value, 0, -1);
+                    $name = substr($value, 0, -1);
                     break;
                 case static::T_SYMBOL:
-                    if ($param == '') {
-                        // symbol is a command
-                        $refs = array();
-                        
-                        $parts[$idx++] = $value;
-                        break;
+                    if ($name == '') {
+                        // symbol is a value without parameter name
+                        $return[] = $value;
                     } else {
                         // symbol is a parameter value
-                        /** FALL THRU **/
+                        $return[$name] = $value;
+                        $name = '';
                     }
+                    break;
                 case static::T_STRING:
-                    if ($token == static::T_STRING) {
-                        $value = substr($value, 1, -1);
-                    }
-                
-                    if (isset($refs[$param])) {
-                        // parameter was already set for command -- overwrite
-                        $parts[$refs[$param]][$param] = $value;
-                    } else {
-                        // new parameter
-                        $parts[$idx] = array(
-                            $param => $value
-                        );
-                        
-                        $refs[$param] = $idx;
-                        ++$idx;
-                    }
-                    
-                    $param = '';
+                    $return[$name] = substr($value, 1, -1);
+                    $name = '';
                     break;
                 }
             }
             
-            return $parts;
+            return $return;
         }
         
         /**
