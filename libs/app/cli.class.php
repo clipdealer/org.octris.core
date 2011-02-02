@@ -64,29 +64,27 @@ namespace org\octris\core\app {
         /**/
         {
             // handle command line options
-            foreach ($this->option_map as $option => $class) {
-                if ($_GET[$option]->isSet) {
-                    $instance = new $class();
-                    
-                    $instance->prepare();
-                    $instance->render();
-                }
-            }
+            // foreach ($this->option_map as $option => $class) {
+            //     if ($_REQUEST[$option]->isSet) {
+            //         $instance = new $class();
+            //         
+            //         $instance->prepare();
+            //         $instance->render();
+            //     }
+            // }
 
             // handle page flow
-            $action    = 'default';
-            $parameter = array();
-            
             do {
                 // determine next page to display
                 $last_page = $this->getLastPage();
+
+                $action    = $last_page->getAction();
                 $next_page = $last_page->getNextPage($action, $this->entry_page);
                 
                 // parameter validation for next page
                 $redirect_page = $next_page->validate(
                     $last_page,
-                    $action,
-                    (is_array($parameter) ? $parameter : array())
+                    $action
                 );
                 
                 if (is_object($redirect_page) && $next_page != $redirect_page) {
@@ -112,9 +110,7 @@ namespace org\octris\core\app {
                 $next_page->showErrors();
                 $next_page->showMessages();
 
-                list($action, $parameter) = $next_page->dialog($action);
-                
-                $action = ($action != '' ? $action : 'default');
+                $next_page->dialog($action);
             } while (true);
         }
         
@@ -149,22 +145,6 @@ namespace org\octris\core\app {
         /**/
         {
             $this->last_page = $page;
-        }
-
-        /**
-         * Determine the action the page was called with.
-         *
-         * @octdoc  m:cli/getAction
-         * @return  string                                  Name of action.
-         */
-        public function getAction()
-        /**/
-        {
-            if (isset($this->state['ACTION'])) {
-                $action = $this->state['ACTION'];
-            }
-
-            return ($action == '' ? 'default' : $action);
         }
 
         /**
