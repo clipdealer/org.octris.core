@@ -156,10 +156,10 @@ namespace org\octris\core\type {
         /**/
         {
             return new collection(array_combine(array_map(function($v) use ($map) {
-                return (is_int($v) && isset($map[$v])
+                return (isset($map[$v])
                         ? $map[$v]
                         : $v);
-            }, array_keys($arr)), array_values($arr)));
+            }, array_keys($this->data)), array_values($this->data)));
         }
 
         /**
