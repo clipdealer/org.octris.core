@@ -65,6 +65,19 @@ namespace org\octris\core\validate {
         }
         
         /**
+         * Filter wrapper for prefix.
+         *
+         * @octdoc  m:wrapper/filter
+         * @param   string                                      $prefix     Prefix to use for filter.
+         * @return  \org\octris\core\validate\wrapper\filter                Filter iterator.
+         */
+        public function filter($prefix)
+        /**/
+        {
+            return new \org\octris\core\validate\wrapper\filter($this->getIterator(), $prefix);
+        }
+
+        /**
          * Rename keys of collection but preserve the ordering of the collection.
          *
          * @octdoc  m:collection/keyrename
