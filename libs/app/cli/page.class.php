@@ -1,6 +1,8 @@
 <?php
 
 namespace org\octris\core\app\cli {
+    use \org\octris\core\validate as validate;
+    
     /**
      * Page controller for cli mvc framework.
      *
@@ -64,17 +66,48 @@ namespace org\octris\core\app\cli {
         /**/
         
         /**
-         * Apply validation ruleset to specified parameters.
+         * Apply validation ruleset.
          *
          * @octdoc  m:page/validate
          * @param   \org\octris\core\app\cli\page   $last_page      Instance of last called page.
          * @param   string                          $action         Action to select ruleset for.
-         * @param   array                           $parameters     Parameters to validate.
          * @return  \org\octris\core\app\cli\page                   Returns page to display errors for.
          */
-        public function validate(\org\octris\core\app\cli\page $last_page, $action, array $parameters = array())
+        public function validate($action)
         /**/
         {
+        }
+
+        /**
+         * Determine the action of the request.
+         *
+         * @octdoc  m:page/getAction
+         * @return  string                                      Name of action
+         */
+        public function getAction()
+        /**/
+        {
+            $action = '';
+            
+            if (isset($_REQUEST['ACTION'])) {
+                if ($_REQUEST['ACTION']->validate(array('type' => validate::T_ALPHANUM))) {
+                    $action = $_REQUEST['ACTION']->value;
+                }
+            }
+
+            if ($action == '') {
+                // try to determine action from a request parameter named ACTION_...
+                foreach ($_REQUEST->filter('ACTION_') as $k => $v) {
+                    $action = substr($k, 7);
+                    break;
+                }
+            }
+
+            if ($action == '') {
+                $action = 'default';
+            }
+
+            return $action;
         }
 
         /**
