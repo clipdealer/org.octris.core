@@ -23,6 +23,17 @@ namespace org\octris\core\app\cli {
         /**/
         
         /**
+         * Constructor.
+         *
+         * @octdoc  m:page/__construct
+         */
+        public function __construct()
+        /**/
+        {
+            parent::__construct();
+        }
+        
+        /**
          * Display and purge error messages.
          *
          * @octdoc  m:page/showErrors
