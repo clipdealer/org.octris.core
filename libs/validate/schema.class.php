@@ -110,6 +110,18 @@ namespace org\octris\core\validate {
         }
 
         /**
+         * Add multiple validation errors.
+         *
+         * @octdoc  m:schema/addErrors
+         * @param   array       $msg        Error messages to add.
+         */
+        protected function addErrors(array $msg)
+        /**/
+        {
+            $this->errors = array_merge($this->errors, $msg);
+        }
+
+        /**
          * Return collected error messages.
          *
          * @octdoc  m:schema/getErrors
@@ -273,8 +285,12 @@ namespace org\octris\core\validate {
 
                     $value  = $instance->preFilter($value);
                     
-                    if (!($return = $instance->validate($value)) && isset($schema['invalid'])) {
-                        $this->addError($schema['invalid']);
+                    if (!($return = $instance->validate($value)))
+                        if (isset($schema['invalid'])) {
+                            $this->addError($schema['invalid']);
+                        }
+                        
+                        $this->addErrors($instance->getErrors());
                     }
                 }
             }
