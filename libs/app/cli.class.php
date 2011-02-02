@@ -248,15 +248,15 @@ namespace org\octris\core\app {
         
         $_SERVER  = new validate\wrapper($_SERVER);
         $_ENV     = new validate\wrapper($_ENV);
-        $_GET     = new validate\wrapper(cli::getOptions());
+        $_REQUEST = new validate\wrapper(cli::getOptions());
             
         unset($_POST);
-        unset($_REQUEST);
+        unset($_GET);
         unset($_COOKIE);
         unset($_SESSION);
         unset($_FILES);
         
-        if (!$_ENV->validate('OCTRIS_BASE', validate::T_PATH)) {
+        if (!$_ENV['OCTRIS_BASE']->validate(array('type' => validate::T_PATH))) {
             die("OCTRIS_BASE is not set\n");
         }
     }
