@@ -166,15 +166,18 @@ namespace org\octris\core\validate {
                 // array validation
                 do {
                     if (!($return = is_array($value))) {
+                        if (isset($schema['invalid'])) $this->addError($schema['invalid']);
                         break;
                     }
         
                     $cnt = count($value);
                     
                     if (!($return = (isset($schema['max_items']) && $cnt <= $schema['max_items']))) {
+                        if (isset($schema['invalid'])) $this->addError($schema['invalid']);
                         break;
                     }
                     if (!($return = (isset($schema['min_items']) && $cnt >= $schema['min_items']))) {
+                        if (isset($schema['invalid'])) $this->addError($schema['invalid']);
                         break;
                     }
                     
@@ -184,6 +187,7 @@ namespace org\octris\core\validate {
                         $subschema = $this->schema[$schema['items']];
                     } else {
                         // no sub-validation-schema available, continue
+                        throw new \Exception("schema error -- no subschema '" . $schema['items'] . "' available");
                         $return = false;
                         break;
                     }
@@ -207,10 +211,15 @@ namespace org\octris\core\validate {
                 // object validation
                 do {
                     if (!($return = is_array($value))) {
+                        if (isset($schema['invalid'])) $this->addError($schema['invalid']);
                         break;
                     }
 
                     // validate if same properties are available in value and schema
+                    if (!isset($schema['properties'])) {
+                        throw new \Exception("schema error -- no properties available");
+                    }
+                    
                     $schema = $schema['properties'];
                 
                     $cnt1 = count($schema);
@@ -218,13 +227,16 @@ namespace org\octris\core\validate {
                     $cnt3 = count(array_intersect_key($schema, $value));
                 
                     if (!($return = ($cnt1 >= $cnt3 || ($cnt1 < $cnt2 && $this->mode != self::T_STRICT)))) {
+                        if (isset($schema['invalid'])) $this->addError($schema['invalid']);
                         break;
                     }
 
                     if ($cnt1 > $cnt3) {
                         // iterate over missing fields and check, if they are required
                         foreach (array_diff_key($schema, $value) as $k => $v) {
-                            if (!(!isset($schema[$k]['required']) || !$schema[$k]['required'])) {
+                            if (isset($schema[$k]['required'])) {
+                                $this->addError($schema['required']);
+
                                 $return = false;
                                 
                                 if ($this->fail) break(2);
@@ -260,7 +272,10 @@ namespace org\octris\core\validate {
                     );
 
                     $value  = $instance->preFilter($value);
-                    $return = $instance->validate($value);
+                    
+                    if (!($return = $instance->validate($value)) && isset($schema['invalid'])) {
+                        $this->addError($schema['invalid']);
+                    }
                 }
             }
         
@@ -286,6 +301,8 @@ namespace org\octris\core\validate {
             if (!isset($this->schema['default'])) {
                 throw new \Exception('no default schema specified!');
             }
+            
+            $this->errors = array();
             
             $return = $this->_validator(
                 $values,
