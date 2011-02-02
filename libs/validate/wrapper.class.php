@@ -1,6 +1,8 @@
 <?php
 
 namespace org\octris\core\validate {
+    require_once('wrapper/value.class.php');
+    
     /**
      * Enable validation for arrays.
      *
@@ -11,21 +13,6 @@ namespace org\octris\core\validate {
     class wrapper extends \org\octris\core\type\collection
     /**/
     {
-        /**
-         * Default values for a property.
-         *
-         * @octdoc  v:wrapper/$defaults
-         * @var     array
-         */
-        protected $defaults = array(
-            'isSet'     => true,
-            'isValid'   => false,
-            'isTainted' => true,
-            'value'     => null,
-            'tainted'   => null
-        );
-        /**/
-
         /**
          * Constructor.
          *
@@ -38,38 +25,7 @@ namespace org\octris\core\validate {
             if (($cnt = count($source)) > 0) {
                 $this->keys = array_keys($source);
                 $this->data = $source;
-            } else {
-                $this->data = array();
             }
-        }
-
-        /**
-         * Validate wrapped structure.
-         *
-         * @octdoc  m:wrapper/validate
-         * @param   array       $schema         Validation schema.
-         * @return  bool                        Returns TRUE if validation succeeded
-         */
-        public function validate(array $schema)
-        /**/
-        {
-            if (($valid = isset($this->data[$name]))) {
-                $instance = new \org\octris\core\validate\schema($schema);
-                $valid    = $instance->validate($this->data[$name]->tainted);
-                    
-                    if ($valid) {
-                        $this->data[$name]->value = $value;
-                    }
-                    
-                    $this->data[$name]->isTainted = false;
-                    $this->data[$name]->isSet     = true;
-                    $this->data[$name]->isValid   = $valid;
-                } else {
-                    $valid = $this->data[$name]->isValid;
-                }
-            }
-            
-            return $valid;
         }
 
         /**
@@ -83,12 +39,15 @@ namespace org\octris\core\validate {
         /**/
         {
             if (($idx = array_search($offs, $this->keys, true)) !== false) {
+                $key = $this->keys[$idx];
+                
+                if (!($this->data[$key] instanceof \org\octris\core\validate\wrapper\value)) {
+                    $this->data[$key] = new \org\octris\core\validate\wrapper\value($this->data[$key]);
+                }
+                
                 $return = $this->data[$this->keys[$idx]];
             } else {
-                $return = (object)$this->defaults;
-                $return->isSet = false;
-                
-                parent::offsetSet($offs, $return);
+                throw new \Exception("'$offs' is not available");
             }
         
             return $return;
@@ -104,16 +63,41 @@ namespace org\octris\core\validate {
         public function offsetSet($offs, $value)
         /**/
         {
-            $me = $this;
+            throw new \Exception('forbidden to set wrapped data value');
+        }
+        
+        /**
+         * Rename keys of collection but preserve the ordering of the collection.
+         *
+         * @octdoc  m:collection/keyrename
+         * @param   array       $map            Map of origin name to new name.
+         */
+        public function keyrename($map)
+        /**/
+        {
+            $this->data = parent::keyrename($map);
+            $this->keys = array_keys($result);
+        }
+
+        /**
+         * Set a value in wrapper.
+         *
+         * @octdoc  m:wrapper/set
+         * @param   string      $name           Name of value to set.
+         * @param   mixed       $value          Value to set.
+         * @param   array       $schema         Validation schema to apply.
+         * @return  bool                        Result of validation.
+         */
+        public function set($name, $value, array $schema)
+        /**/
+        {
+            if (($idx = array_search($name, $this->keys, true)) === false) {
+                $this->keys[] = $name;
+            }
+                
+            $this->data[$name] = new \org\octris\core\validate\wrapper\value($value);
             
-            $tmp = (object)$this->defaults;
-            $tmp->isSet     = true;
-            $tmp->isValid   = true;
-            $tmp->isTainted = false;
-            $tmp->tainted   = $value;
-            $tmp->value     = $value;
-            
-            parent::offsetSet($offs, $tmp);
+            return $this->data[$name]->validate($schema);
         }
     }
 }
