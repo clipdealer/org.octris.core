@@ -24,7 +24,10 @@ namespace org\octris\core\validate {
         {
             if (($cnt = count($source)) > 0) {
                 $this->keys = array_keys($source);
-                $this->data = $source;
+                
+                foreach ($source as $k => $v) {
+                    $this->data[$k] = new \org\octris\core\validate\wrapper\value($v);
+                }
             }
         }
 
@@ -39,13 +42,8 @@ namespace org\octris\core\validate {
         /**/
         {
             if (($idx = array_search($offs, $this->keys, true)) !== false) {
-                $key = $this->keys[$idx];
-                
-                if (!($this->data[$key] instanceof \org\octris\core\validate\wrapper\value)) {
-                    $this->data[$key] = new \org\octris\core\validate\wrapper\value($this->data[$key]);
-                }
-                
-                $return = $this->data[$this->keys[$idx]];
+                $key    = $this->keys[$idx];
+                $return = $this->data[$key];
             } else {
                 throw new \Exception("'$offs' is not available");
             }
