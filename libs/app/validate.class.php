@@ -21,7 +21,7 @@ namespace org\octris\core\app {
         /**/
         
         /**
-         * Private constructor and magic clone method to prevent existance of multiple instances.
+         * Protected constructor and magic clone method to prevent existance of multiple instances.
          *
          * @octdoc  m:validate/__construct, __clone
          */
@@ -93,6 +93,14 @@ namespace org\octris\core\app {
         {
             $key = $this->getKey($page, $action);
 
+            $this->schema = (!isset($schema['default']) && isset($schema['type'])
+                             ? array('default' => $schema)
+                             : $schema);
+            
+            if (!isset($schema['default']['type']) || $schema['default']['type'] != \org\octris\core\validate::T_OBJECT || !isset($schema['default']['type']['properties'])) {
+                throw new \Exception('invalid validation scheme');
+            }
+            
             $this->rulesets[$key] = array(
                 'wrapper' => $wrapper,
                 'schema'  => $schema,
@@ -114,15 +122,20 @@ namespace org\octris\core\app {
             $ret = true;
 
             if (isset($this->rulesets[$key])) {
-                $ruleset = $this->ruleset[$key];
+                $properties =& $this->ruleset[$key]['default']['properties'];
+                $wrapper    = $ruleset['wrapper'];
                 
-                foreach ($ruleset['rules'] as $rule) {
-                    $v = new validate\schema($rule, $ruleset['mode']);
-                    
-                    if ($v->validate($ruleset['wrapper'])) {
-                        // handle validation stuff
-                    } else {
+                foreach ($properties as $name => $schema) {
+                    if (!isset($wrapper[$name])) {
+                        if (isset($schema['required'])) {
+                            $this->addError($schema['required']);
+                        }
+                    } elseif (!$wrapper[$name]->validate($schema)) {
                         $ret = false;
+                        
+                        if (isset($schema['invalid'])) {
+                            $this->addError($schema['invalid']);
+                        }
                     }
                 }
             }
