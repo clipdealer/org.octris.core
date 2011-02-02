@@ -127,27 +127,30 @@ namespace org\octris\core\app {
          * @octdoc  m:validate/validate
          * @param   \org\octris\core\page       $page       Instance of page object of registered ruleset.
          * @param   string                      $action     Action of registered ruleset.
+         * @param   \org\octris\core\page       $errors     Optional second page to send errors to.
          */
-        public function validate(\org\octris\core\page $page, $action)
+        public function validate(\org\octris\core\page $page, $action, \org\octris\core\page $errors = null)
         /**/
         {
             $key = $this->getKey($page, $action);
             $ret = true;
 
             if (isset($this->rulesets[$key])) {
+                if (is_null($errors)) $errors = $page;
+                
                 $properties =& $this->ruleset[$key]['default']['properties'];
                 $wrapper    = $ruleset['wrapper'];
                 
                 foreach ($properties as $name => $schema) {
                     if (!isset($wrapper[$name])) {
                         if (isset($schema['required'])) {
-                            $this->addError($schema['required']);
+                            $errors->addError($schema['required']);
                         }
                     } elseif (!$wrapper[$name]->validate($schema)) {
                         $ret = false;
                         
                         if (isset($schema['invalid'])) {
-                            $this->addError($schema['invalid']);
+                            $errors->addError($schema['invalid']);
                         }
                     }
                 }
