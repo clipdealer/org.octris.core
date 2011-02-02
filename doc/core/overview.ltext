@@ -15,10 +15,6 @@
           +-\templates      // templates
           +-\tools          // commandline tools
             +-\...          // name of tool (collection)
-              +-\bin        // main appliction of tool
-              +-\libs       // tool libraries
-                +-\app      // application pages
-                +-\libs     // misc tool specific libraries
           +-Makefile        // makefile
 
           
