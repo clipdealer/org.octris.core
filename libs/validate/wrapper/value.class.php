@@ -103,10 +103,11 @@ namespace org\octris\core\validate\wrapper {
             
                 $validator = new \org\octris\core\validate\schema($schema);
 
-                $this->isValid   = $validator->validate($value);
                 $this->isTainted = false;
-            
-                $this->value = $value;
+
+                if (($this->isValid = $validator->validate($value))) {
+                    $this->value = $value;
+                }
             }
         
             return $this->isValid;
