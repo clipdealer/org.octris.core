@@ -2,6 +2,7 @@
 
 namespace org\octris\core\octsh\app {
     use \org\octris\core\app as app;
+    use \org\octris\core\validate as validate;
     
     /**
      * Help system for the shell.
@@ -42,9 +43,51 @@ namespace org\octris\core\octsh\app {
         {
             parent::__construct();
             
+            $registry = \org\octris\core\registry::getInstance();
+
             $this->addValidator('help', $_REQUEST, array(
-                
+                'type'              => validate::T_OBJECT,
+                'keyrename'         => array('command'),
+                'properties'        => array(
+                    'command'       => array(
+                        'type'      => validate::T_CALLBACK,
+                        'options'   => array(
+                            'callback'  => function($command) use ($registry) {
+                                if (!isset($registry->commands)) {
+                                    $last_page->addError('help is not available');
+                                } elseif (!isset($registry->commands[$command])) {
+                                    $last_page->addError("no help for unknown command '$command' available");
+                                }
+
+                                print "$value\n";
+                                return true;
+                            }
+                        )
+                    )        
+                )
             ));
+             
+                    // 'project'       => array(
+                    //     'type'      => validate::T_CHAIN,
+                    //     'options'   => array(
+                    //         'chain' => array(
+                    //             array(
+                    //                 'type'      => validate::T_PROJECT,
+                    //                 'invalid'   => 'Project name is invalid'
+                    //             ),
+                    //             array(
+                    //                 'type'      => validate::T_CALLBACK,
+                    //                 'options'   => array(
+                    //                     'callback'  => function($value) {
+                    //                         print "$value\n";
+                    //                         return true;
+                    //                     }
+                    //                 )
+                    //                 'invalid'   => 'Project does not exist'
+                    //             )
+                    //         )
+                    //     )
+                    // )
         }
 
         /**
@@ -58,45 +101,19 @@ namespace org\octris\core\octsh\app {
         public function prepare(\org\octris\core\app\page $last_page, $action)
         /**/
         {
-            $validator = $this->validate->addSchema()
-            $validator
-            
-            $registry = \org\octris\core\registry::getInstance();
-
-            
-
-
-            $command  = array_shift($parameters);
-            
-            if (is_scalar($command)) {
-                if (!isset($registry->commands)) {
-                    $last_page->addError('help is not available');
-                } elseif (!isset($registry->commands[$command])) {
-                    $last_page->addError("no help for unknown command '$command' available");
-                } else {
-                    $this->command = $command;
-                }
-            } elseif (is_array($command)) {
-                $last_page->addError("usage: 'help' or 'help <command>'");
-            }
-            
+            return ($this->validate()
+                    ? null
+                    : $last_page);
+            // $command  = array_shift($parameters);
+            // 
+            // if (is_scalar($command)) {
+            // } elseif (is_array($command)) {
+            //     $last_page->addError("usage: 'help' or 'help <command>'");
+            // }
+            // 
             return (count($last_page->errors) == 0
                     ? null
                     : $last_page);
-        }
-
-        /**
-         * Validate help parameters.
-         *
-         * @octdoc  m:help/validate
-         * @param   \org\octris\core\app\cli\page   $last_page      Instance of last called page.
-         * @param   string                          $action         Action to select ruleset for.
-         * @param   array                           $parameters     Parameters to validate.
-         * @return  \org\octris\core\app\cli\page                   Returns page to display errors for.
-         */
-        public function validate(\org\octris\core\app\cli\page $last_page, $action, array $parameters = array())
-        /**/
-        {
         }
 
         /**
