@@ -21,17 +21,6 @@ namespace org\octris\core\octsh\app {
         /**/
 
         /**
-         * Mapping of an option to an application class
-         *
-         * @octdoc  v:main/$option_map
-         * @var     
-         */
-        protected $option_map = array(
-            '--help'    => '\org\octris\core\octsh\app\clihelp'
-        );
-        /**/
-        
-        /**
          * Initialization of shell.
          *
          * @octdoc  m:main/initialization
