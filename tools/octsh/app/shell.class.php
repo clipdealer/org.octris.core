@@ -72,7 +72,6 @@ namespace org\octris\core\octsh\app {
          *
          * @octdoc  m:entry/render
          * @param   string                          $action         Action that led to current page.
-         * @return  string                                          Action that was triggered by the dialog.
          */
         public function dialog($action)
         /**/
@@ -135,7 +134,9 @@ namespace org\octris\core\octsh\app {
                 }
             }
 
-            return array($command, $parameter);
+            $result['command']['ACTION'] = $command;
+
+            $_REQUEST = new \org\octris\core\validate\wrapper($result['command']);
         }
     }
 }
