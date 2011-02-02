@@ -98,6 +98,30 @@ namespace org\octris\core\validate {
         }
  
         /**
+         * Add validation error.
+         *
+         * @octdoc  m:schema/addError
+         * @param   string      $msg        Error message to add.
+         */
+        protected function addError($msg)
+        /**/
+        {
+            $this->errors[] = $msg;
+        }
+
+        /**
+         * Return collected error messages.
+         *
+         * @octdoc  m:schema/getErrors
+         * @return  array                   Error messages.
+         */
+        public function getErrors()
+        /**/
+        {
+            return $this->errors;
+        }
+
+        /**
          * Rename keys of specified array.
          *
          * @octdoc  m:schema/keyrename
