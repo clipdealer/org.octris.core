@@ -8,10 +8,7 @@ and environment variables, command line options. The OCTRiS validation schemas s
 to complex arrays.
 
 Field validation rules
-~~~~~~~~~~~~~~~~~~~~~~
-
-    *   type -- (required) type of field
-        the type the field must have to be valid
+----------------------
 
 _Example #1:_
 
@@ -29,6 +26,22 @@ Example shows required schema for validating login credentials:
                 'password' => array(                // field: password
                     'type'  => validate::T_PRINTABLE
                 )
+            )
+        )
+    );
+
+The example abolve can be cleaned up a little bit, if only the default schema is used:
+
+..  source: php
+
+    $schema = array(
+        'type'          => validate::T_OBJECT,
+        'properties'    => array(
+            'username' => array(                // field: username
+                'type'  => validate::T_PRINTABLE
+            ),
+            'password' => array(                // field: password
+                'type'  => validate::T_PRINTABLE
             )
         )
     );
@@ -159,7 +172,7 @@ keyrename feature. Keyrename is currently only allowed for the default scheme, b
 
 
 Validation chaining
-~~~~~~~~~~~~~~~~~~~
+-------------------
 
 Validation chaining is achieved by the 'chain' validator, which accepts
 an array with multiple types/options to validate in chain as option parameter. 
@@ -199,22 +212,17 @@ names:
     )
     
 Event hooks
-~~~~~~~~~~~
+-----------
 
 It's allowed to define event callbacks, that will be triggered during validation.
 The following events are available:
 
 *   onFailure -- triggered, when a value is missing or a value is invalid
-*   onSuccess -- triggered, when a valid exists and the value is valid
+*   onSuccess -- triggered, when a value exists and the value is valid
 
-This is useful for example to collect validation failures to present an overview
-of failed input fields. 
-
-The registration example from above would change to look like:
+The registration example from above would change to:
 
 ..  source: php
-
-    $errors = array();
 
     $schema = array(
         'default' => array(                         // default schema
@@ -222,8 +230,8 @@ The registration example from above would change to look like:
             'properties' => array(
                 'username' => array(
                     'type'      => validate::T_PRINTABLE,
-                    'onFailure' => function() use (&$errors) {
-                        $errors[] = 'Username missing or invalid';
+                    'onFailure' => function() {
+                        ...
                     }
                 ),
                 'password' => array(
@@ -233,12 +241,12 @@ The registration example from above would change to look like:
                     'type'      => validate::T_CALLBACK,
                     'options'   => array(
                         'callback' => function($value) {
-                            return ($value === $_POST->get('password')->value);
+                            return ($value === $_POST['password']->value);
                         }
                     ),
                     'required'  => true
-                    'onFailure' => function() use (&$errors) {
-                        $errors[] = 'Password missing or invalid';
+                    'onFailure' => function() {
+                        ...
                     }
                 ),
                 'websites' => array(
@@ -255,8 +263,8 @@ The registration example from above would change to look like:
             'properties' => array(
                 'url'   => array(
                     'type'      => validate::T_URL
-                    'onFailure' => function() use (&$errors) {
-                        $errors[] = 'URL is invalid';
+                    'onFailure' => function() {
+                        ...
                     }
                 ),
                 'title' => array(
@@ -265,3 +273,95 @@ The registration example from above would change to look like:
             )
         )
     )
+
+Page validation
+---------------
+
+While a direct called schema validation always executes the whole schema on the input array,
+the page validation works a little different. Let's have a look at our registration example.
+
+..  source: php
+
+    $schema = array(
+        'default' => array(                         // default schema
+            'type'       => validate::T_OBJECT,
+            'properties' => array(
+                'username' => array(
+                    'type'  => validate::T_PRINTABLE
+                ),
+                'password' => array(
+                    'type'  => validate::T_PRINTABLE,
+                ),
+                'password2' => array(               // a second password field to compare to
+                    'type'      => validate::T_CALLBACK,
+                    'options'   => array(
+                        'callback' => function($value) {
+                            return ($value === $_POST->get('password')->value);
+                        }
+                    ),
+                    'required'  => true
+                )
+            )
+        )
+    )
+
+The page validation requires this layout, because request parameters will always have to have
+a named key (for example: 'username'). So the schema has to be:
+
+..  source: php
+
+    $schema = array(
+        'default' => array(                         // default schema
+            'type'       => validate::T_OBJECT,     // required(!)
+            'properties' => array(                  // required(!)
+                ...
+            )
+        )
+    )
+
+Or cleaned up as shown in the example #1 at the beginning of this document. However. The schema
+validator will _not_ receive the whole schema including 'username', 'password', etc. but only 
+a snippet for each field.
+
+This is due to how the page validator handles request parameters and validation schemas. However.
+The page validator accepts two speciel fields to a schema:
+
+*   'required' -- while this one is for normal schemas just a boolean flag, in the page validator
+    it takes a string, that will be collected, if the field is missing. If 'required' is available
+    and contains a string, the field is indeed a required field.
+    
+*   'invalid' -- this is a new required field for the page validator. It takes a string, that will
+    be collected, if the validation of the field fails.
+    
+The registration schema would than change to:
+
+..  source: php
+
+    $schema = array(
+        'default' => array(                         // default schema
+            'type'       => validate::T_OBJECT,
+            'properties' => array(
+                'username' => array(
+                    'type'      => validate::T_PRINTABLE
+                    'required'  => 'The username is a required field',
+                    'invalid'   => 'The username contains illegal characters'
+                ),
+                'password' => array(
+                    'type'      => validate::T_PRINTABLE,
+                    'required'  => 'The password is a required field',
+                    'invalid'   => 'The password contains illegal characters'
+                ),
+                'password2' => array(               // a second password field to compare to
+                    'type'      => validate::T_CALLBACK,
+                    'options'   => array(
+                        'callback' => function($value) {
+                            return ($value === $_POST->get('password')->value);
+                        }
+                    ),
+                    'required'  => 'The password2 is a required field',
+                    'invalid'   => 'The password2 and password don't match'
+                )
+            )
+        )
+    )
+
