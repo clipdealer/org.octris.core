@@ -54,14 +54,18 @@ namespace org\octris\core {
          * @octdoc  m:validate/test
          * @param   mixed           $value              Value to test.
          * @param   array           $schema             Validation schema.
-         * @return  bool                                Returns true, if valid.
+         * @param   int             $mode               Optional validation mode.
+         * @return  mixed                               Returns true, if valid otherwise an array with error messages.
          */
-        public static function validate($value, array $schema)
+        public static function validate($value, array $schema, $mode = \org\octris\core\validate\schema::T_STRICT)
         /**/
         {
-            $instance = new \org\octris\core\validate\schema($schema);
+            $instance = new \org\octris\core\validate\schema($schema, $mode);
+            $is_valid = $instance->validate($value);
             
-            return $instance->validate($value);
+            return ($is_valid === true
+                    ? $is_valid 
+                    : $instance->getErrors());
         }
     }
 }
