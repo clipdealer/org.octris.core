@@ -53,41 +53,40 @@ namespace org\octris\core\octsh\app {
                         'type'      => validate::T_CALLBACK,
                         'options'   => array(
                             'callback'  => function($command) use ($registry) {
+                                $errors = array();
+                                
                                 if (!isset($registry->commands)) {
-                                    $last_page->addError('help is not available');
+                                    $errors[] = 'help is not available';
                                 } elseif (!isset($registry->commands[$command])) {
-                                    $last_page->addError("no help for unknown command '$command' available");
+                                    $errors[] = "no help available for unknown command '$command'";
                                 }
 
-                                print "$value\n";
-                                return true;
+                                return (count($errors) == 0
+                                        ? true
+                                        : $errors);
                             }
                         )
                     )        
                 )
             ));
              
-                    // 'project'       => array(
-                    //     'type'      => validate::T_CHAIN,
-                    //     'options'   => array(
-                    //         'chain' => array(
-                    //             array(
-                    //                 'type'      => validate::T_PROJECT,
-                    //                 'invalid'   => 'Project name is invalid'
-                    //             ),
-                    //             array(
-                    //                 'type'      => validate::T_CALLBACK,
-                    //                 'options'   => array(
-                    //                     'callback'  => function($value) {
-                    //                         print "$value\n";
-                    //                         return true;
-                    //                     }
-                    //                 )
-                    //                 'invalid'   => 'Project does not exist'
-                    //             )
-                    //         )
-                    //     )
-                    // )
+            'project'       => array(
+                'type'      => validate::T_CHAIN,
+                'chain' => array(
+                    array(
+                        'type'      => validate::T_PROJECT,
+                        'invalid'   => 'Project name is invalid'
+                    ),
+                    array(
+                        'type'      => validate::T_CALLBACK,
+                        'options'   => array(
+                        'callback'  => function($value) {
+                            print "$value\n";
+                            return true;
+                        }
+                    )
+                )
+            )
         }
 
         /**
