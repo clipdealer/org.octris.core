@@ -40,8 +40,11 @@ namespace org\octris\core\octsh\app {
         public function __construct()
         /**/
         {
-            $v = app\validate::getInstance();
-            $v->addSchema()
+            parent::__construct();
+            
+            $this->addValidator('help', $_REQUEST, array(
+                
+            ));
         }
 
         /**
@@ -55,7 +58,14 @@ namespace org\octris\core\octsh\app {
         public function prepare(\org\octris\core\app\page $last_page, $action)
         /**/
         {
+            $validator = $this->validate->addSchema()
+            $validator
+            
             $registry = \org\octris\core\registry::getInstance();
+
+            
+
+
             $command  = array_shift($parameters);
             
             if (is_scalar($command)) {
