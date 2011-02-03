@@ -99,12 +99,10 @@ namespace org\octris\core\octsh\app {
             if (($return = $this->applyValidator($action)) !== true) {
                 $last_page->addErrors($return);
                 
-                // return $last_page;
+                return $last_page;
             }
-
-            print_r($_REQUEST);
-            die;
-
+            
+            $this->command = $_REQUEST['command'];
         }
 
         /**
