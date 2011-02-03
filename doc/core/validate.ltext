@@ -64,11 +64,9 @@ Example shows required schema for user-registration data containing a list of up
                 ),
                 'password2' => array(               // a second password field to compare to
                     'type'      => validate::T_CALLBACK,
-                    'options'   => array(
-                        'callback' => function($value) {
-                            return ($value === $_POST->get('password')->value);
-                        }
-                    ),
+                    'callback'  => function($value) {
+                        return ($value === $_POST->get('password')->value);
+                    },
                     'required'  => true
                 ),
                 'websites' => array(
@@ -191,19 +189,15 @@ names:
             'properties' => array(
                 'username' => array(
                     'type'      => validate::T_CHAIN,
-                    'options'   => array(
-                        'chain' => array(
-                            array(
-                                'type'      => validate::T_PRINTABLE
-                            ),
-                            array(
-                                'type'      => validate::T_CALLBACK,
-                                'options'   => array(
-                                    'callback'  => function($value) {
-                                        return !in_array($value, array('admin', 'chef'));
-                                    }
-                                )
-                            )
+                    'chain' => array(
+                        array(
+                            'type'      => validate::T_PRINTABLE
+                        ),
+                        array(
+                            'type'      => validate::T_CALLBACK,
+                            'callback'  => function($value) {
+                                return !in_array($value, array('admin', 'chef'));
+                            }
                         )
                     )
                 )
