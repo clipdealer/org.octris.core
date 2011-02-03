@@ -101,7 +101,7 @@ namespace org\octris\core\app\cli {
             $action = '';
             
             if (isset($_REQUEST['ACTION'])) {
-                if ($_REQUEST['ACTION']->validate(array('type' => validate::T_ALPHANUM))) {
+                if ($_REQUEST['ACTION']->validate(validate::T_ALPHANUM)) {
                     $action = $_REQUEST['ACTION']->value;
                 }
             }
