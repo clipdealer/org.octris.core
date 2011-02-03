@@ -83,19 +83,28 @@ namespace org\octris\core\validate {
          * @octdoc  m:wrapper/set
          * @param   string      $name           Name of value to set.
          * @param   mixed       $value          Value to set.
-         * @param   array       $schema         Validation schema to apply.
+         * @param   mixed       $validator      Validation instance or type name.
+         * @param   array       $options        Optional options.
          * @return  bool                        Result of validation.
          */
-        public function set($name, $value, array $schema)
+        public function set($name, $value, $validator, array $options = array())
         /**/
         {
+            if (is_scalar($validator) && class_exists($validator)) {
+                $validator = new $validator($options);
+            }
+
+            if (!($validator instanceof \org\octris\core\validate\type)) {
+                throw new \Exception('invalid validator');
+            }
+            
             if (($idx = array_search($name, $this->keys, true)) === false) {
                 $this->keys[] = $name;
             }
                 
             $this->data[$name] = new \org\octris\core\validate\wrapper\value($value);
             
-            return $this->data[$name]->validate($schema);
+            return $this->data[$name]->validate($validator, $options);
         }
     }
 }
