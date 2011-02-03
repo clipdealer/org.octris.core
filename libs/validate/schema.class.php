@@ -82,7 +82,7 @@ namespace org\octris\core\validate {
          * @param   array       $schema     Schema to use for validation.
          * @param   int         $mode       Optional schema validation mode.
          */
-        public function __construct(array $schema, $mode = self::T_STRICT)
+        public function __construct(array $schema, $mode = self::T_IGNORE)
         /**/
         {
             $this->schema = (!isset($schema['default']) && isset($schema['type'])
