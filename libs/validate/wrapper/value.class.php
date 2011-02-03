@@ -85,22 +85,26 @@ namespace org\octris\core\validate\wrapper {
         }
         
         /**
-         * Validate value with specified schema.
+         * Validate value with specified validator.
          *
          * @octdoc  m:value/validate
-         * @param   array           $schema         Validation schema.
-         * @return  bool                            Whether validation succeeded.
+         * @param   mixed           $validator          Validation instance or type name.
+         * @param   array           $options            Optional validation options.
+         * @return  bool                                Whether validation succeeded.
          */
-        public function validate(array $schema)
+        public function validate($validator, array $options = array())
         /**/
         {
             if ($this->isTainted) {
-                if (!isset($schema['default'])) {
-                    $schema = array('default' => $schema);
+                if (is_scalar($validator) && class_exists($validator)) {
+                    $validator = new $validator($options);
                 }
-            
-                $validator = new \org\octris\core\validate\schema($schema);
 
+                if (!($validator instanceof \org\octris\core\validate\type)) {
+                    print "$validator\n";
+                    throw new \Exception('invalid validator');
+                }
+                
                 $this->isTainted = false;
 
                 $value = $this->tainted;
