@@ -356,10 +356,10 @@ namespace org\octris\core\validate {
          * Apply validation schema to a specified array of values.
          *
          * @octdoc  m:schema/validate
-         * @param   array           $data               Array of values to validate.
+         * @param   mixed           $data               Data to validate.
          * @return  bool                                Returns true if value is valid compared to the schema configured in the validator instance.
          */
-        public function validate(array &$data)
+        public function validate(&$data)
         /**/
         {
             if (!isset($this->schema['default'])) {
@@ -372,7 +372,7 @@ namespace org\octris\core\validate {
                 $data,
                 $this->schema['default']
             );
-
+                    
             return $return;
         }
     }
