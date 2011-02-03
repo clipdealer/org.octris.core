@@ -51,21 +51,17 @@ namespace org\octris\core\octsh\app {
                 'properties'        => array(
                     'command'       => array(
                         'type'      => validate::T_CALLBACK,
-                        'options'   => array(
-                            'callback'  => function($command) use ($registry) {
-                                $errors = array();
-                                
-                                if (!isset($registry->commands)) {
-                                    $errors[] = 'help is not available';
-                                } elseif (!isset($registry->commands[$command])) {
-                                    $errors[] = "no help available for unknown command '$command'";
-                                }
-
-                                return (count($errors) == 0
-                                        ? true
-                                        : $errors);
+                        'callback'  => function($command, $validator) use ($registry) {
+                            print "test";
+                            
+                            if (!($return = isset($registry->commands))) {
+                                $validator->addError('help is not available');
+                            } elseif (!($return = isset($registry->commands[$command]))) {
+                                $validator->addError("no help available for unknown command '$command'");
                             }
-                        )
+
+                            return $return;
+                        }
                     )        
                 )
             ));
@@ -100,19 +96,28 @@ namespace org\octris\core\octsh\app {
         public function prepare(\org\octris\core\app\page $last_page, $action)
         /**/
         {
-            return ($this->validate()
-                    ? null
-                    : $last_page);
-            // $command  = array_shift($parameters);
-            // 
-            // if (is_scalar($command)) {
-            // } elseif (is_array($command)) {
-            //     $last_page->addError("usage: 'help' or 'help <command>'");
-            // }
-            // 
-            return (count($last_page->errors) == 0
-                    ? null
-                    : $last_page);
+            if (($return = $this->applyValidator($action)) !== true) {
+                $last_page->addErrors($return);
+                
+                // return $last_page;
+            }
+
+            print_r($_REQUEST);
+            die;
+
+        }
+
+        /**
+         * Validate parameters.
+         *
+         * @octdoc  m:help/validate
+         * @param   string                          $action         Action that led to current page.
+         * @return  
+         */
+        public function validate()
+        /**/
+        {
+            return true;
         }
 
         /**
