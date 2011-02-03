@@ -77,19 +77,10 @@ namespace org\octris\core\app {
             do {
                 // determine next page to display
                 $last_page = $this->getLastPage();
-
                 $action    = $last_page->getAction();
+
+                $last_page->validate($action);
                 $next_page = $last_page->getNextPage($action, $this->entry_page);
-                
-                // parameter validation for next page
-                $redirect_page = $next_page->validate(
-                    $last_page,
-                    $action
-                );
-                
-                if (is_object($redirect_page) && $next_page != $redirect_page) {
-                    $next_page = $last_page;
-                }
                 
                 // perform possible redirects
                 $max = 3;
