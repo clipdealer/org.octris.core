@@ -280,8 +280,6 @@ namespace org\octris\core\validate {
                     throw new \Exception("schema error -- no chain available");
                 }
                 
-                $schema = $schema['chain'];
-            
                 foreach ($schema['chain'] as $item) {
                     if (!($return = $this->_validator($value, $item, $level, $max_depth))) {
                         break;
