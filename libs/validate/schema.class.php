@@ -180,7 +180,7 @@ namespace org\octris\core\validate {
         
             if (isset($schema['keyrename'])) {
                 // rename keys first before continuing
-                if ($this->isCollection($value)) {
+                if ($this->isCollection($data)) {
                     $data = $data->keyrename($schema['keyrename']);
                 } else {
                     $data = array_combine(array_map(function($v) use ($map) {
