@@ -227,7 +227,7 @@ namespace org\octris\core\app {
         unset($_SESSION);
         unset($_FILES);
         
-        if (!$_ENV['OCTRIS_BASE']->validate(array('type' => validate::T_PATH))) {
+        if (!$_ENV['OCTRIS_BASE']->validate(validate::T_PATH)) {
             die("OCTRIS_BASE is not set\n");
         }
     }
