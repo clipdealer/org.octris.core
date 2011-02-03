@@ -103,22 +103,10 @@ namespace org\octris\core\validate {
          * @octdoc  m:schema/addError
          * @param   string      $msg        Error message to add.
          */
-        protected function addError($msg)
+        public function addError($msg)
         /**/
         {
             $this->errors[] = $msg;
-        }
-
-        /**
-         * Add multiple validation errors.
-         *
-         * @octdoc  m:schema/addErrors
-         * @param   array       $msg        Error messages to add.
-         */
-        protected function addErrors(array $msg)
-        /**/
-        {
-            $this->errors = array_merge($this->errors, $msg);
         }
 
         /**
@@ -131,24 +119,6 @@ namespace org\octris\core\validate {
         /**/
         {
             return $this->errors;
-        }
-
-        /**
-         * Rename keys of specified array.
-         *
-         * @octdoc  m:schema/keyrename
-         * @param   array       $ary        Array to rename keys of.
-         * @param   array       $map        Map of array keys to rename array keys to.
-         * @return  array                   Array with renamed keys.
-         */
-        protected function keyrename(array $arr, array $map)
-        /**/
-        {
-            return (array_combine(array_map(function($v) use ($map) {
-                return (is_int($v) && isset($map[$v])
-                        ? $map[$v]
-                        : $v);
-            }, array_keys($arr)), array_values($arr)));
         }
  
         /**
