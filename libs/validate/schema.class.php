@@ -324,17 +324,17 @@ namespace org\octris\core\validate {
             } else {
                 // type validation
                 if (class_exists($schema['type'])) {
+                    $validator = new $schema['type'](
+                        (isset($schema['options']) && is_array($schema['options'])
+                                ? $schema['options']
+                                : array())
+                    );
+            
                     if ($this->isValue($data)) {
-                        $return = $data->validate($schema);
+                        $return = $data->validate($validator);
                     } else {
-                        $instance = new $schema['type'](
-                            (isset($schema['options']) && is_array($schema['options'])
-                                    ? $schema['options']
-                                    : array())
-                        );
-                
-                        $data   = $instance->preFilter($data);
-                        $return = $instance->validate($data);
+                        $data   = $validator->preFilter($data);
+                        $return = $validator->validate($data);
                     }
                     
                     if (!$return && isset($schema['invalid'])) {
