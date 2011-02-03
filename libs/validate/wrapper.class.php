@@ -78,19 +78,6 @@ namespace org\octris\core\validate {
         }
 
         /**
-         * Rename keys of collection but preserve the ordering of the collection.
-         *
-         * @octdoc  m:collection/keyrename
-         * @param   array       $map            Map of origin name to new name.
-         */
-        public function keyrename($map)
-        /**/
-        {
-            $this->data = parent::keyrename($map);
-            $this->keys = array_keys($result);
-        }
-
-        /**
          * Set a value in wrapper.
          *
          * @octdoc  m:wrapper/set
