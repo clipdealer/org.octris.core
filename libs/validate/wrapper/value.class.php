@@ -99,12 +99,13 @@ namespace org\octris\core\validate\wrapper {
                     $schema = array('default' => $schema);
                 }
             
-                $value = $this->tainted;
-            
                 $validator = new \org\octris\core\validate\schema($schema);
 
                 $this->isTainted = false;
 
+                $value = $this->tainted;
+                $value = $validator->preFilter($value);
+            
                 if (($this->isValid = $validator->validate($value))) {
                     $this->value = $value;
                 }
