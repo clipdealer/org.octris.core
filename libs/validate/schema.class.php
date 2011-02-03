@@ -161,7 +161,7 @@ namespace org\octris\core\validate {
          * @param   int         $max_depth  Parameter for specifying max. allowed depth of nested sub-elements.
          * @return  bool                    Returns true if validation succeeded.
          */
-        protected function _validator(&$value, array $schema, $level = 0, $max_depth = 1)
+        protected function _validator(&$value, array $schema, $level = 0, $max_depth = 0)
         /**/
         {
             if (!($return = ($max_depth == 0 || $level <= $max_depth))) {
@@ -171,17 +171,28 @@ namespace org\octris\core\validate {
         
             if (isset($schema['keyrename'])) {
                 // rename keys first before continuing
-                $value = $this->keyrename($value, $schema['keyrename']);
+                if ($value instanceof \org\octris\core\type\collection) {
+                    $value->keyrename($schema['keyrename']);
+                } else {
+                    $value = array_combine(array_map(function($v) use ($map) {
+                        return (is_int($v) && isset($map[$v])
+                                ? $map[$v]
+                                : $v);
+                    }, array_keys($arr)), array_values($arr));
+                }
             }
             
             if ($schema['type'] == validate::T_ARRAY) {
                 // array validation
                 do {
-                    if (!($return = is_array($value))) {
-                        if (isset($schema['invalid'])) $this->addError($schema['invalid']);
+                    if (!is_array($value)) {
+                        if (!($return = !isset($schema['required']))) {
+                            $this->addError($schema['required']);
+                        }
+                        
                         break;
                     }
-        
+                    
                     $cnt = count($value);
                     
                     if (!($return = (isset($schema['max_items']) && $cnt <= $schema['max_items']))) {
@@ -222,11 +233,13 @@ namespace org\octris\core\validate {
             } elseif ($schema['type'] == validate::T_OBJECT) {
                 // object validation
                 do {
-                    if (!($return = is_array($value))) {
-                        if (isset($schema['invalid'])) $this->addError($schema['invalid']);
+                    if (!is_array($value)) {
+                        if (!($return = !isset($schema['required']))) {
+                            $this->addError($schema['required']);
+                        }
+                        
                         break;
                     }
-
                     // validate if same properties are available in value and schema
                     if (!isset($schema['properties'])) {
                         throw new \Exception("schema error -- no properties available");
@@ -285,6 +298,15 @@ namespace org\octris\core\validate {
                         break;
                     }
                 }
+            } elseif ($schema['type'] == validate::T_CALLBACK) {
+                // validating using callback
+                if (!isset($schema['challback']) || !is_callable($schema['callback'])) {
+                    throw new \Exception("schema error -- no valid callback available");
+                }
+                
+                if (!($return = $schema['callback']($value, $this)) && isset($schema['invalid'])) {
+                    $this->addError($schema['invalid']);
+                }
             } else {
                 // type validation
                 if (class_exists($schema['type'])) {
@@ -296,12 +318,8 @@ namespace org\octris\core\validate {
 
                     $value  = $instance->preFilter($value);
                     
-                    if (!($return = $instance->validate($value)))
-                        if (isset($schema['invalid'])) {
-                            $this->addError($schema['invalid']);
-                        }
-                        
-                        $this->addErrors($instance->getErrors());
+                    if (!($return = $instance->validate($value)) && isset($schema['invalid'])) {
+                        $this->addError($schema['invalid']);
                     }
                 }
             }
