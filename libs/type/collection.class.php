@@ -370,6 +370,18 @@ namespace org\octris\core\type {
 
             return new collection($tmp);
         }
+        
+        /**
+         * Return keys of collection.
+         *
+         * @octdoc  m:collection/getKeys
+         * @return  array                               Array of stored keys.
+         */
+        public function getKeys()
+        /**/
+        {
+            return $this->keys;
+        }
     }
 }
 
