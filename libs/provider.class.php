@@ -232,6 +232,31 @@ namespace org\octris\core {
         }
         
         /**
+         * Returns all matches for values with the specified prefix. Only values that validate 
+         * get returned.
+         *
+         * @octdoc  m:provider/getPrefixed
+         * @param   string          $prefix             Prefix to search for.
+         * @param   string          $type               Validation type.
+         * @param   array           $options            Optional settings for validation.
+         * @return  mixed                               
+         */
+        public function getPrefixed($prefix, $type, array $options = array())
+        /**/
+        {
+            $return = array();
+            $len    = strlen($name);
+            
+            foreach (self::$storage[$this->name] as $name => $value) {
+                if (substr($name, 0, $len) == $name && ($value = $this->getValue($name, $type, $options)) !== false) {
+                    $return[$name] = $value;
+                }
+            }
+            
+            return $return;
+        }
+        
+        /**
          * Set a specified data field with a value.
          *
          * @octdoc  m:provider/setValue
