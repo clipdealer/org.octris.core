@@ -148,10 +148,9 @@ namespace org\octris\core {
          *
          * @octdoc  m:provider/getData
          * @param   string          $name               Name of validator to apply.
-         * @param   array           $errors             Optional array may be specified to fetch validation errors.
          * @return  array                               Validated and sanitized data.
          */
-        public function applyValidator($name, array &$errors = array())
+        public function applyValidator($name)
         /**/
         {
             if (!isset($this->validators[$name])) {
