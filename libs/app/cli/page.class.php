@@ -2,6 +2,7 @@
 
 namespace org\octris\core\app\cli {
     use \org\octris\core\validate as validate;
+    use \org\octris\core\provider as provider;
     
     /**
      * Page controller for cli mvc framework.
@@ -98,23 +99,17 @@ namespace org\octris\core\app\cli {
         public function getAction()
         /**/
         {
-            $action = '';
+            $request = provider::access('request');
             
-            if (isset($_REQUEST['ACTION'])) {
-                if ($_REQUEST['ACTION']->validate(validate::T_ALPHANUM)) {
-                    $action = $_REQUEST['ACTION']->value;
-                }
-            }
-
-            if ($action == '') {
+            if (!($action = $request->getValue('ACTION', validate::T_ALPHANUM))) {
                 // try to determine action from a request parameter named ACTION_...
-                foreach ($_REQUEST->filter('ACTION_') as $k => $v) {
+                foreach ($request->getPrefixed('ACTION_', validate::T_ALPHANUM) as $k => $v) {
                     $action = substr($k, 7);
                     break;
                 }
             }
 
-            if ($action == '') {
+            if (!$action) {
                 $action = 'default';
             }
 
