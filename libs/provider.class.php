@@ -211,7 +211,7 @@ namespace org\octris\core {
                     $validator = new $type($options);
                 }
                 
-                if (!($validator instanceof \org\octris\core\validation\type)) {
+                if (!($validator instanceof \org\octris\core\validate\type)) {
                     throw new \Exception("'$type' is not a validation type");
                 }
 
