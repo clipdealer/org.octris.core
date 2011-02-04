@@ -3,6 +3,7 @@
 namespace org\octris\core\octsh\app {
     use \org\octris\core\app as app;
     use \org\octris\core\validate as validate;
+    use \org\octris\core\provider as provider;
     
     /**
      * Help system for the shell.
@@ -44,27 +45,30 @@ namespace org\octris\core\octsh\app {
             parent::__construct();
             
             $registry = \org\octris\core\registry::getInstance();
-
-            $this->addValidator('help', $_REQUEST, array(
-                'type'              => validate::T_OBJECT,
-                'keyrename'         => array('command'),
-                'properties'        => array(
-                    'command'       => array(
-                        'type'      => validate::T_CALLBACK,
-                        'callback'  => function($command, $validator) use ($registry) {
-                            print "test";
+            
+            $this->addValidator(
+                'help', 
+                array(
+                    'type'              => validate::T_OBJECT,
+                    'keyrename'         => array('command'),
+                    'properties'        => array(
+                        'command'       => array(
+                            'type'      => validate::T_CALLBACK,
+                            'callback'  => function($command, $validator) use ($registry) {
+                                print "test";
                             
-                            if (!($return = isset($registry->commands))) {
-                                $validator->addError('help is not available');
-                            } elseif (!($return = isset($registry->commands[$command]))) {
-                                $validator->addError("no help available for unknown command '$command'");
-                            }
+                                if (!($return = isset($registry->commands))) {
+                                    $validator->addError('help is not available');
+                                } elseif (!($return = isset($registry->commands[$command]))) {
+                                    $validator->addError("no help available for unknown command '$command'");
+                                }
 
-                            return $return;
-                        }
-                    )        
+                                return $return;
+                            }
+                        )        
+                    )
                 )
-            ));
+            );
              
             // 'project'       => array(
             //     'type'      => validate::T_CHAIN,
@@ -96,13 +100,15 @@ namespace org\octris\core\octsh\app {
         public function prepare(\org\octris\core\app\page $last_page, $action)
         /**/
         {
-            if (($return = $this->applyValidator($action)) !== true) {
+            list($is_valid, $data, $errors) = $this->applyValidator($action);
+            
+            if (!$is_valid) {
                 $last_page->addErrors($return);
                 
                 return $last_page;
             }
-            
-            $this->command = $_REQUEST['command'];
+
+            print_r($data);
         }
 
         /**
