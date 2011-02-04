@@ -1,84 +1,68 @@
 <?php
 
 namespace org\octris\core\type {
-    /****c* type/url
-     * NAME
-     *      url
-     * FUNCTION
-     *      url parser
-     * COPYRIGHT
-     *      copyright (c) 2010 by Harald Lapp
-     * AUTHOR
-     *      Harald Lapp <harald@octris.org>
-     ****
+    /**
+     * URL parser and pseudo-type.
+     *
+     * @octdoc      c:type/url
+     * @copyright   copyright (c) 2010-2011 by Harald Lapp
+     * @author      Harald Lapp <harald@octris.org>
      */
-
-    class url {
-        /****v* url/$url
-         * SYNOPSIS
+    class url
+    /**/
+    {
+        /**
+         * Stores URL.
+         *
+         * @octdoc  v:url/$url
+         * @var     string
          */
         protected $url = '';
-        /*
-         * FUNCTION
-         *      URL
-         ****
-         */
-         
-        /****v* url/$components
-         * SYNOPSIS
+        /**/
+        
+        /**
+         * Stores URL components.
+         *
+         * @octdoc  v:url/$components
+         * @var     array
          */
         protected $components = array();
-        /*
-         * FUNCTION
-         *      stores URL components
-         ****
-         */
-        
-        /****m* url/__construct
-         * SYNOPSIS
+        /**/
+
+        /**
+         * Constructor.
+         *
+         * @octdoc  m:url/__construct
+         * @param   string          $url                URL to parse and store.
          */
         public function __construct($url)
-        /*
-         * FUNCTION
-         *      constructor
-         * INPUTS
-         *      * $url (string) -- URL to store
-         ****
-         */
+        /**/
         {
-            $this->url;
+            $this->url = $url;
             
             $this->components = parse_url($url);
         }
         
-        /****m* url/__toString
-         * SYNOPSIS
+        /**
+         * Returns stored URL when object instance is casted to a string.
+         *
+         * @octdoc  m:url/__toString
+         * @return  string                              Stored URL.
          */
         public function __toString()
-        /*
-         * FUNCTION
-         *      return URL
-         * OUTPUTS
-         *      (string) -- stored URL
-         ****
-         */
+        /**/
         {
             return $this->url;
         }
-        
-        /****m* url/__get
-         * SYNOPSIS
+
+        /**
+         * Getter for URL components.
+         *
+         * @octdoc  m:url/__get
+         * @param   string          $name               Component of URL to return.
          */
         public function __get($name)
-        /*
-         * FUNCTION
-         *      return component of URL
-         * INPUTS
-         *      * $name (string) -- name of URL component to return
-         * OUTPUTS
-         *      (string) -- URL component
-         ****
-         */
+        /**/
         {
             $component = (isset($this->components[$name])
                             ? $this->components[$name]
@@ -86,16 +70,14 @@ namespace org\octris\core\type {
             
             return $component;
         }
-        
-        /****m* url/updateUrl
-         * SYNOPSIS
+
+        /**
+         * This method is called internally after modification of any URL component to update the URL string.
+         *
+         * @octdoc  m:url/updateUrl
          */
         protected function updateUrl()
-        /*
-         * FUNCTION
-         *      this method is called internally after modification of any URL component to update the URL string
-         ****
-         */
+        /**/
         {
             $this->url = 
                 (isset($this->components['scheme'])
@@ -129,67 +111,55 @@ namespace org\octris\core\type {
                     : '');
         }
         
-        /****m* url/getTld
-         * SYNOPSIS
+        /**
+         * Returns top-level-domain (TLD) of stored URL.
+         *
+         * @octdoc  m:url/getTld
+         * @return  string                                  Top-level-domain.
          */
         public function getTld()
-        /*
-         * FUNCTION
-         *      return top-level-domain (TLD)
-         * OUTPUTS
-         *      (string) -- toplevel domain
-         ****
-         */
+        /**/
         {
             $host = $this->components['host'];
             $tld = substr($host, strrpos('.', $host));
             
             return $tld;
         }
-        
-        /****m* url/parseQuery
-         * SYNOPSIS
+
+        /**
+         * Return query parsed to an array.
+         *
+         * @octdoc  m:url/parseQuery
+         * @return  array                                   Array representation of query parameters.
          */
         public function parseQuery()
-        /*
-         * FUNCTION
-         *      return query parsed into an array
-         * OUTPUTS
-         *      (array) -- array of query components
-         ****
-         */
+        /**/
         {
             return parse_str($this->components['query']);
         }
-        
-        /****m* url/buildQuery
-         * SYNOPSIS
+
+        /**
+         * Build query string from provided array.
+         *
+         * @octdoc  m:url/buildQuery
+         * @param   array           $data                   Data to build query from.
          */
         public function buildQuery(array $data)
-        /*
-         * FUNCTION
-         *      build query from provided array
-         * INPUTS
-         *      * $data (array) -- data to build query from
-         ****
-         */
+        /**/
         {
             $this->components['query'] = http_build_query($data);
             
             $this->updateUrl();
         }
-        
-        /****m* url/getUrl
-         * SYNOPSIS
+
+        /**
+         * Return stored URL.
+         *
+         * @octdoc  m:url/getUrl
+         * @return  string                                  Stored URL.
          */
         public function getUrl()
-        /*
-         * FUNCTION
-         *      return URL
-         * OUTPUTS
-         *      (string) -- URL
-         ****
-         */
+        /**/
         {
             return $this->url;
         }
