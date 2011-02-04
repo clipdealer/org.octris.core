@@ -122,45 +122,6 @@ namespace org\octris\core\validate {
         }
  
         /**
-         * Returns true if specified parameter is either an php array or if it implements the traversable interface,
-         *
-         * @octdoc  m:schema/isTraversable
-         * @param   mixed       $data       Value to test.
-         * @return  bool                    Returns true, if specified parameter is traversable.
-         */
-        public function isTraversable($data)
-        /**/
-        {
-            return (is_array($data) || $data instanceof Traversable);
-        }
- 
-        /**
-         * Returns true if specified parameter is an octris value object (\org\octris\core\validate\wrapper\value)
-         *
-         * @octdoc  m:schema/isValue
-         * @param   mixed       $data       Value to test.
-         * @return  bool                    Returns true, if specified parameter is a value object.
-         */
-        public function isValue($data)
-        /**/
-        {
-            return ($data instanceof \org\octris\core\validate\wrapper\value);
-        }
-        
-        /**
-         * Returns true if specified parameter is an octris collection object (\org\octris\core\type\collection)
-         *
-         * @octdoc  m:schema/isCollection
-         * @param   mixed       $data       Value to test.
-         * @return  bool                    Returns true, if specified parameter is a collection object.
-         */
-        public function isCollection($data)
-        /**/
-        {
-            return ($data instanceof \org\octris\core\type\collection);
-        }
- 
-        /**
          * Schema validator.
          *
          * @octdoc  m:schema/_validator
@@ -170,7 +131,7 @@ namespace org\octris\core\validate {
          * @param   int         $max_depth  Parameter for specifying max. allowed depth of nested sub-elements.
          * @return  bool                    Returns true if validation succeeded.
          */
-        protected function _validator(&$data, array $schema, $level = 0, $max_depth = 0)
+        protected function _validator($data, array $schema, $level = 0, $max_depth = 0)
         /**/
         {
             if (!($return = ($max_depth == 0 || $level <= $max_depth))) {
@@ -180,21 +141,17 @@ namespace org\octris\core\validate {
         
             if (isset($schema['keyrename'])) {
                 // rename keys first before continuing
-                if ($this->isCollection($data)) {
-                    $data = $data->keyrename($schema['keyrename']);
-                } else {
-                    $data = array_combine(array_map(function($v) use ($map) {
-                        return (isset($map[$v])
-                                ? $map[$v]
-                                : $v);
-                    }, array_keys($data), array_values($data)));
-                }
+                $data = array_combine(array_map(function($v) use ($map) {
+                    return (isset($map[$v])
+                            ? $map[$v]
+                            : $v);
+                }, array_keys($data), array_values($data)));
             }
             
             if ($schema['type'] == validate::T_ARRAY) {
                 // array validation
                 do {
-                    if (!$this->isTraversable($data)) {
+                    if (!is_array($data)) {
                         if (!($return = !isset($schema['required']))) {
                             $this->addError($schema['required']);
                         }
@@ -242,7 +199,7 @@ namespace org\octris\core\validate {
             } elseif ($schema['type'] == validate::T_OBJECT) {
                 // object validation
                 do {
-                    if (!$this->isTraversable($data)) {
+                    if (!is_array($data)) {
                         if (!($return = !isset($schema['required']))) {
                             $this->addError($schema['required']);
                         }
@@ -256,14 +213,9 @@ namespace org\octris\core\validate {
                     
                     $schema = $schema['properties'];
                 
-                    $keys1 = array_keys($schema);
-                    $keys2 = ($this->isCollection($data)
-                                ? $data->getKeys()
-                                : array_keys($data));
-                    
                     $cnt1 = count($schema);
                     $cnt2 = count($data);
-                    $cnt3 = count(array_intersect($schema, $data));
+                    $cnt3 = count(array_intersect_key($schema, $data));
                 
                     if (!($return = ($cnt1 >= $cnt3 || ($cnt1 < $cnt2 && $this->mode != self::T_STRICT)))) {
                         if (isset($schema['invalid'])) $this->addError($schema['invalid']);
@@ -272,7 +224,7 @@ namespace org\octris\core\validate {
 
                     if ($cnt1 > $cnt3) {
                         // iterate over missing fields and check, if they are required
-                        foreach (array_diff($keys1, $keys2) as $k) {
+                        foreach (array_diff_key($schema, $data) as $k) {
                             if (isset($schema[$k]['required'])) {
                                 $this->addError($schema['required']);
 
@@ -349,7 +301,7 @@ namespace org\octris\core\validate {
                 $schema['onSuccess']();
             }
 
-            return $return;
+            return ($return, $data);
         }
  
         /**
@@ -359,7 +311,7 @@ namespace org\octris\core\validate {
          * @param   mixed           $data               Data to validate.
          * @return  bool                                Returns true if value is valid compared to the schema configured in the validator instance.
          */
-        public function validate(&$data)
+        public function validate($data)
         /**/
         {
             if (!isset($this->schema['default'])) {
@@ -368,12 +320,12 @@ namespace org\octris\core\validate {
             
             $this->errors = array();
             
-            $return = $this->_validator(
+            list($return, $data) = $this->_validator(
                 $data,
                 $this->schema['default']
             );
                     
-            return $return;
+            return ($return !== false ? $data : $return);
         }
     }
 }
