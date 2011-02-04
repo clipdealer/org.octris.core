@@ -193,7 +193,7 @@ namespace org\octris\core {
         /**
          * Validates a specified data field and returns it, if it's valid.
          *
-         * @octdoc  m:proivder/getValue
+         * @octdoc  m:provider/getValue
          * @param   string          $name               Name of data field to validate.
          * @param   string          $type               Validation type.
          * @param   array           $options            Optional settings for validation.
