@@ -3,6 +3,8 @@
 namespace org\octris\core {
     use \org\octris\core\app as app;
     use \org\octris\core\type\collection as collection;
+    use \org\octris\core\type\validate as validate;
+    use \org\octris\core\type\provider as provider;
     
     /**
      * handles application configuration
@@ -111,7 +113,9 @@ namespace org\octris\core {
         /**/
         {
             // initialization
-            $module = ($module == '' ? $_ENV['OCTRIS_APP']->value : $module);
+            $module = ($module == '' 
+                        ? provider::access('env')->getValue('OCTRIS_APP', validate::T_PROJECT)
+                        : $module);
             $cfg    = new collection();
 
             // load default module config file
