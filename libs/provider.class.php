@@ -81,18 +81,15 @@ namespace org\octris\core {
          * data stored as the specified name in the data provider.
          *
          * @octdoc  m:provider/access
-         * @param   string          $name               Name of data to access.
+         * @param   string                          $name               Name of data to access.
+         * @return  \org\octris\core\provider                           Instance of data provider.
          */
         public static function access($name)
         /**/
         {
-            $return = null;
-            
-            if (isset(self::$storage[$name])) {
-                $return = self::$storage[$name];
-            }
-            
-            return $return;
+            return (isset(self::$storage[$name])
+                    ? new static($name)
+                    : false);
         }
 
         /**
