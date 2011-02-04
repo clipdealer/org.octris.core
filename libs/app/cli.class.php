@@ -2,6 +2,7 @@
 
 namespace org\octris\core\app {
     use \org\octris\core\validate as validate;
+    use \org\octris\core\provider as provider;
     
     require_once('org.octris.core/app.class.php');
     require_once('org.octris.core/app/cli/autoloader.class.php');
@@ -217,17 +218,22 @@ namespace org\octris\core\app {
         // enable validation for superglobals
         define('OCTRIS_WRAPPER', true);
         
-        $_SERVER  = new validate\wrapper($_SERVER);
-        $_ENV     = new validate\wrapper($_ENV);
-        $_REQUEST = new validate\wrapper(cli::getOptions());
-            
+        $_ENV['OCTRIS_DEVEL'] = (isset($_ENV['OCTRIS_DEVEL']) && !!$_ENV['OCTRIS_DEVEL']);
+        
+        provider::set('server',  $_SERVER,          provider::T_READONLY);
+        provider::set('env',     $_ENV,             provider::T_READONLY);
+        provider::set('request', cli::getOptions(), provider::T_READONLY);
+        
+        unset($_SERVER);
+        unset($_ENV);
+        unset($_REQUEST);
         unset($_POST);
         unset($_GET);
         unset($_COOKIE);
         unset($_SESSION);
         unset($_FILES);
         
-        if (!$_ENV['OCTRIS_BASE']->validate(validate::T_PATH)) {
+        if (!provider::access('env')->isValid('OCTRIS_BASE', validate::T_PATH)) {
             die("OCTRIS_BASE is not set\n");
         }
     }
