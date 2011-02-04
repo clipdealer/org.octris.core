@@ -20,10 +20,10 @@ namespace org\octris\core\app {
         /**
          * Last page
          *
-         * @octdoc  v:cli/$last_pages
+         * @octdoc  v:cli/$last_page
          * @var     \org\octris\core\cli\page
          */
-        private $last_pages = null;
+        private $last_page = null;
         /**/
         
         /**
