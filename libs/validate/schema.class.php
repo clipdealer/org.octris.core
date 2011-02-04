@@ -125,7 +125,7 @@ namespace org\octris\core\validate {
          * Schema validator.
          *
          * @octdoc  m:schema/_validator
-         * @param   array       $data       Value to validate.
+         * @param   mixed       $data       Value to validate.
          * @param   array       $schema     Expected schema of value.
          * @param   int         $level      Current depth in value.
          * @param   int         $max_depth  Parameter for specifying max. allowed depth of nested sub-elements.
