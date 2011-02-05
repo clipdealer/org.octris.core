@@ -138,6 +138,7 @@ namespace org\octris\core\octsh\app {
 
             $result['command']['ACTION'] = $command;
 
+            provider::purge('request');
             provider::set('request', $result['command']);
         }
     }
