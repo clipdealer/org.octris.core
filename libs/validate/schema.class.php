@@ -267,7 +267,7 @@ namespace org\octris\core\validate {
                 }
             } elseif ($schema['type'] == validate::T_CALLBACK) {
                 // validating using callback
-                if (!isset($schema['challback']) || !is_callable($schema['callback'])) {
+                if (!isset($schema['callback']) || !is_callable($schema['callback'])) {
                     throw new \Exception("schema error -- no valid callback available");
                 }
                 
