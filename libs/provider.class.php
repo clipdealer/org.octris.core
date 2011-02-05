@@ -280,5 +280,35 @@ namespace org\octris\core {
             
             return ($this->isValid($name, $type, $options));
         }
+        
+        /**
+         * Purge data from provider. This method can either be called as
+         * static method or as object instance message. If it's called from
+         * static context, the first parameter is required to specify which
+         * provider data should be purged.
+         *
+         * @octdoc  m:provider/purge
+         * @param   string              $name               Optional name.
+         */
+        public function purge($name = '')
+        /**/
+        {
+            if (!isset($this)) {
+                // static context
+                $instance = $this;
+                $name     = $this->name;
+            } else {
+                // object context
+                if ($name == '') {
+                    throw new \Exception("name is required to purge data");
+                }
+                
+                $instance = static::access($name);
+            }
+            
+            $instance->validated  = array();
+            $instance->validators = array();
+            unset(self::$storage[$name]);
+        }
     }
 }
