@@ -47,6 +47,7 @@ namespace org\octris\core\octsh\app {
             $registry = \org\octris\core\registry::getInstance();
             
             $this->addValidator(
+                'request',
                 'help', 
                 array(
                     'type'              => validate::T_OBJECT,
@@ -100,7 +101,7 @@ namespace org\octris\core\octsh\app {
         public function prepare(\org\octris\core\app\page $last_page, $action)
         /**/
         {
-            list($is_valid, $data, $errors) = $this->applyValidator($action);
+            list($is_valid, $data, $errors) = $this->applyValidator('request', $action);
             
             if (!$is_valid) {
                 $last_page->addErrors($return);
