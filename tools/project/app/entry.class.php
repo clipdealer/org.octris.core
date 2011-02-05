@@ -34,7 +34,6 @@ namespace org\octris\core\project\app {
         public function prepare(\org\octris\core\app\page $last_page, $action)
         /**/
         {
-            print_r($_GET);
         }
 
         /**

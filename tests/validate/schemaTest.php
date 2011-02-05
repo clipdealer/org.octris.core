@@ -60,7 +60,7 @@ class schemaTest extends PHPUnit_Framework_TestCase {
                             // 'type'      => validate::T_CALLBACK,
                             // 'options'   => array(
                             //     'callback' => function($value) {
-                            //         return ($value === $_POST->get('password')->value);
+                            //         return ($value === ...);
                             //     }
                             // ),
                             // 'required'  => true
