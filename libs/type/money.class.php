@@ -123,19 +123,15 @@ namespace org\octris\core\type {
             return new static($this->value * $rate, $currency, $this->lc);
         }
 
-        /****m* money/format
-         * SYNOPSIS
+        /**
+         * Return locale / currency formatted string.
+         *
+         * @octdoc  m:momey/format
+         * @param   string          $context                Context to format money for.
+         * @return  string                                  Formatted string.
          */
         public function format($context = 'text/html')
-        /*
-         * FUNCTION
-         *      return locale / currency formatted object value
-         * INPUTS
-         *      * $context (string) -- context to format money for
-         * OUTPUTS
-         *      (string) -- formatted string
-         ****
-         */
+        /**/
         {
             $pattern = ($this->value >= 0 ? $this->currency_format['pos'] : $this->currency_format['neg']);
 
@@ -153,160 +149,89 @@ namespace org\octris\core\type {
             return $txt;
         }
 
-        /****m* money/addVat
-         * SYNOPSIS
+        /**
+         * Return amount of money.
+         *
+         * @octdoc  m:money/get
+         * @return  float                                   Amount of money.
          */
-        public function addVat($vat) 
-        /*
-         * FUNCTION
-         *      add VAT to amount of money. the new value is stored in the money object.
-         * INPUTS
-         *      * $vat (float) -- vat to add
-         ****
-         */
-        {
-            $this->mul(1 + $vat / 100);
-        }
-
-        /****m* money/subDiscount
-         * SYNOPSIS
-         */
-        public function subDiscount($discount) 
-        /*
-         * FUNCTION
-         *      subtract discount from amount of money. the new value is stored in the money object. 
-         * INPUTS
-         *      * $discount (float) -- discount to substract from amount
-         ****
-         */
-        {
-            $this->mul(1 - $discount / 100);
-        }
-
-        /****m* money/get
-         * SYNOPSIS
-         */
-        public function get() 
-        /*
-         * FUNCTION
-         *      return amount of money
-         ****
-         */
+        public function get()
+        /**/
         {
             return $this->value;
         }
 
-        /****m* money/set
-         * SYNOPSIS
+        /**
+         * Set amount of money.
+         *
+         * @octdoc  m:money/set
+         * @param   float               $amount             Amount of money
          */
-        function set($value) 
-        /*
-         * FUNCTION
-         *      set amount of money
-         ****
-         */
+        public function set($value)
+        /**/
         {
             $this->value = $value;
         }
 
-        /****m* money/add
-         * SYNOPSIS
+        /**
+         * Magic caller to implement calculation functionality.
+         *
+         * @octdoc  m:money/__call
+         * @param   string              $func               Name of function to perform.
+         * @param   array               $args               Arbitrary number of arguments of type float or money.
          */
-        public function add($amount) 
-        /*
-         * FUNCTION
-         *      add money
-         * INPUTS
-         *      * $amount (mixed) -- a numeric amount or an other money object to add
-         ****
-         */
+        public function __call($func, $args)
+        /**/
         {
-            $amount = $this->prepare($amount);
-
-            $this->value += $amount;
-        }
-
-        /****m* money/sub
-         * SYNOPSIS
-         */
-        public function sub($amount) 
-        /*
-         * FUNCTION
-         *      substract money
-         * INPUTS
-         *      * $amount (mixed) -- a numeric amount or an other money object to substract
-         ****
-         */
-        {
-            $amount = $this->prepare($amount);
-
-            $this->value -= $amount;
-        }
-
-        /****m* money/mul
-         * SYNOPSIS
-         */
-        public function mul($amount) 
-        /*
-         * FUNCTION
-         *      multiplicate money
-         * INPUTS
-         *      * $amount (mixed) -- a numeric amount or an other money object to multiplicate
-         ****
-         */
-        {
-            $amount = $this->prepare($amount);
-
-            $this->value = $this->value * $amount;
-        }
-
-        /****m* money/div
-         * SYNOPSIS
-         */
-        public function div($amount) 
-        /*
-         * FUNCTION
-         *      divide money
-         * INPUTS
-         *      * $amount (mixed) -- a numeric amount or an other money object to divide
-         ****
-         */
-        {
-            $amount = $this->prepare($amount);
-
-            if ($amount == 0) {
-                throw new Exception('division by zero!');
-            } else {
-                $this->value /= $amount;
+            $args = array_map(function($v) {
+                if ($v instanceof number) {
+                    $v = (float)$v->get();
+                } else {
+                    $v = (float)$v;
+                }
+                
+                return $v;
+            });
+            
+            switch ($func) {
+            case 'add':
+                $this->value += array_sum($args);
+                break;
+            case 'sub':
+                $this->value = array_reduce($args, function($v, $w) {
+                    return $v -= $w;
+                }, $this->value);
+                break;
+            case 'mul':
+                $this->value *= array_product($args);
+                break;
+            case 'div':
+                $this->value = array_reduce(
+                    array_filter($args, function($v) {
+                        return ((int)$v !== 0);
+                    }, 
+                    function($v, $w) {
+                        return $v /= $w;
+                    }, 
+                    $this->value
+                );
+                break;
+            case 'mod':
+                $this->value = array_reduce($args, function($v, $w) {
+                    return $v %= $w;
+                }, $this->value);
+                break;
             }
         }
 
-        /****m* money/mod
-         * SYNOPSIS
-         */
-        public function mod($amount) 
-        /*
-         * FUNCTION
-         *      modulo
-         * INPUTS
-         *      * $amount (mixed) -- a numeric amount or an other money object to modulate
-         ****
-         */
-        {
-            $amount = $this->prepare($amount);
-
-            $this->value %= $amount;
-        }
-
-        /****m* money/getCurrency
-         * SYNOPSIS
+        /**
+         * Return currency of money object in ISO format.
+         *
+         * @octdoc  m:money/getCurrency
+         * @return  string                              Currency.   
          */
         public function getCurrency()
-        /*
-         * FUNCTION
-         *      return currency of money object
-         ****
-         */
+        /**/
         {
             return $this->currency;
         }
