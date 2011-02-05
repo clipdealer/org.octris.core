@@ -56,8 +56,6 @@ namespace org\octris\core\octsh\app {
                         'command'       => array(
                             'type'      => validate::T_CALLBACK,
                             'callback'  => function($command, $validator) use ($registry) {
-                                print "test";
-                            
                                 if (!($return = isset($registry->commands))) {
                                     $validator->addError('help is not available');
                                 } elseif (!($return = isset($registry->commands[$command]))) {
@@ -104,12 +102,12 @@ namespace org\octris\core\octsh\app {
             list($is_valid, $data, $errors) = $this->applyValidator('request', $action);
             
             if (!$is_valid) {
-                $last_page->addErrors($return);
+                $last_page->addErrors($errors);
                 
                 return $last_page;
             }
-
-            print_r($data);
+            
+            $this->command = $data['command'];
         }
 
         /**
