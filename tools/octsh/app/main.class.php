@@ -1,6 +1,9 @@
 <?php
 
 namespace org\octris\core\octsh\app {
+    use \org\octris\core\validate as validate;
+    use \org\octris\core\provider as provider;
+    
     /**
      * Main application class for octris shell.
      *
@@ -30,7 +33,9 @@ namespace org\octris\core\octsh\app {
         {
             parent::initialize();
             
-            $this->state['project'] = $_ENV['OCTRIS_APP'];
+            $env = provider::access('env');
+            
+            $this->state['project'] = $env->getValue('OCTRIS_APP', validate::T_PROJECT);
         }
         
         /**
