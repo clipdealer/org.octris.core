@@ -301,7 +301,7 @@ namespace org\octris\core\validate {
                 $schema['onSuccess']();
             }
 
-            return ($return, $data);
+            return array($return, $data);
         }
  
         /**
