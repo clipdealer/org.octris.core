@@ -102,7 +102,10 @@ namespace org\octris\core\app {
                 $next_page->showErrors();
                 $next_page->showMessages();
 
-                $next_page->dialog($action);
+                $request = $next_page->dialog($action);
+
+                provider::purge('request');
+                provider::set('request', (is_array($request) ? $request : array()), provider::T_READONLY);
             } while (true);
         }
         
