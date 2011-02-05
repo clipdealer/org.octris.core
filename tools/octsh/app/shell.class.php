@@ -74,6 +74,7 @@ namespace org\octris\core\octsh\app {
          *
          * @octdoc  m:entry/render
          * @param   string                          $action         Action that led to current page.
+         * @return  array                                           New request data.
          */
         public function dialog($action)
         /**/
@@ -90,8 +91,7 @@ namespace org\octris\core\octsh\app {
                     
                     $readline = \org\octris\core\app\cli\readline::getInstance('/tmp/octsh.txt');
                     $state    = app::getInstance()->getState();
-            
-                    $prompt   = $state['project']->value . ':octsh> ';
+                    $prompt   = $state['project'] . ':octsh> ';
 
                     do {
                         $input = trim($readline->readline($prompt));
