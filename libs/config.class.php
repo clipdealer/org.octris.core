@@ -67,7 +67,7 @@ namespace org\octris\core {
 
         /**
          * Save configuration file to destination. if destination is not
-         * specified, try to save in ~/config/<module>/<name>.yml.
+         * specified, try to save in ~/.octris/<module>/<name>.yml.
          *
          * @octdoc  m:config/save
          * @param   string  $file       Optional destination to save configuration to.
