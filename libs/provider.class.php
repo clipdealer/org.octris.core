@@ -20,6 +20,15 @@ namespace org\octris\core {
         /**/
         
         /**
+         * Provider instances.
+         *
+         * @octdoc  v:provider/$instances
+         * @var     array
+         */
+        protected static $instances = array();
+        /**/
+        
+        /**
          * Internal data storage
          *
          * @octdoc  v:provider/$storage
@@ -78,9 +87,15 @@ namespace org\octris\core {
         public static function access($name)
         /**/
         {
-            return (isset(self::$storage[$name])
-                    ? new static($name)
-                    : false);
+            if (!isset(self::$instances[$name])) {
+                if (!isset(self::$storage[$name])) {
+                    throw new \Exception("cannot access unknown data '$name'");
+                } else {
+                    self::$instances[$name] = new static($name);
+                }
+            }
+
+            return self::$instances[$name];
         }
 
         /**
