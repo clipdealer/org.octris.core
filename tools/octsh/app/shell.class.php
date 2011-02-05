@@ -2,6 +2,8 @@
 
 namespace org\octris\core\octsh\app {
     use \org\octris\core\app as app;
+    use \org\octris\core\validate as validate;
+    use \org\octris\core\provider as provider;
     
     /**
      * Implements command line shell.
@@ -136,7 +138,7 @@ namespace org\octris\core\octsh\app {
 
             $result['command']['ACTION'] = $command;
 
-            $_REQUEST = new \org\octris\core\validate\wrapper($result['command']);
+            provider::set('request', $result['command']);
         }
     }
 }
