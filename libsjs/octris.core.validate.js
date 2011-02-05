@@ -1,21 +1,15 @@
-/****h* octris/core
- * NAME
- *      octris.core.js
- * FUNCTION
- *      core javascript module
- * COPYRIGHT
- *      copyright (c) 2010 by Harald Lapp
- * AUTHOR
- *      Harald Lapp <harald@octris.org>
- ****
+/**
+ * Parameter validation for javascript
+ *
+ * @octdoc      c:core/validate
+ * @copyright   copyright (c) 2011 by Harald Lapp
+ * @author      Harald Lapp <harald@octris.org>
+ * @todo        Implementation.
  */
-
-if (typeof octris == 'undefined') {
-    var octris = {};
-}
+/**/
 
 ;(function() {
-    if ('core' in octris) return;
+    if ('validate' in octris.core) return;
     
-    octris.core = {};
+    octris.core.validate = {};
 })();
