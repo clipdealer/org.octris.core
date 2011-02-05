@@ -69,7 +69,7 @@ namespace org\octris\core {
 
         /**
          * Returns a new instance of the data provider by granting access to
-         * data stored as the specified name in the data provider.
+         * data stored with the specified name in the data provider.
          *
          * @octdoc  m:provider/access
          * @param   string                          $name               Name of data to access.
