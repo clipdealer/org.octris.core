@@ -141,11 +141,12 @@ namespace org\octris\core\validate {
         
             if (isset($schema['keyrename'])) {
                 // rename keys first before continuing
+                $map =& $schema['keyrename'];
                 $data = array_combine(array_map(function($v) use ($map) {
                     return (isset($map[$v])
                             ? $map[$v]
                             : $v);
-                }, array_keys($data), array_values($data)));
+                }, array_keys($data)), array_values($data));
             }
             
             if ($schema['type'] == validate::T_ARRAY) {
