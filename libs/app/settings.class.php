@@ -8,7 +8,7 @@ namespace org\octris\core\app
      * @copyright   copyright (c) 2011 by Harald Lapp
      * @author      Harald Lapp <harald.lapp@gmail.com>
      */
-    class settings extends \org\octris\core\validate\wrapper
+    class settings
     /**/
     {
         /**

@@ -131,8 +131,9 @@ the following command line parameters:
 ..  source: plain
 
     ./test.php  --convert input-file output-file
-    
-The wrapper for command line parameters would produce the following internal array of parameters:
+
+The command line parameters are handled by the data provider and the following
+insternal array structure is stored:
 
 ..  source: php
 
