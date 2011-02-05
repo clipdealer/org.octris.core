@@ -29,15 +29,6 @@ namespace org\octris\core {
         /**/
         
         /**
-         * Stores meta information about validation state.
-         *
-         * @octdoc  v:provider/$meta
-         * @var     array
-         */
-        protected $meta = array();
-        /**/
-        
-        /**
          * Data validators
          *
          * @octdoc  v:provider/$validators
