@@ -212,7 +212,7 @@ namespace org\octris\core {
 
             if (!isset($this->validated[$key])) {
                 if (is_scalar($validator) && class_exists($validator) && is_subclass_of($validator, '\org\octris\core\validate\type')) {
-                    $validator = new $type($options);
+                    $validator = new $validator($options);
                 }
                 
                 if (!($validator instanceof \org\octris\core\validate\type)) {
