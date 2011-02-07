@@ -290,12 +290,8 @@ namespace org\octris\core\validate {
                     throw new \Exception("'$type' is not a validation type");
                 }
 
-                if ($this->isValue($data)) {
-                    $return = $data->validate($validator);
-                } else {
-                    $data   = $validator->preFilter($data);
-                    $return = $validator->validate($data);
-                }
+                $data   = $validator->preFilter($data);
+                $return = $validator->validate($data);
                     
                 if (!$return && isset($schema['invalid'])) {
                     $this->addError($schema['invalid']);
