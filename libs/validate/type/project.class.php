@@ -27,7 +27,7 @@ namespace org\octris\core\validate\type {
         {
             $value .= '.';
             
-            return preg_match(
+            return !!preg_match(
                 '/^[a-z]{2,4}\.([a-z0-9]+([a-z0-9\-]*[a-z0-9]+|)\.){2}$/',
                 $value
             );
