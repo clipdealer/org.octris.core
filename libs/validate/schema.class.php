@@ -276,23 +276,29 @@ namespace org\octris\core\validate {
                 }
             } else {
                 // type validation
-                if (class_exists($schema['type'])) {
-                    $validator = new $schema['type'](
+                $validator = $schema['type'];
+                
+                if (is_scalar($validator) && class_exists($validator) && is_subclass_of($validator, '\org\octris\core\validate\type')) {
+                    $validator = new $validator(
                         (isset($schema['options']) && is_array($schema['options'])
-                                ? $schema['options']
-                                : array())
+                            ? $schema['options']
+                            : array())
                     );
-            
-                    if ($this->isValue($data)) {
-                        $return = $data->validate($validator);
-                    } else {
-                        $data   = $validator->preFilter($data);
-                        $return = $validator->validate($data);
-                    }
+                }
+                
+                if (!($validator instanceof \org\octris\core\validate\type)) {
+                    throw new \Exception("'$type' is not a validation type");
+                }
+
+                if ($this->isValue($data)) {
+                    $return = $data->validate($validator);
+                } else {
+                    $data   = $validator->preFilter($data);
+                    $return = $validator->validate($data);
+                }
                     
-                    if (!$return && isset($schema['invalid'])) {
-                        $this->addError($schema['invalid']);
-                    }
+                if (!$return && isset($schema['invalid'])) {
+                    $this->addError($schema['invalid']);
                 }
             }
         
