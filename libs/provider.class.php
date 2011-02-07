@@ -201,19 +201,17 @@ namespace org\octris\core {
          *
          * @octdoc  m:provider/getValue
          * @param   string          $name               Name of data field to validate.
-         * @param   string          $type               Validation type.
+         * @param   string          $validator          Validation instance or type.
          * @param   array           $options            Optional settings for validation.
          * @return  mixed                               Returns value or false if validation failed.
          */
-        public function getValue($name, $type, array $options = array())
+        public function getValue($name, $validator, array $options = array())
         /**/
         {
             $key = md5(serialize(array($name, $type, $options)));
 
             if (!isset($this->validated[$key])) {
-                $validator = null;
-            
-                if (is_scalar($type) && class_exists($type)) {
+                if (is_scalar($validator) && class_exists($validator) && is_subclass_of($validator, '\org\octris\core\validate\type')) {
                     $validator = new $type($options);
                 }
                 
