@@ -148,6 +148,11 @@ namespace org\octris\core\validate {
                             : $v);
                 }, array_keys($data)), array_values($data));
             }
+        
+            if (isset($schema['preprocess']) && is_callable($schema['preprocess'])) {
+                // there's a data preprocessor configured
+                $data = $schema['preprocess']($data);
+            }
             
             if ($schema['type'] == validate::T_ARRAY) {
                 // array validation
