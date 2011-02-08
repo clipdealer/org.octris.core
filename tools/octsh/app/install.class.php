@@ -3,6 +3,8 @@
 namespace org\octris\core\octsh\app {
     use \org\octris\core\app as app;
     use \org\octris\core\cli\stdio as stdio;
+    use \org\octris\core\validate as validate;
+    use \org\octris\core\provider as provider;
     
     /**
      * Implements installer for applications based on octris framework.
@@ -34,6 +36,49 @@ namespace org\octris\core\octsh\app {
         /**/
 
         /**
+         * Constructor.
+         *
+         * @octdoc  m:install/__construct
+         */
+        public function __construct()
+        /**/
+        {
+            parent::__construct();
+            
+            $this->addValidator(
+                'request',
+                'install', 
+                array(
+                    'type'              => validate::T_OBJECT,
+                    'keyrename'         => array('project'),
+                    'properties'        => array(
+                        'project'       => array(
+                            'type'       => validate::T_CHAIN,
+                            'chain'      => array(
+                                array(
+                                    'type'      => validate::T_PROJECT,
+                                    'invalid'   => 'project name is invalid',
+                                ),
+                                array(
+                                    'type'      => validate::T_CALLBACK,
+                                    'callback'  => function($project, $validator) {
+                                        $work = app::getPath(app::T_PATH_WORK, $project);
+                                    
+                                        if (!($return = is_dir($work))) {
+                                            $validator->addError('project does not exist');
+                                        }
+
+                                        return $return;
+                                    }
+                                )
+                            )
+                        )        
+                    )
+                )
+            );
+        }
+
+        /**
          * Prepare page
          *
          * @octdoc  m:install/prepare
@@ -44,9 +89,25 @@ namespace org\octris\core\octsh\app {
         public function prepare(\org\octris\core\app\page $last_page, $action)
         /**/
         {
-            $project = $this->project;
-            $base    = $_ENV['OCTRIS_BASE']->value;
+            list($is_valid, $data, $errors) = $this->applyValidator('request', $action);
             
+            if (!$is_valid) {
+                $last_page->addErrors($errors);
+                
+                return $last_page;
+            }
+
+            if (!isset($data['project'])) {
+                $state   = app::getInstance()->getState();
+                $project = $state['project'];
+            } else {
+                $project = $data['project'];
+            }
+        
+            $env  = provider::access('env');
+            $base = $env->getValue('OCTRIS_BASE', validate::T_PATH);
+            $work = app::getPath(app::T_PATH_WORK, $project);
+
             // create directories
             if ($project == 'org.octris.core') {
                 mkdir($base . '/cache',     0755, true);
@@ -72,8 +133,6 @@ namespace org\octris\core\octsh\app {
             mkdir($base . '/cache/' . $project . '/templates_c', 0777, true);
             
             // create symlinks
-            $work = app::getPath(app::T_PATH_WORK, $project);
-            
             if (is_dir($work . '/data')) {
                 symlink($work . '/data', $base . '/data/' . $project);
             }
@@ -107,36 +166,16 @@ namespace org\octris\core\octsh\app {
         }
 
         /**
-         * Validate help parameters.
+         * Validate parameters.
          *
          * @octdoc  m:help/validate
-         * @param   \org\octris\core\app\cli\page   $last_page      Instance of last called page.
-         * @param   string                          $action         Action to select ruleset for.
-         * @param   array                           $parameters     Parameters to validate.
-         * @return  \org\octris\core\app\cli\page                   Returns page to display errors for.
+         * @param   string                          $action         Action that led to current page.
+         * @return  
          */
-        public function validate(\org\octris\core\app\cli\page $last_page, $action, array $parameters = array())
+        public function validate()
         /**/
         {
-            $project = array_shift($parameters);
-            
-            if (is_scalar($project)) {
-                if (!is_dir(app::getPath(app::T_PATH_WORK, $project))) {
-                    $last_page->addError("unable to locate project '$project'");
-                } else {
-                    $this->project = $project;
-                }
-            } elseif (is_array($project)) {
-                $last_page->addError("usage: 'install [<path-of-project>]'");
-            } else {
-                $state = app::getInstance()->getState();
-                
-                $this->project = $state['project']->value;
-            }
-            
-            return (count($last_page->errors) == 0
-                    ? null
-                    : $last_page);
+            return true;
         }
 
         /**
