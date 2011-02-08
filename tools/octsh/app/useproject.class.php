@@ -87,7 +87,7 @@ namespace org\octris\core\octsh\app {
                                     }
                                 )
                             ),
-                            'required'   => 'usage: use <path-of-project>'
+                            'required'   => 'usage: use <name-of-project>, example: use org.octris.core'
                         )        
                     )
                 )
