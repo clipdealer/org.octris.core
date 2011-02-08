@@ -2,6 +2,8 @@
 
 namespace org\octris\core\octsh\app {
     use \org\octris\core\app as app;
+    use \org\octris\core\validate as validate;
+    use \org\octris\core\provider as provider;
     
     /**
      * Switch to other project.
@@ -33,6 +35,51 @@ namespace org\octris\core\octsh\app {
         /**/
 
         /**
+         * Constructor.
+         *
+         * @octdoc  m:useproject/__construct
+         * @param   
+         */
+        public function __construct()
+        /**/
+        {
+            parent::__construct();
+            
+            $this->addValidator(
+                'request',
+                'use', 
+                array(
+                    'type'              => validate::T_OBJECT,
+                    'keyrename'         => array('project'),
+                    'properties'        => array(
+                        'project'       => array(
+                            'type'      => validate::T_CHAIN,
+                            'chain'     => array(
+                                array(
+                                    'type'      => validate::T_PROJECT,
+                                    'invalid'   => 'project name is invalid',
+                                ),
+                                array(
+                                    'type'      => validate::T_CALLBACK,
+                                    'callback'  => function($project, $validator) {
+                                        $work = app::getPath(app::T_PATH_WORK, $project);
+                                        
+                                        if (!($return = is_dir($work))) {
+                                            $validator->addError('project does not exist');
+                                        }
+
+                                        return $return;
+                                    }
+                                )
+                            ),
+                            'required'  => 'usage: use <path-of-project>'
+                        )        
+                    )
+                )
+            );
+        }
+
+        /**
          * Prepare page
          *
          * @octdoc  m:useproject/prepare
@@ -43,39 +90,31 @@ namespace org\octris\core\octsh\app {
         public function prepare(\org\octris\core\app\page $last_page, $action)
         /**/
         {
+            list($is_valid, $data, $errors) = $this->applyValidator('request', $action);
+            
+            if (!$is_valid) {
+                $last_page->addErrors($errors);
+                
+                return $last_page;
+            }
+            
             $state = app::getInstance()->getState();
-            $state['project']->value = $this->project;
+            $state['project'] = $data['project'];
             
             return $last_page;
         }
 
         /**
-         * Validate help parameters.
+         * Validate parameters.
          *
          * @octdoc  m:help/validate
-         * @param   \org\octris\core\app\cli\page   $last_page      Instance of last called page.
-         * @param   string                          $action         Action to select ruleset for.
-         * @param   array                           $parameters     Parameters to validate.
-         * @return  \org\octris\core\app\cli\page                   Returns page to display errors for.
+         * @param   string                          $action         Action that led to current page.
+         * @return  
          */
-        public function validate(\org\octris\core\app\cli\page $last_page, $action, array $parameters = array())
+        public function validate()
         /**/
         {
-            $project = array_shift($parameters);
-            
-            if (is_scalar($project)) {
-                if (!is_dir(app::getPath(app::T_PATH_WORK, $project))) {
-                    $last_page->addError("unable to locate project '$project'");
-                } else {
-                    $this->project = $project;
-                }
-            } else {
-                $last_page->addError("usage: 'use <path-of-project>'");
-            }
-            
-            return (count($last_page->errors) == 0
-                    ? null
-                    : $last_page);
+            return true;
         }
 
         /**
