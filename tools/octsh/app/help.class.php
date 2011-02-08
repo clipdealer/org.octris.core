@@ -68,24 +68,6 @@ namespace org\octris\core\octsh\app {
                     )
                 )
             );
-             
-            // 'project'       => array(
-            //     'type'      => validate::T_CHAIN,
-            //     'chain' => array(
-            //         array(
-            //             'type'      => validate::T_PROJECT,
-            //             'invalid'   => 'Project name is invalid'
-            //         ),
-            //         array(
-            //             'type'      => validate::T_CALLBACK,
-            //             'options'   => array(
-            //             'callback'  => function($value) {
-            //                 print "$value\n";
-            //                 return true;
-            //             }
-            //         )
-            //     )
-            // )
         }
 
         /**
