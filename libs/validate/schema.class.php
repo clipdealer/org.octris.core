@@ -223,9 +223,9 @@ namespace org\octris\core\validate {
 
                     if ($cnt1 > $cnt3) {
                         // iterate over missing fields and check, if they are required
-                        foreach (array_diff_key($schema, $data) as $k) {
+                        foreach (array_diff_key($schema, $data) as $k => $v) {
                             if (isset($schema[$k]['required'])) {
-                                $this->addError($schema['required']);
+                                $this->addError($schema[$k]['required']);
 
                                 $return = false;
                                 
