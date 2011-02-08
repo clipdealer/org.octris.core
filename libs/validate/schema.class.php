@@ -183,18 +183,16 @@ namespace org\octris\core\validate {
                     }
                 
                     for ($i = 0; $i < $cnt; ++$i) {
-                        if (!$this->_validator(
+                        list($return, $data[$i]) = $this->_validator(
                             $data[$i], 
                             $subschema, 
                             $level + 1, 
                             (isset($schema['max_depth'])
                              ? $level + $schema['max_depth']
                              : $max_depth)
-                        )) {
-                            $return = false;
-
-                            if ($this->fail) break;
-                        }
+                        );
+                        
+                        if (!$return && $this->fail) break;
                     }
                 } while(false);
             } elseif ($schema['type'] == validate::T_OBJECT) {
@@ -247,11 +245,9 @@ namespace org\octris\core\validate {
                             continue;
                         }
                 
-                        if (!$this->_validator($data[$k], $schema[$k], $level, $max_depth)) {
-                            $return = false;
-                            
-                            if ($this->fail) break(2);
-                        }
+                        list($return, $data[$k]) = $this->_validator($data[$k], $schema[$k], $level, $max_depth);
+                        
+                        if (!$return && $this->fail) break(2);
                     }
                 } while(false);
             } elseif ($schema['type'] == validate::T_CHAIN) {
@@ -261,9 +257,9 @@ namespace org\octris\core\validate {
                 }
                 
                 foreach ($schema['chain'] as $item) {
-                    if (!($return = $this->_validator($data, $item, $level, $max_depth))) {
-                        break;
-                    }
+                    list($return, $data) = $this->_validator($data, $item, $level, $max_depth);
+                    
+                    if (!$return && $this->fail) break;
                 }
             } elseif ($schema['type'] == validate::T_CALLBACK) {
                 // validating using callback
