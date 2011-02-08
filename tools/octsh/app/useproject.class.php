@@ -53,8 +53,23 @@ namespace org\octris\core\octsh\app {
                     'keyrename'         => array('project'),
                     'properties'        => array(
                         'project'       => array(
-                            'type'      => validate::T_CHAIN,
-                            'chain'     => array(
+                            'preprocess' => function($value) {
+                                if (substr($value, 0, 1) == '.') {
+                                    $state = app::getInstance()->getState();
+                                    $parts = explode('.', $state['project']);
+
+                                    ltrim($value, '.');
+                                    
+                                    $v_parts = explode('.', substr($value, 1));
+                                    $v_parts = array_merge(array_slice($parts, 0, max(0, count($parts) - count($v_parts))), $v_parts);
+                                    
+                                    $value = implode('.', $v_parts);
+                                }
+
+                                return $value;
+                            },
+                            'type'       => validate::T_CHAIN,
+                            'chain'      => array(
                                 array(
                                     'type'      => validate::T_PROJECT,
                                     'invalid'   => 'project name is invalid',
@@ -72,7 +87,7 @@ namespace org\octris\core\octsh\app {
                                     }
                                 )
                             ),
-                            'required'  => 'usage: use <path-of-project>'
+                            'required'   => 'usage: use <path-of-project>'
                         )        
                     )
                 )
