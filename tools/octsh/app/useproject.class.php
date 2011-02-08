@@ -54,7 +54,7 @@ namespace org\octris\core\octsh\app {
                     'properties'        => array(
                         'project'       => array(
                             'preprocess' => function($value) {
-                                if (substr($value, 0, 1) == '.') {
+                                if (is_scalar($value) && substr($value, 0, 1) == '.') {
                                     $state = app::getInstance()->getState();
                                     $parts = explode('.', $state['project']);
 
