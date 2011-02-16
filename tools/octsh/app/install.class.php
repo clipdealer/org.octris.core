@@ -2,7 +2,6 @@
 
 namespace org\octris\core\octsh\app {
     use \org\octris\core\app as app;
-    use \org\octris\core\cli\stdio as stdio;
     use \org\octris\core\validate as validate;
     use \org\octris\core\provider as provider;
     
