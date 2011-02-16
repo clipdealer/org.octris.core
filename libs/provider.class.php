@@ -200,10 +200,10 @@ namespace org\octris\core {
          * Validates a specified data field and returns it, if it's valid.
          *
          * @octdoc  m:provider/getValue
-         * @param   string          $name               Name of data field to validate.
-         * @param   string          $validator          Validation instance or type.
-         * @param   array           $options            Optional settings for validation.
-         * @return  mixed                               Returns value or false if validation failed.
+         * @param   string                                      $name               Name of data field to validate.
+         * @param   string|\org\octris\core\validate\type       $validator          Validation instance or type.
+         * @param   array                                       $options            Optional settings for validation.
+         * @return  mixed                                                           Returns value or false if validation failed.
          */
         public function getValue($name, $validator, array $options = array())
         /**/
@@ -240,9 +240,9 @@ namespace org\octris\core {
          * get returned.
          *
          * @octdoc  m:provider/getPrefixed
-         * @param   string          $prefix             Prefix to search for.
-         * @param   string          $type               Validation type.
-         * @param   array           $options            Optional settings for validation.
+         * @param   string                                      $prefix             Prefix to search for.
+         * @param   string|\org\octris\core\validate\type       $type               Validation type.
+         * @param   array                                       $options            Optional settings for validation.
          * @return  mixed                               
          */
         public function getPrefixed($prefix, $type, array $options = array())
