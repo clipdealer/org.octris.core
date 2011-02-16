@@ -26,6 +26,7 @@ namespace org\octris\core\octsh\app {
             'quit'      => '\org\octris\core\octsh\app\quit',
             'help'      => '\org\octris\core\octsh\app\help',
             'clear'     => '\org\octris\core\octsh\app\clear',
+            'create'    => '\org\octris\core\octsh\app\create',
             'install'   => '\org\octris\core\octsh\app\install',
             'use'       => '\org\octris\core\octsh\app\useproject',
         );
