@@ -170,6 +170,20 @@ keyrename feature. Keyrename is currently only allowed for the default scheme, b
     )
 
 
+Pre-processing values
+---------------------
+
+A callback function may be specified to pre-process values to validate:
+
+..  source: php
+
+    $schema = array(
+        'default'   => array(
+            'type'  => validate::T_OBJECt,
+            '...'
+        )
+    )
+
 Validation chaining
 -------------------
 
