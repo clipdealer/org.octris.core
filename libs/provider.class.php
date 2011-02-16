@@ -264,34 +264,39 @@ namespace org\octris\core {
          * Set a specified data field with a value.
          *
          * @octdoc  m:provider/setValue
-         * @param   string          $name           Name of data field to set.
-         * @param   mixed           $value          Value to set for data field.
-         * @param   string          $type           Validation type for data field.
-         * @param   array           $options        Optional settings for validation.
-         * @return  bool                            Returns false if validation failed.
+         * @param   string                                          $name           Name of data field to set.
+         * @param   mixed                                           $value          Value to set for data field.
+         * @param   string|\org\octris\core\validate\type           $type           Optional validation type for data field.
+         * @param   array                                           $options        Optional settings for validation.
+         * @return  bool|null                                                       Returns false if validation failed, true if validation 
+         *                                                                          succeeded or null, if no validation type was specified
          */
-        public function setValue($name, $value, $type, $options)
+        public function setValue($name, $value, $type = null, array $options = array())
         /**/
         {
-            $key = md5(serialize(array($name, $type, $options)));
-
             if ((self::$storage[$this->name]['flags'] & self::T_READONLY) == self::T_READONLY) {
                 throw new \Exception("access to data '$this->name' is readonly");
             }
-            
-            $validator = null;
+         
+            if (!is_null($type)) {
+                $validator = null;
         
-            if (is_scalar($type) && class_exists($type)) {
-                $validator = new $type($options);
-            }
+                if (is_scalar($type) && class_exists($type)) {
+                    $validator = new $type($options);
+                }
             
-            if (!($validator instanceof \org\octris\core\validation\type)) {
-                throw new \Exception("'$type' is not a validation type");
+                if (!($validator instanceof \org\octris\core\validation\type)) {
+                    throw new \Exception("'$type' is not a validation type");
+                }
+                
+                $return = $this->isValid($name, $type, $options);
+            } else {
+                $return = null;
             }
 
             self::$storage[$this->name]['data'][$name] = $value;
             
-            return ($this->isValid($name, $type, $options));
+            return $return;
         }
         
         /**
