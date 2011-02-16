@@ -1,9 +1,81 @@
 Routing
 =======
 
-*   ,...^   -- output selector
+Reserved routing attributes
+---------------------------
 
-Examples
---------
+*   MODULE  -- module to route to
+*   ACTION  -- action to perform
 
-    ^(?:(?P<module>[^\.]+)\.|www\.|)clipdealer\.(de|com)/(?:(?P<action>[^\/]+)|[^\/]*)$
+
+Main routing in 'main.class.php' but additional page-based routing in 'page.class.php'?
+
+Additional arguments
+--------------------
+
+Every placeholder that is not named 'MODULE' or 'ACTION' will be used as additional parameter name. The specific part of
+the URL will be mapped to name of the specified routing placeholder.
+
+_Example #1:_
+
+..  source: plain
+
+    // URL
+    http://www.example.com/blog/post/12345
+    
+    // Route
+    /:MODULE/:ACTION/(\d+)
+
+The example will be mapped to:
+
+*   MODULE -- Application module is to be considered 'blog'
+*   ACTION -- Action to perform is to be considered 'post'
+*   post_id -- The additional parameter 'post_id' will be filled with the ID 12345
+
+An other notation for this example would be:
+
+..  source: plain
+
+    http://www.example.com/?MODULE=blog&ACTION=post&post_id=12345
+    
+The route above would be specified in the main class of the application:
+
+..  source: php
+
+    $this->route = array(
+        '/:MODULE/:ACTION/(\d+)' => array(
+            'page'      => '...',
+            'validate'  => array(
+                'post_id' => 
+            )
+        )
+    )
+    
+_Example #2:_
+
+A route need not have the ACTION and MODULE attribute to be configured.
+
+..  source: plain
+
+    // URL
+    http://www.example.com/blog/post/12345
+    
+    // Route
+    /:MODULE/post/:post_id
+
+The example will be mapped to:
+
+*   MODULE -- Application module is to be considered 'blog'
+*   post_id -- The additional parameter 'post_id' will be filled with the ID 12345
+    
+The action can be configured in as follows:
+
+..  source: php
+
+    $this->route = array(
+        '/:MODULE/post/:post_id' => array(
+            'ACTION'    => 'show',
+            'page'      => '...'
+        )
+    )
+    
