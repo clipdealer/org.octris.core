@@ -3,8 +3,8 @@
 namespace org\octris\core {
     use \org\octris\core\app as app;
     use \org\octris\core\type\collection as collection;
-    use \org\octris\core\type\validate as validate;
-    use \org\octris\core\type\provider as provider;
+    use \org\octris\core\validate as validate;
+    use \org\octris\core\provider as provider;
     
     /**
      * handles application configuration
