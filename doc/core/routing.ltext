@@ -1,6 +1,35 @@
 Routing
 =======
 
+Technical overview
+------------------
+
+Routing is performed by the main application process method. The following schema outlines the rules how routing
+works:
+
+,,  source: plain
+    
+        |
+        |     no
+      state?------------------------------------+
+        |yes                                    |
+        |       no                              |
+    last_page?----------------------------------+
+        |yes                                    |
+        |       no                              |
+    next_page?--------------+                   | 
+        |yes                |       no          |
+        |              entry_page?--------------+
+        |                   | yes               |
+        |                   |                   |     no
+        |                   |                 route?----------------+
+        |                   |                   | yes               |
+        |                   |                   |                   |
+        |                   |                   |                default
+        |                   |                   |                   |
+        +                   +                   +                   +
+        
+
 Reserved routing attributes
 ---------------------------
 
