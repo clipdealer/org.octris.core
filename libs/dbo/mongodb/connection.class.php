@@ -55,7 +55,7 @@ namespace org\octris\core\dbo\mongodb {
             $this->type = $type;
             $this->pool = $pool;
 
-            $db = new mongo($server, true);
+            $db = new \mongo($server, true);
             $this->cn = $db->selectDB($database);
         }
         
