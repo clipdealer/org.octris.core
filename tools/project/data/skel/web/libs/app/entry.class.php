@@ -8,7 +8,7 @@ namespace {{$namespace}}\app {
      * @copyright   copyright (c) {{$year}} by {{$company}}
      * @author      {{$author}} <{{$email}}>
      */
-    class entry extends \org\octris\core\app\page
+    class entry extends \org\octris\core\app\web\page
     /**/
     {
         /**

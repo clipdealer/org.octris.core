@@ -10,7 +10,7 @@ namespace {{$namespace}}\app {
      * @copyright   copyright (c) {{$year}} by {{$company}}
      * @author      {{$author}} <{{$email}}>
      */
-    class main extends \org\octris\core\app
+    class main extends \org\octris\core\app\web
     /**/
     {
         /**
