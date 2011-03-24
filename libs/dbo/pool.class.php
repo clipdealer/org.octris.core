@@ -88,7 +88,7 @@ namespace org\octris\core\dbo {
                 if (($cn = $this->getConnection($type, $params))) {
                     $this->pool[$type][] = $cn;
                 } else {
-                    throw new Exception('unable to connection to database');
+                    throw new \Exception('unable to connection to database');
                 }
             } else {
                 // first free connection from pool
