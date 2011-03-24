@@ -113,7 +113,7 @@ namespace org\octris\core\dbo\mongodb {
          *
          * @octdoc  m:connection/query
          * @param   string              $collection             Name of collection to query.
-         * @param   array               $query                  Query parameters.
+         * @param   array               $query                  Optional query parameters.
          * @param   int                 $offset                 Optional offset to start query at.
          * @param   int                 $limit                  Optionally limit result with this parameter.
          * @param   array               $sort                   Optional sorting parameters.
@@ -121,7 +121,7 @@ namespace org\octris\core\dbo\mongodb {
          * @param   array               $hint                   Optional query hint.
          * @param   \org\octris\core\dbo\mongodb\result         Result object.
          */
-        public function query($collection, array $query, $offset = 0, $limit = null, array $sort = null, array $fields = array(), array $hint = null) 
+        public function query($collection, array $query = array(), $offset = 0, $limit = null, array $sort = null, array $fields = array(), array $hint = null) 
         /**/
         {
             $c = $this->cn->selectCollection($collection);
