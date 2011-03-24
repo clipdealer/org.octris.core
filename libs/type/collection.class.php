@@ -8,7 +8,7 @@ namespace org\octris\core\type {
      * @copyright   copyright (c) 2010-2011 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
- class collection implements \IteratorAggregate, \ArrayAccess, \Serializable, \Countable
+    class collection implements \IteratorAggregate, \ArrayAccess, \Serializable, \Countable
     /**/
     {
         /**
