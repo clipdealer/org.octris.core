@@ -110,7 +110,7 @@ namespace org\octris\core\app\cli {
             }
 
             if (!$action) {
-                $action = 'default';
+                $action = '';
             }
 
             return $action;

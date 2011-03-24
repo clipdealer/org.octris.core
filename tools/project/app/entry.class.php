@@ -19,7 +19,7 @@ namespace org\octris\core\project\app {
          * @var     array
          */
         protected $next_pages = array(
-            'default' => '\org\octris\core\project\app\entry',
+            '' => '\org\octris\core\project\app\entry',
         );
         /**/
 
