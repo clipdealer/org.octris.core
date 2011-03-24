@@ -152,7 +152,7 @@ namespace org\octris\core {
          * Returns (validated and sanitized) stored data validated with specified 
          * validator name.
          *
-         * @octdoc  m:provider/getData
+         * @octdoc  m:provider/applyValidator
          * @param   string          $name               Name of validator to apply.
          * @return  array                               Validated and sanitized data.
          */
