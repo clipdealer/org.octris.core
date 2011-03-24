@@ -119,6 +119,7 @@ namespace org\octris\core\dbo\mongodb {
          * @param   array               $sort                   Optional sorting parameters.
          * @param   array               $fields                 Optionally limit returned fields.
          * @param   array               $hint                   Optional query hint.
+         * @param   \org\octris\core\dbo\mongodb\result         Result object.
          */
         public function query($collection, array $query, $offset = 0, $limit = null, array $sort = null, array $fields = array(), array $hint = null) 
         /**/
