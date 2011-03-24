@@ -73,8 +73,8 @@ namespace org\octris\core\dbo {
         final public function connect($type)
         /**/
         {
-            if ($type != \org\octris\core\dbo::T_CN_MASTER || $type != \org\octris\core\dbo::T_CN_SLAVE) {
-                throw new Exception('unknown connection type "$type"');
+            if ($type != \org\octris\core\dbo::T_CN_MASTER && $type != \org\octris\core\dbo::T_CN_SLAVE) {
+                throw new \Exception("unknown connection type '$type'");
             }
             
             // TODO: shuffle before shifting?
