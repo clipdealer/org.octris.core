@@ -14,17 +14,17 @@ namespace org\octris\core {
         /**
          * Master connection type.
          * 
-         * @octdoc  d:dbo/T_CN_MASTER
+         * @octdoc  d:dbo/T_DBO_UPDATE
          */
-        const T_CN_MASTER = 'master';
+        const T_DBO_UPDATE = 'master';
         /**/
         
         /**
          * Slave connection type.
          * 
-         * @octdoc  d:dbo/T_CN_SLAVE
+         * @octdoc  d:dbo/T_DBO_SELECT
          */
-        const T_CN_SLAVE = 'slaves';
+        const T_DBO_SELECT = 'slaves';
         /**/
     }
 }
