@@ -193,6 +193,19 @@ namespace org\octris\core\dbo\mongodb {
         }
 
         /**
+         * Resolve a database reference.
+         *
+         * @octdoc  m:connection/getReference
+         * @param   array               $ref                    Database reference.
+         * @return  array                                       Resolved reference.
+         */
+        public function getReference(array $ref)
+        /**/
+        {
+            return $this->cn->getDBRef($ref);
+        }
+
+        /**
          * Returns last occured error.
          *
          * @octdoc  m:connection/getLastError
