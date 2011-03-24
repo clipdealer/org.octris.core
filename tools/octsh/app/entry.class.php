@@ -19,7 +19,7 @@ namespace org\octris\core\octsh\app {
          * @var     array
          */
         protected $next_pages = array(
-            'default' => '\org\octris\core\octsh\app\shell',
+            '' => '\org\octris\core\octsh\app\shell',
         );
         /**/
 

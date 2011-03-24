@@ -19,7 +19,7 @@ namespace {{$namespace}}\app {
          * @var     array
          */
          protected $next_pages = array(
-             'default' => '{{$namespace}}\app\index',
+             '' => '{{$namespace}}\app\index',
          );
         /**/
 
