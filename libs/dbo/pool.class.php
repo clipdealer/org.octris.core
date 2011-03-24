@@ -85,7 +85,7 @@ namespace org\octris\core\dbo {
                 $params        = $this->params;
                 $params[$type] = $this->params[$type][0];
                 
-                if (($cn = $this->openConnection($type, $params))) {
+                if (($cn = $this->getConnection($type, $params))) {
                     $this->pool[$type][] = $cn;
                 } else {
                     throw new Exception('unable to connection to database');
