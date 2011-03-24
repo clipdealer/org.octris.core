@@ -43,7 +43,7 @@ namespace org\octris\core\dbo\mongodb {
          *
          * @octdoc  m:connection/__construct
          * @param   string                              $type                   Type of connection.
-         * @param   \org\octris\core\dbo\mongodb\pool   $pool                   Instance of connection pool.
+         * @param   \org\octris\core\dbo\mongodb\pool   $pool                   Instance of connection pool or 'null' if no pool is used.
          * @param   string                              $server                 Server host to connect to.
          * @param   string                              $username               Username to connect with.
          * @param   string                              $password               Password to connect with.
@@ -212,7 +212,11 @@ namespace org\octris\core\dbo\mongodb {
         public function release()
         /**/
         {
-            $this->pool->release($this->type, $this);
+            if (is_null($this->pool)) {
+                // TODO: close mongodb connection
+            } else {
+                $this->pool->release($this->type, $this);
+            }
         }
     }
 }
