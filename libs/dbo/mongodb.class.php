@@ -133,7 +133,7 @@ namespace org\octris\core\dbo {
          * @param   array                                       $hint               Optional query hint.
          * @return  bool|\org\octris\core\dbo\mongodb\object                        Instance of item object or 'false'
          */
-        public static function query($cn, $collection, array $criteria = array(), $offset = 0, $limit = null, array $sort = null, array $fields = array(), array $hint = null)
+        public static function query(\org\octris\core\dbo\mongodb\connection $cn, $collection, array $criteria = array(), $offset = 0, $limit = null, array $sort = null, array $fields = array(), array $hint = null)
         /**/
         {
             $result = new static($cn, $collection, $cn->query($collection, $criteria, $offset, $limit, $sort, $fields, $hint));
@@ -176,7 +176,7 @@ namespace org\octris\core\dbo {
          * @param   MongoDBRef                                  $ref                Reference as MongoDBRef.
          * @return  bool|\org\octris\core\dbo\mongodb\object                        Item object or 'false', if reference could not be resolved.
          */
-        public static function resolve($cn, $ref)
+        public static function resolve(\org\octris\core\dbo\mongodb\connection $cn, $ref)
         /**/
         {
             if (self::isref($value)) {
@@ -203,7 +203,7 @@ namespace org\octris\core\dbo {
          * @param   array                                       $args               Optional arguments to pass to code.
          * @return  bool|\org\octris\core\dbo\mongodb\object                        Instance of item object or 'false'
          */
-        public static function execute($cn, $code, array $args = array())
+        public static function execute(\org\octris\core\dbo\mongodb\connection $cn, $code, array $args = array())
         /**/
         {
             $result = $cn->execute($code, $args);
@@ -220,7 +220,7 @@ namespace org\octris\core\dbo {
          * @param   array                                       $data               Optional data to fill object with.
          * @return  \org\octris\core\dbo\mongodb\object                             Created object.
          */
-        public static function create($cn, $collection, array $data = array())
+        public static function create(\org\octris\core\dbo\mongodb\connection $cn, $collection, array $data = array())
         /**/
         {
             $class = static::$object_ns . $collection;
@@ -237,7 +237,7 @@ namespace org\octris\core\dbo {
          * @param   string                                      $_id                ID of object.
          * @return  bool|\org\octris\core\dbo\mongodb\object                        Instance of item object or 'false'
          */
-        public static function load($cn, $collection, $_id)
+        public static function load(\org\octris\core\dbo\mongodb\connection $cn, $collection, $_id)
         /**/
         {
             return self::first($cn, $collection, array('_id' => new MongoId($_id)));
