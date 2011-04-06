@@ -81,6 +81,12 @@ namespace org\octris\core\dbo\mongodb {
         {
             if ($name == '_id') {
                 throw new Exception('unable to set protected property "' . $name . '"');
+            } elseif (is_object($value))
+                if ($value instanceof DateTime) {
+                    $this->data[$name] = new MongoDate($value->getTimestamp());
+                } else {
+                    $this->data[$name] = $value;
+                }
             } else {
                 $this->data[$name] = $value;
             }
@@ -98,44 +104,20 @@ namespace org\octris\core\dbo\mongodb {
         {
             $return = null;
             
-            switch ($name) {
-            case '_id':
+            // handle ObjectId and unknown properties
+            if ($name == '_id') {
                 $return = $this->_id;
-                break;
-            default:
-                if (array_key_exists($name, $this->data)) {
-                    $return = $this->data[$name];
+            } elseif (!array_key_exists($name, $this->data)) {
+                $return = null;
+            } elseif (is_object($this->data[$name])) {
+                if ($this->data[$name] instanceof MongoDate) {
+                    $return = new DateTime((string)$this->data[$name]);
+                } else {
+                    $return = (string)$this->data[$name];
                 }
-                break;
             }
             
             return $return;
-        }
-        
-        /**
-         * Returns sanitized data, all objects get converted to strings.
-         *
-         * @octdoc  m:object/getSanitized
-         * @param   string          $name                   Optional name of property to return sanitized data for.
-         * @return  mixed                                   Sanitized data.
-         */
-        public function getSanitized($name = null)
-        /**/
-        {
-            if (is_null($key)) {
-                $data        = $this->data;
-                $data['_id'] = $this->_id;
-            } else {
-                $data = $this->data[$key];
-            }
-
-            array_walk_recursive($data, function(&$item, $key) {
-                if (is_object($item)) {
-                    $item = (string)$item;
-                }
-            });
-
-            return $data;
         }
         
         /**
