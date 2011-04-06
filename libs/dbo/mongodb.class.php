@@ -142,6 +142,19 @@ namespace org\octris\core\dbo {
         }
         
         /**
+         * Test if specified parameter is a database reference.
+         *
+         * @octdoc  m:mongodb/isref
+         * @param   mixed                                       $value              Value to test.
+         * @return  bool                                                            Returns true, if specified value is a reference.
+         */
+        public function isref($value)
+        /**/
+        {
+            return (is_array($value) && MongoDBRef::isRef($value));
+        }
+        
+        /**
          * Resolve database reference.
          *
          * @octdoc  m:mongodb/resolve
