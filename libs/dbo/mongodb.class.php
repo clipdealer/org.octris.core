@@ -142,6 +142,20 @@ namespace org\octris\core\dbo {
         }
         
         /**
+         * Remove items from database.
+         *
+         * @octdoc  m:mongodb/remove
+         * @param   \org\octris\core\dbo\mongodb\connection     $cn                 Instance of MongoDB connection.
+         * @param   array                                       $criteria           Optional criteria to query collection by.
+         * @param   array                                       $options            Optional options for removal.
+         */
+        public function remove(\org\octris\core\dbo\mongodb\connection $cn, array $criteria = array(), array $options = array())
+        /**/
+        {
+            
+        }
+        
+        /**
          * Test if specified parameter is a database reference.
          *
          * @octdoc  m:mongodb/isref
