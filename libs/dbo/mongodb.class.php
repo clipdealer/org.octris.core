@@ -179,7 +179,7 @@ namespace org\octris\core\dbo {
         public static function resolve($cn, $ref)
         /**/
         {
-            if (!is_array($ref) || !MongoDBRef::isRef($ref)) {
+            if (self::isref($value)) {
                 return false;
             } else {
                 $collection = $ref['$ref'];
