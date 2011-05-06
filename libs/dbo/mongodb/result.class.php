@@ -1,6 +1,6 @@
 <?php
 
-namespace org\octris\core\dbo\mongodb {
+namespace org\octris\core\dbo\mongodb extends \org\octris\core\type\collection {
     /**
      * Result set of a mongodb query.
      *
