@@ -35,7 +35,46 @@
  *
  */
 
+/** procedural access to multibyte-safe string functions **/
+namespace org\octris\core\type\string {
+    /**
+     * Return length of the given string.
+     *
+     * @octdoc  m:string/strlen
+     * @param   string      $string         String to return length for.
+     * @param   string      $encoding       Optional encoding to use as default for all string operations.
+     */
+    function strlen($str, $encoding = 'UTF-8')
+    /**/
+    {
+        return mb_strlen($str, $encoding);
+    }
+    
+    /**
+     * Convert a specified string to 7bit.
+     *
+     * @octdoc  f:string/to7bit
+     * @param   string      $string         String to convert
+     * @param   string      $encoding       Optional encoding to use.
+     */
+    function to7bit($string, $encoding = 'UTF-8')
+    /**/
+    {
+        $string = mb_convert_encoding($string, 'HTML-ENTITIES', $encoding);
+        $string = preg_replace(
+            array('/&szlig;/', '/&(..)lig;/', '/&([aouAOU])uml;/','/&(.)[^;]*;/'),
+            array('ss', '$1', '$1'.'e', '$1'),
+            $string
+        );
+        
+        return $string;
+    }
+}
+
+/** object-oriented access to multibyte-safe string functions **/
 namespace org\octris\core\type {
+    use \org\octris\core\type\string as string;
+    
     /**
      * Multibyte safe string class.
      * 
@@ -56,87 +95,66 @@ namespace org\octris\core\type {
         /**/
         
         /**
+         * Default encoding for string operations.
+         *
+         * @octdoc  v:string/$encoding
+         * @var     string
+         */
+        protected $encoding = 'UTF-8';
+        /**/
+        
+        /**
          * Constructor.
          *
          * @octdoc  m:string/__construct
          * @param   string      $string         String to initialize new instance with.
+         * @param   string      $encoding       Optional encoding to use as default for all string operations.
          */
-        public function __construct($string)
+        public function __construct($string, $encoding = 'UTF-8')
         /**/
         {
-            $this->string = $string;
+            $this->string   = $string;
+            $this->encoding = $encoding;
         }
         
         /**
          * Return string representation of object if it's casted to a string.
          *
-         * @octdoc  m:string/__tostring
+         * @octdoc  m:string/__toString
          * @return  string                      string representation of object
          */
-        public function __tostring()
+        public function __toString()
         /**/
         {
             return $this->string;
         }
         
         /**
-         * Magic caller for internal static methods.
-         *
-         * @octdoc  m:string/__call
-         * @param   string      $name           Name of function to call.
-         * @param   mixed       $arg, ...       Optional arguments.
-         * @return  mixed                       Return value according to the called function.
-         */
-        public function __call($name, array $args = array())
-        /**/
-        {
-            array_unshift($args, $this->string);
-            
-            return call_user_func_array(array(__NAMESPACE__ . '\string', $name), $args);
-        }
-        
-        /**
-         * Magic caller for internal static methods.
-         *
-         * @octdoc  m:string/__callStatic
-         * @param   string      $name           Name of function to call.
-         * @param   string      $string         String to process.
-         * @param   mixed       $arg, ...       Optional arguments.
-         * @return  mixed                       Return value according to the called function.
-         */
-        public static function __callStatic($name, $args)
-        /**/
-        {
-            return call_user_func_array(array(__NAMESPACE__ . '\string', $name), $args);
-        }
-        
-        /**
          * Return length of the given string.
          *
-         * @octdoc  m:string/length
-         * @param   string      $string         String to return length for.
+         * @octdoc  m:string/strlen
+         * @return  int                         Length of string.
          */
-        protected static function length($string)
+        public function strlen()
         /**/
         {
-            return mb_strlen($string);
+            return string\strlen($this->string, $this->encoding);
         }
         
         /**
          * Returns the numeric position of the first occurrence of needle in the haystack string. 
          * This function can take a full string as the needle parameter and the entire string will be used.
          *
-         * @octdoc  m:string/pos
-         * @param   string      $haystack       The string being checked.
+         * @octdoc  m:string/strpos
          * @param   string      $needle         The position counted from the beginning of haystack.
          * @param   int         $offset         The search offset. If it is not specified, 0 is used.
          * @return  int|bool                    Returns the numeric position of the first occurrence of needle in the 
          *                                      haystack string. If needle is not found, it returns FALSE.
          */
-        protected static function pos($haystack, $needle, $offset = 0)
+        public function strpos($needle, $offset = 0)
         /**/
         {
-            return mb_strpos($haystack, $needle, $offset);
+            return string\strpos($this->string, $needle, $offset, $this->encoding);
         }
         
         /**
@@ -144,8 +162,7 @@ namespace org\octris\core\type {
          * Needle position is counted from the beginning of haystack. First character's position is 0. 
          * Second character position is 1.
          *
-         * @octdoc  m:string/rpos
-         * @param   string      $haystack       The string being checked, for the last occurrence of needle.
+         * @octdoc  m:string/strrpos
          * @param   string      $needle         The string to find in haystack.
          * @param   int         $offset         May be specified to begin searching an arbitrary number of characters 
          *                                      into the string. Negative values will stop searching at an arbitrary point
@@ -153,11 +170,24 @@ namespace org\octris\core\type {
          * @return  int|bool                    Returns the numeric position of the last occurrence of needle in the 
          *                                      haystack string. If needle is not found, it returns FALSE.
          */
-        protected static function rpos($haystack, $needle, $offset = null)
+        public function strrpos($needle, $offset = null)
         /**/
         {
-            return mb_strrpos($haystack, $needle, $offset);
+            return string\strrpos($this->string, $needle, $offset, $this->encoding);
         }
+        
+        /**
+         * Convert a string to 7bit
+         *
+         * @octdoc  m:string/to7bit
+         * @param   
+         */
+        public function to7bit()
+        /**/
+        {
+            string\to7bit($this->string, $this->encoding);
+        }
+        
         
         /*
 
