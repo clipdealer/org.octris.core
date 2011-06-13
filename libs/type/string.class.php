@@ -38,6 +38,56 @@
 /** procedural access to multibyte-safe string functions **/
 namespace org\octris\core\type\string {
     /**
+     * Regular expression match for multibyte string.
+     *
+     * @octdoc  f:string/match
+     * @param   string      $pattern        The search pattern.
+     * @param   string      $string         The search string.
+     * @param   string      $options        If 'i' is specified for this parameter, the case will be ignored.
+     * @param   string      $encoding       Optional encoding to use.
+     * @return  array|bool                  The function returns substring of matched string. If no matches 
+     *                                      are found or an error happens, FALSE will be returned.     
+     */
+    function match($pattern, $string, $options = '', $encoding = 'UTF-8');
+    /**/
+    {
+        $m = array();
+        
+        mb_regex_encoding($encoding);
+        
+        if (strpos($options, 'i') !== false) {
+            $return = mb_eregi($pattern, $string, $m);
+        } else {
+            $return = mb_ereg($pattern, $string, $m);
+        }
+        
+        return ($return === false ? false : $m);
+    }
+
+    /**
+     * Replace regular expression with multibyte support.
+     *
+     * @octdoc  f:string/replace
+     * @param   string      $pattern        The search pattern.
+     * @param   string      $string         The search string.
+     * @param   string      $options        Matching condition can be set by option parameter. If i is specified for this
+     *                                      parameter, the case will be ignored. If x is specified, white space will be
+     *                                      ignored. If m is specified, match will be executed in multiline mode and line
+     *                                      break will be included in '.'. If p is specified, match will be executed in 
+     *                                      POSIX mode, line break will be considered as normal character. If e is 
+     *                                      specified, replacement string will be evaluated as PHP expression.
+     * @param   string      $encoding       Optional encoding to use.
+     * @return  string                      The resultant string on success, or FALSE on error.
+     */
+    function replace($pattern, $replacement, $string, $options = 'msr', $encoding = 'UTF-8')
+    /**/
+    {
+        mb_regex_encoding($encoding);
+        
+        return mb_ereg_replace($pattern, $replacement, $string, $options);
+    }
+    
+    /**
      * Split multibyte string using regular expression.
      *
      * @octdoc  f:string/split
@@ -367,6 +417,45 @@ namespace org\octris\core\type {
             }
 
             return new static($string);
+        }
+
+        /**
+         * Regular expression match for multibyte string.
+         *
+         * @octdoc  m:string/match
+         * @param   string      $pattern        The search pattern.
+         * @param   string      $options        If 'i' is specified for this parameter, the case will be ignored.
+         * @param   array       $regs           Contains a substring of the matched string.
+         * @return  array|bool                  The function returns substring of matched string. If no matches 
+         *                                      are found or an error happens, FALSE will be returned.     
+         */
+        public function match($pattern, $options = '')
+        /**/
+        {
+            return string\match($pattern, $this->string, $options, $this->encoding);
+        }
+
+        /**
+         * Replace regular expression with multibyte support.
+         *
+         * @octdoc  m:string/replace
+         * @param   string      $pattern        The search pattern.
+         * @param   string      $options        Matching condition can be set by option parameter. If i is specified for this
+         *                                      parameter, the case will be ignored. If x is specified, white space will be
+         *                                      ignored. If m is specified, match will be executed in multiline mode and line
+         *                                      break will be included in '.'. If p is specified, match will be executed in 
+         *                                      POSIX mode, line break will be considered as normal character. If e is 
+         *                                      specified, replacement string will be evaluated as PHP expression.
+         * @return  string                      The resultant string on success, or FALSE on error.
+         */
+        public function replace($pattern, $replacement, $string, $options = 'msr')
+        /**/
+        {
+            if (($return = string\replace($pattern, $replacement, $this->string, $options, $this->encoding)) !== false) {
+                $return = new static($return, $this->encoding);
+            }
+            
+            return $return;
         }
 
         /**
