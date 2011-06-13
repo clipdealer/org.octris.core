@@ -1,6 +1,6 @@
 <?php
 
-class test implements \Iterator /*, \SeekableIterator, \Countable*/
+class test implements \Iterator, \SeekableIterator, \Countable
 /**/
 {
     protected $position = 0;
@@ -22,6 +22,7 @@ class test implements \Iterator /*, \SeekableIterator, \Countable*/
         } else {
             die('specified parameter is not traversable');
         }
+        print_r($this->data);
     }
     
     function rewind() {
@@ -47,6 +48,14 @@ class test implements \Iterator /*, \SeekableIterator, \Countable*/
         return (key($this->data) !== null);
     }
     
+    function count() {
+        return $this->count;
+    }
+    
+    function seek($pos) {
+        
+    }
+    
     function getItem() {
         return (object)array(
             'item'      => current($this->data),
@@ -61,7 +70,8 @@ class test implements \Iterator /*, \SeekableIterator, \Countable*/
 
 $cases = array(
     new test(array('a', 'b', 'c')),
-    new test(new ArrayObject(array('a, b, c')))
+    new test(new ArrayObject(array('a', 'b', 'c'))),
+    new test(new ArrayObject(array('a' => '1', 'b' => '2', 'c' => '3')))
 );
 
 foreach ($cases as $case) {
