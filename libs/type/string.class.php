@@ -51,6 +51,45 @@ namespace org\octris\core\type\string {
     }
     
     /**
+     * Returns the numeric position of the first occurrence of needle in the haystack string. 
+     * This function can take a full string as the needle parameter and the entire string will be used.
+     *
+     * @octdoc  m:string/strpos
+     * @param   string      $string         String to return length for.
+     * @param   string      $needle         The position counted from the beginning of haystack.
+     * @param   int         $offset         The search offset. If it is not specified, 0 is used.
+     * @param   string      $encoding       Optional encoding to use as default for all string operations.
+     * @return  int|bool                    Returns the numeric position of the first occurrence of needle in the 
+     *                                      haystack string. If needle is not found, it returns FALSE.
+     */
+    function strpos($string, $needle, $offset = 0, $encoding = 'UTF-8')
+    /**/
+    {
+        return mb_strpos($string, $needle, $offset, $encoding);
+    }
+    
+    /**
+     * Performs a multibyte safe strrpos() operation based on the number of characters. 
+     * Needle position is counted from the beginning of haystack. First character's position is 0. 
+     * Second character position is 1.
+     *
+     * @octdoc  m:string/strrpos
+     * @param   string      $string         String to return length for.
+     * @param   string      $needle         The string to find in haystack.
+     * @param   int         $offset         May be specified to begin searching an arbitrary number of characters 
+     *                                      into the string. Negative values will stop searching at an arbitrary point
+     *                                      prior to the end of the string.
+     * @param   string      $encoding       Optional encoding to use as default for all string operations.
+     * @return  int|bool                    Returns the numeric position of the last occurrence of needle in the 
+     *                                      haystack string. If needle is not found, it returns FALSE.
+     */
+    public function strrpos($string, $needle, $offset = null, $encoding = 'UTF-8')
+    /**/
+    {
+        return mb_strrpos($string, $needle, $offset, $encoding);
+    }
+    
+    /**
      * Convert a specified string to 7bit.
      *
      * @octdoc  f:string/to7bit
@@ -187,6 +226,19 @@ namespace org\octris\core\type {
         {
             string\to7bit($this->string, $this->encoding);
         }
+        
+        /**
+         * Concat string object with an arbitrary amount of other strings or string objects.
+         *
+         * @octdoc  m:string/concat
+         * @param   string      ...             One or multiple strings to concatenate.
+         */
+        public function concat()
+        /**/
+        {
+            $
+        }
+        
         
         
         /*
