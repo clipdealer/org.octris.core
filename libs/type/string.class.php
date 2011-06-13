@@ -224,7 +224,7 @@ namespace org\octris\core\type {
         public function to7bit()
         /**/
         {
-            string\to7bit($this->string, $this->encoding);
+            return string\to7bit($this->string, $this->encoding);
         }
         
         /**
