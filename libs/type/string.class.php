@@ -38,11 +38,64 @@
 /** procedural access to multibyte-safe string functions **/
 namespace org\octris\core\type\string {
     /**
+     * Split multibyte string using regular expression.
+     *
+     * @octdoc  f:string/split
+     * @param   string      $pattern        The regular expression pattern.
+     * @param   string      $string         The string being split.
+     * @param   string      $encoding       Optional encoding to use.
+     * @return  array                       Array of splitted strings.
+     */
+    function split($pattern, $string, $encoding = 'UTF-8')
+    /**/
+    {
+        mb_regex_encoding($encoding);
+        
+        return mb_split($pattern, $string);
+    }
+    
+    /**
+     * Finds position of first occurrence of a string within another, case insensitive.
+     *
+     * @octdoc  f:string/stripos
+     * @param   string      $string         String to return length for.
+     * @param   string      $needle         The position counted from the beginning of haystack.
+     * @param   int         $offset         The search offset. If it is not specified, 0 is used.
+     * @param   string      $encoding       Optional encoding to use.
+     * @return  int|bool                    Returns the numeric position of the first occurrence of needle in the 
+     *                                      haystack string. If needle is not found, it returns FALSE.
+     */
+    function stripos($string, $needle, $offset = 0, $encoding = 'UTF-8')
+    /**/
+    {
+        return mb_stripos($string, $needle, $offset, $encoding);
+    }
+
+    /**
+     * Finds first occurrence of a string within another, case insensitive.
+     *
+     * @octdoc  f:string/stristr
+     * @param   string      $string         The string from which to get the first occurrence of needle.
+     * @param   string      $needle         The string to find in string.
+     * @param   bool        $part           Determines which portion of haystack this function returns. If set to 
+     *                                      TRUE, it returns all of string from the beginning to the first occurrence 
+     *                                      of needle. If set to FALSE, it returns all of string from the first
+     *                                      occurrence of needle to the end.
+     * @param   string      $encoding       Character encoding name to use.
+     * @return  string|bool                 Returns the portion of string, or FALSE if needle is not found.
+     */
+    function stristr($string, $needle, $part = false, $encoding = 'UTF-8')
+    /**/
+    {
+        return mb_stristr($string, $needle, $part, $encoding);
+    }
+    
+    /**
      * Return length of the given string.
      *
-     * @octdoc  m:string/strlen
+     * @octdoc  f:string/strlen
      * @param   string      $string         String to return length for.
-     * @param   string      $encoding       Optional encoding to use as default for all string operations.
+     * @param   string      $encoding       Optional encoding to use.
      */
     function strlen($str, $encoding = 'UTF-8')
     /**/
@@ -51,14 +104,13 @@ namespace org\octris\core\type\string {
     }
     
     /**
-     * Returns the numeric position of the first occurrence of needle in the haystack string. 
-     * This function can take a full string as the needle parameter and the entire string will be used.
+     * Find position of first occurrence of string in a string.
      *
-     * @octdoc  m:string/strpos
+     * @octdoc  f:string/strpos
      * @param   string      $string         String to return length for.
      * @param   string      $needle         The position counted from the beginning of haystack.
      * @param   int         $offset         The search offset. If it is not specified, 0 is used.
-     * @param   string      $encoding       Optional encoding to use as default for all string operations.
+     * @param   string      $encoding       Optional encoding to use.
      * @return  int|bool                    Returns the numeric position of the first occurrence of needle in the 
      *                                      haystack string. If needle is not found, it returns FALSE.
      */
@@ -69,17 +121,15 @@ namespace org\octris\core\type\string {
     }
     
     /**
-     * Performs a multibyte safe strrpos() operation based on the number of characters. 
-     * Needle position is counted from the beginning of haystack. First character's position is 0. 
-     * Second character position is 1.
+     * Find position of last occurrence of a string in a string.
      *
-     * @octdoc  m:string/strrpos
+     * @octdoc  f:string/strrpos
      * @param   string      $string         String to return length for.
      * @param   string      $needle         The string to find in haystack.
      * @param   int         $offset         May be specified to begin searching an arbitrary number of characters 
      *                                      into the string. Negative values will stop searching at an arbitrary point
      *                                      prior to the end of the string.
-     * @param   string      $encoding       Optional encoding to use as default for all string operations.
+     * @param   string      $encoding       Optional encoding to use.
      * @return  int|bool                    Returns the numeric position of the last occurrence of needle in the 
      *                                      haystack string. If needle is not found, it returns FALSE.
      */
@@ -88,6 +138,102 @@ namespace org\octris\core\type\string {
     {
         return mb_strrpos($string, $needle, $offset, $encoding);
     }
+
+    /**
+     * Finds position of last occurrence of a string within another, case insensitive.
+     *
+     * @octdoc  f:string/strripos
+     * @param   string      $string         String to return length for.
+     * @param   string      $needle         The string to find in haystack.
+     * @param   int         $offset         May be specified to begin searching an arbitrary number of characters 
+     *                                      into the string. Negative values will stop searching at an arbitrary point
+     *                                      prior to the end of the string.
+     * @param   string      $encoding       Optional encoding to use.
+     * @return  int|bool                    Returns the numeric position of the last occurrence of needle in the 
+     *                                      haystack string. If needle is not found, it returns FALSE.
+     */
+    function strripos($string, $needle, $offset = null, $encoding = 'UTF-8')
+    /**/
+    {
+        return mb_strripos($string, $needle, $offset, $encoding);
+    }
+
+    /**
+     * Finds first occurrence of a string within another.
+     *
+     * @octdoc  f:string/strstr
+     * @param   string      $string         The string from which to get the first occurrence of needle.
+     * @param   string      $needle         The string to find in string.
+     * @param   bool        $part           Determines which portion of haystack this function returns. If set to 
+     *                                      TRUE, it returns all of string from the beginning to the first occurrence 
+     *                                      of needle. If set to FALSE, it returns all of string from the first
+     *                                      occurrence of needle to the end.
+     * @param   string      $encoding       Character encoding name to use.         
+     * @return  string|bool                 Returns the portion of string, or FALSE if needle is not found.
+     */
+    function strstr($string, $needle, $part = false, $encoding = 'UTF-8')
+    /**/
+    {
+        return mb_strstr($string, $needle, $part, $encoding);
+    }
+    
+    /**
+     * Make a string lowercase.
+     *
+     * @octdoc  f:string/strtolower
+     * @param   string      $string         The string being lowercased.
+     * @param   string      $encoding       Character encoding name to use.         
+     * @return  string                      String with all alphabetic characters converted to lowercase.
+     */
+    function strtolower($string, $encoding = 'UTF-8')
+    /**/
+    {
+        return mb_strtolower($string, $encoding);
+    }
+    
+    /**
+     * Make a string uppercase.
+     *
+     * @octdoc  f:string/strtoupper
+     * @param   string      $string         The string being uppercased.
+     * @param   string      $encoding       Character encoding name to use.         
+     * @return  string                      String with all alphabetic characters converted to uppercase.
+     */
+    function strtoupper($string, $encoding = 'UTF-8')
+    /**/
+    {
+        return mb_strtoupper($string, $encoding);
+    }
+    
+    /**
+     * Get part of string.
+     *
+     * @octdoc  f:string/substr
+     * @param   string      $string         The string to extract a part from.
+     * @param   int         $start          The first position used in string.
+     * @param   int|null    $length         Optional length of the part to extract.
+     * @param   string      $encoding       Optional encoding to use.
+     */
+    function substr($string, $start, $length = null, $encoding = 'UTF-8')
+    /**/
+    {
+        return mb_substr($string, $start, $length, $encoding);
+    }
+
+    /**
+     * Count the number of substring occurences.
+     *
+     * @octdoc  f:string/substr_count
+     * @param   string      $string         The string being checked.
+     * @param   string      $needle         The string being found.
+     * @param   string      $encoding       Optional encoding to use.
+     * @return  string                      The number of times the needle substring occurs in the haystack string.     
+     */
+    function substr_count($string, $needle, $encoding = 'UTF-8')
+    /**/
+    {
+        return mb_substr_count($string, $needle, $encoding);
+    }
     
     /**
      * Convert a specified string to 7bit.
@@ -95,6 +241,7 @@ namespace org\octris\core\type\string {
      * @octdoc  f:string/to7bit
      * @param   string      $string         String to convert.
      * @param   string      $encoding       Optional encoding to use.
+     * @return  string                      Converted string to 7bit.
      */
     function to7bit($string, $encoding = 'UTF-8')
     /**/
@@ -106,6 +253,42 @@ namespace org\octris\core\type\string {
             $string
         );
         
+        return $string;
+    }
+    
+    /**
+     * Replaces PHP's htmlentities to safely convert using specified encoding.
+     *
+     * @octdoc  f:string/htmlentities
+     * @param   string      $string         String to convert.
+     * @param   string      $encoding       Encoding to use.
+     * @return  string                      Converted string.
+     */
+    function htmlentities($string, $encoding = 'UTF-8')
+    /**/
+    {
+    	return \htmlentities($string, ENT_QUOTES, $encoding) ;
+    }
+    
+    /**
+     * Convert a string to UTF-8
+     *
+     * @octdoc  f:string/toUtf8
+     * @param   string      $string         String to convert.
+     * @param   string      $encoding       Optional convert from this encoding to UTF-8.
+     * @return  string                      Converted string.
+     */
+    function toUtf8($string, $encoding = 'ISO-8859-1');
+    /**/
+    {
+        if (!mb_check_encoding($string, 'UTF-8') {
+            $string = mb_convert_encoding($string, 'UTF-8', $encoding); 
+            
+            if (!mb_check_encoding($content, 'UTF-8')) {
+                trigger_error('unable to convert to UTF-8');
+            }
+        }
+
         return $string;
     }
 }
@@ -153,7 +336,7 @@ namespace org\octris\core\type {
         /**/
         {
             $this->string   = $string;
-            $this->encoding = $encoding;
+            $this->encoding = strtoupper($encoding);
         }
         
         /**
@@ -169,6 +352,79 @@ namespace org\octris\core\type {
         }
         
         /**
+         * Convert a string to UTF-8
+         *
+         * @octdoc  m:string/toUtf8
+         * @return  string                      Converted string.
+         */
+        function toUtf8();
+        /**/
+        {
+            if ($this->encoding != 'UTF-8') {
+                $string = string\toUtf8($this->string, $this->encoding);
+            } else {
+                $string = $this->string;
+            }
+
+            return new static($string);
+        }
+
+        /**
+         * Split multibyte string using regular expression.
+         *
+         * @octdoc  m:string/split
+         * @param   string      $pattern        The regular expression pattern.
+         * @return  array                       Array of splitted strings.
+         */
+        public function split($pattern)
+        /**/
+        {
+            $strings = string\split($pattern, $this->string, $this->encoding);
+            
+            foreach ($strings as &$string) {
+                $string = new static($string, $this->encoding);
+            }
+            
+            return $strings;
+        }
+
+        /**
+         * Finds position of first occurrence of a string within another, case insensitive.
+         *
+         * @octdoc  m:string/stripos
+         * @param   string      $needle         The position counted from the beginning of haystack.
+         * @param   int         $offset         The search offset. If it is not specified, 0 is used.
+         * @return  int|bool                    Returns the numeric position of the first occurrence of needle in the 
+         *                                      haystack string. If needle is not found, it returns FALSE.
+         */
+        function stripos($needle, $offset = 0)
+        /**/
+        {
+            return string\stripos($this->string, $needle, $offset, $this->encoding);
+        }
+
+        /**
+         * Finds first occurrence of a string within another, case insensitive.
+         *
+         * @octdoc  m:string/stristr
+         * @param   string      $needle         The string to find in string.
+         * @param   bool        $part           Determines which portion of haystack this function returns. If set to 
+         *                                      TRUE, it returns all of string from the beginning to the first occurrence 
+         *                                      of needle. If set to FALSE, it returns all of string from the first
+         *                                      occurrence of needle to the end.
+         * @return  string|bool                 Returns the portion of string, or FALSE if needle is not found.
+         */
+        function stristr($needle, $part = false)
+        /**/
+        {
+            if (($return = string\stristr($this->string, $needle, $part, $this->encoding)) !== false) {
+                $return = new static($return, $this->encoding);
+            }
+            
+            return $return;
+        }
+
+        /**
          * Return length of the given string.
          *
          * @octdoc  m:string/strlen
@@ -181,8 +437,7 @@ namespace org\octris\core\type {
         }
         
         /**
-         * Returns the numeric position of the first occurrence of needle in the haystack string. 
-         * This function can take a full string as the needle parameter and the entire string will be used.
+         * Find position of first occurrence of string in a string.
          *
          * @octdoc  m:string/strpos
          * @param   string      $needle         The position counted from the beginning of haystack.
@@ -197,9 +452,7 @@ namespace org\octris\core\type {
         }
         
         /**
-         * Performs a multibyte safe strrpos() operation based on the number of characters. 
-         * Needle position is counted from the beginning of haystack. First character's position is 0. 
-         * Second character position is 1.
+         * Find position of last occurrence of a string in a string.
          *
          * @octdoc  m:string/strrpos
          * @param   string      $needle         The string to find in haystack.
@@ -216,10 +469,99 @@ namespace org\octris\core\type {
         }
         
         /**
+         * Finds position of last occurrence of a string within another, case insensitive.
+         *
+         * @octdoc  m:string/strripos
+         * @param   string      $needle         The string to find in haystack.
+         * @param   int         $offset         May be specified to begin searching an arbitrary number of characters 
+         *                                      into the string. Negative values will stop searching at an arbitrary point
+         *                                      prior to the end of the string.
+         * @return  int|bool                    Returns the numeric position of the last occurrence of needle in the 
+         *                                      haystack string. If needle is not found, it returns FALSE.
+         */
+        public function strripos($needle, $offset = null)
+        /**/
+        {
+            return string\strripos($this->string, $needle, $offset, $this->encoding);
+        }
+
+        /**
+         * Finds first occurrence of a string within another.
+         *
+         * @octdoc  m:string/strstr
+         * @param   string      $needle         The string to find in string.
+         * @param   bool        $part           Determines which portion of haystack this function returns. If set to 
+         *                                      TRUE, it returns all of string from the beginning to the first occurrence 
+         *                                      of needle. If set to FALSE, it returns all of string from the first
+         *                                      occurrence of needle to the end.
+         * @return  string|bool                 Returns the portion of string, or FALSE if needle is not found.
+         */
+        public function strstr($needle, $part = false)
+        /**/
+        {
+            if (($return = string\stristr($this->string, $needle, $part, $this->encoding)) !== false) {
+                $return = new static($return, $this->encoding);
+            }
+            
+            return $return;
+        }
+
+        /**
+         * Make a string lowercase.
+         *
+         * @octdoc  m:string/strtolower
+         * @return  string                      String with all alphabetic characters converted to lowercase.
+         */
+        public function strtolower()
+        /**/
+        {
+            return new static(string\strtolower($this->string, $this->encoding));
+        }
+
+        /**
+         * Make a string uppercase.
+         *
+         * @octdoc  m:string/strtoupper
+         * @return  string                      String with all alphabetic characters converted to uppercase.
+         */
+        public function strtoupper()
+        /**/
+        {
+            return new static(string\strtoupper($this->string, $this->encoding));
+        }
+
+        /**
+         * Get part of string.
+         *
+         * @octdoc  m:string/substr
+         * @param   int         $start          The first position used in string.
+         * @param   int|null    $length         Optional length of the part to extract.
+         * @return  string                      Extracted part of the string.
+         */
+        public function substr($start, $length = null)
+        /**/
+        {
+            return new static(mb_substr($this->string, $start, $length, $this->encoding), $this->encoding);
+        }
+        
+        /**
+         * Count the number of substring occurences.
+         *
+         * @octdoc  m:string/substr_count
+         * @param   string      $needle         The string being found.
+         * @return  string                      The number of times the needle substring occurs in the haystack string.     
+         */
+        public function substr_count($needle)
+        /**/
+        {
+            return string\substr_count($this->string, $needle, $this->encoding);
+        }
+
+        /**
          * Convert a string to 7bit
          *
          * @octdoc  m:string/to7bit
-         * @param   
+         * @return  string                      Converted string to 7bit.
          */
         public function to7bit()
         /**/
@@ -228,33 +570,15 @@ namespace org\octris\core\type {
         }
         
         /**
-         * Concat string object with an arbitrary amount of other strings or string objects.
+         * Safely encode UTF-8 to HTML entities.
          *
-         * @octdoc  m:string/concat
-         * @param   string      ...             One or multiple strings to concatenate.
+         * @octdoc  m:string/htmlentities
+         * @return  string                      Converted string.
          */
-        public function concat()
+        public function htmlentities()
         /**/
         {
-            $
+        	return string\htmlentities($this->string, $this->encoding) ;
         }
-        
-        
-        
-        /*
-
-        TODO:
-        
-        substr()	-> mb_substr()
-        strtolower()	-> mb_strtolower()
-        strtoupper()	-> mb_strtoupper()
-        substr_count()	-> mb_substr_count()
-        ereg()		-> mb_ereg()
-        eregi()		-> mb_eregi()
-        ereg_replace()	-> mb_ereg_replace()
-        eregi_replace()	-> mb_eregi_replace()	
-        split()		-> mb_split()
-        
-        */
     }
 }
