@@ -93,7 +93,7 @@ namespace org\octris\core\type\string {
      * Convert a specified string to 7bit.
      *
      * @octdoc  f:string/to7bit
-     * @param   string      $string         String to convert
+     * @param   string      $string         String to convert.
      * @param   string      $encoding       Optional encoding to use.
      */
     function to7bit($string, $encoding = 'UTF-8')
