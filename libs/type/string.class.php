@@ -147,10 +147,10 @@ namespace org\octris\core\type\string {
      * @param   string      $string         String to return length for.
      * @param   string      $encoding       Optional encoding to use.
      */
-    function strlen($str, $encoding = 'UTF-8')
+    function strlen($string, $encoding = 'UTF-8')
     /**/
     {
-        return mb_strlen($str, $encoding);
+        return mb_strlen($string, $encoding);
     }
     
     /**
