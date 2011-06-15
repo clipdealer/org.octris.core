@@ -16,15 +16,15 @@ target = ""
 #**
 # Create and initialize a new project.
 #
-# @octdoc       t:Makefile/new
+# @octdoc       t:Makefile/create
 #**
-new:
+create:
 	@if [ "$(project)" = "org.octris.core" ]; then \
 		echo ""; \
 		echo "please specify a project as commandline parameter"; \
 		echo ""; \
 		echo "eg.:"; \
-		echo "       make new project=com.example..."; \
+		echo "       make create project=com.example..."; \
 		echo ""; \
 		exit 1; \
 	elif [ -d ../$(project) ]; then \
@@ -33,7 +33,7 @@ new:
 		echo "please specify an other project as commandline parameter"; \
 		echo ""; \
 		echo "eg.:"; \
-		echo "       make new project=com.example..."; \
+		echo "       make create project=com.example..."; \
 		echo ""; \
 		exit 1; \
 	fi	
