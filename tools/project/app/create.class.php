@@ -9,109 +9,26 @@ namespace org\octris\core\project\app {
     /**
      * Create new project.
      *
-     * Usage:
-     *      create project [company=...] [author=...] [email=...]
-     *
-     * @octdoc      c:app/clear
+     * @octdoc      c:app/create
      * @copyright   copyright (c) 2011 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    class create extends \org\octris\core\octsh\libs\plugin
+    class create extends \org\octris\core\app\cli\page
     /**/
     {
         /**
-         * The entry points to which the current page should allow requests to have to be defined with this
-         * property.
+         * Application data.
          *
-         * @octdoc  v:create/$next_page
+         * @octdoc  v:create/$data
          * @var     array
          */
-        protected $next_pages = array();
+        protected $data = array();
         /**/
-
-        /**
-         * Name of project to install.
-         *
-         * @octdoc  v:create/$project
-         * @var     string
-         */
-        protected $project = '';
-        /**/
-
-        /**
-         * Command parameters.
-         *
-         * @octdoc  v:create/$param
-         * @var     array
-         */
-        protected $param = array();
-        /**/
-
-        /**
-         * Constructor.
-         *
-         * @octdoc  m:create/__construct
-         */
-        public function __construct()
-        /**/
-        {
-            parent::__construct();
-            
-            $is_tty = posix_isatty(STDIN);
-
-            $this->addValidator(
-                'request',
-                'create', 
-                array(
-                    'type'              => validate::T_OBJECT,
-                    'keyrename'         => array('project'),
-                    'properties'        => array(
-                        'project'       => array(
-                            'type'       => validate::T_CHAIN,
-                            'chain'      => array(
-                                array(
-                                    'type'      => validate::T_PROJECT,
-                                    'invalid'   => 'project name is invalid',
-                                ),
-                                array(
-                                    'type'      => validate::T_CALLBACK,
-                                    'callback'  => function($project, $validator) {
-                                        $work = app::getPath(app::T_PATH_WORK, $project);
-                                    
-                                        if (!($return = !is_dir($work))) {
-                                            $validator->addError('project does already exist');
-                                        }
-
-                                        return $return;
-                                    }
-                                )
-                            ),
-                            'required'  => 'usage: create <name-of-project>, example: create org.octris.example'
-                        ),
-                        'company'   => array(
-                            'type'      => validate::T_PRINTABLE,
-                            'invalid'   => 'Company name is invalid',
-                            'required'  => ($is_tty ? NULL : 'Company name is required')
-                        ),
-                        'author'    => array(
-                            'type'      => validate::T_PRINTABLE,
-                            'invalid'   => 'Author name is invalid',
-                            'required'  => ($is_tty ? NULL : 'Author name is required')
-                        ),
-                        'email'     => array(
-                            'type'      => validate::T_PRINTABLE,
-                            'invalid'   => 'E-mail address is invalid',
-                            'required'  => ($is_tty ? NULL : 'E-mail address is required')
-                        )
-                    )
-                )
-            );
-        }
-
+        
         /**
          * Helper method to test whether a file is binary or text file.
          *
-         * @octdoc  m:clear/isBinary
+         * @octdoc  m:create/isBinary
          * @param   string          $file               File to test.
          * @param   string          $size               Optional block size to test.
          * @return  bool                                Returns true for binaries.
@@ -147,14 +64,18 @@ namespace org\octris\core\project\app {
         public function prepare(\org\octris\core\app\page $last_page, $action)
         /**/
         {
-            list($is_valid, $data, $errors) = $this->applyValidator('request', $action);
+            // import project name
+            $args = \org\octris\core\provider::access('args');
             
-            if (!$is_valid) {
-                $last_page->addErrors($errors);
-                
-                return $last_page;
+            if (($project = $args->getValue('p', \org\octris\core\validate::T_PROJECT))) {
+                $tmp    = explode('.', $project);
+                $module = array_pop($tmp);
+                $domain = implode('.', array_reverse($tmp));
+            } else {
+                $module = '';
+                $domain = '';
             }
-
+            
             // handle project configuration
             $prj = new config('org.octris.core', 'project.create');
 
@@ -176,6 +97,30 @@ namespace org\octris\core\project\app {
             }
 
             // $prj->save();
+            
+            print "\n";
+            
+            $module = stdio::getPrompt('module [%s]: ', $module, true);
+            $year   = stdio::getPrompt('year [%s]: ', date('Y'), true);
+            
+            if ($module == '' || $year == '') {
+                die("'module' and 'year' are required!\n");
+            }
+
+            // build data array
+            $ns = implode(
+                '\\', 
+                array_reverse(
+                    explode('.', $prj['info.domain'])
+                )
+            ) . '\\' . $module;
+            
+            $this->data = array_merge($prj->filter('info')->getArrayCopy(true), array(
+                'year'      => $year,
+                'module'    => $module,
+                'namespace' => $ns,
+                'directory' => str_replace('\\', '.', $ns)
+            ));
         }
 
         /**
@@ -201,95 +146,70 @@ namespace org\octris\core\project\app {
         /**/
         {
         }
+
+        /**
+         * Render.
+         *
+         * @octdoc  m:create/render
+         */
+        public function render()
+        /**/
+        {
+            if (!($dir = \org\octris\core\app\cli::getPath(\org\octris\core\app\cli::T_PATH_WORK, ''))) {
+                die("unable to resolve work directory\n");
+            }
+            
+            $dir = substr($dir, 0, strrpos($dir, '/')) . '/' . $this->data['directory'];
+            
+            if (is_dir($dir)) {
+                die(sprintf("there seems to be already a project at '%s'\n", $dir));
+            }
+
+            // process skeleton and write project files
+            $tpl = new \org\octris\core\tpl();
+            $tpl->addSearchPath(__DIR__ . '/../data/skel/web/');
+            $tpl->setValues($this->data);
+            
+            $box = new \org\octris\core\tpl\sandbox();
+            
+            $src = __DIR__ . '/../data/skel/web/';
+            $len = strlen($src);
+            
+            mkdir($dir, 0755);
+            
+            $directories = array();
+            $iterator    = new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator($src)
+            );
+            
+            foreach ($iterator as $filename => $cur) {
+                $rel  = substr($filename, $len); 
+                $dst  = $dir . '/' . $rel;
+                $path = dirname($dst);
+                $base = basename($filename);
+                $ext  = preg_replace('/^\.?[^\.]+?(\..+|)$/', '\1', $base);
+                $base = basename($filename, $ext);
+                
+                if (substr($base, 0, 1) == '$' && isset($this->data[$base = ltrim($base, '$')])) {
+                    // resolve variable in filename
+                    $dst = $path . '/' . $this->data[$base] . $ext;
+                }
+                
+                if (!is_dir($path)) {
+                    // create destination directory
+                    mkdir($path, 0755, true);
+                }
+                
+                if (!$this->isBinary($filename)) {
+                    $cmp = $tpl->fetch($rel, \org\octris\core\tpl\sandbox::T_CONTEXT_TEXT);
+            
+                    file_put_contents($dst, $cmp);
+                } else {
+                    copy($filename, $dst);
+                }
+            }
+            
+            print "done.\n";        
+        }
     }
 }
-
-// process commandline parameters
-// if ($_GET->validate(
-//     'p', 
-//     \org\octris\core\validate::T_PATTERN, 
-//     array('pattern' => )
-// )) {
-//     $tmp    = explode('.', $_GET['p']->value);
-//     $module = array_pop($tmp);
-//     $domain = implode('.', array_reverse($tmp));
-// } else {
-//     $module = '';
-//     $domain = '';
-// }
-// 
-// // initialization
-// use \org\octris\core\app\cli as cli;
-// use \org\octris\core\app\cli\stdio as stdio;
-// use \org\octris\core\config as config;
-// use \org\octris\core\tpl as tpl;
-// 
-// print "\n";
-// $module = stdio::getPrompt('module [%s]: ', $module, true);
-// $year   = stdio::getPrompt('year [%s]: ', date('Y'), true);
-// 
-// if ($module == '' || $year == '') {
-//     die("'module' and 'year' are required!\n");
-// }
-// 
-// $ns = implode('\\', array_reverse(explode('.', $prj['info.domain']))) . '\\' . $module;
-// 
-// $data = array_merge($prj->filter('info')->getArrayCopy(true), array(
-//     'year'      => $year,
-//     'module'    => $module,
-//     'namespace' => $ns,
-//     'directory' => str_replace('\\', '.', $ns)
-// ));
-// 
-// // setup destination directory
-// $dir = cli::getPath(cli::T_PATH_WORK, '') . '/' . $data['directory'];
-// 
-// if (is_dir($dir)) {
-//     die(sprintf("there seems to be already a project at '%s'\n", $dir));
-// }
-// 
-// // process skeleton and write project files
-// $tpl = new tpl();
-// $tpl->addSearchPath(__DIR__ . '/data/skel/web/');
-// $tpl->setValues($data);
-// 
-// $box = new tpl\sandbox();
-// 
-// $src = __DIR__ . '/data/skel/web/';
-// $len = strlen($src);
-// 
-// mkdir($dir, 0755);
-// 
-// $directories = array();
-// $iterator    = new RecursiveIteratorIterator(
-//     new RecursiveDirectoryIterator($src)
-// );
-// 
-// foreach ($iterator as $filename => $cur) {
-//     $rel  = substr($filename, $len); 
-//     $dst  = $dir . '/' . $rel;
-//     $path = dirname($dst);
-//     $base = basename($filename);
-//     $ext  = preg_replace('/^\.?[^\.]+?(\..+|)$/', '\1', $base);
-//     $base = basename($filename, $ext);
-//     
-//     if (substr($base, 0, 1) == '$' && isset($data[$base = ltrim($base, '$')])) {
-//         // resolve variable in filename
-//         $dst = $path . '/' . $data[$base] . $ext;
-//     }
-//     
-//     if (!is_dir($path)) {
-//         // create destination directory
-//         mkdir($path, 0755, true);
-//     }
-//     
-//     if (!is_binary($filename)) {
-//         $cmp = $tpl->fetch($rel, tpl\sandbox::T_CONTEXT_TEXT);
-// 
-//         file_put_contents($dst, $cmp);
-//     } else {
-//         copy($filename, $dst);
-//     }
-// }
-// 
-// print "done.\n";
