@@ -23,7 +23,7 @@ namespace org\octris\core {
         /**
          * Available validation types.
          *
-         * @octdoc  d:validate/T_ALPHA, T_ALPHANUM, T_BOOL, T_CALLBACK, T_DIGIT, T_PATH, T_PRINTABLE, T_PROJECT, T_XDIGIT
+         * @octdoc  d:validate/T_ALPHA, T_ALPHANUM, T_BOOL, T_CALLBACK, T_DIGIT, T_PATH, T_PRINTABLE, T_PROJECT, T_XDIGIT, T_UTF8
          */
         const T_ALPHA     = '\org\octris\core\validate\type\alpha';
         const T_ALPHANUM  = '\org\octris\core\validate\type\alphanum';
@@ -35,8 +35,9 @@ namespace org\octris\core {
         const T_PATTERN   = '\org\octris\core\validate\type\pattern';
         const T_PRINTABLE = '\org\octris\core\validate\type\printable';
         const T_PROJECT   = '\org\octris\core\validate\type\project';
-        const T_XDIGIT    = '\org\octris\core\validate\type\xdigit';
         const T_URL       = '\org\octris\core\validate\type\url';
+        const T_UTF8      = '\org\octris\core\validate\type\utf8';
+        const T_XDIGIT    = '\org\octris\core\validate\type\xdigit';
         /**/
         
         /**
