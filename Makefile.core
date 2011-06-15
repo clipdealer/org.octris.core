@@ -39,12 +39,12 @@ help::
 	@echo ""
 	@echo "help             this help text"
 	@echo ""
+	@echo "check            check dependencies"
 	@if [ "$(project)" = "org.octris.core" ]; then \
-		echo "new              create new project"; \
-		echo ""; \
+		echo "create           create new project"; \
 	fi
 	@echo "install          install project"
-	@echo "clean            uninstall project"
+	@echo "uninstall        uninstall project"
 	@echo "test             run all tests of a project"
 	@echo ""
 	@echo "dist             create distribution package"
@@ -57,6 +57,18 @@ help::
 	@echo "msgfmt           generate localization files"
 	@echo ""
 	@echo "cloc             count lines of code"
+
+#**
+# Check dependencies of an application based OCTRiS framework.
+#
+# @octdoc       t:Makefile/check
+#**
+check:
+	@if [ "`which php`" = "" ]; then \
+		echo "no PHP found in search path"; \
+		exit 1; \
+	fi; \
+	$(CURSYMDIR)/../../tools/project/check.php
 
 #**
 # This target is used for installing an application. It's depends on the Target ~createdirs~ and creates symbolic 
@@ -91,11 +103,11 @@ install:: createdirs
 	fi; \
 
 #**
-# Cleanup installation directories -- remove symlinks.
+# Remove installation directories -- remove symlinks.
 #
-# @octdoc       t:Makefile/clean
+# @octdoc       t:Makefile/uninstall
 #**
-clean: onlyroot
+uninstall: onlyroot
 	@rm -rf ../../cache/$(project)
 	@rm -f 	../../data/$(project)
 	@rm -rf ../../doc/$(project)
