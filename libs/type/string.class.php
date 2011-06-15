@@ -48,7 +48,7 @@ namespace org\octris\core\type\string {
      * @return  array|bool                  The function returns substring of matched string. If no matches 
      *                                      are found or an error happens, FALSE will be returned.     
      */
-    function match($pattern, $string, $options = '', $encoding = 'UTF-8');
+    function match($pattern, $string, $options = '', $encoding = 'UTF-8')
     /**/
     {
         $m = array();
@@ -226,7 +226,7 @@ namespace org\octris\core\type\string {
      * @return  int|bool                    Returns the numeric position of the last occurrence of needle in the 
      *                                      haystack string. If needle is not found, it returns FALSE.
      */
-    public function strrpos($string, $needle, $offset = null, $encoding = 'UTF-8')
+    function strrpos($string, $needle, $offset = null, $encoding = 'UTF-8')
     /**/
     {
         return mb_strrpos($string, $needle, $offset, $encoding);
@@ -385,10 +385,10 @@ namespace org\octris\core\type\string {
      * @param   string      $encoding       Optional convert from this encoding to UTF-8.
      * @return  string                      Converted string.
      */
-    function toUtf8($string, $encoding = 'ISO-8859-1');
+    function toUtf8($string, $encoding = 'ISO-8859-1')
     /**/
     {
-        if (!mb_check_encoding($string, 'UTF-8') {
+        if (!mb_check_encoding($string, 'UTF-8')) {
             $string = mb_convert_encoding($string, 'UTF-8', $encoding); 
             
             if (!mb_check_encoding($content, 'UTF-8')) {
@@ -464,7 +464,7 @@ namespace org\octris\core\type {
          * @octdoc  m:string/toUtf8
          * @return  string                      Converted string.
          */
-        function toUtf8();
+        function toUtf8()
         /**/
         {
             if ($this->encoding != 'UTF-8') {
