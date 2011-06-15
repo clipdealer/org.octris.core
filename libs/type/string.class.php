@@ -393,6 +393,23 @@ namespace org\octris\core\type\string {
     }
     
     /**
+     * Convert character encoding of a string.
+     *
+     * @octdoc  f:string/convert
+     * @param   string      $string         The string being encoded.
+     * @param   string      $to_encoding    The type of encoding that str is being converted to.
+     * @param   string      $from_encoding  Optional source encoding is specified by character code names before conversion. 
+     *                                      It is either an array, or a comma separated enumerated list. If from_encoding is not
+     *                                      specified, the internal encoding will be used.
+     * @return  string                      The encoded string.
+     */
+    function convert($string, $to_encoding, $from_encoding = null)
+    /**/
+    {
+        return mb_convert_encoding($string, $to_encoding, $from_encoding);
+    }
+    
+    /**
      * Return a formatted string.
      *
      * @octdoc  f:string/sprintf
