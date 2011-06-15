@@ -391,6 +391,67 @@ namespace org\octris\core\type\string {
 
         return $string;
     }
+    
+    /**
+     * Return a formatted string.
+     *
+     * @octdoc  f:string/sprintf
+     * @param   string      $format         Formatting pattern.
+     * @param   mixed       $args           Arguments for formatting.
+     * @param   mixed       ...             
+     * @return  string                      Returns a string produced according to the formatting string format.
+     */
+    function sprintf($format)
+    /**/
+    {
+        $args = func_get_args();
+        array_shift($argv);
+        
+        return vsprintf($format, $args);
+    }
+    
+    /**
+     * Return a formatted string.
+     *
+     * @octdoc  f:string/vsprintf
+     * @param   string      $format         Formatting pattern.
+     * @param   mixed       $args           Arguments for formatting.
+     * @param   mixed       ...             
+     * @return  string                      Returns a string produced according to the formatting string format.
+     */
+    function vsprintf($format, $args)
+    /**/
+    {
+        $idx = 0;
+
+        $format = preg_replace_callback(
+            '/(?<!%)%(\+?)(\'.|[0 ]|)(-?)([1-9][0-9]*|)(\.[1-9][0-9]*|)([bcdeEufFgGosxX])/u',
+            function($m) use ($args, &$idx) {
+                list($return, $sign, $filler, $align, $size, $prec, $type) = $m;
+
+                if ($type == 's') {
+                    // string formatter
+                    if (!isset($args[$idx])) {
+                        die('argument not set for ' . $idx . "\n");
+                    }
+
+                    if (($diff = \strlen($args[$idx]) - strlen($args[$idx], 'UTF-8')) > 0) {
+                        if ($prec !== '') $prec = '.' . ((int)\substr($prec, 1) + $diff);
+                        if ($size !== '') $size = (int)$size + $diff;
+                    }
+
+                    $return = "%$sign$filler$align$size$prec$type";
+                }
+
+                ++$idx;
+
+                return $return;
+            }, 
+            $format
+        );
+
+        return \vsprintf($format, $args);
+    }
 }
 
 /** object-oriented access to multibyte-safe string functions **/
