@@ -59,8 +59,6 @@ check:
 # @see          Makefile/createdirs
 #**
 install:: createdirs
-	@echo $(CURSYMDIR)
-	@echo $(project)
 	@ln -snf $(CURSYMDIR)/data				../../data/$(project)
 	@ln -snf $(CURSYMDIR)/etc				../../etc/$(project)
 	@ln -snf $(CURSYMDIR)/libs				../../libs/$(project)
@@ -71,7 +69,7 @@ install:: createdirs
 		if [ -e $(CURSYMDIR)/host/index.php ]; then \
 			ln -snf $(CURSYMDIR)/host/index.php					../../host/$(project)/index.php; \
 		fi; \
-		if [ -d $(CURSYMDIR)/host/robots.txt ]; then \
+		if [ -e $(CURSYMDIR)/host/robots.txt ]; then \
 			ln -snf $(CURSYMDIR)/host/robots.txt				../../host/$(project)/robots.txt; \
 		fi; \
 		if [ -d $(CURSYMDIR)/host/error ]; then \
