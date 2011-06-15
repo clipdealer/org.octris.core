@@ -3,19 +3,7 @@
 #**
 # This is the makefile used to all administrative tasks regarding a project based on the OCTRiS framework
 # including the OCTRiS framework itself. This makefile is not intended to be called directly. Instead it's 
-# included in the project's own Makefiles. The following targets are available:
-#
-# -	dev-install -- install project files in development environment
-# -	install -- install project files in production environment
-# -	dist -- create distribution package
-# -	deploy -- deploy project to production environment
-# -	rollback -- rollback production environment to last
-# -	reload -- reload configuration file
-# -	cleanup -- cleanup cache files
-# -	compile -- compile template files
-# -	gettext -- create gettext dictionaries
-# - msgfmt -- generate localization files
-# -	cloc -- count lines of code in a project
+# included in the project's own Makefiles.
 #
 # @octdoc       h:./Makefile
 # @copyright    copyright (c) 2006-2011 by Harald Lapp
@@ -47,16 +35,8 @@ help::
 	@echo "uninstall        uninstall project"
 	@echo "test             run all tests of a project"
 	@echo ""
-	@echo "dist             create distribution package"
-	@echo "deploy           deploy project to production environment"
-	@echo ""
 	@echo "cleanup          cleanup cache files"
 	@echo "compile          compile template files"
-	@echo ""
-	@echo "gettext          create gettext dictionaries"
-	@echo "msgfmt           generate localization files"
-	@echo ""
-	@echo "cloc             count lines of code"
 
 #**
 # Check dependencies of an application based OCTRiS framework.
