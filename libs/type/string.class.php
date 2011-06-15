@@ -154,6 +154,29 @@ namespace org\octris\core\type\string {
     }
     
     /**
+     * Pad a string to a certain length with another string.
+     *
+     * @octdoc  f:string/strpad
+     * @param   string      $string         String to pad.
+     * @param   int         $length         Length to pad string to.
+     * @param   string      $chr            Optional character to use for padding.
+     * @param   string      $type           Optional argument can be STR_PAD_RIGHT, STR_PAD_LEFT, or STR_PAD_BOTH.
+     * @param   string      $encoding       Character encoding name to use.
+     * @return  string                      Padded string.
+     */
+    function strpad($string, $length, $chr = ' ', $type = STR_PAD_RIGHT, $encoding = 'UTF-8')
+    /**/
+    {
+        if (!in_array($type, array(STR_PAD_LEFT, STR_PAD_RIGHT, STR_PAD_BOTH))) {
+            $type = STR_PAD_RIGHT;
+        }
+        
+        $diff = strlen($string) - mb_strlen($string, 'UTF-8');
+
+        return str_pad($string, $length + $diff, $chr, $type);
+    }
+
+    /**
      * Find position of first occurrence of string in a string.
      *
      * @octdoc  f:string/strpos
@@ -168,6 +191,26 @@ namespace org\octris\core\type\string {
     /**/
     {
         return mb_strpos($string, $needle, $offset, $encoding);
+    }
+    
+    /**
+     * Reverse a string.
+     *
+     * @octdoc  f:string/strrev
+     * @param   string      $string         The string to be reversed.
+     * @param   string      $encoding       Optional encoding to use.
+     * @return  string                      Reversed string.
+     */
+    function strrev($string, $encoding = 'UTF-8')
+    /**/
+    {
+        if ($encoding == 'UTF-8') {
+            $return = implode('', array_reverse(preg_split('//us', $string)));
+        } else {
+            $return = \strrev($string);
+        }
+        
+        return $return;
     }
     
     /**
@@ -311,13 +354,27 @@ namespace org\octris\core\type\string {
      *
      * @octdoc  f:string/htmlentities
      * @param   string      $string         String to convert.
-     * @param   string      $encoding       Encoding to use.
+     * @param   string      $encoding       Optional encoding to use.
      * @return  string                      Converted string.
      */
     function htmlentities($string, $encoding = 'UTF-8')
     /**/
     {
     	return \htmlentities($string, ENT_QUOTES, $encoding) ;
+    }
+    
+    /**
+     * Convert special characters to HTML entities.
+     *
+     * @octdoc  f:string/htmlspecialchars
+     * @param   string      $string         String to convert.
+     * @param   string      $encoding       Optional encoding to use.
+     * @return  string                      Converted string.
+     */
+    function htmlspecialchars($string, $encoding = 'UTF-8')
+    /**/
+    {
+        return \htmlspecialchars($string, ENT_COMPAT, $encoding);
     }
     
     /**
@@ -526,6 +583,21 @@ namespace org\octris\core\type {
         }
         
         /**
+         * Pad a string to a certain length with another string.
+         *
+         * @octdoc  f:string/strpad
+         * @param   int         $length         Length to pad string to.
+         * @param   string      $chr            Optional character to use for padding.
+         * @param   string      $type           Optional argument can be STR_PAD_RIGHT, STR_PAD_LEFT, or STR_PAD_BOTH.
+         * @return  string                      Padded string.
+         */
+        public function strpad($length, $chr = ' ', $type = STR_PAD_RIGHT)
+        /**/
+        {
+            return new static(string\strpad($this->string, $length, $chr, $type, $this->encoding), $this->encoding);
+        }
+
+        /**
          * Find position of first occurrence of string in a string.
          *
          * @octdoc  m:string/strpos
@@ -538,6 +610,18 @@ namespace org\octris\core\type {
         /**/
         {
             return string\strpos($this->string, $needle, $offset, $this->encoding);
+        }
+        
+        /**
+         * Reverse a string.
+         *
+         * @octdoc  m:string/strrev
+         * @return  string                      Reversed string.
+         */
+        public function strrev()
+        /**/
+        {
+            return new static(string\strrev($this->string, $this->encoding));
         }
         
         /**
@@ -667,7 +751,19 @@ namespace org\octris\core\type {
         public function htmlentities()
         /**/
         {
-        	return string\htmlentities($this->string, $this->encoding) ;
+        	return string\htmlentities($this->string, $this->encoding);
+        }
+        
+        /**
+         * Convert special characters to HTML entities.
+         *
+         * @octdoc  m:string/htmlspecialchars
+         * @return  string                      Converted string.
+         */
+        public function htmlspecialchars()
+        /**/
+        {
+            return string\htmlspecialchars($this->string, $this->encodin);
         }
     }
 }
