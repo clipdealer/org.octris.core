@@ -35,7 +35,7 @@
  *
  */
 
-/** procedural access to multibyte-safe string functions **/
+/** procedural access to UTF-8 string functions **/
 namespace org\octris\core\type\string {
     /**
      * Regular expression match for multibyte string.
@@ -44,16 +44,15 @@ namespace org\octris\core\type\string {
      * @param   string      $pattern        The search pattern.
      * @param   string      $string         The search string.
      * @param   string      $options        If 'i' is specified for this parameter, the case will be ignored.
-     * @param   string      $encoding       Optional encoding to use.
      * @return  array|bool                  The function returns substring of matched string. If no matches 
      *                                      are found or an error happens, FALSE will be returned.     
      */
-    function match($pattern, $string, $options = '', $encoding = 'UTF-8')
+    function match($pattern, $string, $options = '')
     /**/
     {
         $m = array();
         
-        mb_regex_encoding($encoding);
+        mb_regex_encoding('UTF-8');
         
         if (strpos($options, 'i') !== false) {
             $return = mb_eregi($pattern, $string, $m);
@@ -76,13 +75,12 @@ namespace org\octris\core\type\string {
      *                                      break will be included in '.'. If p is specified, match will be executed in 
      *                                      POSIX mode, line break will be considered as normal character. If e is 
      *                                      specified, replacement string will be evaluated as PHP expression.
-     * @param   string      $encoding       Optional encoding to use.
      * @return  string                      The resultant string on success, or FALSE on error.
      */
-    function replace($pattern, $replacement, $string, $options = 'msr', $encoding = 'UTF-8')
+    function replace($pattern, $replacement, $string, $options = 'msr')
     /**/
     {
-        mb_regex_encoding($encoding);
+        mb_regex_encoding('UTF-8');
         
         return mb_ereg_replace($pattern, $replacement, $string, $options);
     }
@@ -93,13 +91,12 @@ namespace org\octris\core\type\string {
      * @octdoc  f:string/split
      * @param   string      $pattern        The regular expression pattern.
      * @param   string      $string         The string being split.
-     * @param   string      $encoding       Optional encoding to use.
      * @return  array                       Array of splitted strings.
      */
-    function split($pattern, $string, $encoding = 'UTF-8')
+    function split($pattern, $string)
     /**/
     {
-        mb_regex_encoding($encoding);
+        mb_regex_encoding('UTF-8');
         
         return mb_split($pattern, $string);
     }
@@ -111,14 +108,13 @@ namespace org\octris\core\type\string {
      * @param   string      $string         String to return length for.
      * @param   string      $needle         The position counted from the beginning of haystack.
      * @param   int         $offset         The search offset. If it is not specified, 0 is used.
-     * @param   string      $encoding       Optional encoding to use.
      * @return  int|bool                    Returns the numeric position of the first occurrence of needle in the 
      *                                      haystack string. If needle is not found, it returns FALSE.
      */
-    function stripos($string, $needle, $offset = 0, $encoding = 'UTF-8')
+    function stripos($string, $needle, $offset = 0)
     /**/
     {
-        return mb_stripos($string, $needle, $offset, $encoding);
+        return mb_stripos($string, $needle, $offset, 'UTF-8');
     }
 
     /**
@@ -131,13 +127,12 @@ namespace org\octris\core\type\string {
      *                                      TRUE, it returns all of string from the beginning to the first occurrence 
      *                                      of needle. If set to FALSE, it returns all of string from the first
      *                                      occurrence of needle to the end.
-     * @param   string      $encoding       Character encoding name to use.
      * @return  string|bool                 Returns the portion of string, or FALSE if needle is not found.
      */
-    function stristr($string, $needle, $part = false, $encoding = 'UTF-8')
+    function stristr($string, $needle, $part = false)
     /**/
     {
-        return mb_stristr($string, $needle, $part, $encoding);
+        return mb_stristr($string, $needle, $part, 'UTF-8');
     }
     
     /**
@@ -145,12 +140,11 @@ namespace org\octris\core\type\string {
      *
      * @octdoc  f:string/strlen
      * @param   string      $string         String to return length for.
-     * @param   string      $encoding       Optional encoding to use.
      */
-    function strlen($string, $encoding = 'UTF-8')
+    function strlen($string)
     /**/
     {
-        return mb_strlen($string, $encoding);
+        return mb_strlen($string, 'UTF-8');
     }
     
     /**
@@ -161,10 +155,9 @@ namespace org\octris\core\type\string {
      * @param   int         $length         Length to pad string to.
      * @param   string      $chr            Optional character to use for padding.
      * @param   string      $type           Optional argument can be STR_PAD_RIGHT, STR_PAD_LEFT, or STR_PAD_BOTH.
-     * @param   string      $encoding       Character encoding name to use.
      * @return  string                      Padded string.
      */
-    function strpad($string, $length, $chr = ' ', $type = STR_PAD_RIGHT, $encoding = 'UTF-8')
+    function strpad($string, $length, $chr = ' ', $type = STR_PAD_RIGHT)
     /**/
     {
         if (!in_array($type, array(STR_PAD_LEFT, STR_PAD_RIGHT, STR_PAD_BOTH))) {
@@ -183,14 +176,30 @@ namespace org\octris\core\type\string {
      * @param   string      $string         String to return length for.
      * @param   string      $needle         The position counted from the beginning of haystack.
      * @param   int         $offset         The search offset. If it is not specified, 0 is used.
-     * @param   string      $encoding       Optional encoding to use.
      * @return  int|bool                    Returns the numeric position of the first occurrence of needle in the 
      *                                      haystack string. If needle is not found, it returns FALSE.
      */
-    function strpos($string, $needle, $offset = 0, $encoding = 'UTF-8')
+    function strpos($string, $needle, $offset = 0)
     /**/
     {
-        return mb_strpos($string, $needle, $offset, $encoding);
+        return mb_strpos($string, $needle, $offset, 'UTF-8');
+    }
+    
+    /**
+     * Replace all occurrences of the search string with the replacement string.
+     *
+     * @octdoc  f:string/strreplace
+     * @param   string      $search         The value being searched for, otherwise known as the needle. An array may be used to designate multiple needles.
+     * @param   string      $replace        The replacement value that replaces found search values. An array may be used to designate multiple replacements.
+     * @param   string      $subject        The string or array being searched and replaced on, otherwise known as the haystack. If subject is an array, 
+     *                                      then the search and replace is performed with every entry of subject, and the return value is an array as well.
+     * @param   int         $count          If passed, this will be set to the number of replacements performed.
+     * @return  string                      This function returns a string or an array with the replaced values.
+     */
+    function strreplace($search, $replace, $subject, &$count = null)
+    /**/
+    {
+        return str_replace($search, $replace, $subject, $count);
     }
     
     /**
@@ -198,19 +207,12 @@ namespace org\octris\core\type\string {
      *
      * @octdoc  f:string/strrev
      * @param   string      $string         The string to be reversed.
-     * @param   string      $encoding       Optional encoding to use.
      * @return  string                      Reversed string.
      */
-    function strrev($string, $encoding = 'UTF-8')
+    function strrev($string)
     /**/
     {
-        if ($encoding == 'UTF-8') {
-            $return = implode('', array_reverse(preg_split('//us', $string)));
-        } else {
-            $return = \strrev($string);
-        }
-        
-        return $return;
+        return implode('', array_reverse(preg_split('//us', $string)));
     }
     
     /**
@@ -222,14 +224,13 @@ namespace org\octris\core\type\string {
      * @param   int         $offset         May be specified to begin searching an arbitrary number of characters 
      *                                      into the string. Negative values will stop searching at an arbitrary point
      *                                      prior to the end of the string.
-     * @param   string      $encoding       Optional encoding to use.
      * @return  int|bool                    Returns the numeric position of the last occurrence of needle in the 
      *                                      haystack string. If needle is not found, it returns FALSE.
      */
-    function strrpos($string, $needle, $offset = null, $encoding = 'UTF-8')
+    function strrpos($string, $needle, $offset = null)
     /**/
     {
-        return mb_strrpos($string, $needle, $offset, $encoding);
+        return mb_strrpos($string, $needle, $offset, 'UTF-8');
     }
 
     /**
@@ -241,14 +242,13 @@ namespace org\octris\core\type\string {
      * @param   int         $offset         May be specified to begin searching an arbitrary number of characters 
      *                                      into the string. Negative values will stop searching at an arbitrary point
      *                                      prior to the end of the string.
-     * @param   string      $encoding       Optional encoding to use.
      * @return  int|bool                    Returns the numeric position of the last occurrence of needle in the 
      *                                      haystack string. If needle is not found, it returns FALSE.
      */
-    function strripos($string, $needle, $offset = null, $encoding = 'UTF-8')
+    function strripos($string, $needle, $offset = null)
     /**/
     {
-        return mb_strripos($string, $needle, $offset, $encoding);
+        return mb_strripos($string, $needle, $offset, 'UTF-8');
     }
 
     /**
@@ -261,13 +261,12 @@ namespace org\octris\core\type\string {
      *                                      TRUE, it returns all of string from the beginning to the first occurrence 
      *                                      of needle. If set to FALSE, it returns all of string from the first
      *                                      occurrence of needle to the end.
-     * @param   string      $encoding       Character encoding name to use.         
      * @return  string|bool                 Returns the portion of string, or FALSE if needle is not found.
      */
-    function strstr($string, $needle, $part = false, $encoding = 'UTF-8')
+    function strstr($string, $needle, $part = false)
     /**/
     {
-        return mb_strstr($string, $needle, $part, $encoding);
+        return mb_strstr($string, $needle, $part, 'UTF-8');
     }
     
     /**
@@ -275,13 +274,12 @@ namespace org\octris\core\type\string {
      *
      * @octdoc  f:string/strtolower
      * @param   string      $string         The string being lowercased.
-     * @param   string      $encoding       Character encoding name to use.         
      * @return  string                      String with all alphabetic characters converted to lowercase.
      */
-    function strtolower($string, $encoding = 'UTF-8')
+    function strtolower($string)
     /**/
     {
-        return mb_strtolower($string, $encoding);
+        return mb_strtolower($string, 'UTF-8');
     }
     
     /**
@@ -289,13 +287,12 @@ namespace org\octris\core\type\string {
      *
      * @octdoc  f:string/strtoupper
      * @param   string      $string         The string being uppercased.
-     * @param   string      $encoding       Character encoding name to use.         
      * @return  string                      String with all alphabetic characters converted to uppercase.
      */
-    function strtoupper($string, $encoding = 'UTF-8')
+    function strtoupper($string)
     /**/
     {
-        return mb_strtoupper($string, $encoding);
+        return mb_strtoupper($string, 'UTF-8');
     }
     
     /**
@@ -305,12 +302,11 @@ namespace org\octris\core\type\string {
      * @param   string      $string         The string to extract a part from.
      * @param   int         $start          The first position used in string.
      * @param   int|null    $length         Optional length of the part to extract.
-     * @param   string      $encoding       Optional encoding to use.
      */
-    function substr($string, $start, $length = null, $encoding = 'UTF-8')
+    function substr($string, $start, $length = null)
     /**/
     {
-        return mb_substr($string, $start, $length, $encoding);
+        return mb_substr($string, $start, $length, 'UTF-8');
     }
 
     /**
@@ -319,13 +315,12 @@ namespace org\octris\core\type\string {
      * @octdoc  f:string/substr_count
      * @param   string      $string         The string being checked.
      * @param   string      $needle         The string being found.
-     * @param   string      $encoding       Optional encoding to use.
      * @return  string                      The number of times the needle substring occurs in the haystack string.     
      */
-    function substr_count($string, $needle, $encoding = 'UTF-8')
+    function substr_count($string, $needle)
     /**/
     {
-        return mb_substr_count($string, $needle, $encoding);
+        return mb_substr_count($string, $needle, 'UTF-8');
     }
     
     /**
@@ -333,13 +328,12 @@ namespace org\octris\core\type\string {
      *
      * @octdoc  f:string/to7bit
      * @param   string      $string         String to convert.
-     * @param   string      $encoding       Optional encoding to use.
      * @return  string                      Converted string to 7bit.
      */
-    function to7bit($string, $encoding = 'UTF-8')
+    function to7bit($string)
     /**/
     {
-        $string = mb_convert_encoding($string, 'HTML-ENTITIES', $encoding);
+        $string = mb_convert_encoding($string, 'HTML-ENTITIES', 'UTF-8');
         $string = preg_replace(
             array('/&szlig;/', '/&(..)lig;/', '/&([aouAOU])uml;/','/&(.)[^;]*;/'),
             array('ss', '$1', '$1'.'e', '$1'),
@@ -354,13 +348,12 @@ namespace org\octris\core\type\string {
      *
      * @octdoc  f:string/htmlentities
      * @param   string      $string         String to convert.
-     * @param   string      $encoding       Optional encoding to use.
      * @return  string                      Converted string.
      */
-    function htmlentities($string, $encoding = 'UTF-8')
+    function htmlentities($string)
     /**/
     {
-    	return \htmlentities($string, ENT_QUOTES, $encoding) ;
+    	return \htmlentities($string, ENT_QUOTES, 'UTF-8') ;
     }
     
     /**
@@ -371,10 +364,10 @@ namespace org\octris\core\type\string {
      * @param   string      $encoding       Optional encoding to use.
      * @return  string                      Converted string.
      */
-    function htmlspecialchars($string, $encoding = 'UTF-8')
+    function htmlspecialchars($string)
     /**/
     {
-        return \htmlspecialchars($string, ENT_COMPAT, $encoding);
+        return \htmlspecialchars($string, ENT_COMPAT, 'UTF-8');
     }
     
     /**
@@ -405,7 +398,7 @@ namespace org\octris\core\type {
     use \org\octris\core\type\string as string;
     
     /**
-     * Multibyte safe string class.
+     * String class works internally with UTF-8.
      * 
      * @octdoc      c:type/string
      * @copyright   copyright (c) 2011 by Harald Lapp, Documentation taken from the official PHP Documentation
@@ -424,7 +417,7 @@ namespace org\octris\core\type {
         /**/
         
         /**
-         * Default encoding for string operations.
+         * Original encoding of string.
          *
          * @octdoc  v:string/$encoding
          * @var     string
@@ -437,13 +430,17 @@ namespace org\octris\core\type {
          *
          * @octdoc  m:string/__construct
          * @param   string      $string         String to initialize new instance with.
-         * @param   string      $encoding       Optional encoding to use as default for all string operations.
+         * @param   string      $encoding       Optional original encoding of string, tries to detect if not specified.
          */
-        public function __construct($string, $encoding = 'UTF-8')
+        public function __construct($string, $encoding = null)
         /**/
         {
-            $this->string   = $string;
-            $this->encoding = strtoupper($encoding);
+            if (!mb_check_encoding($string, 'UTF-8')) {
+                $this->encoding = mb_detect_encoding($string);
+                $this->string   = string\toUtf8($string, $this->encoding);
+            } else {
+                $this->string = $string;
+            }
         }
         
         /**
@@ -467,12 +464,6 @@ namespace org\octris\core\type {
         function toUtf8()
         /**/
         {
-            if ($this->encoding != 'UTF-8') {
-                $string = string\toUtf8($this->string, $this->encoding);
-            } else {
-                $string = $this->string;
-            }
-
             return new static($string);
         }
 
@@ -489,7 +480,7 @@ namespace org\octris\core\type {
         public function match($pattern, $options = '')
         /**/
         {
-            return string\match($pattern, $this->string, $options, $this->encoding);
+            return string\match($pattern, $this->string, $options);
         }
 
         /**
@@ -508,7 +499,7 @@ namespace org\octris\core\type {
         public function replace($pattern, $replacement, $string, $options = 'msr')
         /**/
         {
-            if (($return = string\replace($pattern, $replacement, $this->string, $options, $this->encoding)) !== false) {
+            if (($return = string\replace($pattern, $replacement, $this->string, $options)) !== false) {
                 $return = new static($return, $this->encoding);
             }
             
@@ -525,7 +516,7 @@ namespace org\octris\core\type {
         public function split($pattern)
         /**/
         {
-            $strings = string\split($pattern, $this->string, $this->encoding);
+            $strings = string\split($pattern, $this->string);
             
             foreach ($strings as &$string) {
                 $string = new static($string, $this->encoding);
@@ -546,7 +537,7 @@ namespace org\octris\core\type {
         function stripos($needle, $offset = 0)
         /**/
         {
-            return string\stripos($this->string, $needle, $offset, $this->encoding);
+            return string\stripos($this->string, $needle, $offset);
         }
 
         /**
@@ -563,7 +554,7 @@ namespace org\octris\core\type {
         function stristr($needle, $part = false)
         /**/
         {
-            if (($return = string\stristr($this->string, $needle, $part, $this->encoding)) !== false) {
+            if (($return = string\stristr($this->string, $needle, $part)) !== false) {
                 $return = new static($return, $this->encoding);
             }
             
@@ -579,7 +570,7 @@ namespace org\octris\core\type {
         public function strlen()
         /**/
         {
-            return string\strlen($this->string, $this->encoding);
+            return string\strlen($this->string);
         }
         
         /**
@@ -594,7 +585,7 @@ namespace org\octris\core\type {
         public function strpad($length, $chr = ' ', $type = STR_PAD_RIGHT)
         /**/
         {
-            return new static(string\strpad($this->string, $length, $chr, $type, $this->encoding), $this->encoding);
+            return new static(string\strpad($this->string, $length, $chr, $type), $this->encoding);
         }
 
         /**
@@ -609,7 +600,7 @@ namespace org\octris\core\type {
         public function strpos($needle, $offset = 0)
         /**/
         {
-            return string\strpos($this->string, $needle, $offset, $this->encoding);
+            return string\strpos($this->string, $needle, $offset);
         }
         
         /**
@@ -621,7 +612,7 @@ namespace org\octris\core\type {
         public function strrev()
         /**/
         {
-            return new static(string\strrev($this->string, $this->encoding));
+            return new static(string\strrev($this->string), $this->encoding);
         }
         
         /**
@@ -638,7 +629,7 @@ namespace org\octris\core\type {
         public function strrpos($needle, $offset = null)
         /**/
         {
-            return string\strrpos($this->string, $needle, $offset, $this->encoding);
+            return string\strrpos($this->string, $needle, $offset);
         }
         
         /**
@@ -655,7 +646,7 @@ namespace org\octris\core\type {
         public function strripos($needle, $offset = null)
         /**/
         {
-            return string\strripos($this->string, $needle, $offset, $this->encoding);
+            return string\strripos($this->string, $needle, $offset);
         }
 
         /**
@@ -672,7 +663,7 @@ namespace org\octris\core\type {
         public function strstr($needle, $part = false)
         /**/
         {
-            if (($return = string\stristr($this->string, $needle, $part, $this->encoding)) !== false) {
+            if (($return = string\stristr($this->string, $needle, $part)) !== false) {
                 $return = new static($return, $this->encoding);
             }
             
@@ -688,7 +679,7 @@ namespace org\octris\core\type {
         public function strtolower()
         /**/
         {
-            return new static(string\strtolower($this->string, $this->encoding));
+            return new static(string\strtolower($this->string), $this->encoding);
         }
 
         /**
@@ -700,7 +691,7 @@ namespace org\octris\core\type {
         public function strtoupper()
         /**/
         {
-            return new static(string\strtoupper($this->string, $this->encoding));
+            return new static(string\strtoupper($this->string), $this->encoding);
         }
 
         /**
@@ -714,7 +705,7 @@ namespace org\octris\core\type {
         public function substr($start, $length = null)
         /**/
         {
-            return new static(mb_substr($this->string, $start, $length, $this->encoding), $this->encoding);
+            return new static(string\substr($this->string, $start, $length), $this->encoding);
         }
         
         /**
@@ -727,7 +718,7 @@ namespace org\octris\core\type {
         public function substr_count($needle)
         /**/
         {
-            return string\substr_count($this->string, $needle, $this->encoding);
+            return string\substr_count($this->string, $needle);
         }
 
         /**
@@ -739,7 +730,7 @@ namespace org\octris\core\type {
         public function to7bit()
         /**/
         {
-            return string\to7bit($this->string, $this->encoding);
+            return string\to7bit($this->string);
         }
         
         /**
@@ -751,7 +742,7 @@ namespace org\octris\core\type {
         public function htmlentities()
         /**/
         {
-        	return string\htmlentities($this->string, $this->encoding);
+        	return string\htmlentities($this->string);
         }
         
         /**
@@ -763,7 +754,7 @@ namespace org\octris\core\type {
         public function htmlspecialchars()
         /**/
         {
-            return string\htmlspecialchars($this->string, $this->encodin);
+            return string\htmlspecialchars($this->string);
         }
     }
 }
