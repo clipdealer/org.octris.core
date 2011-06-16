@@ -188,7 +188,7 @@ namespace org\octris\core\type\string {
     /**
      * Replace all occurrences of the search string with the replacement string.
      *
-     * @octdoc  f:string/strreplace
+     * @octdoc  f:string/str_replace
      * @param   string      $search         The value being searched for, otherwise known as the needle. An array may be used to designate multiple needles.
      * @param   string      $replace        The replacement value that replaces found search values. An array may be used to designate multiple replacements.
      * @param   string      $subject        The string or array being searched and replaced on, otherwise known as the haystack. If subject is an array, 
@@ -196,7 +196,7 @@ namespace org\octris\core\type\string {
      * @param   int         $count          If passed, this will be set to the number of replacements performed.
      * @return  string                      This function returns a string or an array with the replaced values.
      */
-    function strreplace($search, $replace, $subject, &$count = null)
+    function str_replace($search, $replace, $subject, &$count = null)
     /**/
     {
         return str_replace($search, $replace, $subject, $count);
