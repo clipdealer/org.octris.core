@@ -53,7 +53,7 @@ namespace org\octris\core\type\string {
             return $m[0] . $end;
         }, $str) . $end;
     }
-    
+
     /**
      * Regular expression match for multibyte string.
      *
@@ -217,6 +217,19 @@ namespace org\octris\core\type\string {
     /**/
     {
         return str_replace($search, $replace, $subject, $count);
+    }
+    
+    /**
+     * Randomly shuffles a string.
+     *
+     * @octdoc  f:string/str_shuffle
+     * @param   string      $string         The string to shuffle.
+     * @return  string                      The shuffled string.
+     */
+    function str_shuffle($string)
+    /**/
+    {
+        return implode('', array_shuffle(preg_split('//us', $string)));
     }
     
     /**
