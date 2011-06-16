@@ -353,6 +353,15 @@ namespace org\octris\core\type\string {
         return mb_substr_count($string, $needle, 'UTF-8');
     }
     
+    function substr_replace($string, $replacement, $start, $length = null)
+    {
+        if (is_null($length)) $length = strlen($string);
+        
+        return substr($string, 0, $start) . 
+                $replacement . 
+                substr($string, ($len < 0 ? max($start - strlen($string), $length) : $start + $length));
+    }
+    
     /**
      * Convert a specified string to 7bit.
      *
