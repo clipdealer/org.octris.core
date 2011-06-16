@@ -38,6 +38,23 @@
 /** procedural access to UTF-8 string functions **/
 namespace org\octris\core\type\string {
     /**
+     * Split a string into smaller chunks.
+     *
+     * @octdoc  f:string/chunk_split
+     * @param   string      $string         The string to be chunked.
+     * @param   string      $chunklen       The chunk length.
+     * @param   string      $end            The line ending sequence.
+     * @return  string                      The chunked string.
+     */
+    function chunk_split($string, $chunklen = 76, $end = "\r\n")
+    /**/
+    {
+        return preg_replace_callback('/.{' . $chunklen . '}/us', function($m) use ($end) {
+            return $m[0] . $end;
+        }, $str) . $end;
+    }
+    
+    /**
      * Regular expression match for multibyte string.
      *
      * @octdoc  f:string/match
