@@ -8,7 +8,7 @@ namespace org\octris\core\type {
      * @copyright   copyright (c) 2010-2011 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    class collection implements \IteratorAggregate, \ArrayAccess, \Serializable, \Countable
+    class collection implements \Iterator, \SeekableIterator, \ArrayAccess, \Serializable, \Countable
     /**/
     {
         /**
@@ -30,6 +30,15 @@ namespace org\octris\core\type {
         /**/
 
         /**
+         * Position of iterator.
+         *
+         * @octdoc  v:collection/$position
+         * @var     int
+         */
+        protected $position = 0;
+        /**/
+
+        /**
          * Constructor.
          *
          * @octdoc  m:collection/__construct
@@ -39,10 +48,11 @@ namespace org\octris\core\type {
         /**/
         {
             if (is_null($value)) {
+                // initialize empty array if no value is specified
                 $value = array();
             } elseif (is_scalar($value)) {
-                // a scalar will be splitted into bytes
-                $value = str_split((string)$value, 1);
+                // a scalar will be splitted into it's character, UTF-8 safe.
+                $value = \org\octris\core\type\string\str_split((string)$value, 1);
             } elseif (is_object($value)) {
                 if (($value instanceof collection) || ($value instanceof collection\Iterator) || ($value instanceof \ArrayIterator)) {
                     $value = $value->getArrayCopy();
@@ -56,31 +66,83 @@ namespace org\octris\core\type {
             $this->keys = array_keys($value);
             $this->data = $value;
         }
-    
+
+        /** Iterator **/
+        
         /**
-         * Returns iterator object for collection.
+         * Return the current element.
          *
-         * @octdoc  m:collection/getIterator
-         * @return  \ArrayIterator                  Instance of iterator.
+         * @octdoc  m:collection/current
+         * @return  mixed                  Current element.
          */
-        public function getIterator()
+        public function current()
         /**/
         {
-            return new \ArrayIterator($this->data);
+            return $this->data[$this->position];
+        }
+    
+        /**
+         * Return the key of the current element.
+         *
+         * @octdoc  m:collection/key
+         * @return  mixed                   Key of current element.
+         */
+        public function key()
+        /**/
+        {
+            return $this->keys[$this->position];
+        }
+
+        /**
+         * Move forward to next element.
+         *
+         * @octdoc  m:collection/next
+         */
+        public function next()
+        /**/
+        {
+            ++$this->position;
         }
         
         /**
-         * Returns copy of collection data as PHP array.
+         * Rewind the Iterator to the first element.
          *
-         * @octdoc  m:collection/getArrayCopy
-         * @return  array                           Collection data.
+         * @octdoc  m:collection/rewind
          */
-        public function getArrayCopy()
+        public function rewind()
         /**/
         {
-            return $this->data;
+            $this->position = 0;
         }
-
+    
+        /**
+         * Checks if current position is valid.
+         *
+         * @octdoc  m:collection/valid
+         * @return  bool                    Returns true, if element at position exists.
+         */
+        public function valid()
+        /**/
+        {
+            return ($this->position < count($this->data));
+        }
+    
+        /** SeekableIterator **/
+        
+        /**
+         * Seeks to a position.
+         *
+         * @octdoc  m:collection/seek
+         * @param   int     $position       Position to seek to.
+         */
+        public function seek($position)
+        /**/
+        {
+            $this->position = $position;
+        }
+    
+        /** ArrayAccess **/
+    
         /**
          * Whether a specified offset exists in collection data.
          *
@@ -145,22 +207,7 @@ namespace org\octris\core\type {
             }
         }
 
-        /**
-         * Rename keys of collection but preserve the ordering of the collection.
-         *
-         * @octdoc  m:collection/keyrename
-         * @param   array               $map                Map of origin name to new name.
-         * @return  \org\octris\core\type\collection        New collection with renamed keys.
-         */
-        public function keyrename($map)
-        /**/
-        {
-            return new collection(array_combine(array_map(function($v) use ($map) {
-                return (isset($map[$v])
-                        ? $map[$v]
-                        : $v);
-            }, array_keys($this->data)), array_values($this->data)));
-        }
+        /** Serializable **/
 
         /**
          * Implements serialization of collection data.
@@ -186,6 +233,8 @@ namespace org\octris\core\type {
             $this->__construct(unserialize($data));
         }
 
+        /** Countable **/
+
         /**
          * Returns number of items stored in collection.
          *
@@ -196,6 +245,25 @@ namespace org\octris\core\type {
         /**/
         {
             return count($this->data);
+        }
+
+        /** Special collection functionality **/
+
+        /**
+         * Rename keys of collection but preserve the ordering of the collection.
+         *
+         * @octdoc  m:collection/keyrename
+         * @param   array               $map                Map of origin name to new name.
+         * @return  \org\octris\core\type\collection        New collection with renamed keys.
+         */
+        public function keyrename($map)
+        /**/
+        {
+            return new collection(array_combine(array_map(function($v) use ($map) {
+                return (isset($map[$v])
+                        ? $map[$v]
+                        : $v);
+            }, array_keys($this->data)), array_values($this->data)));
         }
 
         /**
