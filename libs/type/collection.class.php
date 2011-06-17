@@ -39,6 +39,15 @@ namespace org\octris\core\type {
         /**/
 
         /**
+         * Number of items in collection.
+         *
+         * @octdoc  v:collection/$cnt
+         * @var     int
+         */
+        protected $cnt = 0;
+        /**/
+
+        /**
          * Constructor.
          *
          * @octdoc  m:collection/__construct
@@ -65,6 +74,7 @@ namespace org\octris\core\type {
         
             $this->keys = array_keys($value);
             $this->data = $value;
+            $this->cnt  = count($this->keys);
         }
 
         /** Iterator **/
@@ -124,7 +134,7 @@ namespace org\octris\core\type {
         public function valid()
         /**/
         {
-            return ($this->position < count($this->data));
+            return ($this->position < $this->cnt);
         }
     
         /** SeekableIterator **/
@@ -244,7 +254,7 @@ namespace org\octris\core\type {
         public function count()
         /**/
         {
-            return count($this->data);
+            return $this->cnt;
         }
 
         /** Special collection functionality **/
