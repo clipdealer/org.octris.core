@@ -132,6 +132,22 @@ namespace org\octris\core\type\string {
     }
     
     /**
+     * Binary safe case-insensitive string comparison.
+     *
+     * @octdoc  f:string/strcasecmp
+     * @param   string      $string1        The first string.
+     * @param   string      $string2        The second string.
+     * @return  int                         Returns < 0 if string1 is less than string2.
+     *                                      Returns > 0 if string1 is greater than string2
+     *                                      Returns 0 if both strings are equal.
+     */
+    function strcasecmp($string1, $string2)
+    /**/
+    {
+        return strcmp(strtolower($string1), strtolower($string2));
+    }
+    
+    /**
      * Finds position of first occurrence of a string within another, case insensitive.
      *
      * @octdoc  f:string/stripos
@@ -194,6 +210,59 @@ namespace org\octris\core\type\string {
     }
     
     /**
+     * Binary safe case-insensitive string comparison using natural sorting algorithm.
+     *
+     * @octdoc  f:string/strnatcasecmp
+     * @param   string      $string1        The first string.
+     * @param   string      $string2        The second string.
+     * @return  int                         Returns < 0 if string1 is less than string2.
+     *                                      Returns > 0 if string1 is greater than string2
+     *                                      Returns 0 if both strings are equal.
+     */
+    function strnatcasecmp($string1, $string2)
+    /**/
+    {
+        return strnatcmp(strtolower($string1), strtolower($string2));
+    }
+    
+    /**
+     * Binary safe case-insensitive string comparison of the first n characters.
+     *
+     * @octdoc  f:string/strncasecmp
+     * @param   string      $string1        The first string.
+     * @param   string      $string2        The second string.
+     * @param   int         $length         Number of characters to use in the comparison.
+     * @return  int                         Returns < 0 if string1 is less than string2.
+     *                                      Returns > 0 if string1 is greater than string2
+     *                                      Returns 0 if both strings are equal.
+     */
+    function strncasecmp($string1, $string2, $length)
+    /**/
+    {
+        return strncmp(strtolower($string1), strtolower($string2), $length);
+    }
+    
+    /**
+     * Binary safe string comparison of the first n characters.
+     *
+     * @octdoc  f:string/strncmp
+     * @param   string      $string1        The first string.
+     * @param   string      $string2        The second string.
+     * @param   int         $length         Number of characters to use in the comparison.
+     * @return  int                         Returns < 0 if string1 is less than string2.
+     *                                      Returns > 0 if string1 is greater than string2
+     *                                      Returns 0 if both strings are equal.
+     */
+    function strncmp($string1, $string2, $length)
+    /**/
+    {
+        $string1 = substr($string1, 0, $length);
+        $string2 = substr($string2, 0, $length);
+        
+        return strcmp($string1, $string2);
+    }
+    
+    /**
      * Pad a string to a certain length with another string.
      *
      * @octdoc  f:string/str_pad
@@ -215,23 +284,6 @@ namespace org\octris\core\type\string {
         return str_pad($string, $length + $diff, $chr, $type);
     }
 
-    /**
-     * Replace all occurrences of the search string with the replacement string.
-     *
-     * @octdoc  f:string/str_replace
-     * @param   string      $search         The value being searched for, otherwise known as the needle. An array may be used to designate multiple needles.
-     * @param   string      $replace        The replacement value that replaces found search values. An array may be used to designate multiple replacements.
-     * @param   string      $subject        The string or array being searched and replaced on, otherwise known as the haystack. If subject is an array, 
-     *                                      then the search and replace is performed with every entry of subject, and the return value is an array as well.
-     * @param   int         $count          If passed, this will be set to the number of replacements performed.
-     * @return  string                      This function returns a string or an array with the replaced values.
-     */
-    function str_replace($search, $replace, $subject, &$count = null)
-    /**/
-    {
-        return str_replace($search, $replace, $subject, $count);
-    }
-    
     /**
      * Randomly shuffles a string.
      *
@@ -368,6 +420,31 @@ namespace org\octris\core\type\string {
     /**/
     {
         return mb_substr($string, $start, $length, 'UTF-8');
+    }
+
+    /**
+     * Binary safe comparison of two strings from an offset, up to length characters.
+     *
+     * @octdoc  f:string/substr_compare
+     * @param   string      $string         The main string being compared.
+     * @param   string      $compare        The secondary string being compared.
+     * @param   int         $offset         The start position for the comparison. If negative, it starts counting from 
+     *                                      the end of the string.
+     * @param   int         $length         Optional length of the comparison. The default value is the largest of the length
+     *                                      of $string compared to the length of $compare less the offset.
+     * @param   bool        $ignore_case    Optional, if set to TRUE, comparison is case insensitive.
+     */
+    function substr_compare($string, $compare, $offset, $length = null, $ignore_case = false)
+    /**/
+    {
+        if (is_null($length)) {
+            $string = mb_substr($string, $offset);
+        } else {
+            $string  = mb_substr($string, $offset, $length);
+            $compare = mb_substr($string, 0, $length);
+        }
+        
+        return ($ignore_case ? strcasecmp($string, $compare) : strcmp($string, $compare));
     }
 
     /**
