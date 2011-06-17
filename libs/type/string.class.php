@@ -64,7 +64,7 @@ namespace org\octris\core\type\string {
     {
         return preg_replace_callback('/.{' . $chunklen . '}/us', function($m) use ($end) {
             return $m[0] . $end;
-        }, $str) . $end;
+        }, $str) . (mb_strlen($str, 'UTF-8') % $len == 0 ? '' : $end);
     }
 
     /**
