@@ -55,7 +55,7 @@ namespace org\octris\core\type\string {
      *
      * @octdoc  f:string/chunk_split
      * @param   string      $string         The string to be chunked.
-     * @param   string      $chunklen       The chunk length.
+     * @param   int         $chunklen       The chunk length.
      * @param   string      $end            The line ending sequence.
      * @return  string                      The chunked string.
      */
@@ -366,7 +366,23 @@ namespace org\octris\core\type\string {
         return mb_substr_count($string, $needle, 'UTF-8');
     }
     
+    /**
+     * Replace text within a portion of a string.
+     *
+     * @octdoc  f:string/substr_replace
+     * @param   string      $string         The input string.
+     * @param   string      $replacement    The replacement string.
+     * @param   int         $start          If start is positive, the replacing will begin at the start'th offset 
+     *                                      into string. If start is negative, the replacing will begin at the 
+     *                                      start'th character from the end of string.
+     * @param   int         $length         Optional length of portion of string which shall be replaced. If length 
+     *                                      is negative, it represents the number of characters from the end of string 
+     *                                      at which to stop replacing. If it is not given, then it will default to 
+     *                                      the length of the string. If length is zero then this function will have 
+     *                                      the effect of inserting replacement into string at the given start offset.
+     */
     function substr_replace($string, $replacement, $start, $length = null)
+    /**/
     {
         if (is_null($length)) $length = strlen($string);
         
