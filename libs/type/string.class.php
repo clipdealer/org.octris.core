@@ -38,6 +38,19 @@
 /** procedural access to UTF-8 string functions **/
 namespace org\octris\core\type\string {
     /**
+     * Return a specific character.
+     *
+     * @octdoc  f:string/chr
+     * @param   int         $chr            Code of the character to return.
+     * @return  string                      The specified character.
+     */
+    function chr($chr)
+    /**/
+    {
+        return mb_convert_encoding('&#' . (int)$chr . ';', 'UTF-8', 'HTML-ENTITIES');
+    }
+        
+    /**
      * Split a string into smaller chunks.
      *
      * @octdoc  f:string/chunk_split
@@ -165,28 +178,6 @@ namespace org\octris\core\type\string {
     }
     
     /**
-     * Pad a string to a certain length with another string.
-     *
-     * @octdoc  f:string/strpad
-     * @param   string      $string         String to pad.
-     * @param   int         $length         Length to pad string to.
-     * @param   string      $chr            Optional character to use for padding.
-     * @param   string      $type           Optional argument can be STR_PAD_RIGHT, STR_PAD_LEFT, or STR_PAD_BOTH.
-     * @return  string                      Padded string.
-     */
-    function strpad($string, $length, $chr = ' ', $type = STR_PAD_RIGHT)
-    /**/
-    {
-        if (!in_array($type, array(STR_PAD_LEFT, STR_PAD_RIGHT, STR_PAD_BOTH))) {
-            $type = STR_PAD_RIGHT;
-        }
-        
-        $diff = strlen($string) - mb_strlen($string, 'UTF-8');
-
-        return str_pad($string, $length + $diff, $chr, $type);
-    }
-
-    /**
      * Find position of first occurrence of string in a string.
      *
      * @octdoc  f:string/strpos
@@ -202,6 +193,28 @@ namespace org\octris\core\type\string {
         return mb_strpos($string, $needle, $offset, 'UTF-8');
     }
     
+    /**
+     * Pad a string to a certain length with another string.
+     *
+     * @octdoc  f:string/str_pad
+     * @param   string      $string         String to pad.
+     * @param   int         $length         Length to pad string to.
+     * @param   string      $chr            Optional character to use for padding.
+     * @param   string      $type           Optional argument can be STR_PAD_RIGHT, STR_PAD_LEFT, or STR_PAD_BOTH.
+     * @return  string                      Padded string.
+     */
+    function str_pad($string, $length, $chr = ' ', $type = STR_PAD_RIGHT)
+    /**/
+    {
+        if (!in_array($type, array(STR_PAD_LEFT, STR_PAD_RIGHT, STR_PAD_BOTH))) {
+            $type = STR_PAD_RIGHT;
+        }
+        
+        $diff = strlen($string) - mb_strlen($string, 'UTF-8');
+
+        return str_pad($string, $length + $diff, $chr, $type);
+    }
+
     /**
      * Replace all occurrences of the search string with the replacement string.
      *
@@ -387,26 +400,42 @@ namespace org\octris\core\type\string {
      *
      * @octdoc  f:string/htmlentities
      * @param   string      $string         String to convert.
+     * @param   int         $quote_style    Optional parameter to define what will be done with 'single' and "double" quotes.
      * @return  string                      Converted string.
      */
-    function htmlentities($string)
+    function htmlentities($string, $quote_style = ENT_COMPAT)
     /**/
     {
-    	return \htmlentities($string, ENT_QUOTES, 'UTF-8') ;
+    	return \htmlentities($string, $quote_style, 'UTF-8') ;
     }
+    
+    /**
+     * 
+     *
+     * @octdoc  f:string/html_entity_decode
+     * @param   string      $string         The input string.
+     * @param   int         $quote_style    Optional parameter to define what will be done with 'single' and "double" quotes.
+     * @return  string
+     */
+    function html_entity_decode($string, $quote_style = ENT_COMPAT)
+    /**/
+    {
+        return \html_entity_decode($string, $quote_style, 'UTF-8');
+    }
+    
     
     /**
      * Convert special characters to HTML entities.
      *
      * @octdoc  f:string/htmlspecialchars
      * @param   string      $string         String to convert.
-     * @param   string      $encoding       Optional encoding to use.
+     * @param   int         $quote_style    Optional parameter to define what will be done with 'single' and "double" quotes.
      * @return  string                      Converted string.
      */
-    function htmlspecialchars($string)
+    function htmlspecialchars($string, $quote_style)
     /**/
     {
-        return \htmlspecialchars($string, ENT_COMPAT, 'UTF-8');
+        return \htmlspecialchars($string, $quote_style, 'UTF-8');
     }
     
     /**
