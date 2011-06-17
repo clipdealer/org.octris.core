@@ -589,6 +589,68 @@ namespace org\octris\core\type\string {
     }
     
     /**
+     * Strip whitespace (or other characters) from the beginning of a string.
+     *
+     * @octdoc  f:string/ltrim
+     * @param   string      $string         The input string.
+     * @param   string      $charlist       Optional characters to strip.
+     * @return  string                      Stripped string.
+     */
+    function ltrim($string, $charlist = null)
+    /**/
+    {
+        if (is_null($charlist)) {
+            $string = ltrim($string);
+        } else {
+            $regexp = '/^[' . preg_quote($charlist, '/') . ']+/u';
+            $string = preg_replace($regexp, '', $string);
+        }
+        
+        return $string;
+    }
+    
+    /**
+     * Strip whitespace (or other characters) from the end of a string.
+     *
+     * @octdoc  f:string/rtrim
+     * @param   string      $string         The input string.
+     * @param   string      $charlist       Optional characters to strip.
+     * @return  string                      Stripped string.
+     */
+    function rtrim($string, $charlist = null)
+    /**/
+    {
+        if (is_null($charlist)) {
+            $string = rtrim($string);
+        } else {
+            $regexp = '/[' . preg_quote($charlist, '/') . ']+$/u';
+            $string = preg_replace($regexp, '', $string);
+        }
+        
+        return $string;
+    }
+    
+    /**
+     * Strip whitespace (or other characters) from the both start and end of a string.
+     *
+     * @octdoc  f:string/trim
+     * @param   string      $string         The input string.
+     * @param   string      $charlist       Optional characters to strip.
+     * @return  string                      Stripped string.
+     */
+    function trim($string, $charlist = null)
+    /**/
+    {
+        if (is_null($charlist)) {
+            $string = trim($string);
+        } else {
+            $string = ltrim(rtrim($string, $charlist), $charlist);
+        }
+        
+        return $string;
+    }
+    
+    /**
      * Return a formatted string.
      *
      * @octdoc  f:string/sprintf
