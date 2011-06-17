@@ -52,11 +52,15 @@ namespace org\octris\core\type\collection {
      *
      * @octdoc  m:collection/merge
      * @param   mixed       $arg1, ...              Array(s) / collection(s) to merge.
-     * @return  array                               Merged data.
+     * @return  array|bool                          Merged array data or false.
      */
     function merge($arg1)
     /**/
     {
+        if (!($arg1 = normalize($arg1))) {
+            return false;
+        }
+        
         $args = func_get_args();
         array_shift($args);
         
