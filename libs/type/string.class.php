@@ -246,6 +246,24 @@ namespace org\octris\core\type\string {
     }
     
     /**
+     * Convert a string to an array.
+     *
+     * @octdoc  f:string/str_split
+     * @param   string      $string         The string to be chunked.
+     * @param   int         $split_length   Optional maximum length of the chunk.
+     * @return  array                       The chunked string.
+     */
+    function str_split($string, $split_length = 1)
+    /**/
+    {
+        $m = array();
+        
+        return (preg_match_all('/.{1,' . $len . '}/us', $str, $m)
+                ? $m[0]
+                : array());
+    }
+
+    /**
      * Reverse a string.
      *
      * @octdoc  f:string/strrev
