@@ -278,6 +278,18 @@ namespace org\octris\core\type {
         }
         
         /**
+         * Move backwards to previous element.
+         *
+         * @octdoc  m:collection/prev
+         */
+        public function prev()
+        /**/
+        {
+            --$this->position;
+            parent::seek($this->position);
+        }
+        
+        /**
          * Rewind the Iterator to the first element.
          *
          * @octdoc  m:collection/rewind
