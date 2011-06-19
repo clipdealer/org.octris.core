@@ -1,3 +1,15 @@
-Array functions mapping to collection:
+Working with PHP arrays and OCTRiS collections
+==============================================
 
-array_keys  keys
+The following is a list of PHP array functions and their equivalent in the 'OCTRiS collection'. '-' means, that the 
+function is not currently supported.
+
++---------------------------+---------------------------+-------------------------------------------------------------------+
+| PHP function name         | OCTRiS collection         | Description                                                       |
++===========================+===========================+===================================================================+
+| array_change_key_case     | change_key_case           | Changes all keys in an array                                      |
++---------------------------+---------------------------+-------------------------------------------------------------------+
+| array_map                 | map                       | Applies a callback to the elements of the given arrays.           |
++---------------------------+---------------------------+-------------------------------------------------------------------+
+| array_walk                | walk                      | Apply a callback to every member of an array.                     |
++---------------------------+---------------------------+-------------------------------------------------------------------+
