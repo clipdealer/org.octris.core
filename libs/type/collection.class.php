@@ -2,8 +2,7 @@
 
 namespace org\octris\core\type\collection {
     /**
-     * Convert an object which implements the "getArrayCopy" method to an array. If an array is specified as first
-     * parameter, the array is returned without any change.
+     * Normalize an object which extens ArrayObject or ArrayIterator, returns an array.
      *
      * @octdoc  m:collection/normalize
      * @param   mixed       $p                      Either an array or an object which implements the getArrayCopy method.
@@ -12,7 +11,7 @@ namespace org\octris\core\type\collection {
     function normalize($p)
     /**/
     {
-        if (is_object($p) && ($p instanceof ArrayObject || $p instanceof \org\octris\core\type\collection)) {
+        if (is_object($p) && ($p instanceof ArrayObject || $p instanceof ArrayIterator)) {
             $p = $p->getArrayCopy();
         } elseif (!is_array($p)) {
             $p = false;
@@ -216,27 +215,9 @@ namespace org\octris\core\type {
      * @copyright   copyright (c) 2010-2011 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    class collection implements \Iterator, \SeekableIterator, \ArrayAccess, \Serializable, \Countable
+    class collection extends ArrayIterator
     /**/
     {
-        /**
-         * Collection data.
-         *
-         * @octdoc  v:collection/$data
-         * @var     array
-         */
-        protected $data = array();
-        /**/
-
-        /**
-         * Keys of collection data.
-         *
-         * @octdoc  v:collection/$keys
-         * @var     array
-         */
-        protected $keys = array();
-        /**/
-
         /**
          * Position of iterator.
          *
@@ -249,10 +230,10 @@ namespace org\octris\core\type {
         /**
          * Number of items in collection.
          *
-         * @octdoc  v:collection/$cnt
+         * @octdoc  v:collection/$count
          * @var     int
          */
-        protected $cnt = 0;
+        protected $count = 0;
         /**/
 
         /**
@@ -277,37 +258,13 @@ namespace org\octris\core\type {
                 throw new Exception('don\'t know how to handle parameter of type "' . gettype($array) . '"');
             }
         
-            $this->keys = array_keys($value);
-            $this->data = $value;
-            $this->cnt  = count($this->keys);
+            $this->count = count($value);
+
+            parent::__construct($value);
         }
 
         /** Iterator **/
         
-        /**
-         * Return the current element.
-         *
-         * @octdoc  m:collection/current
-         * @return  mixed                  Current element.
-         */
-        public function current()
-        /**/
-        {
-            return $this->data[$this->position];
-        }
-    
-        /**
-         * Return the key of the current element.
-         *
-         * @octdoc  m:collection/key
-         * @return  mixed                   Key of current element.
-         */
-        public function key()
-        /**/
-        {
-            return $this->keys[$this->position];
-        }
-
         /**
          * Move forward to next element.
          *
@@ -317,6 +274,7 @@ namespace org\octris\core\type {
         /**/
         {
             ++$this->position;
+            parent::next();
         }
         
         /**
@@ -328,18 +286,7 @@ namespace org\octris\core\type {
         /**/
         {
             $this->position = 0;
-        }
-    
-        /**
-         * Checks if current position is valid.
-         *
-         * @octdoc  m:collection/valid
-         * @return  bool                    Returns true, if element at position exists.
-         */
-        public function valid()
-        /**/
-        {
-            return ($this->position < $this->cnt);
+            parent::rewind();
         }
     
         /** SeekableIterator **/
@@ -354,38 +301,11 @@ namespace org\octris\core\type {
         /**/
         {
             $this->position = $position;
+            parent::seek($position);
         }
     
         /** ArrayAccess **/
     
-        /**
-         * Whether a specified offset exists in collection data.
-         *
-         * @octdoc  m:collection/offsetExists
-         * @param   string      $offs       Offset to test.
-         * @return  bool                    Returns true if offset exists.
-         */
-        public function offsetExists($offs)
-        /**/
-        {
-            return (in_array($offs, $this->keys, true));
-        }
-
-        /**
-         * Return data for specified offset from collection.
-         *
-         * @octdoc  m:collection/offsetGet
-         * @param   string      $offs       Offset to retrieve.
-         * @return  mixed                   Value stored at specified offset or 'false'.
-         */
-        public function offsetGet($offs)
-        /**/
-        {
-            $idx = array_search($offs, $this->keys, true);
-        
-            return ($idx !== false ? $this->data[$this->keys[$idx]] : false);
-        }
-
         /**
          * Set value in collection at specified offset.
          *
@@ -397,12 +317,11 @@ namespace org\octris\core\type {
         /**/
         {
             // is_null implements $...[] = ...
-            if (!is_null($offs) && ($idx = array_search($offs, $this->keys, true)) !== false) {
-                $this->data[$this->keys[$idx]] = $value;
-            } else {
-                $this->keys[]      = $offs;
-                $this->data[$offs] = $value;
+            if (is_null($offs) || !$this->offsetExists($offs)) {
+                ++$this->count;
             }
+            
+            parent::offsetSet($offs, $value);
         }
 
         /**
@@ -414,27 +333,14 @@ namespace org\octris\core\type {
         public function offsetUnset($offs)
         /**/
         {
-            $idx = array_search($offs, $this->keys, true);
-        
-            if ($idx !== false) {
-                unset($this->keys[$idx]);
-                unset($this->data[$offs]);
+            if (isset($this->offsetExists($offs))) {
+                --$this->count;
             }
+            
+            parent::offsetUnset($offs);
         }
 
         /** Serializable **/
-
-        /**
-         * Implements serialization of collection data.
-         *
-         * @octdoc  m:collection/serialize
-         * @return  string                  Serialized collection data.
-         */
-        public function serialize()
-        /**/
-        {
-            return serialize($this->data);
-        }
 
         /**
          * Implements unserialization of collection data.
@@ -448,33 +354,7 @@ namespace org\octris\core\type {
             $this->__construct(unserialize($data));
         }
 
-        /** Countable **/
-
-        /**
-         * Returns number of items stored in collection.
-         *
-         * @octdoc  m:collection/count
-         * @return  int                 Number of items in collection.
-         */
-        public function count()
-        /**/
-        {
-            return $this->cnt;
-        }
-
         /** Special collection functionality **/
-
-        /**
-         * Returns copy of stored data as PHP array.
-         *
-         * @octdoc  m:collection/getArrayCopy
-         * @return  array                   Data stored in collection
-         */
-        public function getArrayCopy()
-        /**/
-        {
-            return $this->data;
-        }
 
         /**
          * Exchange the array for another one.
