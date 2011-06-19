@@ -150,6 +150,22 @@ namespace org\octris\core\type\collection {
 
         return $tmp;
     }    
+    
+    /**
+     * Apply a user function to every member of an array. 
+     *
+     * @octdoc  f:collection/walk
+     * @param   mixed       $arg                The input array, ArrayObject or collection.
+     * @param   callback    $cb                 Callback to apply to each element.
+     * @param   mixed       $userdata           Optional userdata parameter will be passed as the third parameter to the 
+     *                                          callback function.
+     * @return  bool                            Returns TRUE on success or FALSE on failure.
+     */
+    function walk(&$arg, $cb, $userdata = null)
+    /**/
+    {
+        return array_walk($arg, $cb, $userdata);
+    }
 }
 
 namespace org\octris\core\type {
