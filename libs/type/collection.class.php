@@ -149,7 +149,47 @@ namespace org\octris\core\type\collection {
         }
 
         return $tmp;
-    }    
+    }
+    
+    /**
+     * Applies the callback to the elements of the given arrays.
+     *
+     * @octdoc  f:collection/map
+     * @param   callback    $cb                 Callback to apply to each element.
+     * @param   mixed       $arg1, ...          The input array(s), ArrayObject(s) and / or collection(s).
+     * @return  array                           Returns an array containing all the elements of arg1 after applying the
+     *                                          callback function to each one.
+     */
+    function map($cb)
+    /**/
+    {
+        $args = func_get_args();
+        array_shift($args);
+        $cnt = count($args);
+
+        $data = array();
+        $next = function() use (&$args, $cnt) {
+            $return = array();
+            $valid  = false;
+
+            for ($i = 0; $i < $cnt; ++$i) {
+                if (list($k, $v) = each($args[$i])) {
+                    $return[] = $v;
+                    $valid = true;
+                } else {
+                    $return[] = null;
+                }
+            }
+
+            return ($valid ? $return : false);
+        };
+
+        while ($tmp = $next()) {
+            $data[] = call_user_func_array($cb, $tmp);
+        }
+
+        return $data;
+    }
     
     /**
      * Apply a user function to every member of an array. 
