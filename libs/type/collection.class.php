@@ -439,6 +439,21 @@ namespace org\octris\core\type {
         /**
          * Exchange the array for another one.
          *
+         * @octdoc  m:collection/exchangeArray
+         * @param   mixed       $value      The new array or object to exchange to current data with.
+         * @return  array                   Data stored in collection
+         */
+        public function exchangeArray($value)
+        /**/
+        {
+            $return = $this->getArrayCopy();
+            
+            $this->__construct($value);
+            
+            return $return;
+        }
+
+        /**
          * Rename keys of collection but preserve the ordering of the collection.
          *
          * @octdoc  m:collection/keyrename
