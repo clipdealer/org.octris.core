@@ -8,7 +8,7 @@ namespace org\octris\core\dbo\mongodb {
      * @copyright   copyright (c) 2011 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    abstract class object
+    abstract class object extends \org\octris\core\type\collection
     /**/
     {
         /**
