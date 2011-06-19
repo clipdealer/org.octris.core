@@ -251,7 +251,7 @@ namespace org\octris\core\type {
             } elseif (is_scalar($value)) {
                 // a scalar will be splitted into it's character, UTF-8 safe.
                 $value = \org\octris\core\type\string\str_split((string)$value, 1);
-            } elseif (is_object($value) && method_exists($value, 'getArrayCopy')) {
+            } elseif (($value = collection\normalize($value))) {
                 // an object which proved the getArrayCopy method
                 $value = $value->getArrayCopy();
             } elseif (!is_array($value)) {
@@ -382,13 +382,14 @@ namespace org\octris\core\type {
         public function keyrename($map)
         /**/
         {
-            $this->data = array_combine(array_map(function($v) use ($map) {
+            $data = $this->getArrayCopy();
+            $data = array_combine(array_map(function($v) use ($map) {
                 return (isset($map[$v])
                         ? $map[$v]
                         : $v);
-            }, array_keys($this->data)), array_values($this->data));
+            }, array_keys($data)), array_values($data));
             
-            $this->keys = array_keys($this->data);
+            parent::exchangeArray($data);
         }
 
         /**
@@ -401,17 +402,17 @@ namespace org\octris\core\type {
         public function defaults($value)
         /**/
         {
-            if (is_array($value)) {
-                $this->data = array_merge($value, $this->data);
-            } elseif (is_object($value)) {
-                if (($value instanceof collection) || ($value instanceof collection\Iterator) || ($value instanceof \ArrayIterator)) {
-                    $value = $value->getArrayCopy();
-                } else {
-                    $value = (array)$value;
-                }
-
-                $this->data = array_merge($value, $this->data);
+            $data = $this->getArrayCopy();
+            
+            if (is_object($value) && ($value instanceof ArrayObject || $value instanceof ArrayIterator)) {
+                $value = (array)$value;
+            } elseif (!is_array($value)) {
+                throw new Exception('don\'t know how to handle parameter of type "' . gettype($array) . '"');
             }
+
+            $data = array_merge($value, $data);
+            
+            parent::exchangeArray($data);
         }
     }
 }
