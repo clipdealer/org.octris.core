@@ -20,6 +20,15 @@ namespace org\octris\core\dbo {
         protected static $object_ns = '';
         /**/
         
+        /**
+         * Connection pool.
+         *
+         * @octdoc  v:mongodb/$pool
+         * @var     \org\octris\core\dbo\mongodb\pool
+         */
+        private $pool = null;
+        /**/
+        
         /*
          * Prevent creating of object instance from this class.
          */
@@ -29,13 +38,17 @@ namespace org\octris\core\dbo {
          * Return instance of database access layer.
          *
          * @octdoc  m:mongodb/getAccess
-         * @param   string      $collection                         Name of collection to access.
+         * @param   string      $type                               Type of access (master / slave).
          * @return  \org\octris\core\dbo\mongodb\connection         Connection.
          */
-        private static function getAccess($collection)
+        private static function getAccess($type)
         /**/
         {
-            return new \org\octris\core\dbo\mongodb\connection(static::$dsn, $collection);
+            if (is_null(self::$pool)) {
+                self::$pool = new \org\octris\core\dbo\mongodb\pool($cfg->getSet(static::$dsn));
+            }
+            
+            return self::$pool->connect($type);
         }
 
         /**
@@ -49,7 +62,7 @@ namespace org\octris\core\dbo {
         public static function one($collection, array $criteria = array())
         /**/
         {
-            return self::first($cn, $collection, $criteria);
+            return self::first($collection, $criteria);
         }
         
         /**
@@ -63,9 +76,11 @@ namespace org\octris\core\dbo {
         public static function first($collection, array $criteria = array())
         /**/
         {
+            $cn = self::getAccess($collection);
+            
             $item = false;
 
-            if (($result = $cn->query($collection, $criteria)) && ($item = $result->fetchNext())) {
+            if (($result = $cn->query(static::$object_ns . $collection, $criteria)) && count($result) > 0) {
                 $class = static::$object_ns . $collection;
                 $item  = new $class($cn, $item);
             }
