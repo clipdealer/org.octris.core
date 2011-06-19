@@ -12,7 +12,7 @@ namespace org\octris\core\type\collection {
     function normalize($p)
     /**/
     {
-        if (is_object($p) && method_exists($value, 'getArrayCopy')) {
+        if (is_object($p) && ($p instanceof ArrayObject || $p instanceof \org\octris\core\type\collection)) {
             $p = $p->getArrayCopy();
         } elseif (!is_array($p)) {
             $p = false;
