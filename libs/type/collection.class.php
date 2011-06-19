@@ -357,6 +357,18 @@ namespace org\octris\core\type {
         /** Special collection functionality **/
 
         /**
+         * Return current position of iterator.
+         *
+         * @octdoc  m:collection/getPosition
+         * @return  int                     Iterator position.   
+         */
+        public function getPosition()
+        /**/
+        {
+            return $this->position;
+        }
+
+        /**
          * Exchange the array for another one.
          *
          * @octdoc  m:collection/exchangeArray
