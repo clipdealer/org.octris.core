@@ -142,7 +142,7 @@ namespace org\octris\core\dbo\mongodb {
                 }
             }
 
-            return new \org\octris\core\dbo\mongodb\result($cursor);
+            return new \org\octris\core\dbo\mongodb\result($collection, $cursor);
         }
 
         /**
