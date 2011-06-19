@@ -412,7 +412,7 @@ namespace org\octris\core\type {
          * Returns copy of stored data as PHP array.
          *
          * @octdoc  m:collection/getArrayCopy
-         * @return  array               Data stored in collection
+         * @return  array                   Data stored in collection
          */
         public function getArrayCopy()
         /**/
@@ -421,10 +421,12 @@ namespace org\octris\core\type {
         }
 
         /**
+         * Exchange the array for another one.
+         *
          * Rename keys of collection but preserve the ordering of the collection.
          *
          * @octdoc  m:collection/keyrename
-         * @param   array               $map                Map of origin name to new name.
+         * @param   array       $map        Map of origin name to new name.
          */
         public function keyrename($map)
         /**/
