@@ -1,6 +1,6 @@
 <?php
 
-namespace org\octris\core\dbo\mongodb extends \org\octris\core\type\collection {
+namespace org\octris\core\dbo\mongodb {
     /**
      * Result set of a mongodb query.
      *
@@ -9,7 +9,7 @@ namespace org\octris\core\dbo\mongodb extends \org\octris\core\type\collection {
      * @author      Harald Lapp <harald@octris.org>
      * @todo        Implement collection / Array access
      */
-    class result
+    class result extends \org\octris\core\type\collection
     /**/
     {
         /**
