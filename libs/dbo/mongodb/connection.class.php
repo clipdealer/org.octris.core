@@ -119,7 +119,7 @@ namespace org\octris\core\dbo\mongodb {
          * @param   array               $sort                   Optional sorting parameters.
          * @param   array               $fields                 Optionally limit returned fields.
          * @param   array               $hint                   Optional query hint.
-         * @param   \org\octris\core\dbo\mongodb\result         Result object.
+         * @return  MongoCursor                                 MongoDB cursor instance.
          */
         public function query($collection, array $query = array(), $offset = 0, $limit = null, array $sort = null, array $fields = array(), array $hint = null) 
         /**/
@@ -142,7 +142,7 @@ namespace org\octris\core\dbo\mongodb {
                 }
             }
 
-            return new \org\octris\core\dbo\mongodb\result($collection, $cursor);
+            return $cursor;
         }
 
         /**
