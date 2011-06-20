@@ -76,13 +76,10 @@ namespace org\octris\core\dbo {
         public static function first($collection, array $criteria = array())
         /**/
         {
-            $cn = self::getAccess($collection);
-            
             $item = false;
 
-            if (($result = $cn->query(static::$object_ns . $collection, $criteria)) && count($result) > 0) {
-                $class = static::$object_ns . $collection;
-                $item  = new $class($cn, $item);
+            if (($result = self::query($collection, $criteria)) && count($result) > 0) {
+                $item = current($result);
             }
 
             return $item;
