@@ -115,23 +115,21 @@ namespace org\octris\core {
             $module = ($module == '' 
                         ? provider::access('env')->getValue('OCTRIS_APP', validate::T_PROJECT)
                         : $module);
-            $cfg    = new collection();
+            $cfg = array();
 
             // load default module config file
             $path = app::getPath(app::T_PATH_ETC, $module);
             $file = $path . '/' . $name . '.yml';
             
             if (is_readable($file) && ($tmp = yaml_parse_file($file)) && !is_null($tmp)) {
-                $tmp = new collection($tmp);
-                $cfg->merge($tmp->flatten());
+                $cfg = array_merge($cfg, \org\octris\core\type\collection(flatten($tmp)));
             }
 
             // load local config file
             $file = $path . '/' . $name . '_local.yml';
             
             if (is_readable($file) && ($tmp = yaml_parse_file($file)) && !is_null($tmp)) {
-                $tmp = new collection($tmp);
-                $cfg->merge($tmp->flatten());
+                $cfg = array_merge($cfg, \org\octris\core\type\collection(flatten($tmp)));
             }
         
             // load global framework configuration
@@ -139,11 +137,10 @@ namespace org\octris\core {
             $file = $info['dir'] . '/.octris/' . $module . '/' . $name . '.yml';
             
             if (is_readable($file) && ($tmp = yaml_parse_file($file)) && !is_null($tmp)) {
-                $tmp = new collection($tmp);
-                $cfg->merge($tmp->flatten());
+                $cfg = array_merge($cfg, \org\octris\core\type\collection(flatten($tmp)));
             }
 
-            return $cfg;
+            return new \org\octris\core\type\collection($cfg);
         }
     }
 }
