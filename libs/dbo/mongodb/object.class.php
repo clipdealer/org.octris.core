@@ -96,10 +96,10 @@ namespace org\octris\core\dbo\mongodb {
         {
             $cn = $this->pool->connect(\org\octris\core\dbo::T_DBO_UPDATE);
             
+            $data = parent::getArrayCopy();
+            
             if (is_null($this->_id)) {
                 // insert
-                $data = $this->data;
-
                 $this->cn->insert($data);
 
                 if (isset($data['_id'])) {
@@ -107,7 +107,7 @@ namespace org\octris\core\dbo\mongodb {
                 }
             } else {
                 // update
-                $this->cn->update(array('_id' => new MongoId($this->_id)), array('$set' => $this->data));
+                $this->cn->update(array('_id' => new MongoId($this->_id)), array('$set' => $data));
             }
             
             $cn->release();
