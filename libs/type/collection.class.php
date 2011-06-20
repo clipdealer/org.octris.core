@@ -370,7 +370,7 @@ namespace org\octris\core\type {
         public function offsetUnset($offs)
         /**/
         {
-            if (isset($this->offsetExists($offs))) {
+            if ($this->offsetExists($offs)) {
                 --$this->count;
             }
             
