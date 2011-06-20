@@ -91,9 +91,9 @@ namespace org\octris\core\dbo\mongodb {
         public function current()
         /**/
         {
-            $class = $this->collection;
+            $class = $this->object_ns . $this->collection;
             
-            return new $class($this->cn, current($this->cursor));
+            return new $class($this->pool, current($this->cursor));
         }
         
         /**
