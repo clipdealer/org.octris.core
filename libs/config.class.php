@@ -90,9 +90,7 @@ namespace org\octris\core {
                 }
             }
             
-            return file_put_contents($file, yaml_emit(
-                $this->deflatten()->getArrayCopy()
-            ));
+            return file_put_contents($file, yaml_emit((array)\org\octris\core\type\collection\deflatten($this)));
         }
 
         /**
