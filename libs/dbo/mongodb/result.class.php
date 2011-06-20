@@ -22,6 +22,15 @@ namespace org\octris\core\dbo\mongodb {
         /**/
 
         /**
+         * Instance of connection pool.
+         *
+         * @octdoc  v:result/$pool
+         * @var     \org\octris\core\dbo\mongodb\pool
+         */
+        protected $pool = null;
+        /**/
+
+        /**
          * Collection name.
          *
          * @octdoc  v:result/$collection
@@ -31,17 +40,31 @@ namespace org\octris\core\dbo\mongodb {
         /**/
         
         /**
+         * Object namespace for result objects.
+         *
+         * @octdoc  v:result/$object_ns
+         * @var     string
+         */
+        protected $object_ns = '';
+        /**/
+        
+        /**
          * Constructor.
          *
          * @octdoc  m:result/__construct
-         * @param   string              $collection         Name of result object to create instance for result item.
-         * @param   MongoCursor         $cursor             Cursor resource from MongoDB.
+         * @param   \org\octris\core\dbo\mongodb\pool       $pool               Instance of connection pool.
+         * @param   MongoCursor                             $cursor             MongoDB cursor instance.
+         * @param   string                                  $collection         Name of result object to create instance for result item.
+         * @param   string                                  $object_ns          Namespace of object to create.
          */
-        public function __construct($collection, MongoCursor $cursor)
+        public function __construct(\org\octris\core\mongodb\pool $pool, MongoCursor $cursor, $collection, $object_ns)
         /**/
         {
-            $this->collection = $collection;
+            $this->pool       = $pool;
             $this->cursor     = $cursor;
+            $this->collection = $collection;
+            $this->object_ns  = $object_ns;
+            
             $this->count      = count($this->cursor);
         }
 
