@@ -19,16 +19,5 @@ namespace org\octris\core\project\app {
          */
         protected $entry_page = '\org\octris\core\project\app\entry';
         /**/
-
-        /**
-         * Mapping of an option to an application class
-         *
-         * @octdoc  v:main/$option_map
-         * @var     
-         */
-        protected $option_map = array(
-            '--help'    => '\org\octris\core\project\app\clihelp'
-        );
-        /**/
     }
 }
