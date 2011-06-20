@@ -30,15 +30,6 @@ namespace org\octris\core\dbo\mongodb {
         /**/
 
         /**
-         * Document data.
-         *
-         * @octdoc  v:object/$data
-         * @var     array
-         */
-        protected $data = array();
-        /**/
-
-        /**
          * Constructor.
          *
          * @octdoc  m:object/__construct
@@ -55,7 +46,7 @@ namespace org\octris\core\dbo\mongodb {
                 unset($data['_id']);
             }
 
-            $this->data = $data;
+            parent::__construct($data);
         }
 
         /**
