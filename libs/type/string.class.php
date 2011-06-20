@@ -38,6 +38,36 @@
 /** procedural access to UTF-8 string functions **/
 namespace org\octris\core\type\string {
     /**
+     * Return a specific character.
+     *
+     * @octdoc  f:string/chr
+     * @param   int         $chr            Code of the character to return.
+     * @return  string                      The specified character.
+     */
+    function chr($chr)
+    /**/
+    {
+        return mb_convert_encoding('&#' . (int)$chr . ';', 'UTF-8', 'HTML-ENTITIES');
+    }
+        
+    /**
+     * Split a string into smaller chunks.
+     *
+     * @octdoc  f:string/chunk_split
+     * @param   string      $string         The string to be chunked.
+     * @param   int         $chunklen       The chunk length.
+     * @param   string      $end            The line ending sequence.
+     * @return  string                      The chunked string.
+     */
+    function chunk_split($string, $chunklen = 76, $end = "\r\n")
+    /**/
+    {
+        return preg_replace_callback('/.{' . $chunklen . '}/us', function($m) use ($end) {
+            return $m[0] . $end;
+        }, $str) . (mb_strlen($str, 'UTF-8') % $len == 0 ? '' : $end);
+    }
+
+    /**
      * Regular expression match for multibyte string.
      *
      * @octdoc  f:string/match
@@ -102,6 +132,22 @@ namespace org\octris\core\type\string {
     }
     
     /**
+     * Binary safe case-insensitive string comparison.
+     *
+     * @octdoc  f:string/strcasecmp
+     * @param   string      $string1        The first string.
+     * @param   string      $string2        The second string.
+     * @return  int                         Returns < 0 if string1 is less than string2.
+     *                                      Returns > 0 if string1 is greater than string2
+     *                                      Returns 0 if both strings are equal.
+     */
+    function strcasecmp($string1, $string2)
+    /**/
+    {
+        return strcmp(strtolower($string1), strtolower($string2));
+    }
+    
+    /**
      * Finds position of first occurrence of a string within another, case insensitive.
      *
      * @octdoc  f:string/stripos
@@ -148,28 +194,6 @@ namespace org\octris\core\type\string {
     }
     
     /**
-     * Pad a string to a certain length with another string.
-     *
-     * @octdoc  f:string/strpad
-     * @param   string      $string         String to pad.
-     * @param   int         $length         Length to pad string to.
-     * @param   string      $chr            Optional character to use for padding.
-     * @param   string      $type           Optional argument can be STR_PAD_RIGHT, STR_PAD_LEFT, or STR_PAD_BOTH.
-     * @return  string                      Padded string.
-     */
-    function strpad($string, $length, $chr = ' ', $type = STR_PAD_RIGHT)
-    /**/
-    {
-        if (!in_array($type, array(STR_PAD_LEFT, STR_PAD_RIGHT, STR_PAD_BOTH))) {
-            $type = STR_PAD_RIGHT;
-        }
-        
-        $diff = strlen($string) - mb_strlen($string, 'UTF-8');
-
-        return str_pad($string, $length + $diff, $chr, $type);
-    }
-
-    /**
      * Find position of first occurrence of string in a string.
      *
      * @octdoc  f:string/strpos
@@ -186,22 +210,111 @@ namespace org\octris\core\type\string {
     }
     
     /**
-     * Replace all occurrences of the search string with the replacement string.
+     * Binary safe case-insensitive string comparison using natural sorting algorithm.
      *
-     * @octdoc  f:string/strreplace
-     * @param   string      $search         The value being searched for, otherwise known as the needle. An array may be used to designate multiple needles.
-     * @param   string      $replace        The replacement value that replaces found search values. An array may be used to designate multiple replacements.
-     * @param   string      $subject        The string or array being searched and replaced on, otherwise known as the haystack. If subject is an array, 
-     *                                      then the search and replace is performed with every entry of subject, and the return value is an array as well.
-     * @param   int         $count          If passed, this will be set to the number of replacements performed.
-     * @return  string                      This function returns a string or an array with the replaced values.
+     * @octdoc  f:string/strnatcasecmp
+     * @param   string      $string1        The first string.
+     * @param   string      $string2        The second string.
+     * @return  int                         Returns < 0 if string1 is less than string2.
+     *                                      Returns > 0 if string1 is greater than string2
+     *                                      Returns 0 if both strings are equal.
      */
-    function strreplace($search, $replace, $subject, &$count = null)
+    function strnatcasecmp($string1, $string2)
     /**/
     {
-        return str_replace($search, $replace, $subject, $count);
+        return strnatcmp(strtolower($string1), strtolower($string2));
     }
     
+    /**
+     * Binary safe case-insensitive string comparison of the first n characters.
+     *
+     * @octdoc  f:string/strncasecmp
+     * @param   string      $string1        The first string.
+     * @param   string      $string2        The second string.
+     * @param   int         $length         Number of characters to use in the comparison.
+     * @return  int                         Returns < 0 if string1 is less than string2.
+     *                                      Returns > 0 if string1 is greater than string2
+     *                                      Returns 0 if both strings are equal.
+     */
+    function strncasecmp($string1, $string2, $length)
+    /**/
+    {
+        return strncmp(strtolower($string1), strtolower($string2), $length);
+    }
+    
+    /**
+     * Binary safe string comparison of the first n characters.
+     *
+     * @octdoc  f:string/strncmp
+     * @param   string      $string1        The first string.
+     * @param   string      $string2        The second string.
+     * @param   int         $length         Number of characters to use in the comparison.
+     * @return  int                         Returns < 0 if string1 is less than string2.
+     *                                      Returns > 0 if string1 is greater than string2
+     *                                      Returns 0 if both strings are equal.
+     */
+    function strncmp($string1, $string2, $length)
+    /**/
+    {
+        $string1 = substr($string1, 0, $length);
+        $string2 = substr($string2, 0, $length);
+        
+        return strcmp($string1, $string2);
+    }
+    
+    /**
+     * Pad a string to a certain length with another string.
+     *
+     * @octdoc  f:string/str_pad
+     * @param   string      $string         String to pad.
+     * @param   int         $length         Length to pad string to.
+     * @param   string      $chr            Optional character to use for padding.
+     * @param   string      $type           Optional argument can be STR_PAD_RIGHT, STR_PAD_LEFT, or STR_PAD_BOTH.
+     * @return  string                      Padded string.
+     */
+    function str_pad($string, $length, $chr = ' ', $type = STR_PAD_RIGHT)
+    /**/
+    {
+        if (!in_array($type, array(STR_PAD_LEFT, STR_PAD_RIGHT, STR_PAD_BOTH))) {
+            $type = STR_PAD_RIGHT;
+        }
+        
+        $diff = strlen($string) - mb_strlen($string, 'UTF-8');
+
+        return str_pad($string, $length + $diff, $chr, $type);
+    }
+
+    /**
+     * Randomly shuffles a string.
+     *
+     * @octdoc  f:string/str_shuffle
+     * @param   string      $string         The string to shuffle.
+     * @return  string                      The shuffled string.
+     */
+    function str_shuffle($string)
+    /**/
+    {
+        return implode('', array_shuffle(preg_split('//us', $string)));
+    }
+    
+    /**
+     * Convert a string to an array.
+     *
+     * @octdoc  f:string/str_split
+     * @param   string      $string         The string to be chunked.
+     * @param   int         $split_length   Optional maximum length of the chunk.
+     * @return  array                       The chunked string.
+     */
+    function str_split($string, $split_length = 1)
+    /**/
+    {
+        $m = array();
+        
+        return (preg_match_all('/.{1,' . $len . '}/us', $str, $m)
+                ? $m[0]
+                : array());
+    }
+
     /**
      * Reverse a string.
      *
@@ -310,6 +423,31 @@ namespace org\octris\core\type\string {
     }
 
     /**
+     * Binary safe comparison of two strings from an offset, up to length characters.
+     *
+     * @octdoc  f:string/substr_compare
+     * @param   string      $string         The main string being compared.
+     * @param   string      $compare        The secondary string being compared.
+     * @param   int         $offset         The start position for the comparison. If negative, it starts counting from 
+     *                                      the end of the string.
+     * @param   int         $length         Optional length of the comparison. The default value is the largest of the length
+     *                                      of $string compared to the length of $compare less the offset.
+     * @param   bool        $ignore_case    Optional, if set to TRUE, comparison is case insensitive.
+     */
+    function substr_compare($string, $compare, $offset, $length = null, $ignore_case = false)
+    /**/
+    {
+        if (is_null($length)) {
+            $string = mb_substr($string, $offset);
+        } else {
+            $string  = mb_substr($string, $offset, $length);
+            $compare = mb_substr($string, 0, $length);
+        }
+        
+        return ($ignore_case ? strcasecmp($string, $compare) : strcmp($string, $compare));
+    }
+
+    /**
      * Count the number of substring occurences.
      *
      * @octdoc  f:string/substr_count
@@ -321,6 +459,31 @@ namespace org\octris\core\type\string {
     /**/
     {
         return mb_substr_count($string, $needle, 'UTF-8');
+    }
+    
+    /**
+     * Replace text within a portion of a string.
+     *
+     * @octdoc  f:string/substr_replace
+     * @param   string      $string         The input string.
+     * @param   string      $replacement    The replacement string.
+     * @param   int         $start          If start is positive, the replacing will begin at the start'th offset 
+     *                                      into string. If start is negative, the replacing will begin at the 
+     *                                      start'th character from the end of string.
+     * @param   int         $length         Optional length of portion of string which shall be replaced. If length 
+     *                                      is negative, it represents the number of characters from the end of string 
+     *                                      at which to stop replacing. If it is not given, then it will default to 
+     *                                      the length of the string. If length is zero then this function will have 
+     *                                      the effect of inserting replacement into string at the given start offset.
+     */
+    function substr_replace($string, $replacement, $start, $length = null)
+    /**/
+    {
+        if (is_null($length)) $length = strlen($string);
+        
+        return substr($string, 0, $start) . 
+                $replacement . 
+                substr($string, ($len < 0 ? max($start - strlen($string), $length) : $start + $length));
     }
     
     /**
@@ -348,26 +511,42 @@ namespace org\octris\core\type\string {
      *
      * @octdoc  f:string/htmlentities
      * @param   string      $string         String to convert.
+     * @param   int         $quote_style    Optional parameter to define what will be done with 'single' and "double" quotes.
      * @return  string                      Converted string.
      */
-    function htmlentities($string)
+    function htmlentities($string, $quote_style = ENT_COMPAT)
     /**/
     {
-    	return \htmlentities($string, ENT_QUOTES, 'UTF-8') ;
+    	return \htmlentities($string, $quote_style, 'UTF-8') ;
     }
+    
+    /**
+     * 
+     *
+     * @octdoc  f:string/html_entity_decode
+     * @param   string      $string         The input string.
+     * @param   int         $quote_style    Optional parameter to define what will be done with 'single' and "double" quotes.
+     * @return  string
+     */
+    function html_entity_decode($string, $quote_style = ENT_COMPAT)
+    /**/
+    {
+        return \html_entity_decode($string, $quote_style, 'UTF-8');
+    }
+    
     
     /**
      * Convert special characters to HTML entities.
      *
      * @octdoc  f:string/htmlspecialchars
      * @param   string      $string         String to convert.
-     * @param   string      $encoding       Optional encoding to use.
+     * @param   int         $quote_style    Optional parameter to define what will be done with 'single' and "double" quotes.
      * @return  string                      Converted string.
      */
-    function htmlspecialchars($string)
+    function htmlspecialchars($string, $quote_style)
     /**/
     {
-        return \htmlspecialchars($string, ENT_COMPAT, 'UTF-8');
+        return \htmlspecialchars($string, $quote_style, 'UTF-8');
     }
     
     /**
@@ -407,6 +586,68 @@ namespace org\octris\core\type\string {
     /**/
     {
         return mb_convert_encoding($string, $to_encoding, $from_encoding);
+    }
+    
+    /**
+     * Strip whitespace (or other characters) from the beginning of a string.
+     *
+     * @octdoc  f:string/ltrim
+     * @param   string      $string         The input string.
+     * @param   string      $charlist       Optional characters to strip.
+     * @return  string                      Stripped string.
+     */
+    function ltrim($string, $charlist = null)
+    /**/
+    {
+        if (is_null($charlist)) {
+            $string = ltrim($string);
+        } else {
+            $regexp = '/^[' . preg_quote($charlist, '/') . ']+/u';
+            $string = preg_replace($regexp, '', $string);
+        }
+        
+        return $string;
+    }
+    
+    /**
+     * Strip whitespace (or other characters) from the end of a string.
+     *
+     * @octdoc  f:string/rtrim
+     * @param   string      $string         The input string.
+     * @param   string      $charlist       Optional characters to strip.
+     * @return  string                      Stripped string.
+     */
+    function rtrim($string, $charlist = null)
+    /**/
+    {
+        if (is_null($charlist)) {
+            $string = rtrim($string);
+        } else {
+            $regexp = '/[' . preg_quote($charlist, '/') . ']+$/u';
+            $string = preg_replace($regexp, '', $string);
+        }
+        
+        return $string;
+    }
+    
+    /**
+     * Strip whitespace (or other characters) from the both start and end of a string.
+     *
+     * @octdoc  f:string/trim
+     * @param   string      $string         The input string.
+     * @param   string      $charlist       Optional characters to strip.
+     * @return  string                      Stripped string.
+     */
+    function trim($string, $charlist = null)
+    /**/
+    {
+        if (is_null($charlist)) {
+            $string = trim($string);
+        } else {
+            $string = ltrim(rtrim($string, $charlist), $charlist);
+        }
+        
+        return $string;
     }
     
     /**
@@ -468,371 +709,5 @@ namespace org\octris\core\type\string {
         );
 
         return \vsprintf($format, $args);
-    }
-}
-
-/** object-oriented access to multibyte-safe string functions **/
-namespace org\octris\core\type {
-    use \org\octris\core\type\string as string;
-    
-    /**
-     * String class works internally with UTF-8.
-     * 
-     * @octdoc      c:type/string
-     * @copyright   copyright (c) 2011 by Harald Lapp, Documentation taken from the official PHP Documentation
-     * @author      Harald Lapp <harald.lapp@gmail.com>
-     */
-    class string
-    /**/
-    {
-        /**
-         * Stored string.
-         *
-         * @octdoc  v:string/$string
-         * @var     string
-         */
-        protected $string = '';
-        /**/
-        
-        /**
-         * Original encoding of string.
-         *
-         * @octdoc  v:string/$encoding
-         * @var     string
-         */
-        protected $encoding = 'UTF-8';
-        /**/
-        
-        /**
-         * Constructor.
-         *
-         * @octdoc  m:string/__construct
-         * @param   string      $string         String to initialize new instance with.
-         * @param   string      $encoding       Optional original encoding of string, tries to detect if not specified.
-         */
-        public function __construct($string, $encoding = null)
-        /**/
-        {
-            if (!mb_check_encoding($string, 'UTF-8')) {
-                $this->encoding = mb_detect_encoding($string);
-                $this->string   = string\toUtf8($string, $this->encoding);
-            } else {
-                $this->string = $string;
-            }
-        }
-        
-        /**
-         * Return string representation of object if it's casted to a string.
-         *
-         * @octdoc  m:string/__toString
-         * @return  string                      string representation of object
-         */
-        public function __toString()
-        /**/
-        {
-            return $this->string;
-        }
-        
-        /**
-         * Convert a string to UTF-8
-         *
-         * @octdoc  m:string/toUtf8
-         * @return  string                      Converted string.
-         */
-        function toUtf8()
-        /**/
-        {
-            return new static($string);
-        }
-
-        /**
-         * Regular expression match for multibyte string.
-         *
-         * @octdoc  m:string/match
-         * @param   string      $pattern        The search pattern.
-         * @param   string      $options        If 'i' is specified for this parameter, the case will be ignored.
-         * @param   array       $regs           Contains a substring of the matched string.
-         * @return  array|bool                  The function returns substring of matched string. If no matches 
-         *                                      are found or an error happens, FALSE will be returned.     
-         */
-        public function match($pattern, $options = '')
-        /**/
-        {
-            return string\match($pattern, $this->string, $options);
-        }
-
-        /**
-         * Replace regular expression with multibyte support.
-         *
-         * @octdoc  m:string/replace
-         * @param   string      $pattern        The search pattern.
-         * @param   string      $options        Matching condition can be set by option parameter. If i is specified for this
-         *                                      parameter, the case will be ignored. If x is specified, white space will be
-         *                                      ignored. If m is specified, match will be executed in multiline mode and line
-         *                                      break will be included in '.'. If p is specified, match will be executed in 
-         *                                      POSIX mode, line break will be considered as normal character. If e is 
-         *                                      specified, replacement string will be evaluated as PHP expression.
-         * @return  string                      The resultant string on success, or FALSE on error.
-         */
-        public function replace($pattern, $replacement, $string, $options = 'msr')
-        /**/
-        {
-            if (($return = string\replace($pattern, $replacement, $this->string, $options)) !== false) {
-                $return = new static($return, $this->encoding);
-            }
-            
-            return $return;
-        }
-
-        /**
-         * Split multibyte string using regular expression.
-         *
-         * @octdoc  m:string/split
-         * @param   string      $pattern        The regular expression pattern.
-         * @return  array                       Array of splitted strings.
-         */
-        public function split($pattern)
-        /**/
-        {
-            $strings = string\split($pattern, $this->string);
-            
-            foreach ($strings as &$string) {
-                $string = new static($string, $this->encoding);
-            }
-            
-            return $strings;
-        }
-
-        /**
-         * Finds position of first occurrence of a string within another, case insensitive.
-         *
-         * @octdoc  m:string/stripos
-         * @param   string      $needle         The position counted from the beginning of haystack.
-         * @param   int         $offset         The search offset. If it is not specified, 0 is used.
-         * @return  int|bool                    Returns the numeric position of the first occurrence of needle in the 
-         *                                      haystack string. If needle is not found, it returns FALSE.
-         */
-        function stripos($needle, $offset = 0)
-        /**/
-        {
-            return string\stripos($this->string, $needle, $offset);
-        }
-
-        /**
-         * Finds first occurrence of a string within another, case insensitive.
-         *
-         * @octdoc  m:string/stristr
-         * @param   string      $needle         The string to find in string.
-         * @param   bool        $part           Determines which portion of haystack this function returns. If set to 
-         *                                      TRUE, it returns all of string from the beginning to the first occurrence 
-         *                                      of needle. If set to FALSE, it returns all of string from the first
-         *                                      occurrence of needle to the end.
-         * @return  string|bool                 Returns the portion of string, or FALSE if needle is not found.
-         */
-        function stristr($needle, $part = false)
-        /**/
-        {
-            if (($return = string\stristr($this->string, $needle, $part)) !== false) {
-                $return = new static($return, $this->encoding);
-            }
-            
-            return $return;
-        }
-
-        /**
-         * Return length of the given string.
-         *
-         * @octdoc  m:string/strlen
-         * @return  int                         Length of string.
-         */
-        public function strlen()
-        /**/
-        {
-            return string\strlen($this->string);
-        }
-        
-        /**
-         * Pad a string to a certain length with another string.
-         *
-         * @octdoc  f:string/strpad
-         * @param   int         $length         Length to pad string to.
-         * @param   string      $chr            Optional character to use for padding.
-         * @param   string      $type           Optional argument can be STR_PAD_RIGHT, STR_PAD_LEFT, or STR_PAD_BOTH.
-         * @return  string                      Padded string.
-         */
-        public function strpad($length, $chr = ' ', $type = STR_PAD_RIGHT)
-        /**/
-        {
-            return new static(string\strpad($this->string, $length, $chr, $type), $this->encoding);
-        }
-
-        /**
-         * Find position of first occurrence of string in a string.
-         *
-         * @octdoc  m:string/strpos
-         * @param   string      $needle         The position counted from the beginning of haystack.
-         * @param   int         $offset         The search offset. If it is not specified, 0 is used.
-         * @return  int|bool                    Returns the numeric position of the first occurrence of needle in the 
-         *                                      haystack string. If needle is not found, it returns FALSE.
-         */
-        public function strpos($needle, $offset = 0)
-        /**/
-        {
-            return string\strpos($this->string, $needle, $offset);
-        }
-        
-        /**
-         * Reverse a string.
-         *
-         * @octdoc  m:string/strrev
-         * @return  string                      Reversed string.
-         */
-        public function strrev()
-        /**/
-        {
-            return new static(string\strrev($this->string), $this->encoding);
-        }
-        
-        /**
-         * Find position of last occurrence of a string in a string.
-         *
-         * @octdoc  m:string/strrpos
-         * @param   string      $needle         The string to find in haystack.
-         * @param   int         $offset         May be specified to begin searching an arbitrary number of characters 
-         *                                      into the string. Negative values will stop searching at an arbitrary point
-         *                                      prior to the end of the string.
-         * @return  int|bool                    Returns the numeric position of the last occurrence of needle in the 
-         *                                      haystack string. If needle is not found, it returns FALSE.
-         */
-        public function strrpos($needle, $offset = null)
-        /**/
-        {
-            return string\strrpos($this->string, $needle, $offset);
-        }
-        
-        /**
-         * Finds position of last occurrence of a string within another, case insensitive.
-         *
-         * @octdoc  m:string/strripos
-         * @param   string      $needle         The string to find in haystack.
-         * @param   int         $offset         May be specified to begin searching an arbitrary number of characters 
-         *                                      into the string. Negative values will stop searching at an arbitrary point
-         *                                      prior to the end of the string.
-         * @return  int|bool                    Returns the numeric position of the last occurrence of needle in the 
-         *                                      haystack string. If needle is not found, it returns FALSE.
-         */
-        public function strripos($needle, $offset = null)
-        /**/
-        {
-            return string\strripos($this->string, $needle, $offset);
-        }
-
-        /**
-         * Finds first occurrence of a string within another.
-         *
-         * @octdoc  m:string/strstr
-         * @param   string      $needle         The string to find in string.
-         * @param   bool        $part           Determines which portion of haystack this function returns. If set to 
-         *                                      TRUE, it returns all of string from the beginning to the first occurrence 
-         *                                      of needle. If set to FALSE, it returns all of string from the first
-         *                                      occurrence of needle to the end.
-         * @return  string|bool                 Returns the portion of string, or FALSE if needle is not found.
-         */
-        public function strstr($needle, $part = false)
-        /**/
-        {
-            if (($return = string\stristr($this->string, $needle, $part)) !== false) {
-                $return = new static($return, $this->encoding);
-            }
-            
-            return $return;
-        }
-
-        /**
-         * Make a string lowercase.
-         *
-         * @octdoc  m:string/strtolower
-         * @return  string                      String with all alphabetic characters converted to lowercase.
-         */
-        public function strtolower()
-        /**/
-        {
-            return new static(string\strtolower($this->string), $this->encoding);
-        }
-
-        /**
-         * Make a string uppercase.
-         *
-         * @octdoc  m:string/strtoupper
-         * @return  string                      String with all alphabetic characters converted to uppercase.
-         */
-        public function strtoupper()
-        /**/
-        {
-            return new static(string\strtoupper($this->string), $this->encoding);
-        }
-
-        /**
-         * Get part of string.
-         *
-         * @octdoc  m:string/substr
-         * @param   int         $start          The first position used in string.
-         * @param   int|null    $length         Optional length of the part to extract.
-         * @return  string                      Extracted part of the string.
-         */
-        public function substr($start, $length = null)
-        /**/
-        {
-            return new static(string\substr($this->string, $start, $length), $this->encoding);
-        }
-        
-        /**
-         * Count the number of substring occurences.
-         *
-         * @octdoc  m:string/substr_count
-         * @param   string      $needle         The string being found.
-         * @return  string                      The number of times the needle substring occurs in the haystack string.     
-         */
-        public function substr_count($needle)
-        /**/
-        {
-            return string\substr_count($this->string, $needle);
-        }
-
-        /**
-         * Convert a string to 7bit
-         *
-         * @octdoc  m:string/to7bit
-         * @return  string                      Converted string to 7bit.
-         */
-        public function to7bit()
-        /**/
-        {
-            return string\to7bit($this->string);
-        }
-        
-        /**
-         * Safely encode UTF-8 to HTML entities.
-         *
-         * @octdoc  m:string/htmlentities
-         * @return  string                      Converted string.
-         */
-        public function htmlentities()
-        /**/
-        {
-        	return string\htmlentities($this->string);
-        }
-        
-        /**
-         * Convert special characters to HTML entities.
-         *
-         * @octdoc  m:string/htmlspecialchars
-         * @return  string                      Converted string.
-         */
-        public function htmlspecialchars()
-        /**/
-        {
-            return string\htmlspecialchars($this->string);
-        }
     }
 }

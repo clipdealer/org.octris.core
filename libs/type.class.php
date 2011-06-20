@@ -28,7 +28,7 @@ namespace org\octris\core {
 
             if ($type == 'array' || $type == 'object') {
                 if (is_object($val)) {
-                    if (($val instanceof collection) || ($val instanceof collection\Iterator) || ($val instanceof \ArrayIterator)) {
+                    if ($val instanceof \org\octris\core\type\collection) {
                         $val = $val->getArrayCopy();
                     } else {
                         $val = (array)$val;

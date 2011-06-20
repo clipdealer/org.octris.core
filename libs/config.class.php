@@ -2,7 +2,6 @@
 
 namespace org\octris\core {
     use \org\octris\core\app as app;
-    use \org\octris\core\type\collection as collection;
     use \org\octris\core\validate as validate;
     use \org\octris\core\provider as provider;
     
@@ -91,9 +90,7 @@ namespace org\octris\core {
                 }
             }
             
-            return file_put_contents($file, yaml_emit(
-                $this->deflatten()->getArrayCopy()
-            ));
+            return file_put_contents($file, yaml_emit((array)\org\octris\core\type\collection\deflatten($this)));
         }
 
         /**
@@ -103,6 +100,10 @@ namespace org\octris\core {
          * - T_PATH_ETC/config.yml
          * - T_PATH_ETC/config_local.yml
          * - ~/.octris/config.yml
+         *
+         * whereat the confíguration file name -- in this example 'config' -- may be overwritten by the first parameter.
+         * The constant T_ETC_PATH is resolved by the value of the second parameter. By default T_ETC_PATH is resolved to
+         * the 'etc' path of the current running application.
          *
          * @octdoc  m:config/_load
          * @param   string                              $name       Optional name of configuration file to load.
@@ -116,23 +117,21 @@ namespace org\octris\core {
             $module = ($module == '' 
                         ? provider::access('env')->getValue('OCTRIS_APP', validate::T_PROJECT)
                         : $module);
-            $cfg    = new collection();
+            $cfg = array();
 
             // load default module config file
             $path = app::getPath(app::T_PATH_ETC, $module);
             $file = $path . '/' . $name . '.yml';
             
             if (is_readable($file) && ($tmp = yaml_parse_file($file)) && !is_null($tmp)) {
-                $tmp = new collection($tmp);
-                $cfg->merge($tmp->flatten());
+                $cfg = array_merge($cfg, \org\octris\core\type\collection(flatten($tmp)));
             }
 
             // load local config file
             $file = $path . '/' . $name . '_local.yml';
             
             if (is_readable($file) && ($tmp = yaml_parse_file($file)) && !is_null($tmp)) {
-                $tmp = new collection($tmp);
-                $cfg->merge($tmp->flatten());
+                $cfg = array_merge($cfg, \org\octris\core\type\collection(flatten($tmp)));
             }
         
             // load global framework configuration
@@ -140,11 +139,10 @@ namespace org\octris\core {
             $file = $info['dir'] . '/.octris/' . $module . '/' . $name . '.yml';
             
             if (is_readable($file) && ($tmp = yaml_parse_file($file)) && !is_null($tmp)) {
-                $tmp = new collection($tmp);
-                $cfg->merge($tmp->flatten());
+                $cfg = array_merge($cfg, \org\octris\core\type\collection(flatten($tmp)));
             }
 
-            return $cfg;
+            return new \org\octris\core\type\collection($cfg);
         }
     }
 }

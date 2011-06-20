@@ -1,5 +1,237 @@
 <?php
 
+namespace org\octris\core\type\collection {
+    /**
+     * Normalize an object which extens ArrayObject or ArrayIterator, returns an array.
+     *
+     * @octdoc  m:collection/normalize
+     * @param   mixed       $p                      Either an array or an object which implements the getArrayCopy method.
+     * @return  array|bool                          Array or false, if parameter could not be converted to array.
+     */
+    function normalize($p)
+    /**/
+    {
+        if (is_object($p) && ($p instanceof ArrayObject || $p instanceof ArrayIterator)) {
+            $p = $p->getArrayCopy();
+        } elseif (!is_array($p)) {
+            $p = false;
+        }
+        
+        return $p;
+    }
+    
+    /**
+     * Return keys of array / collection.
+     *
+     * @octdoc  m:collection/keys
+     * @param   mixed       $p                      Either an array or an object which implements the getArrayCopy method.
+     * @return  array|bool                          Array of stored keys or false.
+     */
+    function keys($p)
+    /**/
+    {
+        return (($p = normalize($p)) ? array_keys($p) : false);
+    }
+    
+    /**
+     * Return values of array / collection.
+     *
+     * @octdoc  m:collection/values
+     * @param   mixed       $p                      Either an array or an object which implements the getArrayCopy method.
+     * @return  array|bool                          Array of stored keys or false.
+     */
+    function values($p)
+    /**/
+    {
+        return (($p = normalize($p)) ? array_values($p) : false);
+    }
+        
+    /**
+     * Merge multiple arrays / collections. The function returns either an array or an collection depending on the type of the 
+     * first argument.
+     *
+     * @octdoc  m:collection/merge
+     * @param   mixed       $arg1, ...                              Array(s) / collection(s) to merge.
+     * @return  array|\org\octris\core\type\collection|bool         Merged array data or false.
+     */
+    function merge($arg1)
+    /**/
+    {
+        $is_collection = (is_object($arg1) && $arg1 instanceof \org\octris\core\type\collection);
+        
+        if (!($arg1 = normalize($arg1))) {
+            return false;
+        }
+        
+        $args = func_get_args();
+        array_shift($args);
+        
+        for ($i = 0, $cnt = count($args); $i < $cnt; ++$i) {
+            if (($arg = normalize($args[$i]))) {
+                $arg1 = array_merge($arg1, $arg);
+            }
+        }
+        
+        if ($is_collection) {
+            $arg1 = new \org\octris\core\type\collection($arg1);
+        }
+        
+        return $arg1;
+    }
+    
+    /**
+     * Flatten a array / collection. Convert a (nested) structure into a flat array with expanded keys
+     *
+     * @octdoc  m:collection/flatten
+     * @param   mixed       $p                      Either an array or an object which implements the getArrayCopy method.
+     * @param   string      $sep                    Optional separator for expanding keys.
+     * @return  array|bool                          Flattened structure or false, if input could not be processed.
+     */
+    function flatten($p, $sep = '.')
+    /**/
+    {
+        $is_collection = (is_object($p) && $p instanceof \org\octris\core\type\collection);
+
+        if (!($p = normalize($p))) {
+            return false;
+        }
+        
+        $tmp = array();
+
+        $array = new \RecursiveIteratorIterator(new \RecursiveArrayIterator($p), \RecursiveIteratorIterator::SELF_FIRST);
+        $d = 0;
+
+        $property = array();
+
+        foreach ($array as $k => $v) {
+            if (!is_int($k)) {
+                if ($d > $array->getDepth()) {
+                    array_splice($property, $array->getDepth());
+                }
+
+                $property[$array->getDepth()] = $k;
+
+                $d = $array->getDepth();
+            }
+
+            if (is_int($k)) {
+                $tmp[implode($sep, $property)][] = $v;
+            } elseif (!is_array($v)) {
+                $tmp[implode($sep, $property)] = $v;
+            }
+        }
+
+        if ($is_collection) {
+            $p = new \org\octris\core\type\collection($p);
+        }
+
+        return $tmp;
+    }
+
+    /**
+     * Deflatten a flat array / collection.
+     *
+     * @octdoc  m:collection/deflatten
+     * @param   mixed       $p                      Either an array or an object which implements the getArrayCopy method.
+     * @param   string      $sep                    Optional separator for expanding keys.
+     * @return  array|bool                          Deflattened collection or false if input could not be deflattened.
+     */
+    function deflatten($p, $sep = '.')
+    /**/
+    {
+        $is_collection = (is_object($p) && $p instanceof \org\octris\core\type\collection);
+
+        if (!($p = normalize($p))) {
+            return false;
+        }
+        
+        $tmp = array();
+
+        foreach ($p as $k => $v) {
+            $key  = explode($sep, $k);
+            $ref =& $tmp;
+
+            foreach ($key as $part) {
+                if (!isset($ref[$part])) {
+                    $ref[$part] = array();
+                }
+
+                $ref =& $ref[$part];
+            }
+
+            $ref = $v;
+        }
+
+        if ($is_collection) {
+            $p = new \org\octris\core\type\collection($p);
+        }
+
+        return $tmp;
+    }
+    
+    /**
+     * Applies the callback to the elements of the given arrays.
+     *
+     * @octdoc  f:collection/map
+     * @param   callback    $cb                 Callback to apply to each element.
+     * @param   mixed       $arg1, ...          The input array(s), ArrayObject(s) and / or collection(s).
+     * @return  array                           Returns an array containing all the elements of arg1 after applying the
+     *                                          callback function to each one.
+     */
+    function map($cb, $arg1)
+    /**/
+    {
+        $args = func_get_args();
+        array_shift($args);
+        $cnt = count($args);
+
+        $is_collection = (is_object($arg1) && $arg1 instanceof \org\octris\core\type\collection);
+
+        $data = array();
+        $next = function() use (&$args, $cnt) {
+            $return = array();
+            $valid  = false;
+
+            for ($i = 0; $i < $cnt; ++$i) {
+                if (list($k, $v) = each($args[$i])) {
+                    $return[] = $v;
+                    $valid = true;
+                } else {
+                    $return[] = null;
+                }
+            }
+
+            return ($valid ? $return : false);
+        };
+
+        while ($tmp = $next()) {
+            $data[] = call_user_func_array($cb, $tmp);
+        }
+
+        if ($is_collection) {
+            $data = new \org\octris\core\type\collection($data);
+        }
+
+        return $data;
+    }
+    
+    /**
+     * Apply a user function to every member of an array. 
+     *
+     * @octdoc  f:collection/walk
+     * @param   mixed       $arg                The input array, ArrayObject or collection.
+     * @param   callback    $cb                 Callback to apply to each element.
+     * @param   mixed       $userdata           Optional userdata parameter will be passed as the third parameter to the 
+     *                                          callback function.
+     * @return  bool                            Returns TRUE on success or FALSE on failure.
+     */
+    function walk(&$arg, $cb, $userdata = null)
+    /**/
+    {
+        return array_walk($arg, $cb, $userdata);
+    }
+}
+
 namespace org\octris\core\type {
     /**
      * Collection type. Implements special access on array objects.
@@ -8,25 +240,25 @@ namespace org\octris\core\type {
      * @copyright   copyright (c) 2010-2011 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    class collection implements \IteratorAggregate, \ArrayAccess, \Serializable, \Countable
+    class collection extends \ArrayIterator
     /**/
     {
         /**
-         * Collection data.
+         * Position of iterator.
          *
-         * @octdoc  v:collection/$data
-         * @var     array
+         * @octdoc  v:collection/$position
+         * @var     int
          */
-        protected $data = array();
+        protected $position = 0;
         /**/
 
         /**
-         * Keys of collection data.
+         * Number of items in collection.
          *
-         * @octdoc  v:collection/$keys
-         * @var     array
+         * @octdoc  v:collection/$count
+         * @var     int
          */
-        protected $keys = array();
+        protected $count = 0;
         /**/
 
         /**
@@ -39,76 +271,78 @@ namespace org\octris\core\type {
         /**/
         {
             if (is_null($value)) {
+                // initialize empty array if no value is specified
                 $value = array();
             } elseif (is_scalar($value)) {
-                // a scalar will be splitted into bytes
-                $value = str_split((string)$value, 1);
-            } elseif (is_object($value)) {
-                if (($value instanceof collection) || ($value instanceof collection\Iterator) || ($value instanceof \ArrayIterator)) {
-                    $value = $value->getArrayCopy();
-                } else {
-                    $value = (array)$value;
-                }
+                // a scalar will be splitted into it's character, UTF-8 safe.
+                $value = \org\octris\core\type\string\str_split((string)$value, 1);
+            } elseif (($value = collection\normalize($value))) {
+                // an object which proved the getArrayCopy method
+                $value = $value->getArrayCopy();
             } elseif (!is_array($value)) {
                 throw new Exception('don\'t know how to handle parameter of type "' . gettype($array) . '"');
             }
         
-            $this->keys = array_keys($value);
-            $this->data = $value;
+            $this->count = count($value);
+
+            parent::__construct($value);
+        }
+
+        /** Iterator **/
+        
+        /**
+         * Move forward to next element.
+         *
+         * @octdoc  m:collection/next
+         */
+        public function next()
+        /**/
+        {
+            ++$this->position;
+            parent::next();
+        }
+        
+        /**
+         * Move backwards to previous element.
+         *
+         * @octdoc  m:collection/prev
+         */
+        public function prev()
+        /**/
+        {
+            --$this->position;
+            parent::seek($this->position);
+        }
+        
+        /**
+         * Rewind the Iterator to the first element.
+         *
+         * @octdoc  m:collection/rewind
+         */
+        public function rewind()
+        /**/
+        {
+            $this->position = 0;
+            parent::rewind();
         }
     
-        /**
-         * Returns iterator object for collection.
-         *
-         * @octdoc  m:collection/getIterator
-         * @return  \ArrayIterator                  Instance of iterator.
-         */
-        public function getIterator()
-        /**/
-        {
-            return new \ArrayIterator($this->data);
-        }
+        /** SeekableIterator **/
         
         /**
-         * Returns copy of collection data as PHP array.
+         * Seeks to a position.
          *
-         * @octdoc  m:collection/getArrayCopy
-         * @return  array                           Collection data.
+         * @octdoc  m:collection/seek
+         * @param   int     $position       Position to seek to.
          */
-        public function getArrayCopy()
+        public function seek($position)
         /**/
         {
-            return $this->data;
+            $this->position = $position;
+            parent::seek($position);
         }
-
-        /**
-         * Whether a specified offset exists in collection data.
-         *
-         * @octdoc  m:collection/offsetExists
-         * @param   string      $offs       Offset to test.
-         * @return  bool                    Returns true if offset exists.
-         */
-        public function offsetExists($offs)
-        /**/
-        {
-            return (in_array($offs, $this->keys, true));
-        }
-
-        /**
-         * Return data for specified offset from collection.
-         *
-         * @octdoc  m:collection/offsetGet
-         * @param   string      $offs       Offset to retrieve.
-         * @return  mixed                   Value stored at specified offset or 'false'.
-         */
-        public function offsetGet($offs)
-        /**/
-        {
-            $idx = array_search($offs, $this->keys, true);
-        
-            return ($idx !== false ? $this->data[$this->keys[$idx]] : false);
-        }
-
+    
+        /** ArrayAccess **/
+    
         /**
          * Set value in collection at specified offset.
          *
@@ -120,12 +354,11 @@ namespace org\octris\core\type {
         /**/
         {
             // is_null implements $...[] = ...
-            if (!is_null($offs) && ($idx = array_search($offs, $this->keys, true)) !== false) {
-                $this->data[$this->keys[$idx]] = $value;
-            } else {
-                $this->keys[]      = $offs;
-                $this->data[$offs] = $value;
+            if (is_null($offs) || !$this->offsetExists($offs)) {
+                ++$this->count;
             }
+            
+            parent::offsetSet($offs, $value);
         }
 
         /**
@@ -137,42 +370,14 @@ namespace org\octris\core\type {
         public function offsetUnset($offs)
         /**/
         {
-            $idx = array_search($offs, $this->keys, true);
-        
-            if ($idx !== false) {
-                unset($this->keys[$idx]);
-                unset($this->data[$offs]);
+            if ($this->offsetExists($offs)) {
+                --$this->count;
             }
+            
+            parent::offsetUnset($offs);
         }
 
-        /**
-         * Rename keys of collection but preserve the ordering of the collection.
-         *
-         * @octdoc  m:collection/keyrename
-         * @param   array               $map                Map of origin name to new name.
-         * @return  \org\octris\core\type\collection        New collection with renamed keys.
-         */
-        public function keyrename($map)
-        /**/
-        {
-            return new collection(array_combine(array_map(function($v) use ($map) {
-                return (isset($map[$v])
-                        ? $map[$v]
-                        : $v);
-            }, array_keys($this->data)), array_values($this->data)));
-        }
-
-        /**
-         * Implements serialization of collection data.
-         *
-         * @octdoc  m:collection/serialize
-         * @return  string                  Serialized collection data.
-         */
-        public function serialize()
-        /**/
-        {
-            return serialize($this->data);
-        }
+        /** Serializable **/
 
         /**
          * Implements unserialization of collection data.
@@ -186,87 +391,59 @@ namespace org\octris\core\type {
             $this->__construct(unserialize($data));
         }
 
+        /** Special collection functionality **/
+
         /**
-         * Returns number of items stored in collection.
+         * Return current position of iterator.
          *
-         * @octdoc  m:collection/count
-         * @return  int                 Number of items in collection.
+         * @octdoc  m:collection/getPosition
+         * @return  int                     Iterator position.   
          */
-        public function count()
+        public function getPosition()
         /**/
         {
-            return count($this->data);
+            return $this->position;
         }
 
         /**
-         * Flatten a collection. Convert a (nested) collection into a flat collection with expanded keys
+         * Exchange the array for another one.
          *
-         * @octdoc  m:collection/flatten
-         * @param   string      $sep                    Optional separator for expanding keys.
-         * @return  \org\octris\core\type\collection    Flattened collection.
+         * @octdoc  m:collection/exchangeArray
+         * @param   mixed       $value      The new array or object to exchange to current data with.
+         * @return  array                   Data stored in collection
          */
-        public function flatten($sep = '.')
+        public function exchangeArray($value)
         /**/
         {
-            $tmp = array();
-
-            $array = new \RecursiveIteratorIterator(new \RecursiveArrayIterator($this->data), \RecursiveIteratorIterator::SELF_FIRST);
-            $d = 0;
-
-            $property = array();
-
-            foreach ($array as $k => $v) {
-                if (!is_int($k)) {
-                    if ($d > $array->getDepth()) {
-                        array_splice($property, $array->getDepth());
-                    }
-
-                    $property[$array->getDepth()] = $k;
-
-                    $d = $array->getDepth();
-                }
-
-                if (is_int($k)) {
-                    $tmp[implode($sep, $property)][] = $v;
-                } elseif (!is_array($v)) {
-                    $tmp[implode($sep, $property)] = $v;
-                }
-            }
-
-            return new collection($tmp);
+            $return = $this->getArrayCopy();
+            
+            $this->__construct($value);
+            
+            return $return;
         }
 
         /**
-         * Deflatten a flat collection.
+         * Rename keys of collection but preserve the ordering of the collection.
          *
-         * @octdoc  m:collection/deflatten
-         * @return  \org\octris\core\type\collection    Deflattened collection.
+         * @octdoc  m:collection/keyrename
+         * @param   array       $map        Map of origin name to new name.
          */
-        public function deflatten()
+        public function keyrename($map)
         /**/
         {
-            $tmp = array();
-
-            foreach ($this->data as $k => $v) {
-                $key  = explode('.', $k);
-                $ref =& $tmp;
-
-                foreach ($key as $part) {
-                    if (!isset($ref[$part])) {
-                        $ref[$part] = array();
-                    }
-
-                    $ref =& $ref[$part];
-                }
-
-                $ref = $v;
-            }
-
-            return new collection($tmp);
+            $data = $this->getArrayCopy();
+            $data = array_combine(array_map(function($v) use ($map) {
+                return (isset($map[$v])
+                        ? $map[$v]
+                        : $v);
+            }, array_keys($data)), array_values($data));
+            
+            parent::exchangeArray($data);
         }
-        
+
         /**
-         * Sets defaults for collection. Values are only set, if the keys of the values are not already available in collection.
+         * Sets defaults for collection. Values are only set, if the keys of the values are not already available 
+         * in collection.
          *
          * @octdoc  m:collection/defaults
          * @param   mixed       $value      Value(s) to set as default(s).
@@ -274,113 +451,17 @@ namespace org\octris\core\type {
         public function defaults($value)
         /**/
         {
-            if (is_array($value)) {
-                $this->data = array_merge($value, $this->data);
-            } elseif (is_object($value)) {
-                if (($value instanceof collection) || ($value instanceof collection\Iterator) || ($value instanceof \ArrayIterator)) {
-                    $value = $value->getArrayCopy();
-                } else {
-                    $value = (array)$value;
-                }
-
-                $this->data = array_merge($value, $this->data);
-            }
-        }
-        
-        /**
-         * Merge current collection with one or multiple others.
-         *
-         * @octdoc  m:collection/merge
-         * @param   mixed       $arg1, ...      Array(s) / collection(s) to merge.
-         */
-        public function merge()
-        /**/
-        {
-            for ($i = 0, $cnt = func_num_args(); $i < $cnt; ++$i) {
-                $arg = func_get_arg($i);
-                
-                if (is_array($arg)) {
-                    $this->data = array_merge($this->data, $arg);
-                } elseif (is_object($arg)) {
-                    if (($arg instanceof collection) || ($arg instanceof collection\Iterator) || ($arg instanceof \ArrayIterator)) {
-                        $arg = $arg->getArrayCopy();
-                    } else {
-                        $arg = (array)$arg;
-                    }
-
-                    $this->data = array_merge($this->data, $arg);
-                }
-            }
-        }
-        
-        /**
-         * UTF-8 encode collection values.
-         *
-         * @octdoc  m:collection/utf8Encode
-         * @return  \org\octris\core\type\collection    Encoded data.
-         */
-        public function utf8Encode()
-        /**/
-        {
-            $tmp = $this->data;
+            $data = $this->getArrayCopy();
             
-            array_walk_recursive($tmp, function(&$v) {
-                if (is_string($v) && !preg_match('%^(?:  
-                [\x09\x0A\x0D\x20-\x7E] # ASCII  
-                | [\xC2-\xDF][\x80-\xBF] # non-overlong 2-byte  
-                | \xE0[\xA0-\xBF][\x80-\xBF] # excluding overlongs  
-                | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2} # straight 3-byte  
-                | \xED[\x80-\x9F][\x80-\xBF] # excluding surrogates  
-                | \xF0[\x90-\xBF][\x80-\xBF]{2} # planes 1-3  
-                | [\xF1-\xF3][\x80-\xBF]{3} # planes 4-15  
-                | \xF4[\x80-\x8F][\x80-\xBF]{2} # plane 16  
-                )*$%xs', $v)) {
-                    $v = utf8_encode($v);
-                }            
-            });
+            if (is_object($value) && ($value instanceof ArrayObject || $value instanceof ArrayIterator)) {
+                $value = (array)$value;
+            } elseif (!is_array($value)) {
+                throw new Exception('don\'t know how to handle parameter of type "' . gettype($array) . '"');
+            }
 
-            return new collection($tmp);
-        }
-
-        /**
-         * UTF-8 decode collection values.
-         *
-         * @octdoc  m:collection/utf8Decode
-         * @return  \org\octris\core\type\collection    Decoded data.
-         */
-        public function utf8Decode()
-        /**/
-        {
-            $tmp = $this->data;
+            $data = array_merge($value, $data);
             
-            array_walk_recursive($tmp, function(&$v) {
-                if (is_string($v) && preg_match('%^(?:  
-                [\x09\x0A\x0D\x20-\x7E] # ASCII  
-                | [\xC2-\xDF][\x80-\xBF] # non-overlong 2-byte  
-                | \xE0[\xA0-\xBF][\x80-\xBF] # excluding overlongs  
-                | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2} # straight 3-byte  
-                | \xED[\x80-\x9F][\x80-\xBF] # excluding surrogates  
-                | \xF0[\x90-\xBF][\x80-\xBF]{2} # planes 1-3  
-                | [\xF1-\xF3][\x80-\xBF]{3} # planes 4-15  
-                | \xF4[\x80-\x8F][\x80-\xBF]{2} # plane 16  
-                )*$%xs', $v)) {
-                    $v = utf8_decode($v);
-                }            
-            });
-
-            return new collection($tmp);
-        }
-        
-        /**
-         * Return keys of collection.
-         *
-         * @octdoc  m:collection/getKeys
-         * @return  array                               Array of stored keys.
-         */
-        public function getKeys()
-        /**/
-        {
-            return $this->keys;
+            parent::exchangeArray($data);
         }
     }
 }
