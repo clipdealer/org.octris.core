@@ -8,7 +8,7 @@ namespace org\octris\core\dbo\mongodb {
      * @copyright   copyright (c) 2011 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    abstract class object
+    abstract class object extends \org\octris\core\type\collection
     /**/
     {
         /**
@@ -23,39 +23,30 @@ namespace org\octris\core\dbo\mongodb {
         /**
          * Database connection.
          *
-         * @octdoc  v:object/$cn
-         * @var     
+         * @octdoc  v:object/$pool
+         * @var     \org\octris\core\dbo\mongodb\pool
          */
-        private $cn = null;
-        /**/
-
-        /**
-         * Document data.
-         *
-         * @octdoc  v:object/$data
-         * @var     array
-         */
-        protected $data = array();
+        protected $pool = null;
         /**/
 
         /**
          * Constructor.
          *
          * @octdoc  m:object/__construct
-         * @param   \org\octris\core\dbo\mongodb\connection     $cn             Instance of mongodb database connection.
-         * @param   array                                       $data           Optional data to fill object with.
+         * @param   \org\octris\core\dbo\mongodb\pool       $pool           Instance of MongoDB connection pool.
+         * @param   array                                   $data           Optional data to fill object with.
          */
-        public function __construct(\org\octris\core\dbo\mongodb\connection $cn, array $data = array())
+        public function __construct(\org\octris\core\dbo\mongodb\pool $pool, array $data = array())
         /**/
         {
-            $this->cn = $cn;
+            $this->pool = $pool;
 
             if (isset($data['_id'])) {
                 $this->_id = $data['_id'];
                 unset($data['_id']);
             }
 
-            $this->data = $data;
+            parent::__construct($data);
         }
 
         /**
@@ -79,17 +70,7 @@ namespace org\octris\core\dbo\mongodb {
         public function __set($name, $value)
         /**/
         {
-            if ($name == '_id') {
-                throw new Exception('unable to set protected property "' . $name . '"');
-            } elseif (is_object($value))
-                if ($value instanceof DateTime) {
-                    $this->data[$name] = new MongoDate($value->getTimestamp());
-                } else {
-                    $this->data[$name] = $value;
-                }
-            } else {
-                $this->data[$name] = $value;
-            }
+            $this->offsetSet($name, $value);
         }
      
         /**
@@ -102,22 +83,7 @@ namespace org\octris\core\dbo\mongodb {
         public function __get($name)
         /**/
         {
-            $return = null;
-            
-            // handle ObjectId and unknown properties
-            if ($name == '_id') {
-                $return = $this->_id;
-            } elseif (!array_key_exists($name, $this->data)) {
-                $return = null;
-            } elseif (is_object($this->data[$name])) {
-                if ($this->data[$name] instanceof MongoDate) {
-                    $return = new DateTime((string)$this->data[$name]);
-                } else {
-                    $return = (string)$this->data[$name];
-                }
-            }
-            
-            return $return;
+            return $this->offsetGet($name);
         }
         
         /**
@@ -128,10 +94,12 @@ namespace org\octris\core\dbo\mongodb {
         public function save()
         /**/
         {
+            $cn = $this->pool->connect(\org\octris\core\dbo::T_DBO_UPDATE);
+            
+            $data = parent::getArrayCopy();
+            
             if (is_null($this->_id)) {
                 // insert
-                $data = $this->data;
-
                 $this->cn->insert($data);
 
                 if (isset($data['_id'])) {
@@ -139,7 +107,106 @@ namespace org\octris\core\dbo\mongodb {
                 }
             } else {
                 // update
-                $this->cn->update(array('_id' => new MongoId($this->_id)), array('$set' => $this->data));
+                $this->cn->update(array('_id' => new MongoId($this->_id)), array('$set' => $data));
+            }
+            
+            $cn->release();
+        }
+        
+        /**
+         * Prepare data for storing into MongoDB.
+         *
+         * @octdoc  m:object/import
+         * @param   mixed       $value      Value to prepare.
+         * @return  mixed                   Prepared value.
+         */
+        private function import($value)
+        /**/
+        {
+            if (is_object($value))
+            // handle objects
+                if ($value instanceof DateTime) {
+                    // convert PHP DateTime to MongoDate
+                    $value = new MongoDate($value->getTimestamp());
+                } elseif ($value instanceof \org\octris\core\type\collection) {
+                    // convert 
+                    $value = (array)$value;
+                }
+            } 
+            
+            if (is_array($value)) {
+                foreach ($value as &$item) {
+                    $item = $this->import($item);
+                }
+            }
+            
+            return $value;
+        }
+        
+        /**
+         * Prepare data for returning in Userland code.
+         *
+         * @octdoc  m:object/export
+         * @param   mixed       $value      Value to prepare.
+         * @return  mixed                   Prepared value.
+         */
+        private function export($value)
+        /**/
+        {
+            if (is_object($value)) {
+                if ($value instanceof MongoDate) {
+                    // convert MongoDate to PHP DateTime
+                    $value = new DateTime((string)$value);
+                }
+            } elseif (is_array($value)) {
+                foreach ($value as &$item) {
+                    $item = $this->export($item);
+                }
+            }
+            
+            return $value;
+        }
+        
+        /** ArrayAccess **/
+    
+        /**
+         * Returns the value at the specified index.
+         *
+         * @octdoc  m:object/offsetGet
+         * @param   string      $offs       Offset to return the value of.
+         * @return  mixed                   Value stored at specified offset.
+         */
+        public function offsetGet($offs)
+        /**/
+        {
+            $return = null;                 // return 'null' for unknown object properties
+            
+            if ($offs == '_id') {
+                // ObjectId
+                $return = (string)$this->_id;
+            } elseif ($this->offsetExists($offs)) {
+                // known property
+                $return = $this->export(parent::offsetGet($offs));
+            }
+            
+            return $return;
+        }
+    
+        /**
+         * Set value in collection at specified offset.
+         *
+         * @octdoc  m:collection/offsetSet
+         * @param   string      $offs       Offset to set value at.
+         * @param   mixed       $value      Value to set at offset.
+         */
+        public function offsetSet($offs, $value)
+        /**/
+        {
+            if ($offs == '_id') {
+                // ObjectId can't be set!
+                throw new Exception('unable to set protected property "' . $name . '"');
+            } else {
+                $value = $this->import(parent::offsetSet($offs, $value));
             }
         }
     }    

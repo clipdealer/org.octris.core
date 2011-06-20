@@ -1,6 +1,6 @@
 <?php
 
-namespace org\octris\core\dbo\mongodb extends \org\octris\core\type\collection {
+namespace org\octris\core\dbo\mongodb {
     /**
      * Result set of a mongodb query.
      *
@@ -9,7 +9,7 @@ namespace org\octris\core\dbo\mongodb extends \org\octris\core\type\collection {
      * @author      Harald Lapp <harald@octris.org>
      * @todo        Implement collection / Array access
      */
-    class result
+    class result extends \org\octris\core\type\collection
     /**/
     {
         /**
@@ -20,35 +20,172 @@ namespace org\octris\core\dbo\mongodb extends \org\octris\core\type\collection {
          */
         private $cursor = null;
         /**/
+
+        /**
+         * Instance of connection pool.
+         *
+         * @octdoc  v:result/$pool
+         * @var     \org\octris\core\dbo\mongodb\pool
+         */
+        protected $pool = null;
+        /**/
+
+        /**
+         * Collection name.
+         *
+         * @octdoc  v:result/$collection
+         * @var     string
+         */
+        protected $collection = '';
+        /**/
+        
+        /**
+         * Object namespace for result objects.
+         *
+         * @octdoc  v:result/$object_ns
+         * @var     string
+         */
+        protected $object_ns = '';
+        /**/
         
         /**
          * Constructor.
          *
          * @octdoc  m:result/__construct
-         * @param   MongoCursor         $cursor             Cursor resource from MongoDB.
+         * @param   \org\octris\core\dbo\mongodb\pool       $pool               Instance of connection pool.
+         * @param   MongoCursor                             $cursor             MongoDB cursor instance.
+         * @param   string                                  $collection         Name of result object to create instance for result item.
+         * @param   string                                  $object_ns          Namespace of object to create.
          */
-        public function __construct($cursor)
+        public function __construct(\org\octris\core\mongodb\pool $pool, MongoCursor $cursor, $collection, $object_ns)
         /**/
         {
-            $this->cursor = $cursor;
+            $this->pool       = $pool;
+            $this->cursor     = $cursor;
+            $this->collection = $collection;
+            $this->object_ns  = $object_ns;
+            
+            $this->count      = count($this->cursor);
+        }
+
+        /** Iterator **/
+        
+        /**
+         * Counts the number of results for this query.
+         *
+         * @octdoc  m:result/count
+         * @return  int                     Number of results.
+         */
+        public function count()
+        /**/
+        {
+            return count($this->cursor);
+        }
+        
+        /**
+         * Returns the current element.
+         *
+         * @octdoc  m:result/current
+         * @return  \org\octris\core\dbo\mongodb\object     Result.   
+         */
+        public function current()
+        /**/
+        {
+            $class = $this->object_ns . $this->collection;
+            
+            return new $class($this->pool, current($this->cursor));
+        }
+        
+        /**
+         * Returns the current result's _id.
+         *
+         * @octdoc  m:result/key
+         * @return  string                  _id of current result row.
+         */
+        public function key()
+        /**/
+        {
+            return key($this->cursor);
         }
 
         /**
-         * Fetch next result.
+         * Move forward to next element.
          *
-         * @octdoc  m:result/fetchNext
-         * @return  bool|array                              Returns array of data or false, if no more data is available.
+         * @octdoc  m:result/next
          */
-        public function fetchNext()
+        public function next()
         /**/
         {
-            $data = false;
-
-            if (is_object($this->cursor) && $this->cursor->hasNext()) {
-                $data = $this->cursor->getNext();
-            }
+            ++$this->position;
+            next($this->cursor);
+        }
         
-            return $data;
+        /**
+         * Rewind the cursor to the first element.
+         *
+         * @octdoc  m:result/rewind
+         */
+        public function rewind()
+        /**/
+        {
+            $this->position = 0;
+            reset($this->cursor);
+        }
+
+        /**
+         * Checks if the cursor is reading a valid result.
+         *
+         * @octdoc  m:result/valid
+         * @return  bool                    Returns true, if result is valid.
+         */
+        public function valid()
+        /**/
+        {
+            $this->cursor->valid();
+        }
+
+        /** Special collection functionality **/
+
+        /**
+         * Return current position of iterator.
+         *
+         * @octdoc  m:collection/getPosition
+         * @return  int                     Iterator position.   
+         */
+        public function getPosition()
+        /**/
+        {
+            return $this->position;
+        }
+
+        /** Methods (currenlty) not implemented needs to overwrite parent implementations **/
+        
+        public function prev() {
+            throw new Exception(__METHOD__ . ' not yet implemented!');
+        }
+        public function seek($position) {
+            throw new Exception(__METHOD__ . ' not yet implemented!');
+        }
+        public function offsetGet($offs) {
+            throw new Exception(__METHOD__ . ' not yet implemented!');
+        }
+        public function offsetSet($offs, $value) {
+            throw new Exception(__METHOD__ . ' not yet implemented!');
+        }
+        public function offsetExists($offs) {
+            throw new Exception(__METHOD__ . ' not yet implemented!');
+        }
+        public function offsetUnset($offs) {
+            throw new Exception(__METHOD__ . ' not yet implemented!');
+        }
+        public function unserialize($data) {
+            throw new Exception(__METHOD__ . ' not yet implemented!');
+        }
+        public function getArrayCopy() {
+            throw new Exception(__METHOD__ . ' not yet implemented!');
+        }
+        public function exchangeArray($value) {
+            throw new Exception(__METHOD__ . ' not yet implemented!');
         }
     }
 }
