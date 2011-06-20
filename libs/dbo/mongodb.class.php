@@ -130,7 +130,7 @@ namespace org\octris\core\dbo {
 
                 if ($result = $cn->getReference($ref)) {
                     $class = static::$object_ns . $collection;
-                    $item  = new $class($db, $result);
+                    $item  = new $class(self::$pool, $result);
                 }
 
                 return $item;
@@ -166,11 +166,9 @@ namespace org\octris\core\dbo {
         public static function create($collection, array $data = array())
         /**/
         {
-            $cn = self::getAccess(\org\octris\core\dbo::T_DBO_UPDATE);
-
             $class = static::$object_ns . $collection;
 
-            return new $class($cn, $data);
+            return new $class(self::$pool, $data);
         }
         
         /**
