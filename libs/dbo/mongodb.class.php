@@ -41,7 +41,7 @@ namespace org\octris\core\dbo {
          * @param   string      $type                               Type of access (master / slave).
          * @return  \org\octris\core\dbo\mongodb\connection         Connection.
          */
-        private static function getAccess($type)
+        public static function getAccess($type)
         /**/
         {
             if (is_null(self::$pool)) {
