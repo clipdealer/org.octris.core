@@ -113,6 +113,60 @@ namespace org\octris\core\dbo\mongodb {
             $cn->release();
         }
         
+        /**
+         * Prepare data for storing into MongoDB.
+         *
+         * @octdoc  m:object/import
+         * @param   mixed       $value      Value to prepare.
+         * @return  mixed                   Prepared value.
+         */
+        private function import($value)
+        /**/
+        {
+            if (is_object($value))
+            // handle objects
+                if ($value instanceof DateTime) {
+                    // convert PHP DateTime to MongoDate
+                    $value = new MongoDate($value->getTimestamp());
+                } elseif ($value instanceof \org\octris\core\type\collection) {
+                    // convert 
+                    $value = (array)$value;
+                }
+            } 
+            
+            if (is_array($value)) {
+                foreach ($value as &$item) {
+                    $item = $this->import($item);
+                }
+            }
+            
+            return $value;
+        }
+        
+        /**
+         * Prepare data for returning in Userland code.
+         *
+         * @octdoc  m:object/export
+         * @param   mixed       $value      Value to prepare.
+         * @return  mixed                   Prepared value.
+         */
+        private function export($value)
+        /**/
+        {
+            if (is_object($value)) {
+                if ($value instanceof MongoDate) {
+                    // convert MongoDate to PHP DateTime
+                    $value = new DateTime((string)$value);
+                }
+            } elseif (is_array($value)) {
+                foreach ($value as &$item) {
+                    $item = $this->export($item);
+                }
+            }
+            
+            return $value;
+        }
+        
         /** ArrayAccess **/
     
         /**
@@ -132,12 +186,7 @@ namespace org\octris\core\dbo\mongodb {
                 $return = (string)$this->_id;
             } elseif ($this->offsetExists($offs)) {
                 // known property
-                $return = parent::offsetGet($offs);
-                
-                if ($return instanceof MongoDate) {
-                    // convert MongoDate to PHP DateTime
-                    $return = new DateTime((string)$return);
-                }
+                $return = $this->export(parent::offsetGet($offs));
             }
             
             return $return;
@@ -156,15 +205,9 @@ namespace org\octris\core\dbo\mongodb {
             if ($offs == '_id') {
                 // ObjectId can't be set!
                 throw new Exception('unable to set protected property "' . $name . '"');
-            } elseif (is_object($value))
-                // handle objects
-                if ($value instanceof DateTime) {
-                    // convert PHP DateTime to MongoDate
-                    $value = new MongoDate($value->getTimestamp());
-                }
+            } else {
+                $value = $this->import(parent::offsetSet($offs, $value));
             }
-
-            parent::offsetSet($offs, $value);
         }
     }    
 }
