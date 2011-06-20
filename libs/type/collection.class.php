@@ -57,7 +57,7 @@ namespace org\octris\core\type\collection {
     function merge($arg1)
     /**/
     {
-        $collection = (is_object($arg1) && $arg1 instanceof \org\octris\core\type\collection);
+        $is_collection = (is_object($arg1) && $arg1 instanceof \org\octris\core\type\collection);
         
         if (!($arg1 = normalize($arg1))) {
             return false;
@@ -72,7 +72,7 @@ namespace org\octris\core\type\collection {
             }
         }
         
-        if ($collection) {
+        if ($is_collection) {
             $arg1 = new \org\octris\core\type\collection($arg1);
         }
         
@@ -90,6 +90,8 @@ namespace org\octris\core\type\collection {
     function flatten($p, $sep = '.')
     /**/
     {
+        $is_collection = (is_object($p) && $p instanceof \org\octris\core\type\collection);
+
         if (!($p = normalize($p))) {
             return false;
         }
@@ -119,6 +121,10 @@ namespace org\octris\core\type\collection {
             }
         }
 
+        if ($is_collection) {
+            $p = new \org\octris\core\type\collection($p);
+        }
+
         return $tmp;
     }
 
@@ -133,6 +139,8 @@ namespace org\octris\core\type\collection {
     function deflatten($p, $sep = '.')
     /**/
     {
+        $is_collection = (is_object($p) && $p instanceof \org\octris\core\type\collection);
+
         if (!($p = normalize($p))) {
             return false;
         }
@@ -154,6 +162,10 @@ namespace org\octris\core\type\collection {
             $ref = $v;
         }
 
+        if ($is_collection) {
+            $p = new \org\octris\core\type\collection($p);
+        }
+
         return $tmp;
     }
     
@@ -166,12 +178,14 @@ namespace org\octris\core\type\collection {
      * @return  array                           Returns an array containing all the elements of arg1 after applying the
      *                                          callback function to each one.
      */
-    function map($cb)
+    function map($cb, $arg1)
     /**/
     {
         $args = func_get_args();
         array_shift($args);
         $cnt = count($args);
+
+        $is_collection = (is_object($arg1) && $arg1 instanceof \org\octris\core\type\collection);
 
         $data = array();
         $next = function() use (&$args, $cnt) {
@@ -192,6 +206,10 @@ namespace org\octris\core\type\collection {
 
         while ($tmp = $next()) {
             $data[] = call_user_func_array($cb, $tmp);
+        }
+
+        if ($is_collection) {
+            $data = new \org\octris\core\type\collection($data);
         }
 
         return $data;
