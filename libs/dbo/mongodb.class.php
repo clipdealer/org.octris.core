@@ -148,6 +148,8 @@ namespace org\octris\core\dbo {
         public static function execute($code, array $args = array())
         /**/
         {
+            $cn = self::getAccess(\org\octris\core\dbo::T_DBO_UPDATE);
+
             $result = $cn->execute($code, $args);
 
             return $result;
@@ -164,6 +166,8 @@ namespace org\octris\core\dbo {
         public static function create($collection, array $data = array())
         /**/
         {
+            $cn = self::getAccess(\org\octris\core\dbo::T_DBO_UPDATE);
+
             $class = static::$object_ns . $collection;
 
             return new $class($cn, $data);
