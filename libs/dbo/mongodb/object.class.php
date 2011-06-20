@@ -70,17 +70,7 @@ namespace org\octris\core\dbo\mongodb {
         public function __set($name, $value)
         /**/
         {
-            if ($name == '_id') {
-                throw new Exception('unable to set protected property "' . $name . '"');
-            } elseif (is_object($value))
-                if ($value instanceof DateTime) {
-                    $this->data[$name] = new MongoDate($value->getTimestamp());
-                } else {
-                    $this->data[$name] = $value;
-                }
-            } else {
-                $this->data[$name] = $value;
-            }
+            $this->offsetSet($name, $value);
         }
      
         /**
@@ -93,22 +83,7 @@ namespace org\octris\core\dbo\mongodb {
         public function __get($name)
         /**/
         {
-            $return = null;
-            
-            // handle ObjectId and unknown properties
-            if ($name == '_id') {
-                $return = $this->_id;
-            } elseif (!array_key_exists($name, $this->data)) {
-                $return = null;
-            } elseif (is_object($this->data[$name])) {
-                if ($this->data[$name] instanceof MongoDate) {
-                    $return = new DateTime((string)$this->data[$name]);
-                } else {
-                    $return = (string)$this->data[$name];
-                }
-            }
-            
-            return $return;
+            return $this->offsetGet($name);
         }
         
         /**
@@ -136,6 +111,60 @@ namespace org\octris\core\dbo\mongodb {
             }
             
             $cn->release();
+        }
+        
+        /** ArrayAccess **/
+    
+        /**
+         * Returns the value at the specified index.
+         *
+         * @octdoc  m:object/offsetGet
+         * @param   string      $offs       Offset to return the value of.
+         * @return  mixed                   Value stored at specified offset.
+         */
+        public function offsetGet($offs)
+        /**/
+        {
+            $return = null;                 // return 'null' for unknown object properties
+            
+            if ($offs == '_id') {
+                // ObjectId
+                $return = (string)$this->_id;
+            } elseif ($this->offsetExists($offs)) {
+                // known property
+                $return = parent::offsetGet($offs);
+                
+                if ($return instanceof MongoDate) {
+                    // convert MongoDate to PHP DateTime
+                    $return = new DateTime((string)$return);
+                }
+            }
+            
+            return $return;
+        }
+    
+        /**
+         * Set value in collection at specified offset.
+         *
+         * @octdoc  m:collection/offsetSet
+         * @param   string      $offs       Offset to set value at.
+         * @param   mixed       $value      Value to set at offset.
+         */
+        public function offsetSet($offs, $value)
+        /**/
+        {
+            if ($offs == '_id') {
+                // ObjectId can't be set!
+                throw new Exception('unable to set protected property "' . $name . '"');
+            } elseif (is_object($value))
+                // handle objects
+                if ($value instanceof DateTime) {
+                    // convert PHP DateTime to MongoDate
+                    $value = new MongoDate($value->getTimestamp());
+                }
+            }
+
+            parent::offsetSet($offs, $value);
         }
     }    
 }
