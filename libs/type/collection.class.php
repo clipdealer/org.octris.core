@@ -47,15 +47,18 @@ namespace org\octris\core\type\collection {
     }
         
     /**
-     * Merge multiple arrays / collections.
+     * Merge multiple arrays / collections. The function returns either an array or an collection depending on the type of the 
+     * first argument.
      *
      * @octdoc  m:collection/merge
-     * @param   mixed       $arg1, ...              Array(s) / collection(s) to merge.
-     * @return  array|bool                          Merged array data or false.
+     * @param   mixed       $arg1, ...                              Array(s) / collection(s) to merge.
+     * @return  array|\org\octris\core\type\collection|bool         Merged array data or false.
      */
     function merge($arg1)
     /**/
     {
+        $collection = (is_object($arg1) && $arg1 instanceof \org\octris\core\type\collection);
+        
         if (!($arg1 = normalize($arg1))) {
             return false;
         }
@@ -67,6 +70,10 @@ namespace org\octris\core\type\collection {
             if (($arg = normalize($args[$i]))) {
                 $arg1 = array_merge($arg1, $arg);
             }
+        }
+        
+        if ($collection) {
+            $arg1 = new \org\octris\core\type\collection($arg1);
         }
         
         return $arg1;
