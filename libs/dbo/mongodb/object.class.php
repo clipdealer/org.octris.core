@@ -23,10 +23,10 @@ namespace org\octris\core\dbo\mongodb {
         /**
          * Database connection.
          *
-         * @octdoc  v:object/$cn
-         * @var     
+         * @octdoc  v:object/$pool
+         * @var     \org\octris\core\dbo\mongodb\pool
          */
-        private $cn = null;
+        protected $pool = null;
         /**/
 
         /**
@@ -42,13 +42,13 @@ namespace org\octris\core\dbo\mongodb {
          * Constructor.
          *
          * @octdoc  m:object/__construct
-         * @param   \org\octris\core\dbo\mongodb\connection     $cn             Instance of mongodb database connection.
-         * @param   array                                       $data           Optional data to fill object with.
+         * @param   \org\octris\core\dbo\mongodb\pool       $pool           Instance of MongoDB connection pool.
+         * @param   array                                   $data           Optional data to fill object with.
          */
-        public function __construct(\org\octris\core\dbo\mongodb\connection $cn, array $data = array())
+        public function __construct(\org\octris\core\dbo\mongodb\pool $pool, array $data = array())
         /**/
         {
-            $this->cn = $cn;
+            $this->pool = $pool;
 
             if (isset($data['_id'])) {
                 $this->_id = $data['_id'];
@@ -128,6 +128,8 @@ namespace org\octris\core\dbo\mongodb {
         public function save()
         /**/
         {
+            $cn = $this->pool->connect(\org\octris\core\dbo::T_DBO_UPDATE);
+            
             if (is_null($this->_id)) {
                 // insert
                 $data = $this->data;
@@ -141,6 +143,8 @@ namespace org\octris\core\dbo\mongodb {
                 // update
                 $this->cn->update(array('_id' => new MongoId($this->_id)), array('$set' => $this->data));
             }
+            
+            $cn->release();
         }
     }    
 }
