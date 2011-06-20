@@ -96,14 +96,18 @@ namespace org\octris\core\dbo {
          * @param   array                                       $sort               Optional sorting parameters.
          * @param   array                                       $fields             Optional fields to return from in result.
          * @param   array                                       $hint               Optional query hint.
-         * @return  bool|\org\octris\core\dbo\mongodb\object                        Instance of item object or 'false'
+         * @return  \org\octris\core\dbo\mongodb\result                             Instance of item object or 'false'
          */
         public static function query($collection, array $criteria = array(), $offset = 0, $limit = null, array $sort = null, array $fields = array(), array $hint = null)
         /**/
         {
-            $class = static::$object_ns . $collection;
+            $result = array();
             
-            $result = new static($cn, $collection, $cn->query($collection, $criteria, $offset, $limit, $sort, $fields, $hint));
+            $cn = self::getAccess(\org\octris\core\dbo::T_DBO_SELECT);
+            
+            if (($cursor = $cn->query($collection, $criteria, $offset, $limit, $sort, $fields, $hint))) {
+                $result = new \org\octris\core\dbo\mongodb\result(self::$pool, $cursor, self::$object_ns, $collection);
+            }
 
             return $result;
         }
