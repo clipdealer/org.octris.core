@@ -26,7 +26,7 @@ namespace org\octris\core\dbo {
          * @octdoc  v:mongodb/$pool
          * @var     \org\octris\core\dbo\mongodb\pool
          */
-        private $pool = null;
+        private static $pool = null;
         /**/
         
         /*
