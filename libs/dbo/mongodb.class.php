@@ -184,7 +184,7 @@ namespace org\octris\core\dbo {
         public static function load($collection, $_id)
         /**/
         {
-            return self::first($cn, $collection, array('_id' => new MongoId($_id)));
+            return self::first($collection, array('_id' => new MongoId($_id)));
         }
     }
 }
