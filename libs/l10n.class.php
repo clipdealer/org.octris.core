@@ -391,7 +391,7 @@ namespace org\octris\core {
         public function translate($msg)
         /**/
         {
-            return ($msg !== '' && (($out = gettext($txt)) !== '') 
+            return ($msg !== '' && (($out = gettext($msg)) !== '') 
                     ? $out 
                     : $msg);
         }
