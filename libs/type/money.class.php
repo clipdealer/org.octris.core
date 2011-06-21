@@ -114,18 +114,6 @@ namespace org\octris\core\type {
             
             return $old_currency;
         }
-
-        /**
-         * Return currency of money object in ISO format.
-         *
-         * @octdoc  m:money/getCurrency
-         * @return  string                              Currency.   
-         */
-        public function getCurrency()
-        /**/
-        {
-            return $this->currency;
-        }
     }
     
     // set default exchange service
