@@ -71,7 +71,7 @@ namespace org\octris\core\type {
                 $this->value = array_reduce(
                     array_filter($args, function($v) {
                         return ((int)$v !== 0);
-                    }, 
+                    }), 
                     function($v, $w) {
                         return $v /= $w;
                     }, 
