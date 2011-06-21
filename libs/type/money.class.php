@@ -26,7 +26,7 @@ namespace org\octris\core\type {
          * @octdoc  v:money/$xchg_service
          * @var     callback
          */
-        protected $xchg_service = null;
+        protected static $xchg_service = null;
         /**/
 
         /**
