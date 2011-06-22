@@ -276,10 +276,8 @@ namespace org\octris\core\type {
             } elseif (is_scalar($value)) {
                 // a scalar will be splitted into it's character, UTF-8 safe.
                 $value = \org\octris\core\type\string\str_split((string)$value, 1);
-            } elseif (($value = collection\normalize($value))) {
-                // an object which proved the getArrayCopy method
-                $value = $value->getArrayCopy();
-            } elseif (!is_array($value)) {
+            } elseif (!($value = collection\normalize($value))) {
+                // not an array nor a collection
                 throw new Exception('don\'t know how to handle parameter of type "' . gettype($array) . '"');
             }
         
