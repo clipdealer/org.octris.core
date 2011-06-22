@@ -208,7 +208,7 @@ namespace org\octris\core {
         public function getValue($name, $validator, array $options = array())
         /**/
         {
-            $key = md5(serialize(array($name, $type, $options)));
+            $key = md5(serialize(array($name, $validator, $options)));
 
             if (!isset($this->validated[$key])) {
                 if (is_scalar($validator) && class_exists($validator) && is_subclass_of($validator, '\org\octris\core\validate\type')) {
