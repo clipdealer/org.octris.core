@@ -163,11 +163,9 @@ class schemaTest extends PHPUnit_Framework_TestCase {
                                 ),
                                 array(
                                     'type'      => validate::T_CALLBACK,
-                                    'options'   => array(
-                                        'callback'  => function($value) {
-                                            return !in_array($value, array('admin', 'chef'));
-                                        }
-                                    )
+                                    'callback'  => function($value) {
+                                        return !in_array($value, array('admin', 'chef'));
+                                    }
                                 )
                             )
                         )
