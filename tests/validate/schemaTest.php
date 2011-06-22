@@ -28,7 +28,7 @@ class schemaTest extends PHPUnit_Framework_TestCase {
             )
         );
         
-        $this->assertTrue($schema->validate($data));
+        $this->assertTrue(!!$schema->validate($data));
     }
     
     public function testExtended() {
@@ -89,7 +89,7 @@ class schemaTest extends PHPUnit_Framework_TestCase {
             )
         );
         
-        $this->assertTrue($schema->validate($data));
+        $this->assertTrue(!!$schema->validate($data));
     }
     
     public function testList() {
@@ -110,7 +110,7 @@ class schemaTest extends PHPUnit_Framework_TestCase {
             )
         );
         
-        $this->assertTrue($schema->validate($data));
+        $this->assertTrue(!!$schema->validate($data));
     }
     
     public function testKeyrename() {
@@ -142,7 +142,7 @@ class schemaTest extends PHPUnit_Framework_TestCase {
             )
         );
         
-        $this->assertTrue($schema->validate($data));
+        $this->assertTrue(!!$schema->validate($data));
     }
     
     public function testChain() {
@@ -174,6 +174,6 @@ class schemaTest extends PHPUnit_Framework_TestCase {
             )
         );
         
-        $this->assertTrue($schema->validate($data));
+        $this->assertTrue(!!$schema->validate($data));
     }
 }
