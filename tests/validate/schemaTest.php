@@ -157,18 +157,16 @@ class schemaTest extends PHPUnit_Framework_TestCase {
                     'properties' => array(
                         'username' => array(
                             'type'      => validate::T_CHAIN,
-                            'options'   => array(
-                                'chain' => array(
-                                    array(
-                                        'type'      => validate::T_PRINTABLE
-                                    ),
-                                    array(
-                                        'type'      => validate::T_CALLBACK,
-                                        'options'   => array(
-                                            'callback'  => function($value) {
-                                                return !in_array($value, array('admin', 'chef'));
-                                            }
-                                        )
+                            'chain' => array(
+                                array(
+                                    'type'      => validate::T_PRINTABLE
+                                ),
+                                array(
+                                    'type'      => validate::T_CALLBACK,
+                                    'options'   => array(
+                                        'callback'  => function($value) {
+                                            return !in_array($value, array('admin', 'chef'));
+                                        }
                                     )
                                 )
                             )
