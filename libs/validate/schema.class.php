@@ -210,6 +210,7 @@ namespace org\octris\core\validate {
                         
                         break;
                     }
+                    
                     // validate if same properties are available in value and schema
                     if (!isset($schema['properties'])) {
                         throw new \Exception("schema error -- no properties available");
