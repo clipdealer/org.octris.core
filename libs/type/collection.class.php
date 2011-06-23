@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the 'org.octris.core' package.
+ *
+ * (c) Harald Lapp <harald@octris.org>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace org\octris\core\type\collection {
     /**
      * Normalize an object which extens ArrayObject or ArrayIterator, returns an array.
