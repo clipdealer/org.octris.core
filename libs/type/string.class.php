@@ -684,4 +684,20 @@ namespace org\octris\core\type\string {
 
         return \vsprintf($format, $args);
     }
+    
+    /**
+     * Check if a specified string is valid UTF-8.
+     *
+     * @octdoc  f:string/isUtf8
+     * @param   string      $string         String to validate.
+     * @return  bool                        Returns true, if a string is valid UTF-8.
+     */
+    function isUtf8($string)
+    /**/
+    {
+        $tmp = mb_convert_encoding($string, 'UTF-8', 'UTF-8');
+        
+        return ($tmp == $string);
+        
+    }
 }
