@@ -114,10 +114,16 @@ namespace org\octris\core {
         public function setLocale($locale)
         /**/
         {
+            if (($pos = strpos($locale, '.')) !== false) {
+                $locale = substr($locale, 0, $pos);
+            }
+            
             $ret      = $this->lc;
             $this->lc = $locale;
 
             array_push($this->lc_mem, $ret);
+
+            $locale .= '.UTF-8';
 
             putenv('LANG=' . $locale);
             putenv('LC_MESSAGES=' . $locale);
