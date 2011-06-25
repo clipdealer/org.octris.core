@@ -29,18 +29,6 @@ namespace org\octris\core\l10n {
         protected static $cache = array();
         /**/
         
-        /**
-         * Number formatter.
-         *
-         * @octdoc  m:cldr/numberFormat
-         * @param   
-         */
-        public function numberFormat()
-        /**/
-        {
-            
-        }
         
     }
-    
 }
