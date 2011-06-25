@@ -1,7 +1,9 @@
-Template Engine -- Overview
-===========================
+% Template Engine
+% Harald Lapp (<harald@octris.org>)
+% July, 2011
 
-(c) 2010 by Harald Lapp <harald@octris.org>
+Overview
+========
 
 The octris framework provides an own template engine, which works independet of the structure of a template. It does
 not matter, if the template is a simple text file or in HTML or XML format. The template engine converts template
@@ -27,8 +29,6 @@ Template variables
 Template variables are written in the form the following example, where ~varname~ is a fully
 qualified name of an existing template variable:
 
-..  source: html
-
     {{$varname}}
     {{$varname:first}}
     {{$varname:0:second}}
@@ -36,15 +36,11 @@ qualified name of an existing template variable:
 
 The examples above shows the access to values of simple variables and multidimensional arrays:
 
-..  source: php
-
     $varname
     $varname["first"]
     $varname["0"]["second"]
 
 _Example:_
-
-..  source: html
 
     <html>
         <head>
@@ -68,8 +64,6 @@ Constants
 Template constants are written in the form the following example, where ~CONSTANT~ is a fully
 qualified name of an existing template constant:
 
-..  source: html
-
     {{%CONSTANT}}
 
 The template engine defines the following constants:
@@ -79,8 +73,6 @@ Strings
 
 Strings in templates are either enclosed by ' or " and are only allowed as parameters
 for macros and methods.
-
-..  source: html
 
     <!-- allowed -->
     {{write("testtext")}}
@@ -94,8 +86,6 @@ Block commands
 --------------
 
 A block encloses a part of a template and executes different actions of the enclosed template part:
-
-..  source: html
 
     {{#block( parameter )}}
     ...
@@ -126,8 +116,6 @@ re-building it at the bottom of the page. The copied template part may be access
 
 _Copy block:_
 
-..  source: html
-
     {{#copy($buffer)}}
     ...
     {{#end}}
@@ -142,16 +130,12 @@ _Parameter:_
 
 _Paste block:_
 
-..  source: html
-
     {{$name}}
 
 #cron
 ~~~~~
 
 Publish a template part based on time.
-
-..  source: html
 
     {{#cron($start [, $end])}}
     ...
@@ -182,8 +166,6 @@ compressor and than output in the template.
 
 _Cut block:_
 
-..  source: html
-
     {{#cut($buffer)}}
     ...
     {{#end}}
@@ -197,8 +179,6 @@ _Parameter:_
 +---------------+-----------+-----------+-----------------------------------------------+
 
 _Process (and paste) block (example):_
-
-..  source: html
 
     {{compactCSS($name)}}
 

@@ -1,5 +1,6 @@
-UTF-8 support withing OCTRiS framework
-======================================
+% UTF-8 support withing OCTRiS framework
+% Harald Lapp (<harald@octris.org>)
+% July, 2011
 
 The following is a list of string functions PHP provides. The column 'PHP: UTF-8' specifies if the PHP built-in function is
 UTF-8 safe. If this is the case, the OCTRiS framework will not provide an own implementation of the function. The column 

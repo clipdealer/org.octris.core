@@ -1,7 +1,9 @@
-Parameter importing and validating using validation schemas
-===========================================================
+% Parameter importing and validating using validation schemas
+% Harald Lapp (<harald@octris.org>)
+% July, 2011
 
-(c) 2010-2011 by Harald Lapp <harald@octris.org>
+Abstract
+--------
 
 The OCTRiS framework provides powerful functionality for validating parameters -- request parameters, server
 and environment variables, command line options. The OCTRiS validation schemas support validation from simple values
@@ -13,8 +15,6 @@ Field validation rules
 _Example #1:_
 
 Example shows required schema for validating login credentials:
-
-..  source: php
 
     $schema = array(
         'default' => array(                        // entry point, always required!
@@ -32,8 +32,6 @@ Example shows required schema for validating login credentials:
 
 The example abolve can be cleaned up a little bit, if only the default schema is used:
 
-..  source: php
-
     $schema = array(
         'type'          => validate::T_OBJECT,
         'properties'    => array(
@@ -49,8 +47,6 @@ The example abolve can be cleaned up a little bit, if only the default schema is
 _Example: #2:_
 
 Example shows required schema for user-registration data containing a list of up to 5 website URLs:
-
-..  source: php
 
     $schema = array(
         'default' => array(                         // default schema
@@ -95,8 +91,6 @@ _Example: #3:_
 
 Example shows required schema for an array with 10 string values:
 
-..  source: php
-    
     $schema = array(
         'default' => array(                         // default schema
             'type'       => validate::T_ARRAY,
@@ -111,8 +105,6 @@ Example shows required schema for an array with 10 string values:
 
 The example above could also be rewritten to:
 
-..  source: php
-    
     $schema = array(
         'default' => array(                         // default schema
             'type'       => validate::T_ARRAY,
@@ -128,14 +120,10 @@ _Example: #4:_
 Example shows required schema for the feature keyrename. Consider a command line application receiving
 the following command line parameters:
 
-..  source: plain
-
     ./test.php  --convert input-file output-file
 
 The command line parameters are handled by the data provider and the following
 insternal array structure is stored:
-
-..  source: php
 
     array(
         '--convert' => true,
@@ -146,8 +134,6 @@ insternal array structure is stored:
 Parameters without explicit parameter name would be assigned an ordered numeric key name. To make it possible
 to validate and grant access to these parameters, a naming for these parameters can be specified using the 
 keyrename feature. Keyrename is currently only allowed for the default scheme, but not for sub-schemes.
-
-..  source: php
 
     $schema = array(
         'default' => array(
@@ -175,8 +161,6 @@ Pre-processing values
 
 A callback function may be specified to pre-process values to validate:
 
-..  source: php
-
     $schema = array(
         'default'   => array(
             'type'  => validate::T_OBJECt,
@@ -195,8 +179,6 @@ succeeded.
 In the example below validation chaining is used to validate usernames first if 
 it contains only printable characters and additionally if it doesn't match invalid
 names:
-
-..  source: php
 
     $schema = array(
         'default' => array(
@@ -230,8 +212,6 @@ The following events are available:
 *   onSuccess -- triggered, when a value exists and the value is valid
 
 The registration example from above would change to:
-
-..  source: php
 
     $schema = array(
         'default' => array(                         // default schema
@@ -289,8 +269,6 @@ Page validation
 While a direct called schema validation always executes the whole schema on the input array,
 the page validation works a little different. Let's have a look at our registration example.
 
-..  source: php
-
     $schema = array(
         'default' => array(                         // default schema
             'type'       => validate::T_OBJECT,
@@ -317,8 +295,6 @@ the page validation works a little different. Let's have a look at our registrat
 The page validation requires this layout, because request parameters will always have to have
 a named key (for example: 'username'). So the schema has to be:
 
-..  source: php
-
     $schema = array(
         'default' => array(                         // default schema
             'type'       => validate::T_OBJECT,     // required(!)
@@ -343,8 +319,6 @@ The page validator accepts two speciel fields to a schema:
     be collected, if the validation of the field fails.
     
 The registration schema would than change to:
-
-..  source: php
 
     $schema = array(
         'default' => array(                         // default schema
