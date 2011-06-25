@@ -1,14 +1,13 @@
-Routing
-=======
+% Routing
+% Harald Lapp (<harald@octris.org>)
+% July, 2011
 
 Technical overview
-------------------
+==================
 
 Routing is performed by the main application process method. The following schema outlines the rules how routing
 works:
 
-,,  source: plain
-    
         |
         |     no
       state?------------------------------------+
@@ -31,7 +30,7 @@ works:
         
 
 Reserved routing attributes
----------------------------
+===========================
 
 *   MODULE  -- module to route to
 *   ACTION  -- action to perform
@@ -40,14 +39,12 @@ Reserved routing attributes
 Main routing in 'main.class.php' but additional page-based routing in 'page.class.php'?
 
 Additional arguments
---------------------
+====================
 
 Every placeholder that is not named 'MODULE' or 'ACTION' will be used as additional parameter name. The specific part of
 the URL will be mapped to name of the specified routing placeholder.
 
 _Example #1:_
-
-..  source: plain
 
     // URL
     http://www.example.com/blog/post/12345
@@ -63,13 +60,9 @@ The example will be mapped to:
 
 An other notation for this example would be:
 
-..  source: plain
-
     http://www.example.com/?MODULE=blog&ACTION=post&post_id=12345
     
 The route above would be specified in the main class of the application:
-
-..  source: php
 
     $this->route = array(
         '/:MODULE/:ACTION/(\d+)' => array(
@@ -84,8 +77,6 @@ _Example #2:_
 
 A route need not have the ACTION and MODULE attribute to be configured.
 
-..  source: plain
-
     // URL
     http://www.example.com/blog/post/12345
     
@@ -98,8 +89,6 @@ The example will be mapped to:
 *   post_id -- The additional parameter 'post_id' will be filled with the ID 12345
     
 The action can be configured in as follows:
-
-..  source: php
 
     $this->route = array(
         '/:MODULE/post/:post_id' => array(

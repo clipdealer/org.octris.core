@@ -1,10 +1,14 @@
-Deployment strategy
-===================
+% Deployment strategy
+% Harald Lapp (<harald@octris.org>)
+% July, 2011
+
+Ideas
+=====
 
 *   green / blue deployment
 
 Configuration files
--------------------
+===================
 
 Each module has a /etc/ directory in it's root folder. One can store an arbitrary amount of configurarion files for 
 arbitrary use cases in this directory. The directory is individual of the /etc/ directory located under the framework

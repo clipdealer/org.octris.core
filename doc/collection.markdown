@@ -1,5 +1,6 @@
-Working with PHP arrays and OCTRiS collections
-==============================================
+% Working with PHP arrays and OCTRiS collections
+% Harald Lapp (<harald@octris.org>)
+% July, 2011
 
 The following is a list of PHP array functions and their equivalent in the 'OCTRiS collection'. '-' means, that the 
 function is not currently supported.

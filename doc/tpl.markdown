@@ -26,7 +26,7 @@ Elements to be parsed by the template engine, have to be enclosed inside of {{..
 Template variables
 ------------------
 
-Template variables are written in the form the following example, where ~varname~ is a fully
+Template variables are written in the form the following example, where _varname_ is a fully
 qualified name of an existing template variable:
 
     {{$varname}}
@@ -61,7 +61,7 @@ _Example:_
 Constants
 ---------
 
-Template constants are written in the form the following example, where ~CONSTANT~ is a fully
+Template constants are written in the form the following example, where _CONSTANT_ is a fully
 qualified name of an existing template constant:
 
     {{%CONSTANT}}
@@ -106,8 +106,7 @@ Template language reference
 Block commands
 --------------
 
-#copy
-~~~~~
+### #copy
 
 This command copies a part of the template into an internal buffer. The command may be used to prevent duplicate
 re-building of complex template parts. A HTML page navigation which should be displayed at the top and at the
@@ -132,8 +131,7 @@ _Paste block:_
 
     {{$name}}
 
-#cron
-~~~~~
+### #cron
 
 Publish a template part based on time.
 
@@ -153,15 +151,14 @@ _Parameter:_
 |               |           |           | timestamp                                     |
 +---------------+-----------+-----------+-----------------------------------------------+
 
-The ~$end~ parameter is optional. If it's not specified, the block will never be hidden again. 
+The _$end_ parameter is optional. If it's not specified, the block will never be hidden again. 
 Note, that this is just triggered on server side. The block will only be displayed/hidden on a 
 new request.
 
-#cut
-~~~~
+### #cut
 
-The ~#cut~ block command is similar to ~#copy~, expect, that it cut's the rendered block into the buffer. The command
-is useful to post-process rendered template parts. for example: a build stylesheet may be cut, compressed by a css-
+The _#cut_ block command is similar to _#copy_, expect, that it cut's the rendered block into the buffer. The command
+is useful to post-process rendered template parts. for example: a built stylesheet may be cut, compressed by a css-
 compressor and than output in the template.
 
 _Cut block:_
@@ -183,15 +180,12 @@ _Process (and paste) block (example):_
     {{compactCSS($name)}}
 
 
-#foreach
-~~~~~~~~
+### #foreach
 
 This block command implements an array iterator. The enclosed block will be 
 repeated for each element of the array specified as parameter. For each 
 iteration a template variable of the specified name will be filled with the 
 contents of the array item of the iteration.
-
-..  source: html
 
     {{#foreach($item, $array [, $meta])}}
     ...
@@ -211,7 +205,7 @@ _Parameter:_
 
 _Meta information:_
 
-~#foreach~ adds the following keys/values to the optional ~$meta~ variable:
+_#foreach_ adds the following keys/values to the optional _$meta_ variable:
 
 +---------------+-----------------------------------------------------------+
 | Name          | Description                                               |
@@ -228,9 +222,7 @@ _Meta information:_
 +---------------+-----------------------------------------------------------+
 
 To access the properties in a template, just specify a third parameter, a variable
-for the ~#foreach~ block:
-
-..  source: html
+for the _#foreach_ block:
 
     {{#foreach($item, $array, $meta)}}
         {{#if($meta:is_first)}}
@@ -238,12 +230,9 @@ for the ~#foreach~ block:
         {{#end}}
     {{#end}}
 
-#loop
-~~~~~
+### #loop
 
 Loop over the enclosed template block.
-
-..  source: html
 
     {{#loop($step, $from, $to [, $meta])}}
     ...
@@ -263,11 +252,11 @@ _Parameter:_
 | $meta         | array     | -         | optional variable for metainformation         |
 +---------------+-----------+-----------+-----------------------------------------------+
 
-It's allowed to specify ~from~ with a bigger number than ~to~.
+It's allowed to specify _from_ with a bigger number than _to_.
 
 _Meta information:_
 
-~#loop~ adds the following keys/values to the optional ~$meta~ variable:
+_#loop_ adds the following keys/values to the optional _$meta_ variable:
 
 +---------------+-----------------------------------------------------------+
 | Name          | Description                                               |
@@ -283,14 +272,13 @@ _Meta information:_
 | count         | total number of items in array                            |
 +---------------+-----------------------------------------------------------+
 
-~pos~ and ~key~ contain the same values. ~key~ is provided, to return the same meta
-information for both iteration block types ~#foreach~ and ~#loop~.
+The properties _pos_ and _key_ contain the same values. The property _key_ is provided, 
+to return the same meta information for both iteration block types _#foreach_ and 
+_#loop_.
 
 To access the properties in a template, just specify a third parameter, a variable
-for the ~#loop~ block:
+for the _#loop_ block:
 
-
-..  source: html
 
     {{#loop($i, 0, 5, $meta)}}
         {{if($meta:is_first)}}
@@ -298,15 +286,12 @@ for the ~#loop~ block:
         {{#end}}
     {{#end}}
 
-#onchange
-~~~~~~~~~
+### #onchange
 
 This command is normally used inside of a block, wich is repeated by commands 
-like ~#foreach~ and ~#loop~. With this command it's possible to observe the value
+like _#foreach_ and _#loop_. With this command it's possible to observe the value
 of a template variable. If the variable changes between _two_ calls of 
-~#onchange~, the enclosed block will be executed.
-
-..  source: html
+_#onchange_, the enclosed block will be executed.
 
     {{#onchange($value)}}
     ...
@@ -322,10 +307,8 @@ _Parameter:_
 
 _Example:_
 
-The example below demonstrates, how the variable ~$step~ is observed. If ~$step~
+The example below demonstrates, how the variable _$step_ is observed. If _$step_
 changes it's value, the enclosed block will be executed.
-
-..  source: html
 
     {{#loop($step, 0, 5)}}
         ...
@@ -334,15 +317,12 @@ changes it's value, the enclosed block will be executed.
         {{#end}}
     {{#end}}
 
-#trigger
-~~~~~~~~
+### #trigger
 
 This command is normally used inside of a block, wich is repeated by commands 
-like ~#foreach~ and ~#loop~. ~#trigger~ defines an internal counter, which is 
-increased for each loop iteration by ~1~. If a specified step is reached, the
+like _#foreach_ and _#loop_. _#trigger_ defines an internal counter, which is 
+increased for each loop iteration by _1_. If a specified step is reached, the
 enclosed template block will be executed.
-
-..  source: html
 
     {{#trigger($steps, $start [, $reset])}}
     ...
@@ -358,7 +338,7 @@ _Parameter:_
 | $start        | int       | -         | optional step to start trigger counter at     |
 +---------------+-----------+-----------+-----------------------------------------------+
 | $reset        | mixed     | -         | optional variable may be used to reset the    |
-|               |           |           | trigger. if the value of ~reset~ changes      |
+|               |           |           | trigger. if the value of _reset_ changes      |
 |               |           |           | between two steps, the trigger will be        |
 |               |           |           | resetted                                      |
 +---------------+-----------+-----------+-----------------------------------------------+
@@ -380,8 +360,6 @@ To make macros resolvable at compile time, they only accept static parameters:
 
 No variables or method calls are allowed for parameters of a macro.
 
-..  source: html
-
     <!-- allowed -->
     {{@import('static.html')}}
     
@@ -390,23 +368,17 @@ No variables or method calls are allowed for parameters of a macro.
 
 Besides the already provided macros, it's possible to register own macros.
 
-@import
-~~~~~~~
+### @import
 
 This macro is used to import sub-templates:
 
-..  source: html
-
     {{@import('static.html')}}
 
-@uniqid
-~~~~~~~
+### @uniqid
 
 Generates a unique ID at compile time. This is useful for example to force 
 inclusion of a javascript/css multiple times and to prevent the optimizer to filter
 multiple time inclusion of external javascript/css files.
-
-..  source: html
 
     <script type="text/javascript" src="libsjs/lib.js?{{@uniqid()}}"></script>
     <script type="text/javascript" src="libsjs/lib.js?{{@uniqid()}}"></script>
@@ -429,8 +401,8 @@ types of parameters are allowed:
 
 The template has the following built-in functions:
 
-Localization -- _
-~~~~~~~~~~~~~~~~~
+
+### Localization -- _
 
 Localization is only 
 
@@ -439,19 +411,14 @@ In this case a string specified as first parameter will be processed by at compi
 with an own parser/converter for inline functions. See the "Inline function reference"
 for more details.
 
-..  source: html
 
-Comparison -- eq
-~~~~~~~~~~~~~~~~
+### Comparison -- eq
 
 
-Logic -- and
-~~~~~~~~~~~~
+### Logic -- and
 
-This method takes two or more parameters and returns ~true~, if *all* parameters are
-~true~.
-
-..  source: html
+This method takes two or more parameters and returns _true_, if **all** parameters are
+_true_.
 
     {{and($a, $b [, ...])}}
 
@@ -467,8 +434,6 @@ This method takes two or more parameters and returns ~true~, if *all* parameters
 
 _Example:_
 
-..  source: html
-
     <!-- output: 1 and 0 = false -->
     {{and(1, 0)}}
 
@@ -476,13 +441,10 @@ _Example:_
     {{and(1, 1)}}
 
 
-Logic -- not
-~~~~~~~~~~~~
+### Logic -- not
 
-This method takes one parameters and returns ~true~, if the paramet is not true and ~false~,
+This method takes one parameters and returns _true_, if the paramet is not true and _false_,
 if the parameter is true.
-
-..  source: html
 
     {{not($a)}}
 
@@ -494,8 +456,6 @@ if the parameter is true.
 
 _Example:_
 
-..  source: html
-
     <!-- output: not 0 = 1 -->
     {{not(0)}}
 
@@ -503,12 +463,9 @@ _Example:_
     {{not(1)}}
 
 
-Logic -- or
-~~~~~~~~~~~
+### Logic -- or
 
-This method takes two or more parameters and returns ~true~, if *one* parameter is ~true~.
-
-..  source: html
+This method takes two or more parameters and returns _true_, if **one** parameter is _true_.
 
     {{or($a, $b [, ...])}}
 
@@ -524,8 +481,6 @@ This method takes two or more parameters and returns ~true~, if *one* parameter 
 
 _Example:_
 
-..  source: html
-
     <!-- output: 0 or 0 = false -->
     {{or(0, 0)}}
 
@@ -533,12 +488,9 @@ _Example:_
     {{or(1, 0)}}
 
 
-Logic -- xor
-~~~~~~~~~~~~
+### Logic -- xor
 
-This method takes two parameters and returns ~true~, if *only one* parameter is ~true~.
-
-..  source: html
+This method takes two parameters and returns _true_, if **only one** parameter is _true_.
 
     {{xor($a, $b)}}
 
@@ -552,8 +504,6 @@ This method takes two parameters and returns ~true~, if *only one* parameter is 
 
 _Example:_
 
-..  source: html
-
     <!-- output: 1 xor 1 = false -->
     {{xor(0, 0)}}
 
@@ -561,12 +511,9 @@ _Example:_
     {{xor(1, 0)}}
 
 
-Math -- add
-~~~~~~~~~~~
+### Math -- add
 
 This method takes two or more parameters and add them returning the result.
-
-..  source: html
 
     {{add($a, $b [, ...])}}
 
@@ -582,20 +529,15 @@ This method takes two or more parameters and add them returning the result.
 
 _Example:_
 
-..  source: html
-
     <!-- output: 1 + 2 + 3 + 4 = 10 -->
     {{add(1, 2, 3, 4)}}
 
 
-Math -- decr
-~~~~~~~~~~~~
+### Math -- decr
 
 This method takes one or two parameters. If one parameter is specified, the input variable
-will be decreased by ~1~, otherwise a second parameter can be specified to define the amount
+will be decreased by _1_, otherwise a second parameter can be specified to define the amount
 the input variable should be decreased by.
-
-..  source: html
 
     {{decr($a [, $b])}}
     
@@ -607,20 +549,15 @@ the input variable should be decreased by.
 | $b            | mixed     | -         | optional amount for decreasing (default: 1)   |
 +---------------+-----------+-----------+-----------------------------------------------+
 
-    _Example:_
+_Example:_
 
-    ..  source: html
-
-        <!-- output: 5 - 2 = 3 -->
-        {{decr(5, 2)}}
+    <!-- output: 5 - 2 = 3 -->
+    {{decr(5, 2)}}
 
 
-Math -- div
-~~~~~~~~~~~
+### Math -- div
 
 This method takes two or more parameters and devides them in the specified order returning the result.
-
-..  source: html
 
     {{div($a, $b [, ...])}}
 
@@ -636,20 +573,15 @@ This method takes two or more parameters and devides them in the specified order
 
 _Example:_
 
-..  source: html
-
     <!-- output: 8 / 4 / 2 = 1 -->
     {{div(8, 4, 2)}}
 
 
-Math -- incr
-~~~~~~~~~~~~
+### Math -- incr
 
 This method takes one or two parameters. If one parameter is specified, the input variable
-will be increased by ~1~, otherwise a second parameter can be specified to define the amount
+will be increased by _1_, otherwise a second parameter can be specified to define the amount
 the input variable should be increased by.
-
-..  source: html
 
     {{incr($a [, $b])}}
 
@@ -661,20 +593,15 @@ the input variable should be increased by.
 | $b            | mixed     | -         | optional amount for increasing (default: 1)   |
 +---------------+-----------+-----------+-----------------------------------------------+
 
-    _Example:_
+_Example:_
 
-    ..  source: html
-
-        <!-- output: 5 + 2 = 7 -->
-        {{incr(5, 2)}}
+    <!-- output: 5 + 2 = 7 -->
+    {{incr(5, 2)}}
 
 
-Math -- mod
-~~~~~~~~~~~
+### Math -- mod
 
 This method takes two or more parameters and calculates the remainder of a division.
-
-..  source: html
 
     {{mod($a, $b [, ...])}}
 
@@ -690,18 +617,13 @@ This method takes two or more parameters and calculates the remainder of a divis
 
 _Example:_
 
-..  source: html
-
     <!-- output: 5 % 2 = 1 -->
     {{mod(5, 2)}}
 
 
-Math -- mul
-~~~~~~~~~~~
+### Math -- mul
 
 This method takes two or more parameters and multiplies them in the specified order returning the result.
-
-..  source: html
 
     {{mul($a, $b [, ...])}}
 
@@ -717,18 +639,13 @@ This method takes two or more parameters and multiplies them in the specified or
 
 _Example:_
 
-..  source: html
-
     <!-- output: 4 * 3 * 2 = 24 -->
     {{mul(4, 3, 2)}}
 
 
-Math -- neg
-~~~~~~~~~~~
+### Math -- neg
 
 This method negates a value.
-
-..  source: html
 
     {{neg($a)}}
 
@@ -740,18 +657,13 @@ This method negates a value.
 
 _Example:_
 
-..  source: html
-
     <!-- output: -10 -->
     {{neg(10)}}
 
 
-Math -- sub
-~~~~~~~~~~~
+### Math -- sub
 
 This method takes two or more parameters and subtracts them from each other returning the result.
-
-..  source: html
 
     {{sub($a, $b [, ...])}}
 
@@ -767,20 +679,15 @@ This method takes two or more parameters and subtracts them from each other retu
 
 _Example:_
 
-..  source: html
-
     <!-- output: 1 - 2 - 3 - 4 = -8 -->
     {{sub(1, 2, 3, 4)}}
 
 
-Misc -- include
-~~~~~~~~~~~~~~~
+### Misc -- include
 
 This function is used to include a (static) file. The include is resolved
 at runtime and therefore any embedded template code will not be parsed, instead
 the file is treated like a simple text file.
-
-..  source: html
 
     {{include($file)}}
 
@@ -802,17 +709,14 @@ String inline functions
 Array inline functions
 ----------------------
 
-cycle
-~~~~~
+### cycle
 
 This command is normally used inside of a block, which is repeated by commands 
-like ~#foreach~ and ~#loop~. ~cycle~ iterates over the provided list of values
+like _#foreach_ and _#loop_. _cycle_ iterates over the provided list of values
 each time it is called the internal pointer will be moved to the next element
 and this value will be handed over to the control variable. If the pointer
 reaches the end of the list it will be reset to the first list item unless the
-parameter ~pingpong~ is set to true. In this case the pointer will move backwards.
-
-..  source: html
+parameter _pingpong_ is set to true. In this case the pointer will move backwards.
 
     {{cycle($list [, $pingpong [, $reset]])}}
     
@@ -827,7 +731,7 @@ _Parameter:_
 |               |           |           | to the first list item, if end is reached     |
 +---------------+-----------+-----------+-----------------------------------------------+
 | $reset        | mixed     | -         | optional variable may be used to reset the    |
-|               |           |           | pointer. if the value of ~reset~ changes      |
+|               |           |           | pointer. if the value of _reset_ changes      |
 |               |           |           | between two steps, the pointer will be        |
 |               |           |           | resetted                                      |
 +---------------+-----------+-----------+-----------------------------------------------+
@@ -853,13 +757,9 @@ Optimizing HTTP Requests
 
 The compressor parses a HTML template and looks for multiple following
 
-..  source: html
-
     <script type="text/javascript" src="..."></script>
 
 and
-
-..  source: html
 
     <link rel="stylesheet" type="text/css" href="..." />
 
@@ -867,8 +767,6 @@ tags. It will combine multiple files and rewrite the HTML template to reduce
 external file inclusion. For example:
 
 _before:_
-
-..  source: html
 
     <html>
         <link rel="stylesheet" type="text/css" href="default.css" />
@@ -886,8 +784,6 @@ _before:_
 
 _after:_
 
-..  source: html
-
     <html>
         <link rel="stylesheet" type="text/css" href="combined.css" />
         <script type="text/javascript" src="combined1.js"></script>
@@ -903,8 +799,6 @@ use sub-templates and want to be sure, that every javascript required by the sub
 template is included and additionally make sure, that it was not already included
 by an other template. The following example uses three templates -- main.html, 
 sub1.html and sub2.html:
-
-..  source: html
 
     <!-- main.html -->
     <html>
@@ -933,8 +827,6 @@ sub1.html and sub2.html:
 After processing the above example using the compiler, you get one big template
 main.html:
 
-..  source: html
-
     <!-- main.html -->
     <html>
         <body>
@@ -955,8 +847,6 @@ main.html:
 
 The compressor will now optimize this and remove duplicate file inclusions:
 
-..  source: html
-
     <!-- main.html -->
     <html>
         <body>
@@ -976,8 +866,6 @@ The compressor will now optimize this and remove duplicate file inclusions:
 As the next step the optimizer will combine the inclusions, so there are actually
 only two required includes left:
 
-..  source: html
-
     <!-- main.html -->
     <html>
         <body>
@@ -992,14 +880,12 @@ only two required includes left:
         </body>
     </html>
 
-In the example above the file ~combined.js~ contains all three ~inc1.js~, ~inc2.js~ and
-~inc3.js~. The second block was reduced to only include ~inc5.js~, because it's the only
+In the example above the file _combined.js_ contains all three _inc1.js_, _inc2.js_ and
+_inc3.js_. The second block was reduced to only include _inc5.js_, because it's the only
 javascript include still missing for the page.
 
 Sometimes it is required to include a javascript multiple times. This can be
 achieved simply by adding a unique identifier to the filename. For example: 
-
-..  source: html
 
     <!-- main.html -->
     <html>
@@ -1019,11 +905,9 @@ achieved simply by adding a unique identifier to the filename. For example:
         </body>
     </html>
 
-~inc1.js~ and ~inc2.js~ from the second block will be treated as different include files 
-than ~inc1.js~ and ~inc2.js~ from the first block even if they have same content -- just 
+_inc1.js_ and _inc2.js_ from the second block will be treated as different include files 
+than _inc1.js_ and _inc2.js_ from the first block even if they have same content -- just 
 because it's a different URL. So the resulting snippet after optimizing is:
-
-..  source: html
 
     <!-- main.html -->
     <html>
