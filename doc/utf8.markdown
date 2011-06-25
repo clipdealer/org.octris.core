@@ -10,7 +10,7 @@ String functions not listed here are not supported or don't need UTF-8 support.
 
 The characters in the columns 'UTF-8: PHP' and 'UTF-8: OCTRiS' are as follows:
 
-*   - -- UTF-8 is not supported, or function not available ('UTF-8: OCTRiS' column)
+*   \- -- UTF-8 is not supported, or function not available ('UTF-8: OCTRiS' column)
 *   x -- UTF-8 is supported
 *   ? -- unknown if UTF-8 is supported
 
