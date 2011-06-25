@@ -264,7 +264,7 @@ namespace org\octris\core {
                 $return = $second;
             }
 
-            return sprintf($return, $val);
+            return \org\octris\core\type\string\sprintf($return, $val);
         }
 
         /**
