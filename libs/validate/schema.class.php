@@ -302,8 +302,14 @@ namespace org\octris\core\validate {
                 }
 
                 $data   = $validator->preFilter($data);
-                $return = $validator->validate($data);
-                    
+                
+                if (!($return = \org\octris\core\type\string\isUtf8($data))) {
+                    // no valid UTF-8 string, issue a notice
+                    trigger_error('not a valid UTF-8 string', E_NOTICE);
+                } else {
+                    $return = $validator->validate($data);
+                }
+
                 if (!$return && isset($schema['invalid'])) {
                     $this->addError($schema['invalid']);
                 }
