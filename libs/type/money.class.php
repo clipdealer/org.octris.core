@@ -123,6 +123,33 @@ namespace org\octris\core\type {
             
             return $old_currency;
         }
+        
+        /**
+         * Add VAT to amount of money. The new value is stored in the money object.
+         *
+         * @octdoc  m:money/addVat
+         * @param   float       $vat                Amount of VAT to add.
+         *
+         * @todo    Think about whether it might be useful to store VAT amount in money object and
+         *          whether it would be nice to have methods like "getBtto", "getNet", etc.
+         */
+        public function addVat($vat)
+        /**/
+        {
+            $this->mul(1 + $vat / 100);
+        }
+
+        /**
+         * Substract discount from amount of money. The new value is stored in the money object.
+         *
+         * @octdoc  f:money/subDiscount
+         * @param   float       $discount           Discount to substract from amount.
+         */
+        public function subDiscount($discount)
+        /**/
+        {
+            $this->mul(1 - $discount / 100);
+        }
     }
     
     // set default exchange service
