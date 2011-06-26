@@ -227,10 +227,9 @@ namespace org\octris\core {
          * @octdoc  m:l10n/monf
          * @todo    implementation
          * @param   mixed           $money              Float value as amount or instance of \org\octris\core\type\money
-         * @param   string          $context            Optional context for formatter.
          * @return  string                              Formatted money.
          */
-        public function monf($money, $context = 'text/html')
+        public function monf($money)
         /**/
         {
         }
