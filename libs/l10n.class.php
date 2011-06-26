@@ -48,12 +48,22 @@ namespace org\octris\core {
         /**/
 
         /**
-         * Gettext compiler cache.
+         * Gettext compiler cache -- an array -- is only used, if a caching backend is not set.
+         *
+         * @octdoc  v:l10n/$compiler_cache
+         * @var     array
+         * @see     l10n::setCache
+         */
+        protected $compiler_cache = array();
+        /**/
+
+        /**
+         * L10n caching backend.
          *
          * @octdoc  v:l10n/$cache
-         * @var     array
+         * @var     \org\octris\core\cache
          */
-        protected $cache = array();
+        protected static $cache = null;
         /**/
 
         /**
@@ -100,6 +110,30 @@ namespace org\octris\core {
             }
             
             return self::$instance;
+        }
+
+        /**
+         * Set caching backend for l10n.
+         *
+         * @octdoc  m:l10n/setCache
+         * @param   \org\octris\core\cache      $cache          Instance of caching backend to use.
+         */
+        public static function setCache(\org\octris\core\cache $cache)
+        /**/
+        {
+            self::$cache = $cache;
+        }
+
+        /**
+         * Return instance of caching backend.
+         *
+         * @octdoc  m:l10n/getCache
+         * @return  \org\octris\core\cache                      Instance of caching backend l10n uses.
+         */
+        public static function getCache()
+        /**/
+        {
+            return self::$cache;
         }
 
         /**
@@ -385,11 +419,19 @@ namespace org\octris\core {
             }
 
             // compile included function calls if not in cache
-            if (!isset($this->cache[$msg])) {
-                $this->cache[$msg] = $this->compile($msg);
+            if (!is_null(self::$cache)) {
+                $cache = self::$cache;
+            } else {
+                $cache =& $this->compiler_cache;
+            }
+            
+            $key = $this->lc . '.' . $msg;
+            
+            if (!isset($cache[$key])) {
+                $cache[$key] = $this->compile($msg);
             }
 
-            return $this->cache[$msg]($this, $args);
+            return $cache[$key]($this, $args);
         }
 
         /**
