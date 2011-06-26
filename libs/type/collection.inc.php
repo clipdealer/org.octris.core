@@ -11,7 +11,7 @@
 
 namespace org\octris\core\type\collection {
     /**
-     * Normalize an object which extens ArrayObject or ArrayIterator, returns an array.
+     * Normalize an object which extends ArrayObject or ArrayIterator, returns an array.
      *
      * @octdoc  m:collection/normalize
      * @param   mixed       $p                      Either an array or an object which implements the getArrayCopy method.
