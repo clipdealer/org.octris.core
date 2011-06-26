@@ -10,8 +10,6 @@
  */
 
 namespace org\octris\core {
-    use \org\octris\core\config as config;
-
     /**
      * Localisation library.
      *
