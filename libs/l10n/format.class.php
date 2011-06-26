@@ -9,31 +9,42 @@
  * file that was distributed with this source code.
  */
 
-namespace org\octris\core\l10n\format {
+namespace org\octris\core\l10n {
     /**
-     * Number formatter.
+     * Formatting class.
      *
-     * @octdoc  f:format/number
-     * @param   int|float|\org\octris\core\type\money|\org\octris\core\type\money   $value          Value to format.
-     * @return  string                                                                              Formatted number value.
+     * @octdoc      c:l10n/format
+     * @copyright   copyright (c) 2011 by Harald Lapp
+     * @author      Harald Lapp <harald@octris.org>
      */
-    function number($value)
+    class format
     /**/
     {
+        /**
+         * Number formatter.
+         *
+         * @octdoc  m:format/number
+         * @param   int|float|\org\octris\core\type\money|\org\octris\core\type\money   $value          Value to format.
+         * @return  string                                                                              Formatted number value.
+         */
+        public static function number($value)
+        /**/
+        {
         
-    }
+        }
     
-    /**
-     * Money formatter.
-     *
-     * @octdoc  f:format/money
-     * @param   int|float|\org\octris\core\type\money|\org\octris\core\type\money   $value          Value to format.
-     * @param   string                                                              $currency       Optional currency in ISO 4217.
-     * @return  string                                                                              Formatted money value.
-     */
-    function money($value, $currency = null)
-    /**/
-    {
+        /**
+         * Money formatter.
+         *
+         * @octdoc  m:format/money
+         * @param   int|float|\org\octris\core\type\money|\org\octris\core\type\money   $value          Value to format.
+         * @param   string                                                              $currency       Optional currency in ISO 4217.
+         * @return  string                                                                              Formatted money value.
+         */
+        public static function money($value, $currency = null)
+        /**/
+        {
         
+        }
     }
 }
