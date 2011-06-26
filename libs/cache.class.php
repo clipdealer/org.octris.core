@@ -17,7 +17,7 @@ namespace org\octris\core {
      * @copyright   copyright (c) 2011 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    abstract class cache
+    abstract class cache extends \org\octris\core\type\collection
     /**/
     {
     }
