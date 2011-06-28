@@ -448,7 +448,7 @@ namespace org\octris\core\type {
                         : $v);
             }, array_keys($data)), array_values($data));
             
-            parent::exchangeArray($data);
+            parent::__construct($data);
         }
 
         /**
@@ -471,7 +471,7 @@ namespace org\octris\core\type {
 
             $data = array_merge($value, $data);
             
-            parent::exchangeArray($data);
+            parent::__construct($data);
         }
     }
 }
