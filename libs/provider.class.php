@@ -298,12 +298,15 @@ namespace org\octris\core {
                     throw new \Exception("'$type' is not a validation type");
                 }
                 
-                $return = $this->isValid($name, $type, $options);
+                self::$storage[$this->name]['data'][$name] = $value;
+
+                $return = $this->isValid($name, $validator, $options);
             } else {
+                self::$storage[$this->name]['data'][$name] = $value;
+
                 $return = null;
             }
 
-            self::$storage[$this->name]['data'][$name] = $value;
             
             return $return;
         }

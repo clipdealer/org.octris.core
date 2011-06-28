@@ -53,9 +53,12 @@ namespace org\octris\core\type {
             } elseif (is_scalar($value)) {
                 // a scalar will be splitted into it's character, UTF-8 safe.
                 $value = \org\octris\core\type\string\str_split((string)$value, 1);
-            } elseif (!($value = collection\normalize($value))) {
-                // not an array nor a collection
-                throw new Exception('don\'t know how to handle parameter of type "' . gettype($array) . '"');
+            } elseif ($value instanceof ArrayObject || $value instanceof ArrayIterator) {
+                // an ArrayObject or ArrayIterator will be casted to a PHP array first
+                $value = (array)$value;
+            } elseif (!is_array($value)) {
+                // not an array
+                throw new \Exception('don\'t know how to handle parameter of type "' . gettype($value) . '"');
             }
         
             $this->count = count($value);
