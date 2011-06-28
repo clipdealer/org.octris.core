@@ -70,7 +70,7 @@ namespace org\octris\core {
         public function filter($prefix)
         /**/
         {
-            return new \org\octris\core\config\filter($this->getIterator(), $prefix);
+            return new \org\octris\core\config\filter($this, $prefix);
         }
 
         /**
