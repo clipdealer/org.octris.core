@@ -32,7 +32,7 @@ namespace org\octris\core\project {
     }
     
     $env = \org\octris\core\provider::access('env');
-    $env->setValue('project', $project, \org\octris\core\validate::T_PROJECT);
+    $env->setValue('OCTRIS_APP', $project, \org\octris\core\validate::T_PROJECT);
     
     // load application configuration
     $registry = \org\octris\core\registry::getInstance();
