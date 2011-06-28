@@ -53,7 +53,7 @@ namespace org\octris\core\type {
             } elseif (is_scalar($value)) {
                 // a scalar will be splitted into it's character, UTF-8 safe.
                 $value = \org\octris\core\type\string\str_split((string)$value, 1);
-            } elseif ($value instanceof ArrayObject || $value instanceof ArrayIterator) {
+            } elseif ($value instanceof \ArrayObject || $value instanceof \ArrayIterator) {
                 // an ArrayObject or ArrayIterator will be casted to a PHP array first
                 $value = (array)$value;
             } elseif (!is_array($value)) {
@@ -216,7 +216,7 @@ namespace org\octris\core\type {
                         : $v);
             }, array_keys($data)), array_values($data));
             
-            parent::exchangeArray($data);
+            parent::__construct($data);
         }
 
         /**
@@ -239,7 +239,7 @@ namespace org\octris\core\type {
 
             $data = array_merge($value, $data);
             
-            parent::exchangeArray($data);
+            parent::__construct($data);
         }
     }
 }
