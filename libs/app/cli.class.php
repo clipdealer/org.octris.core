@@ -232,9 +232,9 @@ namespace org\octris\core\app {
         
         $_ENV['OCTRIS_DEVEL'] = (isset($_ENV['OCTRIS_DEVEL']) && !!$_ENV['OCTRIS_DEVEL']);
         
-        provider::set('server', $_SERVER,          provider::T_READONLY);
-        provider::set('env',    $_ENV,             provider::T_READONLY);
-        provider::set('args',   cli::getOptions(), provider::T_READONLY);
+        provider::set('server', $_SERVER/*,          provider::T_READONLY*/);
+        provider::set('env',    $_ENV/*,             provider::T_READONLY*/);
+        provider::set('args',   cli::getOptions()/*, provider::T_READONLY*/);
         
         unset($_SERVER);
         unset($_ENV);
