@@ -274,7 +274,7 @@ namespace org\octris\core\type {
                 $return = array();
             } elseif (!$strict && is_scalar($value)) {
                 // a scalar will be splitted into it's character, UTF-8 safe.
-                $return = \org\octris\core\type\string\str_split((string)$value, 1);
+                $return = \org\octris\core\type\string::str_split((string)$value, 1);
             } elseif ($value instanceof \ArrayObject || $value instanceof \ArrayIterator || $value instanceof \org\octris\core\type\iterator) {
                 // an ArrayObject or ArrayIterator will be casted to a PHP array first
                 $return = $value->getArrayCopy();
