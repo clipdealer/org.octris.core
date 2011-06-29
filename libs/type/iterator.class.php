@@ -132,6 +132,20 @@ namespace org\octris\core\type {
             return count($this->collection);
         }
         
+        /** Special iterator methods **/
+        
+        /**
+         * Returns the current position of the iterator.
+         *
+         * @octdoc  m:iterator/getPosition
+         * @return  int                                                     Current iterator position.
+         */
+        public function getPosition()
+        /**/
+        {
+            return $this->position;
+        }
+        
         /**
          * Returns a copy of the data stored in collection.
          *
