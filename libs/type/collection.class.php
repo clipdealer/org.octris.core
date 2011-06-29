@@ -17,25 +17,16 @@ namespace org\octris\core\type {
      * @copyright   copyright (c) 2010-2011 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    class collection extends \ArrayIterator
+    class collection extends \ArrayObject
     /**/
     {
         /**
-         * Position of iterator.
+         * Stores keys of items stored in collection.
          *
-         * @octdoc  v:collection/$position
-         * @var     int
+         * @octdoc  v:collection/$keys
+         * @var     array
          */
-        protected $position = 0;
-        /**/
-
-        /**
-         * Number of items in collection.
-         *
-         * @octdoc  v:collection/$count
-         * @var     int
-         */
-        protected $count = 0;
+        protected $keys = array();
         /**/
 
         /**
@@ -47,78 +38,52 @@ namespace org\octris\core\type {
         public function __construct($value = null)
         /**/
         {
-            if (is_null($value)) {
-                // initialize empty array if no value is specified
-                $value = array();
-            } elseif (is_scalar($value)) {
-                // a scalar will be splitted into it's character, UTF-8 safe.
-                $value = \org\octris\core\type\string\str_split((string)$value, 1);
-            } elseif ($value instanceof \ArrayObject || $value instanceof \ArrayIterator) {
-                // an ArrayObject or ArrayIterator will be casted to a PHP array first
-                $value = (array)$value;
-            } elseif (!is_array($value)) {
+            if (($tmp = static::normalize($value)) === false) {
                 // not an array
-                throw new \Exception('don\'t know how to handle parameter of type "' . gettype($value) . '"');
+                throw new \Exception('don\'t know how to handle parameter of type "' . gettype($tmp) . '"');
             }
         
-            $this->count = count($value);
+            $this->keys = array_keys($tmp);
+        
+            parent::__construct($tmp);
+        }
 
-            parent::__construct($value);
+        /**
+         * Return iterator for collection.
+         *
+         * @octdoc  m:collection/getIterator
+         * @return  \org\octris\core\type\iterator          Iterator instance for iterating over collection.
+         */
+        public function getIterator()
+        /**/
+        {
+            return new \org\octris\core\type\iterator($this);
+        }
+        
+        /**
+         * Return class name of 
+         *
+         * @octdoc  m:collection/getIteratorClass
+         * @return  string                                  Name if iterator class currently set.
+         */
+        public function getIteratorClass()
+        /**/
+        {
+            return '\org\octris\core\type\iterator';
         }
 
-        /** Iterator **/
-        
         /**
-         * Move forward to next element.
+         * Overwrite method to prevent changing iterator class, because it's currently not support.
          *
-         * @octdoc  m:collection/next
+         * @octdoc  m:collection/setIteratorClass
+         * @param   string      $class                      Name of iterator class to set for collection.
          */
-        public function next()
+        public function setIteratorClass($class)
         /**/
         {
-            ++$this->position;
-            parent::next();
+            throw new \Exception(__METHOD__ . ' is not currently supported');
         }
-        
-        /**
-         * Move backwards to previous element.
-         *
-         * @octdoc  m:collection/prev
-         */
-        public function prev()
-        /**/
-        {
-            --$this->position;
-            parent::seek($this->position);
-        }
-        
-        /**
-         * Rewind the Iterator to the first element.
-         *
-         * @octdoc  m:collection/rewind
-         */
-        public function rewind()
-        /**/
-        {
-            $this->position = 0;
-            parent::rewind();
-        }
-    
-        /** SeekableIterator **/
-        
-        /**
-         * Seeks to a position.
-         *
-         * @octdoc  m:collection/seek
-         * @param   int     $position       Position to seek to.
-         */
-        public function seek($position)
-        /**/
-        {
-            $this->position = $position;
-            parent::seek($position);
-        }
-    
+
         /** ArrayAccess **/
     
         /**
@@ -131,11 +96,16 @@ namespace org\octris\core\type {
         public function offsetSet($offs, $value)
         /**/
         {
-            // is_null implements $...[] = ...
-            if (is_null($offs) || !$this->offsetExists($offs)) {
-                ++$this->count;
+            if (is_null($offs)) {
+                // $...[] =
+                $inc = (int)in_array(0, $this->keys);               // if 0 is already in, we have to increment next index
+                $idx = max(array_merge(array(0), $this->keys));     // get next highest numeric index
+                $this->keys[] = $idx + $inc;
+            } elseif (!parent::offsetExists($offs)) {
+                // new offset
+                $this->keys[] = $offs;
             }
-            
+
             parent::offsetSet($offs, $value);
         }
 
@@ -148,8 +118,8 @@ namespace org\octris\core\type {
         public function offsetUnset($offs)
         /**/
         {
-            if ($this->offsetExists($offs)) {
-                --$this->count;
+            if (($idx = array_search($offs, $this->keys)) !== false) {
+                unset($offs[$idx]);
             }
             
             parent::offsetUnset($offs);
@@ -166,21 +136,50 @@ namespace org\octris\core\type {
         public function unserialize($data)
         /**/
         {
+            $tmp = unserialize($data);
+            
             $this->__construct(unserialize($data));
         }
 
         /** Special collection functionality **/
 
         /**
-         * Return current position of iterator.
+         * Returns value for item stored in the collection at the specified position.
          *
-         * @octdoc  m:collection/getPosition
-         * @return  int                     Iterator position.   
+         * @octdoc  m:collection/getValue
+         * @param   int         $position       Position to return value of item for.
+         * @return  mixed                       Value stored at the specified position.
          */
-        public function getPosition()
+        public function getValue($position)
         /**/
         {
-            return $this->position;
+            return $this->offsetGet($this->keys[$position]);
+        }
+        
+        /**
+         * Returns item key for specified position in the collection.
+         *
+         * @octdoc  m:collection/getKey
+         * @param   int         $position       Position to return key of item for.
+         * @return  mixed                       Key of the item at specified position.
+         */
+        public function getKey($position)
+        /**/
+        {
+            return $this->keys[$position];
+        }
+        
+        /**
+         * Checks if the specified position points to an element in the collection.
+         *
+         * @octdoc  m:collection/isValid
+         * @param   int         $position       Position to check.
+         * @return  true                        Returns tue if an element exists at specified position. Returns false in case of an error.
+         */
+        public function isValid($position)
+        /**/
+        {
+            return array_key_exists($position, $this->keys);
         }
 
         /**
@@ -193,9 +192,16 @@ namespace org\octris\core\type {
         public function exchangeArray($value)
         /**/
         {
-            $return = $this->getArrayCopy();
+            if (($tmp = static::normalize($value)) === false) {
+                // not an array
+                throw new \Exception('don\'t know how to handle parameter of type "' . gettype($tmp) . '"');
+            } else {
+                $this->keys = array_keys($tmp);
             
-            $this->__construct($value);
+                $return = $this->getArrayCopy();
+            
+                parent::exchangeArray($tmp);
+            }
             
             return $return;
         }
@@ -216,7 +222,7 @@ namespace org\octris\core\type {
                         : $v);
             }, array_keys($data)), array_values($data));
             
-            parent::__construct($data);
+            $this->exchangeArray($data);
         }
 
         /**
@@ -239,7 +245,44 @@ namespace org\octris\core\type {
 
             $data = array_merge($value, $data);
             
-            parent::__construct($data);
+            $this->exchangeArray($data);
+        }
+        
+        /** Static functions to work with arrays and collections **/
+        
+        /**
+         * This method converts the input type to an array. The method can handle the following types:
+         *
+         *  * null -- an empty array is returned
+         *  * scalar -- will be splitted by it's characters (UTF-8 safe)
+         *  * array -- is returned as array
+         *  * ArrayObject, ArrayIterator, \org\octris\core\type\collection, \org\octris\core\type\iterator -- get converted to an array
+         *
+         * for all other types 'false' is returned.
+         *
+         * @octdoc  m:collection/normalize
+         * @param   mixed       $value          Value to normalize
+         * @return  array|bool                  Returns an array if normalization succeeded. In case of an error 'false' is returned.
+         */
+        public static function normalize($value)
+        /**/
+        {
+            if (is_null($value)) {
+                // initialize empty array if no value is specified
+                $return = array();
+            } elseif (is_scalar($value)) {
+                // a scalar will be splitted into it's character, UTF-8 safe.
+                $return = \org\octris\core\type\string\str_split((string)$value, 1);
+            } elseif ($value instanceof \ArrayObject || $value instanceof \ArrayIterator || $value instanceof \org\octris\core\type\iterator) {
+                // an ArrayObject or ArrayIterator will be casted to a PHP array first
+                $return = $value->getArrayCopy();
+            } elseif (is_array($value)) {
+                $return = $value;
+            } else {
+                $return = false;
+            }
+            
+            return $return;
         }
     }
 }
