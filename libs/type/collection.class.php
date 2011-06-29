@@ -262,15 +262,17 @@ namespace org\octris\core\type {
          *
          * @octdoc  m:collection/normalize
          * @param   mixed       $value          Value to normalize
+         * @param   bool        $strict         If this optional parameter is set to true, scalars and null values will not
+         *                                      be normalized, but will return false instead.
          * @return  array|bool                  Returns an array if normalization succeeded. In case of an error 'false' is returned.
          */
-        public static function normalize($value)
+        public static function normalize($value, $strict = false)
         /**/
         {
-            if (is_null($value)) {
+            if (!$strict && is_null($value)) {
                 // initialize empty array if no value is specified
                 $return = array();
-            } elseif (is_scalar($value)) {
+            } elseif (!$strict && is_scalar($value)) {
                 // a scalar will be splitted into it's character, UTF-8 safe.
                 $return = \org\octris\core\type\string\str_split((string)$value, 1);
             } elseif ($value instanceof \ArrayObject || $value instanceof \ArrayIterator || $value instanceof \org\octris\core\type\iterator) {
@@ -283,6 +285,217 @@ namespace org\octris\core\type {
             }
             
             return $return;
+        }
+
+        /**
+         * Return keys of array / collection.
+         *
+         * @octdoc  m:collection/keys
+         * @param   mixed       $p                      Either an array or an object which implements the getArrayCopy method.
+         * @return  array|bool                          Array of stored keys or false.
+         */
+        public static function keys($p)
+        /**/
+        {
+            return (($p = static::normalize($p, true)) !== false ? array_keys($p) : false);
+        }
+
+        /**
+         * Return values of array / collection.
+         *
+         * @octdoc  m:collection/values
+         * @param   mixed       $p                      Either an array or an object which implements the getArrayCopy method.
+         * @return  array|bool                          Array of stored keys or false.
+         */
+        public static function values($p)
+        /**/
+        {
+            return (($p = static::normalize($p, true)) !== false ? array_values($p) : false);
+        }
+
+        /**
+         * Merge multiple arrays / collections. The public static function returns either an array or an collection depending on the type of the 
+         * first argument.
+         *
+         * @octdoc  m:collection/merge
+         * @param   mixed       $arg1, ...                              Array(s) / collection(s) to merge.
+         * @return  array|\org\octris\core\type\collection|bool         Merged array data or false.
+         */
+        public static function merge($arg1)
+        /**/
+        {
+            $is_collection = (is_object($arg1) && $arg1 instanceof \org\octris\core\type\collection);
+
+            if (($arg1 = static::normalize($arg1, true)) === false) {
+                return false;
+            }
+
+            $args = func_get_args();
+            array_shift($args);
+
+            for ($i = 0, $cnt = count($args); $i < $cnt; ++$i) {
+                if (($arg = static::normalize($args[$i], true)) !== false) {
+                    $arg1 = array_merge($arg1, $arg);
+                }
+            }
+
+            if ($is_collection) {
+                $arg1 = new \org\octris\core\type\collection($arg1);
+            }
+
+            return $arg1;
+        }
+
+        /**
+         * Flatten a array / collection. Convert a (nested) structure into a flat array with expanded keys
+         *
+         * @octdoc  m:collection/flatten
+         * @param   mixed       $p                      Either an array or an object which implements the getArrayCopy method.
+         * @param   string      $sep                    Optional separator for expanding keys.
+         * @return  array|bool                          Flattened structure or false, if input could not be processed.
+         */
+        public static function flatten($p, $sep = '.')
+        /**/
+        {
+            $is_collection = (is_object($p) && $p instanceof \org\octris\core\type\collection);
+
+            if (($p = static::normalize($p, true)) === false) {
+                return false;
+            }
+
+            $tmp = array();
+
+            $array = new \RecursiveIteratorIterator(new \RecursiveArrayIterator($p), \RecursiveIteratorIterator::SELF_FIRST);
+            $d = 0;
+
+            $property = array();
+
+            foreach ($array as $k => $v) {
+                if (!is_int($k)) {
+                    if ($d > $array->getDepth()) {
+                        array_splice($property, $array->getDepth());
+                    }
+
+                    $property[$array->getDepth()] = $k;
+
+                    $d = $array->getDepth();
+                }
+
+                if (is_int($k)) {
+                    $tmp[implode($sep, $property)][] = $v;
+                } elseif (!is_array($v)) {
+                    $tmp[implode($sep, $property)] = $v;
+                }
+            }
+
+            if ($is_collection) {
+                $p = new \org\octris\core\type\collection($p);
+            }
+
+            return $tmp;
+        }
+
+        /**
+         * Deflatten a flat array / collection.
+         *
+         * @octdoc  m:collection/deflatten
+         * @param   mixed       $p                      Either an array or an object which implements the getArrayCopy method.
+         * @param   string      $sep                    Optional separator for expanding keys.
+         * @return  array|bool                          Deflattened collection or false if input could not be deflattened.
+         */
+        public static function deflatten($p, $sep = '.')
+        /**/
+        {
+            $is_collection = (is_object($p) && $p instanceof \org\octris\core\type\collection);
+
+            if (($p = static::normalize($p, true)) === false) {
+                return false;
+            }
+
+            $tmp = array();
+
+            foreach ($p as $k => $v) {
+                $key  = explode($sep, $k);
+                $ref =& $tmp;
+
+                foreach ($key as $part) {
+                    if (!isset($ref[$part])) {
+                        $ref[$part] = array();
+                    }
+
+                    $ref =& $ref[$part];
+                }
+
+                $ref = $v;
+            }
+
+            if ($is_collection) {
+                $p = new \org\octris\core\type\collection($p);
+            }
+
+            return $tmp;
+        }
+
+        /**
+         * Applies the callback to the elements of the given arrays.
+         *
+         * @octdoc  f:collection/map
+         * @param   callback    $cb                 Callback to apply to each element.
+         * @param   mixed       $arg1, ...          The input array(s), ArrayObject(s) and / or collection(s).
+         * @return  array                           Returns an array containing all the elements of arg1 after applying the
+         *                                          callback public static function to each one.
+         */
+        public static function map($cb, $arg1)
+        /**/
+        {
+            $args = func_get_args();
+            array_shift($args);
+            $cnt = count($args);
+
+            $is_collection = (is_object($arg1) && $arg1 instanceof \org\octris\core\type\collection);
+
+            $data = array();
+            $next = function() use (&$args, $cnt) {
+                $return = array();
+                $valid  = false;
+
+                for ($i = 0; $i < $cnt; ++$i) {
+                    if (list($k, $v) = each($args[$i])) {
+                        $return[] = $v;
+                        $valid = true;
+                    } else {
+                        $return[] = null;
+                    }
+                }
+
+                return ($valid ? $return : false);
+            };
+
+            while ($tmp = $next()) {
+                $data[] = call_user_func_array($cb, $tmp);
+            }
+
+            if ($is_collection) {
+                $data = new \org\octris\core\type\collection($data);
+            }
+
+            return $data;
+        }
+
+        /**
+         * Apply a user public static function to every member of an array. 
+         *
+         * @octdoc  f:collection/walk
+         * @param   mixed       $arg                The input array, ArrayObject or collection.
+         * @param   callback    $cb                 Callback to apply to each element.
+         * @param   mixed       $userdata           Optional userdata parameter will be passed as the third parameter to the 
+         *                                          callback function.
+         * @return  bool                            Returns TRUE on success or FALSE on failure.
+         */
+        public static function walk(&$arg, $cb, $userdata = null)
+        /**/
+        {
+            return array_walk($arg, $cb, $userdata);
         }
     }
 }
