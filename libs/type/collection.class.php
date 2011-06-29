@@ -84,6 +84,101 @@ namespace org\octris\core\type {
             throw new \Exception(__METHOD__ . ' is not currently supported');
         }
 
+        /**
+         * Append value to collection.
+         *
+         * @octdoc  m:collection/append
+         * @param   mixed       $value                      Value to append to collection.
+         */
+        public function append($value)
+        /**/
+        {
+            $this->offsetSet(null, $value);
+        }
+
+        /** Sorting **/
+        
+        /**
+         * Sort the entries by value.
+         *
+         * @octdoc  m:collection/asort
+         */
+        public function asort()
+        /**/
+        {
+            parent::asort();
+            
+            $this->keys = array_keys($this);
+        }
+        
+        /**
+         * Sort the entries by key.
+         *
+         * @octdoc  m:collection/ksort
+         */
+        public function ksort()
+        /**/
+        {
+            parent::ksort();
+            
+            $this->keys = array_keys($this);
+        }
+
+        /**
+         * Sort the entries with a user-defined comparison function and maintain key association.
+         *
+         * @octdoc  m:collection/uasort
+         * @param   callback    $callback                   The callback comparision function.
+         */
+        public function uasort($callback)
+        /**/
+        {
+            parent::uasort($callback);
+            
+            $this->keys = array_keys($this);
+        }
+
+        /**
+         * Sort the entries by keys using a user-defined comparison function.
+         *
+         * @octdoc  m:collection/uksort
+         * @param   callback    $callback                   The callback comparison function.
+         */
+        public function uksort($callback)
+        /**/
+        {
+            parent::uksort($callback);
+            
+            $this->keys = array_keys($this);
+        }
+
+        /**
+         *  Sort an array using a case insensitive "natural order" algorithm.
+         *
+         * @octdoc  m:collection/natcasesort
+         */
+        public function natcasesort()
+        /**/
+        {
+            parent::natcasesort();
+            
+            $this->keys = array_keys($this);
+        }
+        
+        /**
+         * Sort entries using a "natural order" algorithm.
+         *
+         * @octdoc  m:collection/natsort
+         */
+        public function natsort()
+        /**/
+        {
+            parent::natsort();
+            
+            $this->keys = array_keys($this);
+            
+        }
+
         /** ArrayAccess **/
     
         /**
