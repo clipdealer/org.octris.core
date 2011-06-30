@@ -301,29 +301,6 @@ namespace org\octris\core\type {
             return $return;
         }
 
-        /**
-         * Sets defaults for collection. Values are only set, if the keys of the values are not already available 
-         * in collection.
-         *
-         * @octdoc  m:collection/defaults
-         * @param   mixed       $value      Value(s) to set as default(s).
-         */
-        public function defaults($value)
-        /**/
-        {
-            $data = $this->getArrayCopy();
-            
-            if (is_object($value) && ($value instanceof ArrayObject || $value instanceof ArrayIterator)) {
-                $value = (array)$value;
-            } elseif (!is_array($value)) {
-                throw new Exception('don\'t know how to handle parameter of type "' . gettype($array) . '"');
-            }
-
-            $data = array_merge($value, $data);
-            
-            $this->exchangeArray($data);
-        }
-        
         /** Static functions to work with arrays and collections **/
         
         /**
