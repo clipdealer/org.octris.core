@@ -525,7 +525,7 @@ namespace org\octris\core\type {
             }
 
             if ($is_collection) {
-                $p = new \org\octris\core\type\collection($p);
+                $tmp = new \org\octris\core\type\collection($tmp);
             }
 
             return $tmp;
