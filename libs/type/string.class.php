@@ -130,7 +130,7 @@ namespace org\octris\core\type {
         public static function strcasecmp($string1, $string2)
         /**/
         {
-            return strcmp(strtolower($string1), strtolower($string2));
+            return strcmp(self::strtolower($string1), self::strtolower($string2));
         }
     
         /**
@@ -208,7 +208,7 @@ namespace org\octris\core\type {
         public static function strnatcasecmp($string1, $string2)
         /**/
         {
-            return strnatcmp(strtolower($string1), strtolower($string2));
+            return strnatcmp(self::strtolower($string1), self::strtolower($string2));
         }
     
         /**
@@ -225,7 +225,7 @@ namespace org\octris\core\type {
         public static function strncasecmp($string1, $string2, $length)
         /**/
         {
-            return strncmp(strtolower($string1), strtolower($string2), $length);
+            return self::strncmp(self::strtolower($string1), self::strtolower($string2), $length);
         }
     
         /**
