@@ -302,25 +302,6 @@ namespace org\octris\core\type {
         }
 
         /**
-         * Rename keys of collection but preserve the ordering of the collection.
-         *
-         * @octdoc  m:collection/keyrename
-         * @param   array       $map        Map of origin name to new name.
-         */
-        public function keyrename($map)
-        /**/
-        {
-            $data = $this->getArrayCopy();
-            $data = array_combine(array_map(function($v) use ($map) {
-                return (isset($map[$v])
-                        ? $map[$v]
-                        : $v);
-            }, array_keys($data)), array_values($data));
-            
-            $this->exchangeArray($data);
-        }
-
-        /**
          * Sets defaults for collection. Values are only set, if the keys of the values are not already available 
          * in collection.
          *
@@ -529,6 +510,36 @@ namespace org\octris\core\type {
             }
 
             return $tmp;
+        }
+
+        /**
+         * Rename keys of collection but preserve the ordering of the collection.
+         *
+         * @octdoc  m:collection/keyrename
+         * @param   array                                       $data       Data to rename keys of.
+         * @param   array                                       $map        Map of origin name to new name.
+         * @return  array|\org\octris\core\collection|bool                  Collection/array of data with renamed keys or false in case of an error.
+         */
+        public static function keyrename($data, array $map)
+        /**/
+        {
+            $is_collection = (is_object($data) && $data instanceof \org\octris\core\type\collection);
+
+            if (($data = static::normalize($data, true)) === false) {
+                return false;
+            }
+
+            $data = array_combine(array_map(function($v) use ($map) {
+                return (isset($map[$v])
+                        ? $map[$v]
+                        : $v);
+            }, array_keys($data)), array_values($data));
+            
+            if ($is_collection) {
+                $data = new \org\octris\core\type\collection($data);
+            }
+
+            return $data;
         }
 
         /**
