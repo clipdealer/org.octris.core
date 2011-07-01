@@ -18,11 +18,15 @@ web-server etc. If you intended to use this framework to develop applications
 that should run (almost) everywhere especially on shared hosts, read no 
 further -- you probably will be out of luck with this framework.
 
+Before you start developing applications, you should have a look at chapter
+1.2, the requirements, to make sure you can fulfill all requirements 
+regarding the server the application is intended to run on.
+
 Questions & answers
 -------------------
 
 **Why yet another PHP framework?**
 
-Because i wanted to have a framework available, that worked exactly how
-i would expect a framework to work.
+Because i wanted to have a framework available, that works exactly how
+i would expect and like a framework to work.
     
