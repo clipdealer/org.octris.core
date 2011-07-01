@@ -1,8 +1,8 @@
 Overview
 ========
 
-The OCTRiS framework is an BSD licensed open source PHP framework. It's 
-purpose is to provide an "lightweight" alternative to other PHP frameworks. 
+The OCTRiS framework is a BSD licensed open source PHP framework. It's 
+purpose is to provide a "lightweight" alternative to other PHP frameworks. 
 Lightweight in the sense, that it does not provide classes and / or 
 implementations for all possible use-cases. 
 
@@ -19,7 +19,7 @@ that should run (almost) everywhere especially on shared hosts, read no
 further -- you probably will be out of luck with this framework.
 
 Before you start developing applications, you should have a look at chapter
-1.2, the requirements, to make sure you can fulfill all requirements 
+1.2 -- the requirements -- to make sure you can fulfill all requirements 
 regarding the server the application is intended to run on.
 
 Questions & answers
@@ -30,3 +30,10 @@ Questions & answers
 Because i wanted to have a framework available, that works exactly how
 i would expect and like a framework to work.
     
+**Are there any reference applications available?**
+
+As of now, July 2011, there are no noteworthy reference applications available. 
+However, many concepts and ideas of the framework evolved from another -- 
+closed source -- framework i develope since 2004 and which powers clipdealer.com 
+and pixelio.de -- the latter one is one of the largest german speaking sites for 
+gratis and royalty free photos.
