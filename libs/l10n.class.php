@@ -155,8 +155,8 @@ namespace org\octris\core {
 
             array_push($this->lc_mem, $ret);
 
-            putenv('LANG=' . $locale);
-            putenv('LC_MESSAGES=' . $locale);
+            // putenv('LANG=' . $locale);
+            // putenv('LC_MESSAGES=' . $locale);
             setlocale(LC_MESSAGES, $locale);
 
             $this->bindTextDomain('messages', $this->directory);
