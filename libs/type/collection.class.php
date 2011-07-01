@@ -102,11 +102,16 @@ namespace org\octris\core\type {
          * Sort the entries by value.
          *
          * @octdoc  m:collection/asort
+         * @param   Collator    $collator       Optional collator to use for comparision.
          */
-        public function asort()
+        public function asort(\Collator $collator = null)
         /**/
         {
-            parent::asort();
+            $collator = $collator ?: new \Collator(\org\octris\core\l10n::getInstance()->getLocale());
+            
+            parent::uasort(function($string1, $string2) use ($collator) {
+                return \org\octris\core\type\string::strcmp($string1, $string2, $collator);
+            });
             
             $this->keys = array_keys($this);
         }
@@ -115,11 +120,16 @@ namespace org\octris\core\type {
          * Sort the entries by key.
          *
          * @octdoc  m:collection/ksort
+         * @param   Collator    $collator       Optional collator to use for comparision.
          */
-        public function ksort()
+        public function ksort(\Collator $collator = null)
         /**/
         {
-            parent::ksort();
+            $collator = $collator ?: new \Collator(\org\octris\core\l10n::getInstance()->getLocale());
+            
+            parent::uksort(function($string1, $string2) use ($collator) {
+                return \org\octris\core\type\string::strcmp($string1, $string2, $collator);
+            });
             
             $this->keys = array_keys($this);
         }
@@ -156,11 +166,16 @@ namespace org\octris\core\type {
          *  Sort an array using a case insensitive "natural order" algorithm.
          *
          * @octdoc  m:collection/natcasesort
+         * @param   Collator    $collator       Optional collator to use for comparision.
          */
-        public function natcasesort()
+        public function natcasesort(\Collection $collection = null)
         /**/
         {
-            parent::natcasesort();
+            $collator = $collator ?: new \Collator(\org\octris\core\l10n::getInstance()->getLocale());
+            
+            parent::uasort(function($string1, $string2) use ($collator) {
+                return \org\octris\core\type\string::strnatcasecmp($string1, $string2, $collator);
+            });
             
             $this->keys = array_keys($this);
         }
@@ -169,11 +184,16 @@ namespace org\octris\core\type {
          * Sort entries using a "natural order" algorithm.
          *
          * @octdoc  m:collection/natsort
+         * @param   Collator    $collator       Optional collator to use for comparision.
          */
-        public function natsort()
+        public function natsort(\Collection $collection = null)
         /**/
         {
-            parent::natsort();
+            $collator = $collator ?: new \Collator(\org\octris\core\l10n::getInstance()->getLocale());
+            
+            parent::uasort(function($string1, $string2) use ($collator) {
+                return \org\octris\core\type\string::strnatcmp($string1, $string2, $collator);
+            });
             
             $this->keys = array_keys($this);
             
