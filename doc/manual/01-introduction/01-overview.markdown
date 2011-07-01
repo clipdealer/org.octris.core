@@ -20,7 +20,9 @@ further -- you probably will be out of luck with this framework.
 
 Before you start developing applications, you should have a look at chapter
 1.2 -- the requirements -- to make sure you can fulfill all requirements 
-regarding the server the application is intended to run on.
+regarding the server the application is intended to run on. Basic knowledge
+about UN\*X environments is required to understand several parts of this
+manual.
 
 Questions & answers
 -------------------
