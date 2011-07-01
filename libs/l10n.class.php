@@ -155,8 +155,6 @@ namespace org\octris\core {
 
             array_push($this->lc_mem, $ret);
 
-            $locale .= '.UTF-8';
-
             putenv('LANG=' . $locale);
             putenv('LC_MESSAGES=' . $locale);
             setlocale(LC_MESSAGES, $locale);
