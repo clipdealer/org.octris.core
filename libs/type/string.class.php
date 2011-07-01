@@ -118,19 +118,39 @@ namespace org\octris\core\type {
         }
     
         /**
-         * Binary safe case-insensitive string comparison.
+         * Case-insensitive string comparison.
          *
          * @octdoc  f:string/strcasecmp
          * @param   string      $string1        The first string.
          * @param   string      $string2        The second string.
+         * @param   Collator    $collator       Optional collator to use for comparision.
          * @return  int                         Returns < 0 if string1 is less than string2.
          *                                      Returns > 0 if string1 is greater than string2
          *                                      Returns 0 if both strings are equal.
          */
-        public static function strcasecmp($string1, $string2)
+        public static function strcasecmp($string1, $string2, \Collator $collator = null)
         /**/
         {
-            return strcmp(self::strtolower($string1), self::strtolower($string2));
+            return self::strcmp(self::strtolower($string1), self::strtolower($string2), $collator);
+        }
+    
+        /**
+         * String comparision.
+         *
+         * @octdoc  m:string/strcmp
+         * @param   string      $string1        The first string.
+         * @param   string      $string2        The second string.
+         * @param   Collator    $collator       Optional collator to use for comparision.
+         * @return  int                         Returns < 0 if string1 is less than string2.
+         *                                      Returns > 0 if string1 is greater than string2
+         *                                      Returns 0 if both strings are equal.
+         */
+        public static function strcmp($string1, $string2, \Collator $collator = null)
+        /**/
+        {
+            $collator = $collator ?: new \Collator(\org\octris\core\l10n::getInstance()->getLocale());
+            
+            return $collator::compare($string, $string2);
         }
     
         /**
@@ -196,56 +216,84 @@ namespace org\octris\core\type {
         }
     
         /**
-         * Binary safe case-insensitive string comparison using natural sorting algorithm.
+         * Case-insensitive string comparison using natural sorting algorithm.
          *
          * @octdoc  f:string/strnatcasecmp
          * @param   string      $string1        The first string.
          * @param   string      $string2        The second string.
+         * @param   Collator    $collator       Optional collator to use for comparision.
          * @return  int                         Returns < 0 if string1 is less than string2.
          *                                      Returns > 0 if string1 is greater than string2
          *                                      Returns 0 if both strings are equal.
          */
-        public static function strnatcasecmp($string1, $string2)
+        public static function strnatcasecmp($string1, $string2, \Collator $collator = null)
         /**/
         {
-            return strnatcmp(self::strtolower($string1), self::strtolower($string2));
+            return self::strnatcmp(self::strtolower($string1), self::strtolower($string2), $collator);
         }
     
         /**
-         * Binary safe case-insensitive string comparison of the first n characters.
+         * String comparison using natural sorting algorithm.
+         *
+         * @octdoc  f:string/strcasecmp
+         * @param   string      $string1        The first string.
+         * @param   string      $string2        The second string.
+         * @param   Collator    $collator       Optional collator to use for comparision.
+         * @return  int                         Returns < 0 if string1 is less than string2.
+         *                                      Returns > 0 if string1 is greater than string2
+         *                                      Returns 0 if both strings are equal.
+         */
+        public static function strnatcmp($string1, $string2, \Collator $collator = null)
+        /**/
+        {
+            if ($collator) {
+                $collator = clone($collator);
+            } else {
+                $collator = new \Collator(\org\octris\core\l10n::getInstance()->getLocale());
+            }
+            
+            $collator->setAttribute(Collator::NUMERIC_COLLATION, Collator::ON);
+            
+            return self::strcmp($string1, $string2, $collator);
+        }
+    
+        /**
+         * Case-insensitive string comparison of the first n characters.
          *
          * @octdoc  f:string/strncasecmp
          * @param   string      $string1        The first string.
          * @param   string      $string2        The second string.
          * @param   int         $length         Number of characters to use in the comparison.
+         * @param   Collator    $collator       Optional collator to use for comparision.
          * @return  int                         Returns < 0 if string1 is less than string2.
          *                                      Returns > 0 if string1 is greater than string2
          *                                      Returns 0 if both strings are equal.
          */
-        public static function strncasecmp($string1, $string2, $length)
+        public static function strncasecmp($string1, $string2, $length, \Collator $collator = null)
         /**/
         {
             return self::strncmp(self::strtolower($string1), self::strtolower($string2), $length);
         }
     
         /**
-         * Binary safe string comparison of the first n characters.
+         * String comparison of the first n characters.
          *
          * @octdoc  f:string/strncmp
          * @param   string      $string1        The first string.
          * @param   string      $string2        The second string.
          * @param   int         $length         Number of characters to use in the comparison.
+         * @param   Collator    $collator       Optional collator to use for comparision.
          * @return  int                         Returns < 0 if string1 is less than string2.
          *                                      Returns > 0 if string1 is greater than string2
          *                                      Returns 0 if both strings are equal.
          */
-        public static function strncmp($string1, $string2, $length)
+        public static function strncmp($string1, $string2, $length, \Collator $collator = null)
         /**/
         {
-            $string1 = substr($string1, 0, $length);
-            $string2 = substr($string2, 0, $length);
+            $string1 = self::substr($string1, 0, $length);
+            $string2 = self::substr($string2, 0, $length);
         
-            return strcmp($string1, $string2);
+            return self::strcmp($string1, $string2, $collator);
         }
     
         /**
@@ -409,7 +457,7 @@ namespace org\octris\core\type {
         }
 
         /**
-         * Binary safe comparison of two strings from an offset, up to length characters.
+         * Comparison of two strings from an offset, up to length characters.
          *
          * @octdoc  f:string/substr_compare
          * @param   string      $string         The main string being compared.
