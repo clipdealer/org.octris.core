@@ -1,6 +1,9 @@
 Overview
 ========
 
+Introduction
+------------
+
 The OCTRiS framework is a BSD licensed open source PHP framework. It's 
 purpose is to provide a "lightweight" alternative to other PHP frameworks. 
 Lightweight in the sense, that it does not provide classes and / or 
@@ -39,3 +42,14 @@ However, many concepts and ideas of the framework evolved from another --
 closed source -- framework i develope since 2004 and which powers clipdealer.com 
 and pixelio.de -- the latter one is one of the largest german speaking sites for 
 gratis and royalty free photos.
+
+Features overview
+-----------------
+
+*   Template engine
+
+*   Validation schemas
+
+*   Localization and internationalization
+
+*   UTF-8
