@@ -27,6 +27,19 @@ production servers:
     
 *   GNU make
 
+The following tools are not required, but useful addtional tools on a development
+server:
+
+*   pandoc -- http://johnmacfarlane.net/pandoc/
+
+    The core documentation is written using pandoc's extended markdown syntax.
+    Pandoc is a useful tool for converting different markup types to other types
+    and PDF documents. For creating PDF documents it's required to have LaTeX
+    and pdflatex installed, too. The OCTRiS core documentation will be always 
+    available in different formats on the website, so there is no need install 
+    this stuff only for generating -- for example -- PDF documentation from the 
+    core frameworks markdown files.
+
 PHP and extensions
 ------------------
 
