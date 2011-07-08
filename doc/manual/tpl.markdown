@@ -58,6 +58,30 @@ _Example:_
         </body>
     </html>
 
+Template variables may be of an abitrary type. They even may be callable. This is useful to 
+fetch values only on demand for example from a database. So the following would be 
+perfectly valid:
+
+    $tpl = new \org\octris\core\tpl();
+    $tpl->setValue('users_online', function() {
+        // perform some DB query here to get the number of users online
+        $number = ...
+        
+        return $number;
+    });
+
+The template could be something like:
+
+    <html>
+        <body>
+            Users online: {{$users_online}}
+        </body>
+    </html>
+    
+The template engine will recognize the variable as beeing "callable" and call the
+function behind it, which in return would provide some result that will be output
+in the template.
+
 Constants
 ---------
 
