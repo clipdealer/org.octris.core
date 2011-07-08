@@ -73,6 +73,9 @@ namespace org\octris\core\app {
         public function process()
         /**/
         {
+            // perform initialization
+            $this->initialize();
+
             // handle command line options
             // foreach ($this->option_map as $option => $class) {
             //     if ($_REQUEST[$option]->isSet) {
