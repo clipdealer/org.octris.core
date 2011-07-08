@@ -70,30 +70,30 @@ for the installation. When the task finished successfully you will have
 a directory structure similar to the following:
 
     /
-    ├─ ...
-    ├─ home/
-    |  ├─ ...
-    |  ├─ harald/
-    |  |  ├─ ...
-    |  |  ├─ www/
-    |  |  |  ├─ data/
-    |  |  |  ├─ etc/ 
-    |  |  |  |  └─ org.octris.core      -> ../work/org.octris.core/etc/
-    |  |  |  ├─ host/
-    |  |  |  ├─ libs/
-    |  |  |  |  └─ org.octris.core      -> ../work/org.octris.core/libs/
-    |  |  |  ├─ locale/
-    |  |  |  ├─ templates/
-    |  |  |  ├─ tools/
-    |  |  |  |  └─ org.octris.core      -> ../work/org.octris.core/tools/
-    |  |  |  ├─ work/
-    |  |  |  |  └─ org.octris.core/
-    |  |  |  |     ├─ doc/
-    |  |  |  |     ├─ etc/
-    |  |  |  |     ├─ libs/
-    |  |  |  |     ├─ libsjs/
-    |  |  |  |     ├─ tests/
-    |  |  |  |     └─ tools/
+    +- ...
+    +- home/
+    |  +- ...
+    |  +- harald/
+    |  |  +- ...
+    |  |  +- www/
+    |  |  |  +- data/
+    |  |  |  +- etc/ 
+    |  |  |  |  +- org.octris.core      -> ../work/org.octris.core/etc/
+    |  |  |  +- host/
+    |  |  |  +- libs/
+    |  |  |  |  +- org.octris.core      -> ../work/org.octris.core/libs/
+    |  |  |  +- locale/
+    |  |  |  +- templates/
+    |  |  |  +- tools/
+    |  |  |  |  +- org.octris.core      -> ../work/org.octris.core/tools/
+    |  |  |  +- work/
+    |  |  |  |  +- org.octris.core/
+    |  |  |  |     +- doc/
+    |  |  |  |     +- etc/
+    |  |  |  |     +- libs/
+    |  |  |  |     +- libsjs/
+    |  |  |  |     +- tests/
+    |  |  |  |     +- tools/
     :  :  :  :  
    
     
@@ -155,52 +155,52 @@ first sample application. After following the steps described above, you
 should have a directory structure similar to the following:
 
     /
-    ├─ ...
-    ├─ home/
-    |  ├─ ...
-    |  ├─ harald/
-    |  |  ├─ ...
-    |  |  ├─ www/
-    |  |  |  ├─ data/
-    |  |  |  |  └─ org.octris.example   -> ../work/org.octris.example/data/
-    |  |  |  ├─ etc/ 
-    |  |  |  |  ├─ org.octris.core      -> ../work/org.octris.core/etc/
-    |  |  |  |  └─ org.octris.example   -> ../work/org.octris.example/etc/
-    |  |  |  ├─ host/
-    |  |  |  |  └─ org.octris.example/
-    |  |  |  |     ├─ index.php         -> ../../work/org.octris.example/host/index.php
-    |  |  |  |     ├─ libsjs/
-    |  |  |  |     ├─ resources         -> ../../work/org.octris.example/resources/
-    |  |  |  |     └─ styles            -> ../../work/org.octris.example/styles/
-    |  |  |  ├─ libs/
-    |  |  |  |  ├─ org.octris.core      -> ../work/org.octris.core/libs/
-    |  |  |  |  └─ org.octris.example   -> ../work/org.octris.example/libs/
-    |  |  |  ├─ locale/
-    |  |  |  |  └─ org.octris.example   -> ../work/org.octris.example/locale/
-    |  |  |  ├─ templates/
-    |  |  |  |  └─ org.octris.example   -> ../work/org.octris.example/templates/
-    |  |  |  ├─ tools/
-    |  |  |  |  ├─ org.octris.core      -> ../work/org.octris.core/tools/
-    |  |  |  |  └─ org.octris.example   -> ../work/org.octris.example/tools/
-    |  |  |  ├─ work/
-    |  |  |  |  ├─ org.octris.core/
-    |  |  |  |  |  ├─ doc/
-    |  |  |  |  |  ├─ etc/
-    |  |  |  |  |  ├─ libs/
-    |  |  |  |  |  ├─ libsjs/
-    |  |  |  |  |  ├─ tests/
-    |  |  |  |  |  └─ tools/
-    |  |  |  |  └─ org.octris.example/
-    |  |  |  |     ├─ data/
-    |  |  |  |     ├─ doc/
-    |  |  |  |     ├─ etc/
-    |  |  |  |     ├─ libs/
-    |  |  |  |     ├─ libsjs/
-    |  |  |  |     ├─ resources/
-    |  |  |  |     ├─ styles/
-    |  |  |  |     ├─ templates/
-    |  |  |  |     ├─ tests/
-    |  |  |  |     └─ tools/
+    +- ...
+    +- home/
+    |  +- ...
+    |  +- harald/
+    |  |  +- ...
+    |  |  +- www/
+    |  |  |  +- data/
+    |  |  |  |  +- org.octris.example   -> ../work/org.octris.example/data/
+    |  |  |  +- etc/ 
+    |  |  |  |  +- org.octris.core      -> ../work/org.octris.core/etc/
+    |  |  |  |  +- org.octris.example   -> ../work/org.octris.example/etc/
+    |  |  |  +- host/
+    |  |  |  |  +- org.octris.example/
+    |  |  |  |     +- index.php         -> ../../work/org.octris.example/host/index.php
+    |  |  |  |     +- libsjs/
+    |  |  |  |     +- resources         -> ../../work/org.octris.example/resources/
+    |  |  |  |     +- styles            -> ../../work/org.octris.example/styles/
+    |  |  |  +- libs/
+    |  |  |  |  +- org.octris.core      -> ../work/org.octris.core/libs/
+    |  |  |  |  +- org.octris.example   -> ../work/org.octris.example/libs/
+    |  |  |  +- locale/
+    |  |  |  |  +- org.octris.example   -> ../work/org.octris.example/locale/
+    |  |  |  +- templates/
+    |  |  |  |  +- org.octris.example   -> ../work/org.octris.example/templates/
+    |  |  |  +- tools/
+    |  |  |  |  +- org.octris.core      -> ../work/org.octris.core/tools/
+    |  |  |  |  +- org.octris.example   -> ../work/org.octris.example/tools/
+    |  |  |  +- work/
+    |  |  |  |  +- org.octris.core/
+    |  |  |  |  |  +- doc/
+    |  |  |  |  |  +- etc/
+    |  |  |  |  |  +- libs/
+    |  |  |  |  |  +- libsjs/
+    |  |  |  |  |  +- tests/
+    |  |  |  |  |  +- tools/
+    |  |  |  |  +- org.octris.example/
+    |  |  |  |     +- data/
+    |  |  |  |     +- doc/
+    |  |  |  |     +- etc/
+    |  |  |  |     +- libs/
+    |  |  |  |     +- libsjs/
+    |  |  |  |     +- resources/
+    |  |  |  |     +- styles/
+    |  |  |  |     +- templates/
+    |  |  |  |     +- tests/
+    |  |  |  |     +- tools/
     :  :  :  :  
 
 Note that the directories, that where empty just after installing the core
