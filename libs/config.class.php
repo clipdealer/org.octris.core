@@ -61,6 +61,26 @@ namespace org\octris\core {
         }
 
         /**
+         * Sets defaults for configuration. Values are only set, if the keys of the values are not already available 
+         * in the configuration.
+         *
+         * @octdoc  m:collection/setDefaults
+         * @param   mixed       $value      Value(s) to set as default(s).
+         */
+        public function setDefaults($value)
+        /**/
+        {
+            if (($tmp = self::normalize($value, true)) === false) {
+                throw new Exception('don\'t know how to handle parameter of type "' . gettype($array) . '"');
+            } else {
+                $data = $this->getArrayCopy();
+                $data = array_merge($tmp, $data);
+
+                $this->exchangeArray($data);
+            }
+        }
+        
+        /**
          * Filter configuration for prefix.
          *
          * @octdoc  m:config/filter

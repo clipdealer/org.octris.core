@@ -155,10 +155,8 @@ namespace org\octris\core {
 
             array_push($this->lc_mem, $ret);
 
-            $locale .= '.UTF-8';
-
-            putenv('LANG=' . $locale);
-            putenv('LC_MESSAGES=' . $locale);
+            // putenv('LANG=' . $locale);
+            // putenv('LC_MESSAGES=' . $locale);
             setlocale(LC_MESSAGES, $locale);
 
             $this->bindTextDomain('messages', $this->directory);
@@ -301,7 +299,7 @@ namespace org\octris\core {
                 $return = $second;
             }
 
-            return \org\octris\core\type\string\sprintf($return, $val);
+            return \org\octris\core\type\string::sprintf($return, $val);
         }
 
         /**

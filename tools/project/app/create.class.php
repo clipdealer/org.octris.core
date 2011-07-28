@@ -87,8 +87,8 @@ namespace org\octris\core\project\app {
             
             // handle project configuration
             $prj = new config('org.octris.core', 'project.create');
-
-            $prj->defaults(array(
+            
+            $prj->setDefaults(array(
                 'info.company' => (isset($data['company']) ? $data['company'] : ''),
                 'info.author'  => (isset($data['author']) ? $data['author'] : ''),
                 'info.email'   => (isset($data['email']) ? $data['email'] : '')
