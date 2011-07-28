@@ -26,7 +26,7 @@ namespace org\octris\core {
          * @octdoc  v:l10n/$instance
          * @var     \org\octris\core\l10n
          */
-        private $instance = null;
+        private static $instance = null;
         /**/
 
         /**

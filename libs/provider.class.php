@@ -158,6 +158,19 @@ namespace org\octris\core {
         }
 
         /**
+         * Test if a specified validator is available.
+         *
+         * @octdoc  m:provider/hasValidator
+         * @param   string          $name               Name of validator.
+         * @return  bool                                Returns true, if validator is available.
+         */
+        public function hasValidator($name)
+        /**/
+        {
+            return (isset($this->validators[$name]));
+        }
+
+        /**
          * Returns (validated and sanitized) stored data validated with specified 
          * validator name.
          *
