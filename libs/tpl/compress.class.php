@@ -31,6 +31,15 @@ namespace org\octris\core\tpl {
         /**/
 
         /**
+         * Enable / disable YUI compressor.
+         *
+         * @octdoc  v:compress/$enabled
+         * @var     bool
+         */
+        protected static $enabled = false;
+        /**/
+
+        /**
          * Constructor.
          *
          * @octdoc  m:compress/__construct
