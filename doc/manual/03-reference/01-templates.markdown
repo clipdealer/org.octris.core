@@ -94,7 +94,8 @@ The template engine supports the following block commands:
 Pre-localization of templates
 =============================
 
-
+The template engine will pre-localize templates at compile time. That means, that all static texts in a template
+will be looked up in the dictionary and 
 
 Template language reference
 ===========================

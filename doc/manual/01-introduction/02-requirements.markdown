@@ -40,12 +40,6 @@ server:
     this stuff only for generating -- for example -- PDF documentation from the 
     core frameworks markdown files.
 
-*   ditaa -- http://ditaa.sourceforge.net/
-
-    This is a small command-line tool written in Java which can convert diagrams
-    written with ASCII characters to bitmap graphics. Several diagrams in this
-    documentation where processed with this tool.
-
 PHP and extensions
 ------------------
 

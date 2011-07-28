@@ -69,33 +69,7 @@ This command will create several additional directories and symlinks required
 for the installation. When the task finished successfully you will have 
 a directory structure similar to the following:
 
-    /
-    +- ...
-    +- home/
-    |  +- ...
-    |  +- harald/
-    |  |  +- ...
-    |  |  +- www/
-    |  |  |  +- data/
-    |  |  |  +- etc/ 
-    |  |  |  |  +- org.octris.core      -> ../work/org.octris.core/etc/
-    |  |  |  +- host/
-    |  |  |  +- libs/
-    |  |  |  |  +- org.octris.core      -> ../work/org.octris.core/libs/
-    |  |  |  +- locale/
-    |  |  |  +- templates/
-    |  |  |  +- tools/
-    |  |  |  |  +- org.octris.core      -> ../work/org.octris.core/tools/
-    |  |  |  +- work/
-    |  |  |  |  +- org.octris.core/
-    |  |  |  |     +- doc/
-    |  |  |  |     +- etc/
-    |  |  |  |     +- libs/
-    |  |  |  |     +- libsjs/
-    |  |  |  |     +- tests/
-    |  |  |  |     +- tools/
-    :  :  :  :  
-   
+![core tree](../figures/tree_core.png)
     
 Symbolic links are visualized in the example as *->* and directories have the
 suffix */*. Note that the `make` target created most of the directories and all 
@@ -154,54 +128,7 @@ You can download the example project from github -- org.octris.example -- as
 first sample application. After following the steps described above, you 
 should have a directory structure similar to the following:
 
-    /
-    +- ...
-    +- home/
-    |  +- ...
-    |  +- harald/
-    |  |  +- ...
-    |  |  +- www/
-    |  |  |  +- data/
-    |  |  |  |  +- org.octris.example   -> ../work/org.octris.example/data/
-    |  |  |  +- etc/ 
-    |  |  |  |  +- org.octris.core      -> ../work/org.octris.core/etc/
-    |  |  |  |  +- org.octris.example   -> ../work/org.octris.example/etc/
-    |  |  |  +- host/
-    |  |  |  |  +- org.octris.example/
-    |  |  |  |     +- index.php         -> ../../work/org.octris.example/host/index.php
-    |  |  |  |     +- libsjs/
-    |  |  |  |     +- resources         -> ../../work/org.octris.example/resources/
-    |  |  |  |     +- styles            -> ../../work/org.octris.example/styles/
-    |  |  |  +- libs/
-    |  |  |  |  +- org.octris.core      -> ../work/org.octris.core/libs/
-    |  |  |  |  +- org.octris.example   -> ../work/org.octris.example/libs/
-    |  |  |  +- locale/
-    |  |  |  |  +- org.octris.example   -> ../work/org.octris.example/locale/
-    |  |  |  +- templates/
-    |  |  |  |  +- org.octris.example   -> ../work/org.octris.example/templates/
-    |  |  |  +- tools/
-    |  |  |  |  +- org.octris.core      -> ../work/org.octris.core/tools/
-    |  |  |  |  +- org.octris.example   -> ../work/org.octris.example/tools/
-    |  |  |  +- work/
-    |  |  |  |  +- org.octris.core/
-    |  |  |  |  |  +- doc/
-    |  |  |  |  |  +- etc/
-    |  |  |  |  |  +- libs/
-    |  |  |  |  |  +- libsjs/
-    |  |  |  |  |  +- tests/
-    |  |  |  |  |  +- tools/
-    |  |  |  |  +- org.octris.example/
-    |  |  |  |     +- data/
-    |  |  |  |     +- doc/
-    |  |  |  |     +- etc/
-    |  |  |  |     +- libs/
-    |  |  |  |     +- libsjs/
-    |  |  |  |     +- resources/
-    |  |  |  |     +- styles/
-    |  |  |  |     +- templates/
-    |  |  |  |     +- tests/
-    |  |  |  |     +- tools/
-    :  :  :  :  
+![example tree](../figures/tree_example.png)
 
 Note that the directories, that where empty just after installing the core
 framework, now have content in it in form of subdirectories and symbolic
