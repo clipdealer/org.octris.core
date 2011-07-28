@@ -145,9 +145,10 @@ namespace org\octris\core\tpl {
             // methods purpose is to collection script/style blocks and extract all included external files. the function
             // makes sure, that files are not included multiple times
             $process = function($pattern, $snippet, $cb) use (&$tpl) {
-                $files = array();
+                $files  = array();
+                $offset = 0;
                 
-                while (preg_match("#(?:$pattern"."([\n\r\s]*))+#si", $tpl, $m_block, PREG_OFFSET_CAPTURE)) {
+                while (preg_match("#(?:$pattern"."([\n\r\s]*))+#si", $tpl, $m_block, PREG_OFFSET_CAPTURE, $offset)) {
                     $compressed = '';
 
                     if (preg_match_all("#$pattern#si", $m_block[0][0], $m_tag)) {
@@ -161,6 +162,7 @@ namespace org\octris\core\tpl {
                     $compressed .= $m_block[2][0];
 
                     $tpl = substr_replace($tpl, $compressed, $m_block[0][1], strlen($m_block[0][0]));
+                    $offset += strlen($compressed);
                 }
             };
 
