@@ -147,7 +147,7 @@ namespace org\octris\core\tpl {
                 '<script[^>]+src="(libsjs/\d+.js)"[^>]*></script>', 
                 '<script type="text/javascript" src="/libsjs/%s"></script>',
                 function($files) use ($out_js) {
-                    return \org\octris\core\tpl\compiler\compress::compressJS($files, $out_js);
+                    return \org\octris\core\tpl\compress::compressJS($files, $out_js);
                 }
             );
 
@@ -156,7 +156,7 @@ namespace org\octris\core\tpl {
                 '<link[^>]*? href="(?!https?://)([^"]+\.css)"[^>]*/>',
                 '<link rel="stylesheet" href="/styles/%s" type="text/css" />',
                 function($files) use ($out_css) {
-                    return \org\octris\core\tpl\compiler\compress::compressCSS($files, $out_css);
+                    return \org\octris\core\tpl\compress::compressCSS($files, $out_css);
                 }
             );
             
