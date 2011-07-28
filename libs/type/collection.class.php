@@ -240,22 +240,6 @@ namespace org\octris\core\type {
             parent::offsetUnset($offs);
         }
 
-        /** Serializable **/
-
-        /**
-         * Implements unserialization of collection data.
-         *
-         * @octdoc  m:collection/unserialize
-         * @param   string      $data       Serialized data to unserialize and push into collection.
-         */
-        public function unserialize($data)
-        /**/
-        {
-            $tmp = unserialize($data);
-            
-            $this->__construct(unserialize($data));
-        }
-
         /** Special collection functionality **/
 
         /**
