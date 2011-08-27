@@ -271,10 +271,10 @@ namespace org\octris\core {
         /**/
         {
             $return = array();
-            $len    = strlen($name);
-            
+            $len    = strlen($prefix);
+
             foreach (self::$storage[$this->name] as $name => $value) {
-                if (substr($name, 0, $len) == $name && ($value = $this->getValue($name, $type, $options)) !== false) {
+                if (substr($name, 0, $len) == $prefix && ($value = $this->getValue($name, $type, $options)) !== false) {
                     $return[$name] = $value;
                 }
             }
