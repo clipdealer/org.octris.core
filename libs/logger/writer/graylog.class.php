@@ -95,7 +95,7 @@ namespace org\octris\core\logger\writer {
                 'short_message' => $message['message'],
                 'full_message'  => (is_null($message['exception'])
                                     ? ''
-                                    : $message['exception']->getTraceAsString()),
+                                    : print_r($message['exception']->getTrace(), true)),
                 'timestamp'     => $message['timestamp'],
                 'level'         => $message['level'],
                 'facility'      => $message['facility'],
