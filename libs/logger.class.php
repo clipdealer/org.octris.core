@@ -182,8 +182,25 @@ namespace org\octris\core {
         public function log($level, $message, \Exception $exception = null, $data = array(), $facility = '')
         /**/
         {
-            if (isset($this->writers[$level]) && $count($this->writers[$level]) > 0) {
-                $trace = debug_backtrace();
+            if (isset($this->writers[$level]) && count($this->writers[$level]) > 0) {
+                if (!is_null($exception)) {
+                    // fetch line and file from backtrace if no exception is specified
+                    $line = $exception->getLine();
+                    $file = $exception->getFile();
+                    $code = $exception->getCode();
+                } else {
+                    $trace = debug_backtrace(0);
+
+                    if (count($trace) > 0) {
+                        $line = $trace[0]['line'];
+                        $code = 0;
+                        $file = $trace[0]['file'];
+                    } else {
+                        $line = 0;
+                        $code = 0;
+                        $file = '';
+                    }
+                }
 
                 $message = array(
                     'host'      => gethostname(),
