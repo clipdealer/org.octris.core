@@ -85,7 +85,7 @@ namespace org\octris\core {
          * @octdoc  v:logger/$instance
          * @var     \org\octris\core\logger
          */
-        private $instance = null;
+        private static $instance = null;
         /**/
 
         /**
