@@ -163,7 +163,7 @@ namespace org\octris\core {
         /**/
         {
             foreach ($this->writers as $l => &$a) {
-                if ($level & $l === $l) {
+                if (($level & $l) === $l) {
                     $a[] = $writer;
                 }
             }
