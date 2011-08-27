@@ -69,10 +69,10 @@ namespace org\octris\core\logger\writer {
          *
          * @octdoc  m:graylog/__construct
          * @param   string      $hostname       Hostname of graylog server.
-         * @param   int         $port           Number of port the graylog server is expected to listen on.
+         * @param   int         $port           Optional port number the graylog server is expected to listen on.
          * @param   int         $chunk_size     Optional maximum chunk size.
          */
-        public function __construct($hostname, $port, $chunk_size = self::T_WAN)
+        public function __construct($hostname, $port = 12201, $chunk_size = self::T_WAN)
         /**/
         {
             $this->host       = gethostbyname($hostname);
