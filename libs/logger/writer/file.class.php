@@ -70,29 +70,32 @@ namespace org\octris\core\logger\writer {
                     fwrite($fp, '<pre>');
                 }
 
-                fwrite($fp, "INFO\n");
+                fwrite($fp, "MESSAGE\n");
                 fwrite($fp, sprintf("  id      : %s\n", md5(serialize($message))));
                 fwrite($fp, sprintf("  message : %s\n", $message['message']));
                 fwrite($fp, sprintf("  host    : %s\n", $message['host']));
-                fwrite($fp, sprintf("  time    : %s\n", strftime('%Y-%m-%d %H:%M:%S', $message['timestamp'])));
+                fwrite($fp, sprintf("  time    : %s.%d\n", strftime('%Y-%m-%d %H:%M:%S', $message['timestamp']), substr(strstr($message['timestamp'], '.' ), 1)));
                 fwrite($fp, sprintf("  level   : %s\n", $this->level_names[$message['level']]));
                 fwrite($fp, sprintf("  facility: %s\n", $message['facility']));
                 fwrite($fp, sprintf("  file    : %s\n", $message['file']));
                 fwrite($fp, sprintf("  line    : %d\n", $message['line']));
                 fwrite($fp, sprintf("  code    : %d\n", $message['code']));
-                fwrite($fp, "DATA\n");
 
-                $max = 0;
-                array_walk($message['data'], function($v, $k) use (&$max) {
-                    $max = max(strlen($k), $max);
-                });
+                if (count($message['data']) > 0) {
+                    fwrite($fp, "DATA\n");
 
-                foreach ($message['data'] as $k => $v) {
-                    fwrite($fp, sprintf(
-                        "  %-" . $max . "s: %s\n",
-                        $k,
-                        (!is_scalar($v) ? json_encode($v) : $v)
-                    ));
+                    $max = 0;
+                    array_walk($message['data'], function($v, $k) use (&$max) {
+                        $max = max(strlen($k), $max);
+                    });
+
+                    foreach ($message['data'] as $k => $v) {
+                        fwrite($fp, sprintf(
+                            "  %-" . $max . "s: %s\n",
+                            $k,
+                            (!is_scalar($v) ? json_encode($v) : $v)
+                        ));
+                    }
                 }
 
                 if (!is_null($message['exception'])) {
