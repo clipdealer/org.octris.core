@@ -25,7 +25,7 @@ namespace org\octris\core\logger\writer {
          *
          * @octdoc  v:graylog/$version
          */
-        private $version = '1.0';
+        private static $version = '1.0';
         /**/
 
         /**
@@ -90,7 +90,7 @@ namespace org\octris\core\logger\writer {
         /**/
         {
             $gelf = array(
-                'version'       => $this->version,
+                'version'       => self::$version,
                 'host'          => $message['host'],
                 'short_message' => $message['message'],
                 'full_message'  => (is_null($message['exception'])
