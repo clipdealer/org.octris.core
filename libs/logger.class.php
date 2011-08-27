@@ -210,8 +210,9 @@ namespace org\octris\core {
                     'exception' => $exception,
                     'data'      => $data,
                     'level'     => $this->level_ids[$level],
-                    'line'      => 0,
-                    'file'      => '',
+                    'line'      => $line,
+                    'file'      => $file,
+                    'code'      => $code,
                     'data'      => array_merge($this->data, $data)
                 );
 
