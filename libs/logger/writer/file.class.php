@@ -63,18 +63,24 @@ namespace org\octris\core\logger\writer {
         public function write(array $message)
         /**/
         {
-            if (!($fp = fopen($this->filename))) {
+            if (!($fp = fopen($this->filename, 'w'))) {
                 // error handling
             } else {
-                fwrite($fp, sprintf("message : %s\n", md5(serialize($message))));
-                fwrite($fp, sprintf("          %s\n", $message['message']));
-                fwrite($fp, sprintf("host    : %s\n", $message['host']));
-                fwrite($fp, sprintf("time    : %s\n", strftime('%Y-%m-%d %H:%M:%S', $message['timestamp'])));
-                fwrite($fp, sprintf("level   : %s\n", $this->level_names[$message['level']]));
-                fwrite($fp, sprintf("facility: %s\n", $message['facility']));
-                fwrite($fp, sprintf("file    : %s\n", $message['file']));
-                fwrite($fp, sprintf("line    : %d\n", $message['line']));
-                fwrite($fp, "data    :\n");
+                if (($is_html = ($this->filename == 'php://output' && php_sapi_name() != 'cli'))) {
+                    fwrite($fp, '<pre>');
+                }
+
+                fwrite($fp, "INFO\n");
+                fwrite($fp, sprintf("  id      : %s\n", md5(serialize($message))));
+                fwrite($fp, sprintf("  message : %s\n", $message['message']));
+                fwrite($fp, sprintf("  host    : %s\n", $message['host']));
+                fwrite($fp, sprintf("  time    : %s\n", strftime('%Y-%m-%d %H:%M:%S', $message['timestamp'])));
+                fwrite($fp, sprintf("  level   : %s\n", $this->level_names[$message['level']]));
+                fwrite($fp, sprintf("  facility: %s\n", $message['facility']));
+                fwrite($fp, sprintf("  file    : %s\n", $message['file']));
+                fwrite($fp, sprintf("  line    : %d\n", $message['line']));
+                fwrite($fp, sprintf("  code    : %d\n", $message['code']));
+                fwrite($fp, "DATA\n");
 
                 $max = 0;
                 array_walk($message['data'], function($v, $k) use (&$max) {
@@ -90,11 +96,15 @@ namespace org\octris\core\logger\writer {
                 }
 
                 if (!is_null($message['exception'])) {
-                    fwrite($fp, "trace   :\n");
-                    fwrite($fp, $message['exception']->getTraceAsString());
+                    fwrite($fp, "TRACE\n");
+                    fwrite($fp, preg_replace('/^/m', '  ', $message['exception']->getTraceAsString()));
                 }
 
                 fwrite($fp, "\n");
+
+                if ($is_html) {
+                    fwrite($fp, '</pre>');
+                }
 
                 fclose($fp);
             }
