@@ -187,7 +187,7 @@ namespace org\octris\core {
 
                 $message = array(
                     'host'      => gethostname(),
-                    'timestamp' => time(),
+                    'timestamp' => microtime(true),
                     'message'   => $message,
                     'facility'  => ($facility ? $facility : $this->facility),
                     'exception' => $exception,
