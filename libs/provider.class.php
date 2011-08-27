@@ -22,12 +22,12 @@ namespace org\octris\core {
     {
         /**
          * Flags.
-         * 
+         *
          * @octdoc  d:provider/T_READONLY
          */
         const T_READONLY = 1;
         /**/
-        
+
         /**
          * Provider instances.
          *
@@ -36,7 +36,7 @@ namespace org\octris\core {
          */
         protected static $instances = array();
         /**/
-        
+
         /**
          * Internal data storage
          *
@@ -45,7 +45,7 @@ namespace org\octris\core {
          */
         protected static $storage = array();
         /**/
-        
+
         /**
          * Data validators
          *
@@ -54,7 +54,7 @@ namespace org\octris\core {
          */
         protected $validators = array();
         /**/
-        
+
         /**
          * Stores validation flags and sanitized values.
          *
@@ -72,7 +72,7 @@ namespace org\octris\core {
          */
         protected $name = null;
         /**/
-        
+
         /**
          * Constructor.
          *
@@ -121,7 +121,7 @@ namespace org\octris\core {
             if (isset(self::$storage[$name]) && (self::$storage[$name]['flags'] & self::T_READONLY) == self::T_READONLY) {
                 throw new \Exception("access to data '$name' is readonly");
             }
-            
+
             self::$storage[$name] = array(
                 'data'  => $data,
                 'flags' => $flags,
@@ -140,16 +140,16 @@ namespace org\octris\core {
         {
             $this->validators[$name] = function($data) use ($schema) {
                 static $return = null;
-                
+
                 if (is_null($return)) {
                     $schema = new \org\octris\core\validate\schema($schema);
                     $data   = $schema->validate($data);                         // returns sanitized data
                     $errors = $schema->getErrors();
-                    
+
                     $return = array(
                         (count($errors) == 0),
                         $data,
-                        $errors 
+                        $errors
                     );
                 }
 
@@ -171,7 +171,7 @@ namespace org\octris\core {
         }
 
         /**
-         * Returns (validated and sanitized) stored data validated with specified 
+         * Returns (validated and sanitized) stored data validated with specified
          * validator name.
          *
          * @octdoc  m:provider/applyValidator
@@ -184,9 +184,9 @@ namespace org\octris\core {
             if (!isset($this->validators[$name])) {
                 throw new \Exception("unknown validator '$name'");
             }
-            
+
             $return = $this->validators[$name](self::$storage[$this->name]['data']);
-            
+
             return $return;
         }
 
@@ -217,7 +217,7 @@ namespace org\octris\core {
         {
             return ($this->getValue($name, $type, $options) !== false);
         }
-        
+
         /**
          * Validates a specified data field and returns it, if it's valid.
          *
@@ -236,7 +236,7 @@ namespace org\octris\core {
                 if (is_scalar($validator) && class_exists($validator) && is_subclass_of($validator, '\org\octris\core\validate\type')) {
                     $validator = new $validator($options);
                 }
-                
+
                 if (!($validator instanceof \org\octris\core\validate\type)) {
                     throw new \Exception("'$type' is not a validation type");
                 }
@@ -256,16 +256,16 @@ namespace org\octris\core {
                     ? $this->validated[$key]['value']
                     : false);
         }
-        
+
         /**
-         * Returns all matches for values with the specified prefix. Only values that validate 
+         * Returns all matches for values with the specified prefix. Only values that validate
          * get returned.
          *
          * @octdoc  m:provider/getPrefixed
          * @param   string                                      $prefix             Prefix to search for.
          * @param   string|\org\octris\core\validate\type       $type               Validation type.
          * @param   array                                       $options            Optional settings for validation.
-         * @return  mixed                               
+         * @return  mixed
          */
         public function getPrefixed($prefix, $type, array $options = array())
         /**/
@@ -278,10 +278,10 @@ namespace org\octris\core {
                     $return[$name] = $value;
                 }
             }
-            
+
             return $return;
         }
-        
+
         /**
          * Set a specified data field with a value.
          *
@@ -290,7 +290,7 @@ namespace org\octris\core {
          * @param   mixed                                           $value          Value to set for data field.
          * @param   string|\org\octris\core\validate\type           $type           Optional validation type for data field.
          * @param   array                                           $options        Optional settings for validation.
-         * @return  bool|null                                                       Returns false if validation failed, true if validation 
+         * @return  bool|null                                                       Returns false if validation failed, true if validation
          *                                                                          succeeded or null, if no validation type was specified
          */
         public function setValue($name, $value, $type = null, array $options = array())
@@ -299,18 +299,18 @@ namespace org\octris\core {
             if ((self::$storage[$this->name]['flags'] & self::T_READONLY) == self::T_READONLY) {
                 throw new \Exception("access to data '$this->name' is readonly");
             }
-         
+
             if (!is_null($type)) {
                 $validator = null;
-        
+
                 if (is_scalar($type) && class_exists($type)) {
                     $validator = new $type($options);
                 }
-            
+
                 if (!($validator instanceof \org\octris\core\validation\type)) {
                     throw new \Exception("'$type' is not a validation type");
                 }
-                
+
                 self::$storage[$this->name]['data'][$name] = $value;
 
                 $return = $this->isValid($name, $validator, $options);
@@ -320,10 +320,10 @@ namespace org\octris\core {
                 $return = null;
             }
 
-            
+
             return $return;
         }
-        
+
         /**
          * Purge data from provider.
          *
@@ -336,7 +336,7 @@ namespace org\octris\core {
             $instance = static::access($name);
             $instance->validated  = array();
             $instance->validators = array();
-            
+
             unset($instance);
             unset(self::$storage[$name]);
         }
