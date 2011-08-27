@@ -169,6 +169,117 @@ namespace org\octris\core {
             }
         }
 
+        /**
+         * Shortcut for log + T_EMERGENCY call.
+         *
+         * @octdoc  m:logger/emergency
+         * @param   string|\Exception   $notification       Either short message or exception to log.
+         * @param   array               $data               Optional additional fields to set. See also 'setValue' method.
+         * @param   string              $facility           Optional facility name eg. application name. See also 'setValue' method.
+         */
+        public static function emergency($notification, $data = array(), $facility = '')
+        /**/
+        {
+            static::getInstance()->log(self::T_EMERGENCY, $notification, $data, $facility);
+        }
+
+        /**
+         * Shortcut for log + T_ALERT call.
+         *
+         * @octdoc  m:logger/alert
+         * @param   string|\Exception   $notification       Either short message or exception to log.
+         * @param   array               $data               Optional additional fields to set. See also 'setValue' method.
+         * @param   string              $facility           Optional facility name eg. application name. See also 'setValue' method.
+         */
+        public static function alert($notification, $data = array(), $facility = '')
+        /**/
+        {
+            static::getInstance()->log(self::T_ALERT, $notification, $data, $facility);
+        }
+
+        /**
+         * Shortcut for log + T_CRITICAL call.
+         *
+         * @octdoc  m:logger/critical
+         * @param   string|\Exception   $notification       Either short message or exception to log.
+         * @param   array               $data               Optional additional fields to set. See also 'setValue' method.
+         * @param   string              $facility           Optional facility name eg. application name. See also 'setValue' method.
+         */
+        public static function critical($notification, $data = array(), $facility = '')
+        /**/
+        {
+            static::getInstance()->log(self::T_CRITICAL, $notification, $data, $facility);
+        }
+
+        /**
+         * Shortcut for log + T_ERROR call.
+         *
+         * @octdoc  m:logger/error
+         * @param   string|\Exception   $notification       Either short message or exception to log.
+         * @param   array               $data               Optional additional fields to set. See also 'setValue' method.
+         * @param   string              $facility           Optional facility name eg. application name. See also 'setValue' method.
+         */
+        public static function error($notification, $data = array(), $facility = '')
+        /**/
+        {
+            static::getInstance()->log(self::T_ERROR, $notification, $data, $facility);
+        }
+
+        /**
+         * Shortcut for log + T_WARNING call.
+         *
+         * @octdoc  m:logger/warning
+         * @param   string|\Exception   $notification       Either short message or exception to log.
+         * @param   array               $data               Optional additional fields to set. See also 'setValue' method.
+         * @param   string              $facility           Optional facility name eg. application name. See also 'setValue' method.
+         */
+        public static function warning($notification, $data = array(), $facility = '')
+        /**/
+        {
+            static::getInstance()->log(self::T_WARNING, $notification, $data, $facility);
+        }
+
+        /**
+         * Shortcut for log + T_NOTICE call.
+         *
+         * @octdoc  m:logger/notice
+         * @param   string|\Exception   $notification       Either short message or exception to log.
+         * @param   array               $data               Optional additional fields to set. See also 'setValue' method.
+         * @param   string              $facility           Optional facility name eg. application name. See also 'setValue' method.
+         */
+        public static function notice($notification, $data = array(), $facility = '')
+        /**/
+        {
+            static::getInstance()->log(self::T_NOTICE, $notification, $data, $facility);
+        }
+
+        /**
+         * Shortcut for log + T_INFO call.
+         *
+         * @octdoc  m:logger/info
+         * @param   string|\Exception   $notification       Either short message or exception to log.
+         * @param   array               $data               Optional additional fields to set. See also 'setValue' method.
+         * @param   string              $facility           Optional facility name eg. application name. See also 'setValue' method.
+         */
+        public static function info($notification, $data = array(), $facility = '')
+        /**/
+        {
+            static::getInstance()->log(self::T_INFO, $notification, $data, $facility);
+        }
+
+        /**
+         * Shortcut for log + T_DEBUG call.
+         *
+         * @octdoc  m:logger/debug
+         * @param   string|\Exception   $notification       Either short message or exception to log.
+         * @param   array               $data               Optional additional fields to set. See also 'setValue' method.
+         * @param   string              $facility           Optional facility name eg. application name. See also 'setValue' method.
+         */
+        public static function debug($notification, $data = array(), $facility = '')
+        /**/
+        {
+            static::getInstance()->log(self::T_DEBUG, $notification, $data, $facility);
+        }
 
         /**
          * Log a message to the configured writers.
