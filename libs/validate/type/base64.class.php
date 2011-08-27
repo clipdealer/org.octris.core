@@ -11,7 +11,8 @@
 
 namespace org\octris\core\validate\type {
     /**
-     * Validator for base64 encoded data.
+     * Validator for base64 encoded data. Supports standard base64 and base64
+     * for URLs format.
      *
      * @octdoc      c:type/base64
      * @copyright   copyright (c) 2011 by Harald Lapp
@@ -31,11 +32,15 @@ namespace org\octris\core\validate\type {
         /**/
         {
             $value = preg_replace('/\s/', '', $value);
-            
-            return preg_match(
-                '/^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=)?$/',
-                $value
-            );
+
+            return (strlen($value) > 1 &&
+                    (preg_match(
+                        '/^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=)?$/',
+                        $value
+                    ) || preg_match(
+                        '/^(?:[A-Za-z0-9-_]{4})*(?:[A-Za-z0-9-_]{2,3})?$/',
+                        $value
+                    )));
         }
     }
 }
