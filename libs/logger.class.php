@@ -169,26 +169,25 @@ namespace org\octris\core {
             }
         }
 
+
         /**
          * Log a message to the configured writers.
          *
          * @octdoc  m:logger/log
-         * @param   int         $level              Log level.
-         * @param   string      $message            Short message to log.
-         * @param   \Exception  $exception          Optional exception to log.
-         * @param   array       $data               Optional additional fields to set. See also 'setValue' method.
-         * @param   string      $facility           Optional facility name eg. application name. See also 'setValue' method.
+         * @param   int                 $level              Log level.
+         * @param   string|\Exception   $notification       Either short message or exception to log.
+         * @param   array               $data               Optional additional fields to set. See also 'setValue' method.
+         * @param   string              $facility           Optional facility name eg. application name. See also 'setValue' method.
          */
-        public function log($level, $message, \Exception $exception = null, $data = array(), $facility = '')
+        public function log($level, $notification, $data = array(), $facility = '')
         /**/
         {
             if (isset($this->writers[$level]) && count($this->writers[$level]) > 0) {
-                if (!is_null($exception)) {
-                    // fetch line and file from backtrace if no exception is specified
-                    $line = $exception->getLine();
-                    $file = $exception->getFile();
-                    $code = $exception->getCode();
-                } else {
+                if (is_scalar($notification) && $notification != '') {
+                    $message   = $notification;
+                    $exception = null;
+
+                    // fetch line and file from debug backtrace
                     $trace = debug_backtrace(0);
 
                     if (count($trace) > 0) {
@@ -200,9 +199,19 @@ namespace org\octris\core {
                         $code = 0;
                         $file = '';
                     }
+                } elseif (is_object($notification) && $notification instanceof \Exception) {
+                    $message   = $notification->getMessage();
+                    $exception = $notification;
+
+                    // fetch line, code and file from backtrace if no exception is specified
+                    $line = $exception->getLine();
+                    $file = $exception->getFile();
+                    $code = $exception->getCode();
+                } else {
+                    throw new \Exception("'notification' must either be a text message or an 'Exception'");
                 }
 
-                $message = array(
+                $tmp = array(
                     'host'      => gethostname(),
                     'timestamp' => microtime(true),
                     'message'   => $message,
@@ -218,7 +227,7 @@ namespace org\octris\core {
 
                 foreach ($this->writers[$level] as $l) {
                     try {
-                        $l->write($message);
+                        $l->write($tmp);
                     } catch(\Exceptions $e) {
                         // make sure, that one failing logger will not prevent writing to other loggers
                     }
