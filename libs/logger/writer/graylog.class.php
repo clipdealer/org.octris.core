@@ -100,7 +100,8 @@ namespace org\octris\core\logger\writer {
                 'level'         => $message['level'],
                 'facility'      => $message['facility'],
                 'file'          => $message['file'],
-                'line'          => $message['line']
+                'line'          => $message['line'],
+                '_code'         => $message['code']
             );
 
             array_walk($message['data'], function($v, $k) use (&$gelf) {
