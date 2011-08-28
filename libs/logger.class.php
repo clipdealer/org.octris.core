@@ -21,7 +21,7 @@ namespace org\octris\core {
     /**/
     {
         /**
-         * Error levels.
+         * Log levels.
          *
          * @octdoc  d:logger/T_EMERGENCY, T_ALERT, T_CRITICAL, T_ERROR, T_WARNING, T_NOTICE, T_INFO, T_DEBUG
          */
@@ -37,6 +37,9 @@ namespace org\octris\core {
 
         /**
          * Helper constants for making configuring writers more easy.
+         *
+         * * T_ALL -- logs every log level
+         * * T_PRODUCTION -- logs T_EMERGENCY, T_ALERT, T_CRITICAL, T_ERROR
          *
          * @octdoc  d:logger/T_ALL, T_PRODUCTION
          */
