@@ -21,6 +21,24 @@ namespace org\octris\core\logger\writer {
     /**/
     {
         /**
+         * Mapping of logger levels to textual names.
+         *
+         * @octdoc  v:file/$level_names
+         * @var     array
+         */
+        private static $level_names = array(
+            \org\octris\core\logger::T_EMERGENCY => 'emergency',
+            \org\octris\core\logger::T_ALERT     => 'alert',
+            \org\octris\core\logger::T_CRITICAL  => 'critical',
+            \org\octris\core\logger::T_ERROR     => 'error',
+            \org\octris\core\logger::T_WARNING   => 'warning',
+            \org\octris\core\logger::T_NOTICE    => 'notice',
+            \org\octris\core\logger::T_INFO      => 'info',
+            \org\octris\core\logger::T_DEBUG     => 'debug'
+        );
+        /**/
+
+        /**
          * Name of file to log to.
          *
          * @octdoc  v:file/$filename
@@ -28,19 +46,6 @@ namespace org\octris\core\logger\writer {
          */
         protected $filename;
         /**/
-
-        /**
-         * Level names.
-         *
-         * @octdoc  v:file/$level_names
-         * @var     array
-         */
-        protected $level_names = array(
-            'emergency', 'alert', 'critical', 'error', 'warning',
-            'notice', 'info', 'debug'
-        );
-        /**/
-
 
         /**
          * Constructor.
@@ -75,7 +80,7 @@ namespace org\octris\core\logger\writer {
                 fwrite($fp, sprintf("  message : %s\n", $message['message']));
                 fwrite($fp, sprintf("  host    : %s\n", $message['host']));
                 fwrite($fp, sprintf("  time    : %s.%d\n", strftime('%Y-%m-%d %H:%M:%S', $message['timestamp']), substr(strstr($message['timestamp'], '.' ), 1)));
-                fwrite($fp, sprintf("  level   : %s\n", $this->level_names[$message['level']]));
+                fwrite($fp, sprintf("  level   : %s\n", self::$level_names[$message['level']]));
                 fwrite($fp, sprintf("  facility: %s\n", $message['facility']));
                 fwrite($fp, sprintf("  file    : %s\n", $message['file']));
                 fwrite($fp, sprintf("  line    : %d\n", $message['line']));
