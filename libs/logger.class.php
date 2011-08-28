@@ -116,15 +116,15 @@ namespace org\octris\core {
         }
 
         /**
-         * Set standard value to always send to logger (expect it's overwritten)
+         * Set default value to always send to logger (expect it's overwritten)
          * in 'log' method. Note, that the special property 'facility' will be
          * used individually, see 'log' method.
          *
-         * @octdoc  m:logger/setValue
+         * @octdoc  m:logger/setDefault
          * @param   string                          $name       Name of value to set.
          * @param   mixed                           $value      Value to set.
          */
-        public function setValue($name, $value)
+        public function setDefault($name, $value)
         /**/
         {
             if ($name == 'facility') {
