@@ -62,24 +62,6 @@ namespace org\octris\core {
         /**/
 
         /**
-         * Level IDs in syslog format.
-         *
-         * @octdoc  v:logger/$level_ids
-         * @var     array
-         */
-        private $level_ids = array(
-            self::T_EMERGENCY => 0,
-            self::T_ALERT     => 1,
-            self::T_CRITICAL  => 2,
-            self::T_ERROR     => 3,
-            self::T_WARNING   => 4,
-            self::T_NOTICE    => 5,
-            self::T_INFO      => 6,
-            self::T_DEBUG     => 7
-        );
-        /**/
-
-        /**
          * Logger instance.
          *
          * @octdoc  v:logger/$instance
@@ -329,7 +311,7 @@ namespace org\octris\core {
                     'facility'  => ($facility ? $facility : $this->facility),
                     'exception' => $exception,
                     'data'      => $data,
-                    'level'     => $this->level_ids[$level],
+                    'level'     => $level,
                     'line'      => $line,
                     'file'      => $file,
                     'code'      => $code,
