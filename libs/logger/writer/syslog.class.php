@@ -112,7 +112,7 @@ namespace org\octris\core\logger\writer {
             }
 
             if (!(openlog('', LOG_PID | LOG_ODELAY, constant($facility)))) {
-                throw new Exception(sprintf(
+                throw new \Exception(sprintf(
                     'Unable to open syslog for ident "%s"',
                     $facility
                 ));
