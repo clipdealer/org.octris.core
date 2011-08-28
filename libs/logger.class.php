@@ -38,9 +38,10 @@ namespace org\octris\core {
         /**
          * Helper constants for making configuring writers more easy.
          *
-         * @octdoc  d:logger/T_ALL
+         * @octdoc  d:logger/T_ALL, T_PRODUCTION
          */
-        const T_ALL = 255;
+        const T_ALL        = 255;
+        const T_PRODUCTION = 15;
         /**/
 
         /**
