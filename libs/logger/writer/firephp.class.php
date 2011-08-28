@@ -57,6 +57,42 @@ namespace org\octris\core\logger\writer {
         /**/
 
         /**
+         * Mapping of logger levels to FirePHP level types.
+         *
+         * @octdoc  v:firephp/$level_types
+         * @var     array
+         */
+        private static $level_types = array(
+            \org\octris\core\logger::T_EMERGENCY => 'ERROR',
+            \org\octris\core\logger::T_ALERT     => 'ERROR',
+            \org\octris\core\logger::T_CRITICAL  => 'ERROR',
+            \org\octris\core\logger::T_ERROR     => 'ERROR',
+            \org\octris\core\logger::T_WARNING   => 'WARN',
+            \org\octris\core\logger::T_NOTICE    => 'INFO',
+            \org\octris\core\logger::T_INFO      => 'INFO',
+            \org\octris\core\logger::T_DEBUG     => 'LOG',
+        );
+        /**/
+
+        /**
+         * Mapping of logger levels to textual names.
+         *
+         * @octdoc  v:file/$level_names
+         * @var     array
+         */
+        private static $level_names = array(
+            \org\octris\core\logger::T_EMERGENCY => 'emergency',
+            \org\octris\core\logger::T_ALERT     => 'alert',
+            \org\octris\core\logger::T_CRITICAL  => 'critical',
+            \org\octris\core\logger::T_ERROR     => 'error',
+            \org\octris\core\logger::T_WARNING   => 'warning',
+            \org\octris\core\logger::T_NOTICE    => 'notice',
+            \org\octris\core\logger::T_INFO      => 'info',
+            \org\octris\core\logger::T_DEBUG     => 'debug'
+        );
+        /**/
+
+        /**
          * Whether the Wildfire specific headers have been send.
          *
          * @octdoc  v:firephp/$initialized
@@ -80,25 +116,7 @@ namespace org\octris\core\logger\writer {
          * @octdoc  v:firephp/$chunk_size
          * @var     int
          */
-        protected static $chunk_size = 4096;
-        /**/
-
-        /**
-         * Level names, mapping to FirePHP
-         *
-         * @octdoc  v:file/$level_names
-         * @var     array
-         */
-        protected static $level_names = array(
-            'ERROR',        // emergency
-            'ERROR',        // alert
-            'ERROR',        // critical
-            'ERROR',        // error
-            'WARN',         // warning
-            'INFO',         // notice
-            'INFO',         // info
-            'LOG',          // debug
-        );
+        protected $chunk_size = 4096;
         /**/
 
         /**
@@ -151,8 +169,8 @@ namespace org\octris\core\logger\writer {
 
             $size = strlen($data);          // size in bytes and not in characters
 
-            if ($size > static::$chunk_size) {
-                $parts = str_split($size . $data, static::$chunk_size);
+            if ($size > $this->chunk_size) {
+                $parts = str_split($size . $data, $this->chunk_size);
 
                 $this->createHeader(
                     array(1, 1, 1, static::$seq_num++),
@@ -198,7 +216,7 @@ namespace org\octris\core\logger\writer {
 
             // send message summary
             $this->createJsonStream(
-                static::$level_names[$message['level']],
+                self::$level_types[$message['level']],
                 $message['file'],
                 $message['line'],
                 $message['message'],
@@ -208,6 +226,7 @@ namespace org\octris\core\logger\writer {
                     'code'      => $message['code'],
                     'message'   => $message['message'],
                     'host'      => $message['host'],
+                    'level'     => self::$level_names[$message['level']],
                     'time'      => sprintf(
                         '%s.%d',
                         strftime(
