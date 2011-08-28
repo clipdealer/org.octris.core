@@ -21,6 +21,24 @@ namespace org\octris\core\logger\writer {
     /**/
     {
         /**
+         * Mapping of logger levels to graylog levels.
+         *
+         * @octdoc  v:graylog/$graylog_levels
+         * @var     array
+         */
+        private static $graylog_levels = array(
+            \org\octris\core\logger::T_EMERGENCY => 0,
+            \org\octris\core\logger::T_ALERT     => 1,
+            \org\octris\core\logger::T_CRITICAL  => 2,
+            \org\octris\core\logger::T_ERROR     => 3,
+            \org\octris\core\logger::T_WARNING   => 4,
+            \org\octris\core\logger::T_NOTICE    => 5,
+            \org\octris\core\logger::T_INFO      => 6,
+            \org\octris\core\logger::T_DEBUG     => 7
+        );
+        /**/
+
+        /**
          * Graylog format version.
          *
          * @octdoc  v:graylog/$version
@@ -63,7 +81,6 @@ namespace org\octris\core\logger\writer {
         protected $chunk_size;
         /**/
 
-
         /**
          * Constructor.
          *
@@ -97,7 +114,7 @@ namespace org\octris\core\logger\writer {
                                     ? ''
                                     : print_r($message['exception']->getTrace(), true)),
                 'timestamp'     => $message['timestamp'],
-                'level'         => $message['level'],
+                'level'         => self::$graylog_levels[$message['level']],
                 'facility'      => $message['facility'],
                 'file'          => $message['file'],
                 'line'          => $message['line'],
