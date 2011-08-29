@@ -114,18 +114,28 @@ namespace org\octris\core {
          * @param   string          $name               Name to store data as.
          * @param   array           $data               Data to store.
          * @param   int             $flags              Optional OR-able flags.
+         * @param   \ArrayObject    $storage            Optional external storage to configure for data provider.
          */
-        public static function set($name, array $data, $flags = 0)
+        public static function set($name, array $data, $flags = 0, \ArrayObject $storage = null)
         /**/
         {
             if (isset(self::$storage[$name]) && (self::$storage[$name]['flags'] & self::T_READONLY) == self::T_READONLY) {
                 throw new \Exception("access to data '$name' is readonly");
             }
 
-            self::$storage[$name] = array(
-                'data'  => $data,
-                'flags' => $flags,
-            );
+            if (!is_null($storage)) {
+                $storage->exchangeArray($data);
+
+                self::$storage[$name] = array(
+                    'data'  => $storage,
+                    'flags' => $flags,
+                );
+            } else {
+                self::$storage[$name] = array(
+                    'data'  => $data,
+                    'flags' => $flags,
+                );
+            }
         }
 
         /**
