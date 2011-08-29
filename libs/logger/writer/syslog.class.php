@@ -87,6 +87,33 @@ namespace org\octris\core\logger\writer {
         /**/
 
         /**
+         * Syslog was opened.
+         *
+         * @octdoc  v:syslog/$is_open
+         * @var     bool
+         */
+        private static $is_open = false;
+        /**/
+
+        /**
+         * Last facility that wrote to syslog.
+         *
+         * @octdoc  v:syslog/$last_facility
+         * @var     string
+         */
+        private static $last_facility = '';
+        /**/
+
+        /**
+         * Syslog facility.
+         *
+         * @octdoc  v:syslog/$facility
+         * @var     string
+         */
+        protected $facility;
+        /**/
+
+        /**
          * Constructor.
          *
          * @octdoc  m:syslog/__construct
@@ -111,12 +138,7 @@ namespace org\octris\core\logger\writer {
                 ));
             }
 
-            if (!(openlog('', LOG_PID | LOG_ODELAY, constant($facility)))) {
-                throw new \Exception(sprintf(
-                    'Unable to open syslog for ident "%s"',
-                    $facility
-                ));
-            }
+            $this->facility = $facility;
         }
 
         /**
@@ -127,7 +149,41 @@ namespace org\octris\core\logger\writer {
         public function __destruct()
         /**/
         {
-            closelog();
+            $this->close();
+        }
+
+        /**
+         * Open syslog for configured facility.
+         *
+         * @octdoc  m:syslog/open
+         */
+        public function open()
+        /**/
+        {
+            $this->close();
+
+            if (!(openlog('', LOG_PID, constant($this->facility)))) {
+                throw new \Exception(sprintf(
+                    'Unable to open syslog for facility "%s"',
+                    $this->facility
+                ));
+            }
+
+            self::$is_open       = true;
+            self::$last_facility = $this->facility;
+        }
+
+        /**
+         * Close syslog.
+         *
+         * @octdoc  m:syslog/close
+         */
+        public function close()
+        /**/
+        {
+            if (self::$is_open) {
+                closelog();
+            }
         }
 
         /**
@@ -139,6 +195,10 @@ namespace org\octris\core\logger\writer {
         public function write(array $message)
         /**/
         {
+            if (!self::$is_open || self::$facility != $this->facility) {
+                $this->open();
+            }
+
             syslog(
                 self::$syslog_levels[$message['level']],
                 sprintf(
