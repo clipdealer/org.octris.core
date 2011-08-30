@@ -102,7 +102,7 @@ namespace org\octris\core {
         public function isAuthenticated()
         /**/
         {
-            if (($return = !$this->storage->isEmpty())) {
+            if (($return = (!$this->storage->isEmpty()))) {
                 $identity = $this->storage->getIdentity();
 
                 $return = $identity->isValid();
