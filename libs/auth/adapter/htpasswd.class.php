@@ -84,7 +84,7 @@ namespace org\octris\core\auth\adapter {
         public function setCredential($credential)
         /**/
         {
-            $this->credential = crypt($credential);
+            $this->credential = $credential;
         }
 
         /**
