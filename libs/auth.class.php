@@ -127,5 +127,18 @@ namespace org\octris\core {
 
             return $identity;
         }
+
+        /**
+         * Remove identity so it is no longer authenticated.
+         *
+         * @octdoc  m:auth/revokeIdentity
+         */
+        public function revokeIdentity()
+        /**/
+        {
+            if (!$this->storage->isEmpty()) {
+                $this->storage->unsetIdentity();
+            }
+        }
     }
 }
