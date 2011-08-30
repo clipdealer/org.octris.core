@@ -94,6 +94,24 @@ namespace org\octris\core {
         }
 
         /**
+         * Test whether there is already an identity authenticated.
+         *
+         * @octdoc  m:authenticate/isAuthenticated
+         * @return  bool                                            Returns true, if an identity is authenticated.
+         */
+        public function isAuthenticated()
+        /**/
+        {
+            if (($return = !$this->storage->isEmpty())) {
+                $identity = $this->storage->getIdentity();
+
+                $return = $identity->isValid();
+            }
+
+            return $return;
+        }
+
+        /**
          * Authenticate againat the specified authentication adapter.
          *
          * @octdoc  m:auth/authenticate
