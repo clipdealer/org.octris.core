@@ -21,12 +21,33 @@ namespace org\octris\core {
     /**/
     {
         /**
-         * Instance of auth library.
+         * Authentication status codes.
+         *
+         * @octdoc  d:auth/T_AUTH_SUCCESS, T_AUTH_FAILURE, T_IDENTITY_UNKNOWN, T_IDENTITY_AMBIGUOUS, T_CREDENTIAL_INVALID
+         */
+        const T_AUTH_SUCCESS       = 1;
+        const T_AUTH_FAILURE       = 0;
+        const T_IDENTITY_UNKNOWN   = -1;
+        const T_IDENTITY_AMBIGUOUS = -2;
+        const T_CREDENTIAL_INVALID = -3;
+        /**/
+
+        /**
+         * Instance of auth class.
          *
          * @octdoc  v:auth/$instance
          * @var     \org\octris\core\auth
          */
         private static $instance = null;
+        /**/
+
+        /**
+         * Authentication storage handler.
+         *
+         * @octdoc  v:auth/$storage
+         * @var     \org\octris\core\auth\storage
+         */
+        protected $storage;
         /**/
 
         /**
@@ -66,10 +87,10 @@ namespace org\octris\core {
          * @octdoc  m:auth/setStorage
          * @param   \org\octris\core\auth\storage   $storage        Instance of storage backend.
          */
-        public static function setStorage()
+        public function setStorage(\org\octris\core\auth\storage $storage)
         /**/
         {
-
+            $this->storage = $storage;
         }
 
         /**
@@ -81,8 +102,7 @@ namespace org\octris\core {
         public function authenticate(\org\octris\core\auth\adapter $adapter)
         /**/
         {
-
+            $identity = $adapter->authenticate();
         }
-
     }
 }
