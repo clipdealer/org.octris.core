@@ -11,7 +11,7 @@
 
 namespace org\octris\core {
     /**
-     * Authentication and authorization library.
+     * Authentication library.
      *
      * @octdoc      c:core/auth
      * @copyright   copyright (c) 2011 by Harald Lapp
