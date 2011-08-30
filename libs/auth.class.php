@@ -85,9 +85,9 @@ namespace org\octris\core {
          * Sets the storage handler for authentication information.
          *
          * @octdoc  m:auth/setStorage
-         * @param   \org\octris\core\auth\storage   $storage        Instance of storage backend.
+         * @param   \org\octris\core\auth\storage_if    $storage    Instance of storage backend.
          */
-        public function setStorage(\org\octris\core\auth\storage $storage)
+        public function setStorage(\org\octris\core\auth\storage_if $storage)
         /**/
         {
             $this->storage = $storage;
@@ -97,9 +97,10 @@ namespace org\octris\core {
          * Authenticate againat the specified authentication adapter.
          *
          * @octdoc  m:auth/authenticate
-         * @param   \org\octris\core\auth\adapter   $adapter        Instance of adapter to use for authentication.
+         * @param   \org\octris\core\auth\adapter_if    $adapter    Instance of adapter to use for authentication.
+         * @return  \org\octris\core\auth\identity                  The authenticated identity.
          */
-        public function authenticate(\org\octris\core\auth\adapter $adapter)
+        public function authenticate(\org\octris\core\auth\adapter_if $adapter)
         /**/
         {
             $identity = $adapter->authenticate();
