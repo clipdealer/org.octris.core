@@ -142,10 +142,10 @@ namespace org\octris\core {
          * Add log writer instance.
          *
          * @octdoc  m:logger/addWriter
-         * @param   int                             $level      Log level the logger belongs to.
-         * @param   \org\octris\core\logger\writer  $writer     Instance of logger to add.
+         * @param   int                                 $level      Log level the logger belongs to.
+         * @param   \org\octris\core\logger\writer_if   $writer     Instance of logger to add.
          */
-        public function addWriter($level, \org\octris\core\logger\writer $writer)
+        public function addWriter($level, \org\octris\core\logger\writer_if $writer)
         /**/
         {
             foreach ($this->writers as $l => &$a) {
