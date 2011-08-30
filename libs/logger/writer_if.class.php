@@ -11,24 +11,22 @@
 
 namespace org\octris\core\logger {
     /**
-     * Base writer class.
+     * Interface for write handlers.
      *
-     * @octdoc      c:logger/writer
+     * @octdoc      i:logger/writer_if
      * @copyright   copyright (c) 2011 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    abstract class writer
+    interface writer_if
     /**/
     {
         /**
-         * Abstract method. Each writer implementation needs to implement this
-         * method.
+         * Each writer implementation needs to implement this method.
          *
          * @octdoc  m:writer/write
          * @param   array       $message        Message to send.
-         * @abstract
          */
-        abstract function write(array $message);
+        public function write(array $message);
         /**/
     }
 }
