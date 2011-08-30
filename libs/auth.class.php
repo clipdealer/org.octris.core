@@ -45,7 +45,7 @@ namespace org\octris\core {
          * Authentication storage handler.
          *
          * @octdoc  v:auth/$storage
-         * @var     \org\octris\core\auth\storage
+         * @var     \org\octris\core\auth\storage_if
          */
         protected $storage;
         /**/
