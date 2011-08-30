@@ -41,50 +41,50 @@ namespace org\octris\core\auth\storage {
         }
 
         /**
-         * Returns whether storage contains data or not.
+         * Returns whether storage contains an identity or not.
          *
          * @octdoc  m:storage/isEmpty
-         * @return                                  Returns true, if storage is empty.
+         * @return                                                  Returns true, if storage is empty.
          */
         public function isEmpty()
         /**/
         {
-            return (!$this->session->isExist('auth.storage'));
+            return (!$this->session->isExist('identity', __CLASS__));
         }
 
         /**
-         * Store data in storage.
+         * Store identity in storage.
          *
-         * @octdoc  m:storage/setData
-         * @param   array           $data           Data to store in storage.
+         * @octdoc  m:storage_if/setIdentity
+         * @param   \org\octris\core\auth\identity  $identity       Identity to store in storage.
          */
-        public function setData(array $data)
+        public function setIdentity(\org\octris\core\auth\identity $identity);
         /**/
         {
-            $this->data = $this->session->setValue('auth.storage', $data);
+            $this->session->setValue('identity', $identity, __CLASS__);
         }
 
         /**
-         * Return data from storage.
+         * Return identity from storage.
          *
-         * @octdoc  m:storage_if/getData
-         * @return  array                           Data stored in storage.
+         * @octdoc  m:storage_if/getIdentity
+         * @return  \org\octris\core\auth\identity                  Identity stored in storage.
          */
-        public function getData()
+        public function getIdentity();
         /**/
         {
-            return $this->data = $this->session->getValue('auth.storage');
+            return $this->session->getValue('identity', __CLASS__);
         }
 
         /**
-         * Deletes data from storage.
+         * Deletes identity from storage.
          *
-         * @octdoc  m:storage/unsetData
+         * @octdoc  m:storage/unsetIdentity
          */
-        public function unsetData()
+        public function unsetIdentity()
         /**/
         {
-            $this->session->unsetValue('auth.storage');
+            $this->session->unsetValue('identity', __CLASS__);
         }
     }
 }

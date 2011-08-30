@@ -22,12 +22,12 @@ namespace org\octris\core\auth\storage {
     /**/
     {
         /**
-         * Transient data storage.
+         * Transient identity storage.
          *
-         * @octdoc  v:transient/$data
+         * @octdoc  v:transient/$identity
          * @var     array|null
          */
-        protected $data = null;
+        protected $identity = null;
         /**/
 
         /**
@@ -41,50 +41,50 @@ namespace org\octris\core\auth\storage {
         }
 
         /**
-         * Returns whether storage contains data or not.
+         * Returns whether storage contains an identity or not.
          *
-         * @octdoc  m:storage/isEmpty
-         * @return                                  Returns true, if storage is empty.
+         * @octdoc  m:storage_if/isEmpty
+         * @return                                                  Returns true, if storage is empty.
          */
         public function isEmpty()
         /**/
         {
-            return (empty($this->data));
+            return (empty($this->identity));
         }
 
         /**
-         * Store data in storage.
+         * Store identity in storage.
          *
-         * @octdoc  m:storage/setData
-         * @param   array           $data           Data to store in storage.
+         * @octdoc  m:storage_if/setIdentity
+         * @param   \org\octris\core\auth\identity  $identity       Identity to store in storage.
          */
-        public function setData(array $data)
+        public function setIdentity(\org\octris\core\auth\identity $identity)
         /**/
         {
-            $this->data = $data;
+            $this->identity = $identity;
         }
 
         /**
-         * Return data from storage.
+         * Return identity from storage.
          *
-         * @octdoc  m:storage_if/getData
-         * @return  array                           Data stored in storage.
+         * @octdoc  m:storage_if/getIdentity
+         * @return  \org\octris\core\auth\identity                  Identity stored in storage.
          */
-        public function getData()
+        public function getIdentity()
         /**/
         {
-            return $this->data;
+            return $this->identity;
         }
 
         /**
-         * Deletes data from storage.
+         * Deletes identity from storage.
          *
-         * @octdoc  m:storage/unsetData
+         * @octdoc  m:storage_if/unsetIdentity
          */
-        public function unsetData()
+        public function unsetIdentity()
         /**/
         {
-            $this->data = null;
+            $this->identity = null;
         }
     }
 }
