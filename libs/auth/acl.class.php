@@ -39,13 +39,24 @@ namespace org\octris\core\app {
         /**/
 
         /**
+         * Instance of authentication library.
+         *
+         * @octdoc  v:acl/$auth
+         * @var     \org\octris\core\auth
+         */
+        protected $auth;
+        /**/
+
+        /**
          * Constructor.
          *
          * @octdoc  m:acl/__construct
+         * @param   \org\octris\core\auth   $auth           Instance of authentication library.
          */
-        public function __construct()
+        public function __construct(\org\octris\core\auth $auth)
         /**/
         {
+            $this->auth = $auth;
         }
 
         /**
@@ -79,7 +90,8 @@ namespace org\octris\core\app {
         }
 
         /**
-         * Test whether a specified role is authorized for some action on a resource.
+         * Test whether a specified role is authorized for some action on a resource
+         * and if the authenticated identity is member of the specified role.
          *
          * @octdoc  m:acl/isAuthorized
          * @param   string          $role                   Name of role.
@@ -89,11 +101,34 @@ namespace org\octris\core\app {
         public function isAuthorized($role, $action, $resource)
         /**/
         {
-            if (($return = (isset($this->roles[$role]) && isset($this->resources[$resource])))) {
-                if (($return = $this->resources[$resource]->hasAction($action))) {
+            $return = false;
+
+            do {
+                if (!isset($this->roles[$role]) || !isset($this->resources[$resource])) {
+                    // there is no such role or resource available
+                    break;
+                }
+
+                if (!($identity = $this->auth->getIdentity())) {
+                    // no identity in authentication object available
+                    break;
+                }
+
+                if (!$identity->isValid()) {
+                    if ($role != 'guest') {
+                        // identity is not validly authenticated and the role to authorize is no guest role.
+                        break;
+                    }
+                } else {
+                    // TODO: roles from identity ... compare with specified role
+                    break;
+                }
+
+                if ($this->resources[$resource]->hasAction($action)) {
+                    // test if role is privileged
                     $return = $this->roles[$role]->isPrivileged($this->resource[$resource], $action);
                 }
-            }
+            } while(false);
 
             return $return;
         }
