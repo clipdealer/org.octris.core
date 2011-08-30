@@ -65,6 +65,19 @@ namespace org\octris\core\auth {
         }
 
         /**
+         * Method is called, when identity object get's serialized, for example when it's saved in the
+         * storage.
+         *
+         * @octdoc  m:identity/__sleep
+         * @return  array                                   Field names to serialize.
+         */
+        public function __sleep()
+        /**/
+        {
+            return array('code', 'identity', 'id');
+        }
+
+        /**
          * Returns true, if identity is valid.
          *
          * @octdoc  m:identity/isValid
