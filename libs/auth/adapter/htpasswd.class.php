@@ -96,7 +96,7 @@ namespace org\octris\core\auth\adapter {
         public function authenticate()
         /**/
         {
-            $result = \org\octris\core\auth::T_IDENTITY_FAILURE;
+            $result = \org\octris\core\auth::T_AUTH_FAILURE;
 
             if (empty($this->username)) {
                 throw new \Exception('Username cannot be empty');
