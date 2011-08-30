@@ -58,6 +58,7 @@ namespace org\octris\core {
         protected function __construct()
         /**/
         {
+            $this->storage = new \org\octris\core\auth\storage\transient();
         }
 
         /*
