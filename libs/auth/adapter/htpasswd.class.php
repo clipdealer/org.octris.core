@@ -111,7 +111,7 @@ namespace org\octris\core\auth\adapter {
                 $result = \org\octris\core\auth::T_IDENTITY_UNKNOWN;
 
                 while (!feof($fp)) {
-                    if (list($username, $password) = fgetcsv($fp, 512, ':') && $username == $this->username) {
+                    if ((list($username, $password) = fgetcsv($fp, 512, ':')) && $username == $this->username) {
                         if ($result != \org\octris\core\auth::T_IDENTITY_UNKNOWN) {
                             $result = \org\octris\core\auth::T_IDENTITY_AMBIGUOUS;
                             break;
