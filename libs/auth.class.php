@@ -104,6 +104,10 @@ namespace org\octris\core {
         /**/
         {
             $identity = $adapter->authenticate();
+
+            $this->storage->setIdentity($identity);
+
+            return $identity;
         }
     }
 }
