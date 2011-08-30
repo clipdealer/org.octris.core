@@ -17,7 +17,7 @@ namespace org\octris\core\logger\writer {
      * @copyright   copyright (c) 2011 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    class syslog extends \org\octris\core\logger\writer
+    class syslog implements \org\octris\core\logger\writer_if
     /**/
     {
         /**
