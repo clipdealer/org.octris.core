@@ -115,11 +115,15 @@ namespace org\octris\core\auth\adapter {
                         if ($result != \org\octris\core\auth::T_IDENTITY_UNKNOWN) {
                             $result = \org\octris\core\auth::T_IDENTITY_AMBIGUOUS;
                             break;
-                        } elseif ($this->credential == $password) {
-                            $result = \org\octris\core\auth::T_AUTH_SUCCESS;
-                            break;
                         } else {
-                            $result = \org\octris\core\auth::T_CREDENTIAL_INVALID;
+                            $cc = crypt($this->credential, substr($password, 0, 3));
+
+                            if ($cc == $password) {
+                                $result = \org\octris\core\auth::T_AUTH_SUCCESS;
+                                break;
+                            } else {
+                                $result = \org\octris\core\auth::T_CREDENTIAL_INVALID;
+                            }
                         }
                     }
                 }
