@@ -58,7 +58,7 @@ namespace org\octris\core\auth\storage {
          * @octdoc  m:storage_if/setIdentity
          * @param   \org\octris\core\auth\identity  $identity       Identity to store in storage.
          */
-        public function setIdentity(\org\octris\core\auth\identity $identity);
+        public function setIdentity(\org\octris\core\auth\identity $identity)
         /**/
         {
             $this->session->setValue('identity', $identity, __CLASS__);
@@ -70,7 +70,7 @@ namespace org\octris\core\auth\storage {
          * @octdoc  m:storage_if/getIdentity
          * @return  \org\octris\core\auth\identity                  Identity stored in storage.
          */
-        public function getIdentity();
+        public function getIdentity()
         /**/
         {
             return $this->session->getValue('identity', __CLASS__);
