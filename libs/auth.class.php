@@ -130,6 +130,20 @@ namespace org\octris\core {
         }
 
         /**
+         * Returns identity or false, if no identity is available.
+         *
+         * @octdoc  m:auth/getIdentity
+         * @return  \org\octris\core\auth\identity|bool             Identity or false.
+         */
+        public function getIdentity()
+        /**/
+        {
+            return ($this->storage->isEmpty()
+                    ? false
+                    : $this->storage->getIdentity());
+        }
+
+        /**
          * Remove identity so it is no longer authenticated.
          *
          * @octdoc  m:auth/revokeIdentity
