@@ -17,7 +17,7 @@ namespace org\octris\core {
      * @copyright   copyright (c) 2010-2011 by Harald Lapp
      * @author      Harald Lapp <harald.lapp@gmail.com>
      */
-    class validate 
+    class validate
     /**/
     {
         /**
@@ -28,11 +28,11 @@ namespace org\octris\core {
         const T_OBJECT = 1;
         const T_ARRAY  = 2;
         /**/
-         
+
         /**
          * Available validation types.
          *
-         * @octdoc  d:validate/T_ALPHA, T_ALPHANUM, T_BASE64, T_BOOL, T_DIGIT, 
+         * @octdoc  d:validate/T_ALPHA, T_ALPHANUM, T_BASE64, T_BOOL, T_CALLBACK, T_CHAIN, T_DIGIT,
          *          T_PATH, T_PATTERN, T_PRINTABLE, T_PROJECT, T_UTF8, T_XDIGIT
          */
         const T_ALPHA     = '\org\octris\core\validate\type\alpha';
@@ -46,8 +46,12 @@ namespace org\octris\core {
         const T_PROJECT   = '\org\octris\core\validate\type\project';
         const T_URL       = '\org\octris\core\validate\type\url';
         const T_XDIGIT    = '\org\octris\core\validate\type\xdigit';
+
+        // validation types, that are directly implemented in schema validator
+        const T_CALLBACK  = 1;
+        const T_CHAIN     = 2;
         /**/
-        
+
         /**
          * Protected constructor and magic clone method to prevent existance of multiple instances.
          *
@@ -56,7 +60,7 @@ namespace org\octris\core {
         protected function __construct() {}
         protected function __clone() {}
         /**/
-         
+
         /**
          * Test a value if it validates to the specified schema.
          *
@@ -71,9 +75,9 @@ namespace org\octris\core {
         {
             $instance = new \org\octris\core\validate\schema($schema, $mode);
             $is_valid = $instance->validate($value);
-            
+
             return ($is_valid === true
-                    ? $is_valid 
+                    ? $is_valid
                     : $instance->getErrors());
         }
     }
