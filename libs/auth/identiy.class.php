@@ -21,6 +21,15 @@ namespace org\octris\core\auth {
     /**/
     {
         /**
+         * Authentication status code.
+         *
+         * @octdoc  v:identity/$code
+         * @var     int
+         */
+        protected $code;
+        /**/
+
+        /**
          * Properties stored in the identity.
          *
          * @octdoc  v:identity/$identity
