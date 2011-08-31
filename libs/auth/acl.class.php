@@ -80,13 +80,14 @@ namespace org\octris\core\app {
          * Add a role to the ACL.
          *
          * @octdoc  m:acl/addRole
-         * @param   string          $name                   Name of the role.
-         * @return  \org\octris\core\auth\acl\role          Instance of an ACL role.
+         * @param   string                          $name       Name of the role.
+         * @param   \org\octris\core\auth\acl\role  $parent     Optional role to inherit.
+         * @return  \org\octris\core\auth\acl\role              Instance of an ACL role.
          */
-        public function addRole($name)
+        public function addRole($name, \org\octris\core\auth\acl\role $parent = null)
         /**/
         {
-            return $this->roles[$name] = new \org\octris\core\auth\acl\role($name);
+            return $this->roles[$name] = new \org\octris\core\auth\acl\role($name, $parent);
         }
 
         /**
