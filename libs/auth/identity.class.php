@@ -39,6 +39,15 @@ namespace org\octris\core\auth {
         /**/
 
         /**
+         * Roles assigned to the identity.
+         *
+         * @octdoc  v:identity/$roles
+         * @var     array
+         */
+        protected $roles = array();
+        /**/
+
+        /**
          * Internal ID of identity. This ID should be always the same, for the same identity
          * parameters.
          *
@@ -123,6 +132,30 @@ namespace org\octris\core\auth {
         /**/
         {
             return $this->identity;
+        }
+
+        /**
+         * Set roles for identity.
+         *
+         * @octdoc  m:identity/setRoles
+         * @param   array           $roles                  Roles to set.
+         */
+        public function setRoles(array $roles)
+        /**/
+        {
+            $this->roles = $roles;
+        }
+
+        /**
+         * Add a role for identity.
+         *
+         * @octdoc  m:identity/addRole
+         * @param   string          $role                   Role to add.
+         */
+        public function addRole($role)
+        /**/
+        {
+            $this->roles[] = $role;
         }
     }
 }
