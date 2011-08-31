@@ -37,15 +37,26 @@ namespace org\octris\core\auth\acl {
         /**/
 
         /**
+         * Parent role.
+         *
+         * @octdoc  v:role/$parent
+         * @var     \org\octris\core\auth\acl\role|null
+         */
+        protected $parent = null;
+        /**/
+
+        /**
          * Constructor.
          *
          * @octdoc  m:role/__construct
-         * @param   string          $name               The name of the role.
+         * @param   string                          $name       The name of the role.
+         * @param   \org\octris\core\auth\acl\role  $parent     Optional role to inherit.
          */
-        public function __construct($name)
+        public function __construct($name, \org\octris\core\auth\acl\role $parent = null)
         /**/
         {
-            $this->name = $name;
+            $this->name   = $name;
+            $this->parent = $parent;
         }
 
         /**
