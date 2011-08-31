@@ -134,8 +134,7 @@ namespace org\octris\core\auth\adapter {
             return new \org\octris\core\auth\identity(
                 $result,
                 array(
-                    'username'   => $this->username,
-                    'credential' => $this->credential
+                    'username' => $this->username
                 )
             );
         }
