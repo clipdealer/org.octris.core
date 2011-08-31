@@ -66,14 +66,14 @@ namespace org\octris\core\app {
          * actions allowed for a page specified as resource.
          *
          * @octdoc  m:acl/addResource
-         * @param   string          $resource               Resource to add.
-         * @param   array           $actions                Actions the resource can perform.
-         * @return  \org\octris\core\auth\acl\resource      Instance of an ACL resource.
+         * @param   string                              $name       Name of resource to add.
+         * @param   array                               $actions    Actions the resource can perform.
+         * @return  \org\octris\core\auth\acl\resource              Instance of an ACL resource.
          */
-        public function addResource($resource, array $actions)
+        public function addResource($name, array $actions)
         /**/
         {
-            return $this->resources[$resource] = new \org\octris\core\auth\acl\resource($resource, $actions);
+            return $this->resources[$name] = new \org\octris\core\auth\acl\resource($name, $actions);
         }
 
         /**
