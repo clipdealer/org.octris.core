@@ -48,16 +48,6 @@ namespace org\octris\core\auth {
         /**/
 
         /**
-         * Internal ID of identity. This ID should be always the same, for the same identity
-         * parameters.
-         *
-         * @octdoc  v:identiy/$id
-         * @var     string
-         */
-        protected $id;
-        /**/
-
-        /**
          * Construct.
          *
          * @octdoc  m:identity/__construct
@@ -69,8 +59,6 @@ namespace org\octris\core\auth {
         {
             $this->code     = $code;
             $this->identity = $identity;
-
-            $this->id = hash('sha256', serialize($identity));
         }
 
         /**
@@ -96,18 +84,6 @@ namespace org\octris\core\auth {
         /**/
         {
             return ($this->code === \org\octris\core\auth::T_AUTH_SUCCESS);
-        }
-
-        /**
-         * Return hash Id of identity.
-         *
-         * @octdoc  m:identity/getId
-         * @param   string                                  Hash Id of identity.
-         */
-        public function getId()
-        /**/
-        {
-            return $this->id;
         }
 
         /**
