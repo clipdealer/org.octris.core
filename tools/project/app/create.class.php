@@ -14,7 +14,7 @@ namespace org\octris\core\project\app {
     use \org\octris\core\config as config;
     use \org\octris\core\app\cli\stdio as stdio;
     use \org\octris\core\validate as validate;
-    
+
     /**
      * Create new project.
      *
@@ -33,7 +33,7 @@ namespace org\octris\core\project\app {
          */
         protected $data = array();
         /**/
-        
+
         /**
          * Helper method to test whether a file is binary or text file.
          *
@@ -49,14 +49,14 @@ namespace org\octris\core\project\app {
 
             if (is_file($file) && ($fp = fopen($file, 'r'))) {
                 $blk = fread($fp, $size);
-                fclose($fp); 
+                fclose($fp);
 
                 clearstatcache();
 
                 $return = (
                     substr_count($blk, '^ -~', "^\r\n") / $size > 0.3 ||
-                    substr_count($blk, "\x00") > 0 
-                ); 
+                    substr_count($blk, "\x00") > 0
+                );
             }
 
             return $return;
@@ -75,7 +75,7 @@ namespace org\octris\core\project\app {
         {
             // import project name
             $args = \org\octris\core\provider::access('args');
-            
+
             if (($project = $args->getValue('p', \org\octris\core\validate::T_PROJECT))) {
                 $tmp    = explode('.', $project);
                 $module = array_pop($tmp);
@@ -84,10 +84,10 @@ namespace org\octris\core\project\app {
                 $module = '';
                 $domain = '';
             }
-            
+
             // handle project configuration
             $prj = new config('org.octris.core', 'project.create');
-            
+
             $prj->setDefaults(array(
                 'info.company' => (isset($data['company']) ? $data['company'] : ''),
                 'info.author'  => (isset($data['author']) ? $data['author'] : ''),
@@ -106,24 +106,24 @@ namespace org\octris\core\project\app {
             }
 
             // $prj->save();
-            
+
             print "\n";
-            
+
             $module = stdio::getPrompt('module [%s]: ', $module, true);
             $year   = stdio::getPrompt('year [%s]: ', date('Y'), true);
-            
+
             if ($module == '' || $year == '') {
                 die("'module' and 'year' are required!\n");
             }
 
             // build data array
             $ns = implode(
-                '\\', 
+                '\\',
                 array_reverse(
                     explode('.', $prj['info.domain'])
                 )
             ) . '\\' . $module;
-            
+
             $this->data = array_merge($prj->filter('info')->getArrayCopy(true), array(
                 'year'      => $year,
                 'module'    => $module,
@@ -135,9 +135,9 @@ namespace org\octris\core\project\app {
         /**
          * Validate parameters.
          *
-         * @octdoc  m:help/validate
+         * @octdoc  m:create/validate
          * @param   string                          $action         Action that led to current page.
-         * @return  
+         * @return
          */
         public function validate()
         /**/
@@ -167,9 +167,9 @@ namespace org\octris\core\project\app {
             if (!($dir = \org\octris\core\app\cli::getPath(\org\octris\core\app\cli::T_PATH_WORK, ''))) {
                 die("unable to resolve work directory\n");
             }
-            
+
             $dir = substr($dir, 0, strrpos($dir, '/')) . '/' . $this->data['directory'];
-            
+
             if (is_dir($dir)) {
                 die(sprintf("there seems to be already a project at '%s'\n", $dir));
             }
@@ -178,47 +178,47 @@ namespace org\octris\core\project\app {
             $tpl = new \org\octris\core\tpl();
             $tpl->addSearchPath(__DIR__ . '/../data/skel/web/');
             $tpl->setValues($this->data);
-            
+
             $box = new \org\octris\core\tpl\sandbox();
-            
+
             $src = __DIR__ . '/../data/skel/web/';
             $len = strlen($src);
-            
+
             mkdir($dir, 0755);
-            
+
             $directories = array();
             $iterator    = new \RecursiveIteratorIterator(
                 new \RecursiveDirectoryIterator($src)
             );
-            
+
             foreach ($iterator as $filename => $cur) {
-                $rel  = substr($filename, $len); 
+                $rel  = substr($filename, $len);
                 $dst  = $dir . '/' . $rel;
                 $path = dirname($dst);
                 $base = basename($filename);
                 $ext  = preg_replace('/^\.?[^\.]+?(\..+|)$/', '\1', $base);
                 $base = basename($filename, $ext);
-                
+
                 if (substr($base, 0, 1) == '$' && isset($this->data[$base = ltrim($base, '$')])) {
                     // resolve variable in filename
                     $dst = $path . '/' . $this->data[$base] . $ext;
                 }
-                
+
                 if (!is_dir($path)) {
                     // create destination directory
                     mkdir($path, 0755, true);
                 }
-                
+
                 if (!$this->isBinary($filename)) {
                     $cmp = $tpl->fetch($rel, \org\octris\core\tpl\sandbox::T_CONTEXT_TEXT);
-            
+
                     file_put_contents($dst, $cmp);
                 } else {
                     copy($filename, $dst);
                 }
             }
-            
-            print "done.\n";        
+
+            print "done.\n";
         }
     }
 }
