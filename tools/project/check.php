@@ -10,3 +10,11 @@
  * file that was distributed with this source code.
  */
 
+/**
+ * Project dependency checker.
+ *
+ * @octdoc      h:project/check
+ * @copyright   copyright (c) 2011 by Harald Lapp
+ * @author      Harald Lapp <harald@octris.org>
+ */
+/**/
