@@ -17,8 +17,74 @@ namespace org\octris\core {
      * @copyright   copyright (c) 2011 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    abstract class cache extends \org\octris\core\type\collection
+    class cache
     /**/
     {
+        /**
+         * Standard caching backend.
+         *
+         * @octdoc  v:cache/$backend
+         * @var     \org\octris\core\cache\storage_if
+         */
+        protected $backend;
+        /**/
+
+        /**
+         * Fallback caching backend.
+         *
+         * @octdoc  v:cacbe/$fallback
+         * @var     \org\octris\core\cache\storage_if|null
+         */
+        protected $fallback = null;
+        /**/
+
+        /**
+         * Logger instance.
+         *
+         * @octdoc  v:cache/$logger
+         * @var     \org\octris\core\logger $logger|null
+         */
+        protected $logger = null;
+        /**/
+
+        /**
+         * Constructor.
+         *
+         * @octdoc  m:cache/__construct
+         * @param   \org\octris\core\cache\storage_if   $storage        Instance of cache storage backend.
+         */
+        public function __construct(\org\octris\core\cache\storage_if $storage)
+        /**/
+        {
+            $this->backend = $storage;
+        }
+
+        /**
+         * Set a fallback cache for example to combine a fast transient and a slower persistent cache,
+         * the fallback would define the second, in this example persistent cache, that would be queried,
+         * if the first cache does not contain the looked-up data.
+         *
+         * @octdoc  m:cache/setFallback
+         * @param   \org\octris\core\cache\storage_if   $storage        Instance of cache storage backend.
+         */
+        public function setFallback(\org\octris\core\cache\storage_if $storage)
+        /**/
+        {
+            $this->fallback = $storage;
+        }
+
+        /**
+         * Set logger for logging problems and information with cache backends.
+         *
+         * @octdoc  m:cache/setLogger
+         * @param   \org\octris\core\logger             $logger         Instance of logger class.
+         */
+        public function setLogger(\org\octris\core\logger $logger)
+        /**/
+        {
+            $this->logger = $logger;
+        }
+
+
     }
 }
