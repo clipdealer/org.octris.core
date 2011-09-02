@@ -47,7 +47,7 @@ namespace org\octris\core\project\app {
             // import project name
             $args = \org\octris\core\provider::access('args');
 
-            if (($project = $args->getValue('p', \org\octris\core\validate::T_PROJECT))) {
+            if ($args->isExist('p') && ($project = $args->getValue('p', \org\octris\core\validate::T_PROJECT))) {
                 $this->project = $project;
             } else {
                 die("usage: ./graph.php -p project-name\n");
