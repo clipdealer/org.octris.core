@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace org\octris\core\app {
+namespace org\octris\core\auth {
     /**
      * Simple implementation of access control lists.
      *
