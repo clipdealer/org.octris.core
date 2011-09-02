@@ -13,7 +13,7 @@ namespace org\octris\core {
     use \org\octris\core\app as app;
     use \org\octris\core\validate as validate;
     use \org\octris\core\provider as provider;
-    
+
     /**
      * handles application configuration
      *
@@ -21,7 +21,7 @@ namespace org\octris\core {
      * @copyright   (c) 2010-2011 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    class config extends \org\octris\core\type\collection 
+    class config extends \org\octris\core\type\collection
     /**/
     {
         /**
@@ -32,7 +32,7 @@ namespace org\octris\core {
          */
         protected $module = '';
         /**/
-        
+
         /**
          * Name of configuration file.
          *
@@ -41,7 +41,7 @@ namespace org\octris\core {
          */
         protected $name = '';
         /**/
-        
+
         /**
          * Constructor.
          *
@@ -49,19 +49,19 @@ namespace org\octris\core {
          * @param   string  $module     Name of module configuration belongs to.
          * @param   string  $name       Name of configuration file.
          */
-        public function __construct($module, $name) 
+        public function __construct($module, $name)
         /**/
         {
             $this->module = $module;
             $this->name   = $name;
-            
+
             $data = self::load($name, $module);
-            
+
             parent::__construct($data);
         }
 
         /**
-         * Sets defaults for configuration. Values are only set, if the keys of the values are not already available 
+         * Sets defaults for configuration. Values are only set, if the keys of the values are not already available
          * in the configuration.
          *
          * @octdoc  m:collection/setDefaults
@@ -79,7 +79,7 @@ namespace org\octris\core {
                 $this->exchangeArray($data);
             }
         }
-        
+
         /**
          * Filter configuration for prefix.
          *
@@ -118,12 +118,12 @@ namespace org\octris\core {
                     mkdir($path, 0755, true);
                 }
             }
-            
+
             return file_put_contents($file, yaml_emit((array)\org\octris\core\type\collection\deflatten($this)));
         }
 
         /**
-         * Load configuration file. the loader looks in the following places, 
+         * Load configuration file. the loader looks in the following places,
          * loads the configuration file and merges them in specified lookup order:
          *
          * - T_PATH_ETC/config.yml
@@ -143,7 +143,7 @@ namespace org\octris\core {
         /**/
         {
             // initialization
-            $module = ($module == '' 
+            $module = ($module == ''
                         ? provider::access('env')->getValue('OCTRIS_APP', validate::T_PROJECT)
                         : $module);
             $cfg = array();
@@ -151,24 +151,24 @@ namespace org\octris\core {
             // load default module config file
             $path = app::getPath(app::T_PATH_ETC, $module);
             $file = $path . '/' . $name . '.yml';
-            
+
             if (is_readable($file) && ($tmp = yaml_parse_file($file)) && !is_null($tmp)) {
-                $cfg = array_merge($cfg, \org\octris\core\type\collection(flatten($tmp)));
+                $cfg = array_merge($cfg, \org\octris\core\type\collection::flatten($tmp));
             }
 
             // load local config file
             $file = $path . '/' . $name . '_local.yml';
-            
+
             if (is_readable($file) && ($tmp = yaml_parse_file($file)) && !is_null($tmp)) {
-                $cfg = array_merge($cfg, \org\octris\core\type\collection(flatten($tmp)));
+                $cfg = array_merge($cfg, \org\octris\core\type\collection::flatten($tmp));
             }
-        
+
             // load global framework configuration
             $info = posix_getpwuid(posix_getuid());
             $file = $info['dir'] . '/.octris/' . $module . '/' . $name . '.yml';
-            
+
             if (is_readable($file) && ($tmp = yaml_parse_file($file)) && !is_null($tmp)) {
-                $cfg = array_merge($cfg, \org\octris\core\type\collection(flatten($tmp)));
+                $cfg = array_merge($cfg, \org\octris\core\type\collection::flatten($tmp));
             }
 
             return new \org\octris\core\type\collection($cfg);
