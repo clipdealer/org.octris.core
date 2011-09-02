@@ -262,6 +262,10 @@ namespace org\octris\core {
                 }
             }
 
+            if (!isset($this->validated[$key])) {
+                throw new \Exception(sprintf("unknown field name '%s'", $name));
+            }
+
             return ($this->validated[$key]['is_valid']
                     ? $this->validated[$key]['value']
                     : false);
@@ -309,12 +313,12 @@ namespace org\octris\core {
             if ((self::$storage[$this->name]['flags'] & self::T_READONLY) == self::T_READONLY) {
                 throw new \Exception("access to data '$this->name' is readonly");
             }
-         
+
             if (!is_null($validator)) {
                 if (is_scalar($validator) && class_exists($validator) && is_subclass_of($validator, '\org\octris\core\validate\type')) {
                     $validator = new $validator($options);
                 }
-                
+
                 if (!($validator instanceof \org\octris\core\validate\type)) {
                     throw new \Exception(sprintf("'%s' is not a validation type", get_class($validator)));
                 }
