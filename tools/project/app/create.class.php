@@ -119,11 +119,14 @@ namespace org\octris\core\project\app {
                 )
             ) . '\\' . $module;
 
+            $project = str_replace('\\', '.', $ns);
+
             $this->data = array_merge($prj->filter('info')->getArrayCopy(true), array(
                 'year'      => $year,
                 'module'    => $module,
                 'namespace' => $ns,
-                'directory' => str_replace('\\', '.', $ns)
+                'directory' => $project,
+                'project'   => $project
             ));
         }
 
