@@ -42,21 +42,16 @@ namespace org\octris\core\project\app {
          * @param   string          $size               Optional block size to test.
          * @return  bool                                Returns true for binaries.
          */
-        protected function isBinary($file, $size = 512)
+        protected function isBinary($file, $size = 2048)
         /**/
         {
             $return = false;
 
-            if (is_file($file) && ($fp = fopen($file, 'r'))) {
+            if (is_file($file) && is_readable($file) && ($fp = fopen($file, 'r'))) {
                 $blk = fread($fp, $size);
                 fclose($fp);
 
-                clearstatcache();
-
-                $return = (
-                    substr_count($blk, '^ -~', "^\r\n") / $size > 0.3 ||
-                    substr_count($blk, "\x00") > 0
-                );
+                $return = (substr_count($blk, "\x00") > 0);
             }
 
             return $return;
