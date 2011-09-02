@@ -48,7 +48,7 @@ namespace org\octris\core\app\cli {
          */
         private static $history = false;
         /**/
-        
+
         /**
          * Available readline drivers.
          *
@@ -71,7 +71,7 @@ namespace org\octris\core\app\cli {
          */
         protected static $history_size = 30;
         /**/
-        
+
         /**
          * History file bound to instance of readline. If no file is specified, the history will not be used.
          *
@@ -90,7 +90,7 @@ namespace org\octris\core\app\cli {
         abstract public static function detect();
         abstract public function readline($prompt = '');
         /**/
-        
+
         /**
          * Returns a new instance of readline. Note that no history functionality is available, if no
          * history path is provided.
@@ -102,7 +102,7 @@ namespace org\octris\core\app\cli {
         public final static function getInstance($history = '')
         /**/
         {
-            if (is_null(self::$instances[$history])) {
+            if (!isset(self::$instances[$history])) {
                 if (is_null(self::$class)) {
                     // detect and decide wich readline driver to use
                     foreach (self::$drivers as $driver) {
@@ -112,13 +112,13 @@ namespace org\octris\core\app\cli {
                         }
                     }
                 }
-                
+
                 self::$instances[$history] = new self::$class((self::$history && !!$history ? $history : ''));
             }
-            
+
             return self::$instances[$history];
         }
-        
+
         /**
          * Default constructor. This method is protected to force using readline::getInstance for instance
          * creation.
