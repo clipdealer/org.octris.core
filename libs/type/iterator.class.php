@@ -59,9 +59,9 @@ namespace org\octris\core\type {
         public function current()
         /**/
         {
-            return $this->obj->getItem($this->position);
+            return $this->collection->getValue($this->position);
         }
-        
+
         /**
          * Return key of item of collection the iterator is pointing to.
          *
@@ -71,9 +71,9 @@ namespace org\octris\core\type {
         public function key()
         /**/
         {
-            return $this->obj->getKey($this->position);
+            return $this->collection->getKey($this->position);
         }
-        
+
         /**
          * Rewind iterator to beginning.
          *
@@ -84,7 +84,7 @@ namespace org\octris\core\type {
         {
             $this->position = 0;
         }
-        
+
         /**
          * Advance the iterator by 1.
          *
@@ -95,7 +95,7 @@ namespace org\octris\core\type {
         {
             ++$this->position;
         }
-        
+
         /**
          * Checks if the position in the collection the iterator points to is valid.
          *
@@ -105,9 +105,9 @@ namespace org\octris\core\type {
         public function valid()
         /**/
         {
-            return $this->obj->isValid($this->position);
+            return $this->collection->isValid($this->position);
         }
-        
+
         /**
          * Move iterator position to specified position.
          *
@@ -119,21 +119,21 @@ namespace org\octris\core\type {
         {
             $this->position = $position;
         }
-        
+
         /**
          * Count the elements in the collection.
          *
          * @octdoc  m:iterator/count
-         * @return  int                                                     Number of items stored in the collection.   
+         * @return  int                                                     Number of items stored in the collection.
          */
         public function count()
         /**/
         {
             return count($this->collection);
         }
-        
+
         /** Special iterator methods **/
-        
+
         /**
          * Returns the current position of the iterator.
          *
@@ -145,7 +145,7 @@ namespace org\octris\core\type {
         {
             return $this->position;
         }
-        
+
         /**
          * Returns a copy of the data stored in collection.
          *
