@@ -51,9 +51,31 @@ namespace org\octris\core\auth {
          * Constructor.
          *
          * @octdoc  m:acl/__construct
+         */
+        public function __construct()
+        /**/
+        {
+        }
+
+        /**
+         * Return array with properties to serialize.
+         *
+         * @octdoc  m:acl/__sleep
+         * @return  array                                   Properties to serialize.
+         */
+        public function __sleep()
+        /**/
+        {
+            return array('resources', 'roles');
+        }
+
+        /**
+         * Set instance of authentication class to use in combination with ACL.
+         *
+         * @octdoc  m:acl/setAuthentication
          * @param   \org\octris\core\auth   $auth           Instance of authentication library.
          */
-        public function __construct(\org\octris\core\auth $auth)
+        public function setAuthentication(\org\octris\core\auth $auth)
         /**/
         {
             $this->auth = $auth;
