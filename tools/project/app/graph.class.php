@@ -48,6 +48,12 @@ namespace org\octris\core\project\app {
             $args = \org\octris\core\provider::access('args');
 
             if ($args->isExist('p') && ($project = $args->getValue('p', \org\octris\core\validate::T_PROJECT))) {
+                $path = \org\octris\core\app::getPath(\org\octris\core\app::T_PATH_LIBS, $project);
+
+                if (!is_dir($path . '/app') || !is_file($path . '/app/entry.class.php')) {
+                    die(sprintf("'%s' does not seem to be an application created with the OCTRiS framework", $project));
+                }
+
                 $this->project = $project;
             } else {
                 die("usage: ./graph.php -p project-name\n");
