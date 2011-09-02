@@ -12,13 +12,13 @@
 namespace org\octris\core\config {
     /**
      * Implements FilterIterator for filtering configuration.
-     * 
+     *
      * @octdoc      c:config/filter
      * @copyright   copyright (c) 2010-2011 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      **
      */
-     
+
     class filter extends \FilterIterator {
         /**
          * Prefix to use as filter.
@@ -28,7 +28,7 @@ namespace org\octris\core\config {
          */
         private $prefix = '';
         /**/
-        
+
         /**
          * Constructor.
          *
@@ -36,10 +36,10 @@ namespace org\octris\core\config {
          * @param   Iterator    $iterator   Iterator of collection to filter.
          * @param   string      $prefix     Prefix to filter for.
          */
-        public function __construct(Iterator $iterator, $prefix)
+        public function __construct(\org\octris\core\config $config, $prefix)
         /**/
         {
-            parent::__construct($iterator);
+            parent::__construct($config->getIterator());
 
             $this->prefix = rtrim($prefix, '.') . '.';
             $this->rewind();
@@ -58,10 +58,10 @@ namespace org\octris\core\config {
             $this->rewind();
 
             $data = array();
-            
+
             if ($clean) {
                 $len = strlen($this->prefix);
-                
+
                 foreach ($this as $k => $v) {
                     $data[substr($k, $len)] = $v;
                 }
@@ -72,7 +72,7 @@ namespace org\octris\core\config {
             }
 
             $this->rewind();
-            
+
             return $data;
         }
 
