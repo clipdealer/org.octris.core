@@ -15,19 +15,19 @@ namespace org\octris\core\project\app {
     use \org\octris\core\validate as validate;
 
     /**
-     * Create/update ACL resource list of a project.
+     * Create/update ACL configuration of a project.
      *
-     * @octdoc      c:app/getaclres
+     * @octdoc      c:app/updateacl
      * @copyright   copyright (c) 2011 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    class getaclres extends \org\octris\core\app\cli\page
+    class updateacl extends \org\octris\core\app\cli\page
     /**/
     {
         /**
          * Name of project
          *
-         * @octdoc  v:getaclres/$project
+         * @octdoc  v:updateacl/$project
          * @var     string
          */
         protected $project;
@@ -36,7 +36,7 @@ namespace org\octris\core\project\app {
         /**
          * Path to the app folder of the project.
          *
-         * @octdoc  v:getaclres/$app_path
+         * @octdoc  v:updateacl/$app_path
          * @var     string
          */
         protected $app_path;
@@ -45,7 +45,7 @@ namespace org\octris\core\project\app {
         /**
          * Prepare page
          *
-         * @octdoc  m:getaclres/prepare
+         * @octdoc  m:updateacl/prepare
          * @param   \org\octris\core\app\page       $last_page      Instance of last called page.
          * @param   string                          $action         Action that led to current page.
          * @return  mixed                                           Returns either page to redirect to or null.
@@ -65,14 +65,14 @@ namespace org\octris\core\project\app {
 
                 $this->project = $project;
             } else {
-                die("usage: ./getaclres.php -p project-name\n");
+                die("usage: ./updateacl.php -p project-name\n");
             }
         }
 
         /**
          * Validate parameters.
          *
-         * @octdoc  m:getaclres/validate
+         * @octdoc  m:updateacl/validate
          * @param   string                          $action         Action that led to current page.
          * @return
          */
@@ -85,7 +85,7 @@ namespace org\octris\core\project\app {
         /**
          * Implements dialog.
          *
-         * @octdoc  m:getaclres/dialog
+         * @octdoc  m:updateacl/dialog
          * @param   string                          $action         Action that led to current page.
          */
         public function dialog($action)
@@ -96,7 +96,7 @@ namespace org\octris\core\project\app {
         /**
          * Render.
          *
-         * @octdoc  m:getaclres/render
+         * @octdoc  m:updateacl/render
          */
         public function render()
         /**/
