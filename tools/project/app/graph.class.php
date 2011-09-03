@@ -34,6 +34,33 @@ namespace org\octris\core\project\app {
         /**/
 
         /**
+         * Output file.
+         *
+         * @octdoc  v:graph/$output
+         * @var     string|null
+         */
+        protected $output = null;
+        /**/
+
+        /**
+         * Output format.
+         *
+         * @octdoc  v:graph/$format
+         * @var     string
+         */
+        protected $format = '';
+        /**/
+
+        /**
+         * Dot command.
+         *
+         * @octdoc  v:graph/$cmd
+         * @var     string
+         */
+        protected $cmd = '';
+        /**/
+
+        /**
          * Prepare page
          *
          * @octdoc  m:graph/prepare
@@ -54,9 +81,39 @@ namespace org\octris\core\project\app {
                     die(sprintf("'%s' does not seem to be an application created with the OCTRiS framework", $project));
                 }
 
+                if ($args->isExist('o') && $output = $args->getValue('o', \org\octris\core\validate::T_PRINTABLE)) {
+                    $ext = strtolower(pathinfo($output, PATHINFO_EXTENSION));
+
+                    if ($ext != 'pdf' && $ext != 'dot') {
+                        die(sprintf("output file '%s' needs to have either '.pdf' or '.dot' extension\n", $output));
+                    }
+
+                    if ($ext == 'pdf' && ($cmd = `which dot`) == '') {
+                        die("make sure graphviz is installed, graphviz 'dot' utility not found in path\n");
+                    }
+
+                    $dir = dirname($output);
+
+                    if (!is_writable($dir)) {
+                        die(sprintf("output directory '%s' is not writable\n", $dir));
+                    }
+
+                    $this->format = $ext;
+
+                    if ($ext == 'pdf') {
+                        $this->cmd = $cmd;
+                        $this->output = $dir . '/' . basename($output, '.pdf');
+                    } else {
+                        $this->output = $output;
+                    }
+                }
+
+                $cmd = sprintf('/usr/local/graphviz/bin/dot -Tpdf -o%s.pdf %1$s.dot', $project);
+
+
                 $this->project = $project;
             } else {
-                die("usage: ./graph.php -p project-name\n");
+                die("usage: ./graph.php -p project-name [-o output-file(.pdf|.dot)]\n");
             }
         }
 
@@ -123,14 +180,18 @@ namespace org\octris\core\project\app {
                 foreach ($pages as $k => $v) {
                     printf(
                         "\"%s\" -> \"%s\" [label=%s];\n",
-                        $page,
-                        $v,
+                        addcslashes('\\' . ltrim($page, '\\'), '\\'),
+                        addcslashes('\\' . ltrim($v, '\\'), '\\'),
                         ($k == '' ? 'default' : $k)
                     );
 
                     $analyze("\\$v");
                 }
             };
+
+            if (!is_null($this->output)) {
+                ob_start();
+            }
 
             print "digraph unix {\nsize=\"10,10\"\nnode [color=lightblue2, style=filled];\n";
             print "rankdir=LR;\n";
@@ -140,6 +201,19 @@ namespace org\octris\core\project\app {
             $analyze($entry);
 
             print "}\n";
+
+            if (!is_null($this->output)) {
+                $tmp = ob_get_contents();
+
+                ob_end_clean();
+
+                if ($this->format == 'dot') {
+                    file_put_contents($this->output, $tmp);
+                } else {
+                    $p = new \org\octris\core\app\cli\pipe(sprintf('dot  -Tpdf -o%s.pdf', escapeshellarg($this->output)));
+                    $p->exec($tmp);
+                }
+            }
         }
     }
 }
