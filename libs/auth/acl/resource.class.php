@@ -28,6 +28,15 @@ namespace org\octris\core\auth\acl {
         /**/
 
         /**
+         * Default policy for resource.
+         *
+         * @octdoc  v:resource/$policy
+         * @var     int
+         */
+        protected $policy = \org\octris\core\auth\acl::T_ALLOW;
+        /**/
+
+        /**
          * Actions available for resource.
          *
          * @octdoc  v:resource/$actions
@@ -48,6 +57,34 @@ namespace org\octris\core\auth\acl {
         {
             $this->name    = $name;
             $this->actions = $actions;
+        }
+
+        /**
+         * Set default policy for resource.
+         *
+         * @octdoc  m:resource/setPolicy
+         * @param   int             $policy                 Policy to set.
+         */
+        public function setPolicy($policy)
+        /**/
+        {
+            if ($policy != \org\octris\core\auth\acl::T_ALLOW && $policy != \org\octris\core\auth\acl::T_DENY) {
+                throw new \Exception('policy needs to be either acl::T_ALLOW or acl::T_DENY');
+            }
+
+            $this->policy = $policy;
+        }
+
+        /**
+         * Return the default policy of the resource.
+         *
+         * @octdoc  m:resource/getPolicy
+         * @return  int                                     Default policy.
+         */
+        public function getPolicy()
+        /**/
+        {
+            return $this->policy;
         }
 
         /**
