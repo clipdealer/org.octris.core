@@ -21,6 +21,15 @@ namespace org\octris\core\auth {
     /**/
     {
         /**
+         * Policies.
+         *
+         * @octdoc  d:acl/T_ALLOW, T_DENY
+         */
+        const T_ALLOW = 1;
+        const T_DENY  = 2;
+        /**/
+
+        /**
          * Configured access control lists.
          *
          * @octdoc  v:acl/$resources
