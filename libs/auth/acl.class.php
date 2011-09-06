@@ -249,22 +249,28 @@ namespace org\octris\core\auth {
         }
 
         /**
-         * Test whether a specified role is authorized for some action on a resource
-         * and if the authenticated identity is member of the specified role.
+         * Test whether an identity is authorized for some action on a resource.
          *
          * @octdoc  m:acl/isAuthorized
-         * @param   string          $role                   Name of role.
-         * @param   string          $action                 Name of action.
          * @param   string          $resource               Name of resource.
+         * @param   string          $action                 Name of action.
          */
-        public function isAuthorized($role, $action, $resource)
+        public function isAuthorized($resource, $action)
         /**/
         {
             $return = false;
 
             do {
-                if (!isset($this->roles[$role]) || !isset($this->resources[$resource])) {
-                    // there is no such role or resource available
+                if (!isset($this->resources[$resource])) {
+                    throw new \Exception(sprintf("unknown resource '%s'", $resource));
+                }
+
+                if (!$this->resources[$resource]->hasAction($action)) {
+                    throw new \Exception(sprintf("unknown action '%s' for resource '%s'", $action, $resource));
+                }
+
+                if (is_null($this->auth)) {
+                    // no authentication instance available
                     break;
                 }
 
@@ -273,19 +279,16 @@ namespace org\octris\core\auth {
                     break;
                 }
 
-                if (!$identity->isValid()) {
-                    if ($role != 'guest') {
-                        // identity is not validly authenticated and the role to authorize is no guest role.
+                $roles  = $identity->getRoles();
+
+                foreach ($roles as $role) {
+                    if (!isset($this->roles[$role])) {
+                        throw new \Exception(sprintf("unknown role '%s'", $role));
+                    }
+
+                    if (($return = $this->roles[$role]->isAuthorized($this->resources[$resource], $action))) {
                         break;
                     }
-                } else {
-                    // TODO: roles from identity ... compare with specified role
-                    break;
-                }
-
-                if ($this->resources[$resource]->hasAction($action)) {
-                    // test if role is privileged
-                    $return = $this->roles[$role]->isPrivileged($this->resource[$resource], $action);
                 }
             } while(false);
 
