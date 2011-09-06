@@ -42,9 +42,9 @@ namespace org\octris\core\auth {
          * Instance of authentication library.
          *
          * @octdoc  v:acl/$auth
-         * @var     \org\octris\core\auth
+         * @var     \org\octris\core\auth|null
          */
-        protected $auth;
+        protected $auth = null;
         /**/
 
         /**
