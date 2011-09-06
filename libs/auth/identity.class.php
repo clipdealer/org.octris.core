@@ -44,7 +44,7 @@ namespace org\octris\core\auth {
          * @octdoc  v:identity/$roles
          * @var     array
          */
-        protected $roles = array();
+        protected $roles = array('guest');
         /**/
 
         /**
@@ -132,6 +132,18 @@ namespace org\octris\core\auth {
         /**/
         {
             $this->roles[] = $role;
+        }
+
+        /**
+         * Return roles, the identity is member of.
+         *
+         * @octdoc  m:identity/getRoles
+         * @param   array                                   Roles.
+         */
+        public function getRoles()
+        /**/
+        {
+            return $this->roles;
         }
     }
 }
