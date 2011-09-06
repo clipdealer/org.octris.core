@@ -57,9 +57,9 @@ namespace org\octris\core\project\app {
             $args = \org\octris\core\provider::access('args');
 
             if ($args->isExist('p') && ($project = $args->getValue('p', \org\octris\core\validate::T_PROJECT))) {
-                $this->app_path = \org\octris\core\app::getPath(\org\octris\core\app::T_PATH_LIBS, $project) . '/app';
+                $path = \org\octris\core\app::getPath(\org\octris\core\app::T_PATH_LIBS, $project);
 
-                if (!is_dir($this->app_path) || !is_file($this->app_path . '/entry.class.php')) {
+                if (!is_dir($path . '/app') || !is_file($path . '/app/entry.class.php')) {
                     die(sprintf("'%s' does not seem to be an application created with the OCTRiS framework", $project));
                 }
 
@@ -101,7 +101,6 @@ namespace org\octris\core\project\app {
         public function render()
         /**/
         {
-            $acl = new \org\octris\core\auth\acl();
             $res = array();
 
             $analyze = function($page, $module) use (&$analyze, &$res) {
@@ -159,11 +158,11 @@ namespace org\octris\core\project\app {
 
             ksort($res);
 
-            foreach ($res as $k => $v) {
-                $acl->addResource($v['name'], $v['actions']);
-            }
-
-
+            // build/update ACL configuration
+            $acl = \org\octris\core\project\libs\acl::load('/Users/harald/Projects/work/org.octris.core/etc/acl.yml.dist');
+            $acl->mergeResources($res);
+            $acl->mergeRoles($res);
+            $acl->save();
         }
     }
 }
