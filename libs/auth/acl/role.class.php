@@ -28,21 +28,21 @@ namespace org\octris\core\auth\acl {
         /**/
 
         /**
-         * Privileges assigned to role.
+         * Additional policies assigned to role.
          *
-         * @octdoc  v:role/$privileges
+         * @octdoc  v:role/$policies
          * @var     array
          */
-        protected $privileges = array();
+        protected $policies = array();
         /**/
 
         /**
-         * Parent role.
+         * Parent roles.
          *
-         * @octdoc  v:role/$parent
-         * @var     \org\octris\core\auth\acl\role|null
+         * @octdoc  v:role/$parents
+         * @var     array
          */
-        protected $parent = null;
+        protected $parents = array();
         /**/
 
         /**
@@ -50,45 +50,110 @@ namespace org\octris\core\auth\acl {
          *
          * @octdoc  m:role/__construct
          * @param   string                          $name       The name of the role.
-         * @param   \org\octris\core\auth\acl\role  $parent     Optional role to inherit.
          */
-        public function __construct($name, \org\octris\core\auth\acl\role $parent = null)
+        public function __construct($name)
         /**/
         {
-            $this->name   = $name;
-            $this->parent = $parent;
+            $this->name = $name;
         }
 
         /**
-         * Add a privilege to the role.
+         * Add a parent role.
          *
-         * @octdoc  m:role/addPrivilege
-         * @param   \org\octris\core\auth\acl\resource  $resource       Resource to grant privilege to.
-         * @param   array                               $actions        Allowed actions.
+         * @octdoc  m:role/addParent
+         * @param   \org\octris\core\auth\acl\role  $parent     Role to inherit.
          */
-        public function addPrivilege(\org\octris\core\auth\acl\resource $resource, array $actions);
+        public function addParent(\org\octris\core\auth\acl\role $parent)
         /**/
         {
-            $this->privileges[$resource->getName()] = array(
-                'resource' => $resource,
-                'actions'  => $actions
-            );
+            $this->parents[] = $parent;
+        }
+
+        /**
+         * Add the policy for a resource to the role.
+         *
+         * @octdoc  m:role/addPolicy
+         * @param   \org\octris\core\auth\acl\resource  $resource       Resource to add policy for.
+         * @param   string                              $action         Action to add policy for.
+         * @param   int                                 $policy         Policy to set.
+         */
+        public function addPolicy(\org\octris\core\auth\acl\resource $resource, $action, $policy)
+        /**/
+        {
+            $name = $resource->getName();
+
+            if (!isset($this->policies[$name])) {
+                $this->policies[$name] = array(
+                    'resource' => $resource,
+                    'actions'  => array()
+                );
+            }
+
+            $this->policies[$name]['actions'][$action] = $policy;
+        }
+
+        /**
+         * Return the role-specific policy for a specified resource and action. This method will not
+         * return the default policy of a resource, instead -- if no policy for the resource is
+         * specified in the role -- the method will return 'null'.
+         *
+         * @octdoc  m:role/getPolicy
+         * @param   \org\octris\core\auth\acl\resource  $resource       Resource to get policy of.
+         * @param   string                              $action         Action to get policy of.
+         * @return  int|null                                            Policy, if available
+         */
+        public function getPolicy(\org\octris\core\auth\acl\resource $resource, $action)
+        /**/
+        {
+            $name = $resource->getName();
+
+            return (isset($this->policies[$name]) &&
+                    isset($this->policies[$name]['actions'][$action])
+                    ? $this->policies[$name]['actions'][$action]
+                    : null);
+        }
+
+        /**
+         * Thie method will calculate the policy for a specified resource and action by
+         * including the parent roles, if any, to determine the final policy.
+         *
+         * @octdoc  m:role/calcPolicy
+         * @param   \org\octris\core\auth\acl\resource  $resource       Resource to get policy of.
+         * @param   string                              $action         Action to get policy of.
+         * @param   int                                 $default        Optional default policy.
+         * @return  int|null                                            Policy, if available
+         */
+        public function calcPolicy(\org\octris\core\auth\acl\resource $resource, $action, $default = null)
+        /**/
+        {
+            $name   = $resource->getName();
+            $result = (is_null($default) ? $resource->getPolicy() : $default);
+
+            if (isset($this->policies[$name]) && isset($this->policies[$name]['actions'][$action])) {
+                $result = self::$this->policies[$name]['actions'][$action];
+            } else {
+                foreach ($this->parents as $parent) {
+                    $result = $parent->calcPolicy($resource, $action, $default);
+                }
+            }
+
+            return $result;
         }
 
         /**
          * Test whether a role may perform an specified action on a specified resource.
          *
-         * @octdoc  m:role/isPrivileged
+         * @octdoc  m:role/isAuthorized
          * @param   \org\octris\core\auth\acl\resource  $resource       Resource to test.
          * @param   string                              $action         Action to test.
-         * @return  bool                                                Returns true, if privilege is given.
+         * @return  bool                                                Returns true, if role is authorized.
          */
-        public function isPrivileged(\org\octris\core\auth\acl\resource $resource, $action)
+        public function isAuthorized(\org\octris\core\auth\acl\resource $resource, $action)
         /**/
         {
-            $name = $resource->getName();
+            $policy = $this->calcPolicy($resource, $action);
 
-            return (isset($this->privileges[$name]) && in_array($action, $this->privileges[$name]['actions']));
+            return ($policy == \org\octris\core\auth\acl::T_ALLOW);
         }
     }
 }
