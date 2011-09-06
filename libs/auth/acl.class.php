@@ -70,6 +70,143 @@ namespace org\octris\core\auth {
         }
 
         /**
+         * Load an ACL configuration and return an instance of acl class for this
+         * configuration.
+         *
+         * @octdoc  m:acl/load
+         * @param   string                  $file           File to load configuration from.
+         */
+        public static function load($file)
+        /**/
+        {
+            if (!is_readable($file)) {
+                throw new \Exception(sprintf("'%' is not readable", $file));
+            }
+
+            if (is_null($cfg = yaml_parse_file($file))) {
+                throw new \Exception(sprintf("unable to load file '%s'", $file));
+            }
+
+            // TODO: validate with validation schema
+
+            // build ACL
+            $acl = new static();
+
+            // build roles
+            $roles = array();
+
+            foreach ($cfg['roles'] as $role) {
+                if (!is_array($role)) continue;
+
+                $name = key($role);
+
+                if (isset($roles[$name])) {
+                    throw new \Exception(sprintf("role '%s' already taken", $name));
+                }
+
+                $roles[$name] = $acl->addRole($name);
+
+                if (is_array($role[$name])) {
+                    foreach ($role[$name] as $parent) {
+                        if (!isset($roles[$parent])) {
+                            throw new \Exception(sprintf("unable to inherit from unknown role '%s'", $parent));
+                        }
+
+                        $roles[$name]->addParent($roles[$parent]);
+                    }
+                }
+            }
+
+            // build resources
+            $resources = array();
+
+            foreach ($cfg['resources'] as $resource) {
+                if (!is_array($resource)) continue;
+
+                $name = key($resource);
+
+                if (isset($resources[$name])) {
+                    throw new \Exception(sprintf("resource '%s' is already defined", $name));
+                }
+
+                $resources[$name] = $acl->addResource($name, (is_array($resource[$name]) ? $resource[$name] : array()));
+            }
+
+            // build policies
+            foreach ($cfg['policies'] as $resource) {
+                if (!is_array($resource)) continue;
+
+                $name = key($resource);
+
+                if (!isset($resources[$name])) {
+                    throw new \Exception(sprintf("unknown resource '%s'", $name));
+                }
+
+                if (!is_array($resource[$name])) {
+                    continue;
+                }
+
+                if (isset($resource[$name]['default'])) {
+                    $policy = strtoupper($resource[$name]['default']);
+
+                    switch ($policy) {
+                    case 'ALLOW':
+                        $resources[$name]->setPolicy(self::T_ALLOW);
+                        break;
+                    case 'DENY':
+                        $resources[$name]->setPolicy(self::T_DENY);
+                        break;
+                    default:
+                        throw new \Exception(sprintf("unknow policy type '%s'", $policy));
+                    }
+                }
+
+                if (isset($resource[$name]['actions']) && is_array($resource[$name]['actions'])) {
+                    foreach ($resource[$name]['actions'] as $action) {
+                        if (!is_array($action)) continue;
+
+                        $action_name = key($action);
+
+                        if (!$resources[$name]->hasAction($action_name)) {
+                            throw new \Exception(sprintf("unknown action '%s'", $action_name));
+                        }
+
+                        if (!is_array($action[$action_name])) {
+                            continue;
+                        }
+
+                        foreach ($action[$action_name] as $role => $policy) {
+                            if (!isset($roles[$role])) {
+                                throw new \Exception(sprintf("unknown role '%s'", $role));
+                            }
+
+                            switch ($policy) {
+                            case 'ALLOW':
+                                $roles[$role]->addPolicy(
+                                    $resources[$name],
+                                    $action_name,
+                                    self::T_ALLOW
+                                );
+                                break;
+                            case 'DENY':
+                                $roles[$role]->addPolicy(
+                                    $resources[$name],
+                                    $action_name,
+                                    self::T_DENY
+                                );
+                                break;
+                            default:
+                                throw new \Exception(sprintf("unknow policy type '%s'", $policy));
+                            }
+                        }
+                    }
+                }
+            }
+
+            return $acl;
+        }
+
+        /**
          * Set instance of authentication class to use in combination with ACL.
          *
          * @octdoc  m:acl/setAuthentication
