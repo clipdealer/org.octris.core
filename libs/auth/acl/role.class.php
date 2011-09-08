@@ -58,6 +58,18 @@ namespace org\octris\core\auth\acl {
         }
 
         /**
+         * Return name of role, when casted to a string.
+         *
+         * @octdoc  m:role/__toString
+         * @return  string                                      Name of role.
+         */
+        public function __toString()
+        /**/
+        {
+            return $this->name;
+        }
+
+        /**
          * Add a parent role.
          *
          * @octdoc  m:role/addParent
