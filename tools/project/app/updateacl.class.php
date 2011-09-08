@@ -159,10 +159,47 @@ namespace org\octris\core\project\app {
             ksort($res);
 
             // build/update ACL configuration
-            $acl = \org\octris\core\project\libs\acl::load('/Users/harald/Projects/work/org.octris.core/etc/acl.yml.dist');
-            $acl->mergeResources($res);
-            $acl->mergeRoles($res);
-            $acl->save();
+            $old_name = '/Users/harald/Projects/work/org.octris.core/etc/acl.yml.dist';
+
+            $acl    = \org\octris\core\project\libs\acl::load($old_name);
+            $status = $acl->merge($res);
+
+            // status output
+            print "updateacl status\n";
+            print str_repeat('=', 22) . "\n";
+            printf("deleted resources: % 3d\n", $status['del_resources']);
+            printf("added resources  : % 3d\n", $status['add_resources']);
+            printf("processed roles  : % 3d\n", $status['prc_roles']);
+            printf("deleted policies : % 3d\n", $status['del_policies']);
+            print str_repeat('-', 22) . "\n";
+            printf("total resources  : % 3d\n", $status['tot_resources']);
+            printf("total roles      : % 3d\n", $status['tot_roles']);
+            printf("total policies   : % 3d\n\n", $status['tot_policies']);
+
+            //
+            do {
+                $key = strtolower(\org\octris\core\app\cli\stdio::getPrompt('(v)iew, (s)ave, (a)bort [%s]? ', 'v'));
+            } while ($key != 'v' && $key != 's' && $key != 'a');
+
+            switch ($key) {
+            case 'v':
+                $new_name = '/tmp/octris.acl.yml.' . posix_getpid();
+
+                $acl->save($new_name);
+
+                pclose(popen(sprintf(
+                    'opendiff %s %s -merge %s',
+                    escapeshellarg($old_name),
+                    escapeshellarg($new_name),
+                    escapeshellarg($old_name)
+                ), 'r'));
+                break;
+            case 's':
+                $acl->save($old_name);
+                break;
+            case 'a':
+                exit;
+            }
         }
     }
 }
