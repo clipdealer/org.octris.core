@@ -159,7 +159,8 @@ namespace org\octris\core {
                     $return = array(
                         (count($errors) == 0),
                         $data,
-                        $errors
+                        $errors,
+                        $schema                                                 // validator instance
                     );
                 }
 
