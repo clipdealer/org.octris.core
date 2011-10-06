@@ -287,7 +287,7 @@ namespace org\octris\core {
             $return = array();
             $len    = strlen($prefix);
 
-            foreach (self::$storage[$this->name] as $name => $value) {
+            foreach (self::$storage[$this->name]['data'] as $name => $value) {
                 if (substr($name, 0, $len) == $prefix && ($value = $this->getValue($name, $type, $options)) !== false) {
                     $return[$name] = $value;
                 }
