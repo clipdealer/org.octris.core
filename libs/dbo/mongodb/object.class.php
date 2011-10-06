@@ -28,7 +28,7 @@ namespace org\octris\core\dbo\mongodb {
          */
         private $_id = null;
         /**/
-        
+
         /**
          * Database connection.
          *
@@ -81,7 +81,7 @@ namespace org\octris\core\dbo\mongodb {
         {
             $this->offsetSet($name, $value);
         }
-     
+
         /**
          * Magic getter.
          *
@@ -94,7 +94,7 @@ namespace org\octris\core\dbo\mongodb {
         {
             return $this->offsetGet($name);
         }
-        
+
         /**
          * Save document object to database.
          *
@@ -104,9 +104,9 @@ namespace org\octris\core\dbo\mongodb {
         /**/
         {
             $cn = $this->pool->connect(\org\octris\core\dbo::T_DBO_UPDATE);
-            
+
             $data = parent::getArrayCopy();
-            
+
             if (is_null($this->_id)) {
                 // insert
                 $this->cn->insert($data);
@@ -118,10 +118,10 @@ namespace org\octris\core\dbo\mongodb {
                 // update
                 $this->cn->update(array('_id' => new MongoId($this->_id)), array('$set' => $data));
             }
-            
+
             $cn->release();
         }
-        
+
         /**
          * Prepare data for storing into MongoDB.
          *
@@ -133,25 +133,28 @@ namespace org\octris\core\dbo\mongodb {
         /**/
         {
             if (is_object($value))
-            // handle objects
+                // handle objects
                 if ($value instanceof DateTime) {
                     // convert PHP DateTime to MongoDate
                     $value = new MongoDate($value->getTimestamp());
                 } elseif ($value instanceof \org\octris\core\type\collection) {
-                    // convert 
+                    // cast to array
                     $value = (array)$value;
+                } else {
+                    // cast to string
+                    $value = (string)$value;
                 }
-            } 
-            
+            }
+
             if (is_array($value)) {
                 foreach ($value as &$item) {
                     $item = $this->import($item);
                 }
             }
-            
+
             return $value;
         }
-        
+
         /**
          * Prepare data for returning in Userland code.
          *
@@ -172,12 +175,12 @@ namespace org\octris\core\dbo\mongodb {
                     $item = $this->export($item);
                 }
             }
-            
+
             return $value;
         }
-        
+
         /** ArrayAccess **/
-    
+
         /**
          * Returns the value at the specified index.
          *
@@ -189,7 +192,7 @@ namespace org\octris\core\dbo\mongodb {
         /**/
         {
             $return = null;                 // return 'null' for unknown object properties
-            
+
             if ($offs == '_id') {
                 // ObjectId
                 $return = (string)$this->_id;
@@ -197,10 +200,10 @@ namespace org\octris\core\dbo\mongodb {
                 // known property
                 $return = $this->export(parent::offsetGet($offs));
             }
-            
+
             return $return;
         }
-    
+
         /**
          * Set value in collection at specified offset.
          *
@@ -218,5 +221,5 @@ namespace org\octris\core\dbo\mongodb {
                 $value = $this->import(parent::offsetSet($offs, $value));
             }
         }
-    }    
+    }
 }

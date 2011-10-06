@@ -71,7 +71,7 @@ namespace org\octris\core\auth {
         public function __sleep()
         /**/
         {
-            return array('code', 'identity', 'id');
+            return array('code', 'identity', 'roles');
         }
 
         /**
