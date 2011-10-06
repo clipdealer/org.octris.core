@@ -103,7 +103,7 @@ namespace org\octris\core\validate {
             $this->mode = ($mode == 0 
                             ? self::T_STRICT 
                             : $mode);
-            $this->fail = ($mode == $mode & 8);
+            $this->fail = ($mode == ($mode & 8));
         }
  
         /**
