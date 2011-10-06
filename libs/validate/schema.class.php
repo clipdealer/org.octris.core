@@ -62,6 +62,15 @@ namespace org\octris\core\validate {
         /**/
 
         /**
+         * Sanitzed data.
+         *
+         * @octdoc  v:schema/$data
+         * @var     array
+         */
+        protected $data = array();
+        /**/
+
+        /**
          * Available validation modes:
          *
          * - T_STRICT:  fields not in schema will raise a validation error (default)
@@ -128,6 +137,18 @@ namespace org\octris\core\validate {
         /**/
         {
             return $this->errors;
+        }
+ 
+        /**
+         * Return sanitized data.
+         *
+         * @octdoc  m:schema/getData
+         * @return  array                   Data.
+         */
+        public function getData()
+        /**/
+        {
+            return $this->data;
         }
  
         /**
@@ -344,7 +365,9 @@ namespace org\octris\core\validate {
                 $data,
                 $this->schema['default']
             );
-                    
+            
+            $this->data = $data;
+            
             return ($return !== false ? $data : $return);
         }
     }
