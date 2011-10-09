@@ -28,7 +28,7 @@ namespace org\octris\core {
          */
         private static $instance = null;
         /**/
-        
+
         /**
          * Constructor is protected to prevent instanciating registry.
          *
@@ -38,7 +38,7 @@ namespace org\octris\core {
         /**/
         {
         }
-        
+
         /**
          * Clone is private to prevent multipleinstances of registry.
          *
@@ -55,13 +55,13 @@ namespace org\octris\core {
          * @octdoc  m:registry/getInstance
          * @return  \org\octris\core\registry           instance of registry
          */
-        public function getInstance()
+        public static function getInstance()
         /**/
         {
             if (is_null(self::$instance)) {
                 self::$instance = new static();
             }
-            
+
             return self::$instance;
         }
     }
