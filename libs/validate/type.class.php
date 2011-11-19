@@ -62,11 +62,6 @@ namespace org\octris\core\validate {
         public function preFilter($value)
         /**/
         {
-            // strip magic quotes, if enabled
-            if (get_magic_quotes_gpc()) {
-                $value = stripslashes($value);
-            }
-
             // replace nullbytes
             $value = str_replace("\0", '', $value);
         
