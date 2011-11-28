@@ -33,7 +33,7 @@ namespace org\octris\core\config {
          * Constructor.
          *
          * @octdoc  m:filter/__construct
-         * @param   Iterator    $iterator   Iterator of collection to filter.
+         * @param   Iterator    $config     Config object to filter.
          * @param   string      $prefix     Prefix to filter for.
          */
         public function __construct(\org\octris\core\config $config, $prefix)
