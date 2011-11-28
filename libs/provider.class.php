@@ -218,31 +218,16 @@ namespace org\octris\core {
          * Validate a stored data field with specified validator type and options.
          *
          * @octdoc  m:provider/isValid
-         * @param   string          $name               Name of data field to validate.
-         * @param   string          $type               Validation type.
-         * @param   array           $options            Optional settings for validation.
-         * @return  bool                                Returns true if validation succeeded.
+         * @param   string                                  $name           Name of data field to validate.
+         * @param   string|\org\octris\core\validate\type   $validator      Validation type or validator instance.
+         * @param   array                                   $options        Optional settings for validation.
+         * @return  bool                                                    Returns true if validation succeeded.
          */
-        public function isValid($name, $type, array $options = array())
+        public function isValid($name, $validator, array $options = array())
         /**/
         {
-            return ($this->getValue($name, $type, $options) !== false);
-        }
-
-        /**
-         * Validates a specified data field and returns it, if it's valid.
-         *
-         * @octdoc  m:provider/getValue
-         * @param   string                                      $name               Name of data field to validate.
-         * @param   string|\org\octris\core\validate\type       $validator          Validation instance or type.
-         * @param   array                                       $options            Optional settings for validation.
-         * @return  mixed                                                           Returns value or false if validation failed.
-         */
-        public function getValue($name, $validator, array $options = array())
-        /**/
-        {
-            $key = md5(serialize(array($name, $validator, $options)));
-
+            $key = $name;
+            
             if (!isset($this->validated[$key])) {
                 if (is_scalar($validator) && class_exists($validator) && is_subclass_of($validator, '\org\octris\core\validate\type')) {
                     $validator = new $validator($options);
@@ -260,41 +245,53 @@ namespace org\octris\core {
                         'value'     => $value,
                         'is_valid'  => $validator->validate($value)
                     );
+                } else {
+                    $this->validated[$key] = array(
+                        'value'     => null,
+                        'is_valid'  => false
+                    );
                 }
             }
-
-            if (!isset($this->validated[$key])) {
-                throw new \Exception(sprintf("unknown field name '%s'", $name));
-            }
-
-            return ($this->validated[$key]['is_valid']
-                    ? $this->validated[$key]['value']
-                    : false);
+            
+            return $this->validated[$key];
         }
 
         /**
-         * Returns all matches for values with the specified prefix. Only values that validate
-         * get returned.
+         * Validates a specified data field and returns it, if it's valid.
          *
-         * @octdoc  m:provider/getPrefixed
-         * @param   string                                      $prefix             Prefix to search for.
-         * @param   string|\org\octris\core\validate\type       $type               Validation type.
-         * @param   array                                       $options            Optional settings for validation.
-         * @return  mixed
+         * @octdoc  m:provider/getValue
+         * @param   string                                  $name           Name of data field to validate.
+         * @return  mixed                                                   Returns value or null if field was not validated.
          */
-        public function getPrefixed($prefix, $type, array $options = array())
+        public function getValue($name)
         /**/
         {
-            $return = array();
-            $len    = strlen($prefix);
-
-            foreach (self::$storage[$this->name]['data'] as $name => $value) {
-                if (substr($name, 0, $len) == $prefix && ($value = $this->getValue($name, $type, $options)) !== false) {
-                    $return[$name] = $value;
-                }
+            $return = null;
+            $key    = $name;
+            
+            if (!isset($this->validated[$key])) {
+                \org\octris\core\logger::notice(sprintf("'%s' has not been validated", $name));
+            } else {
+                $return = $this->validated[$key]['value']
             }
 
             return $return;
+        }
+
+        /**
+         * Filter provider for prefix.
+         *
+         * @octdoc  m:provider/filter
+         * @param   string                              $prefix     Prefix to use for filter.
+         * @return  \org\octris\core\provider\filter                Filter iterator.
+         */
+        public function filter($prefix)
+        /**/
+        {
+            return new \org\octris\core\provider\filter(
+                $prefix,
+                array_keys(self::$storage[$this->name]['data'])
+            );
         }
 
         /**
@@ -303,38 +300,16 @@ namespace org\octris\core {
          * @octdoc  m:provider/setValue
          * @param   string                                          $name           Name of data field to set.
          * @param   mixed                                           $value          Value to set for data field.
-         * @param   string|\org\octris\core\validate\type           $validator      Optional validation type for data field.
-         * @param   array                                           $options        Optional settings for validation.
-         * @return  bool|null                                                       Returns false if validation failed, true if validation
          *                                                                          succeeded or null, if no validation type was specified
          */
-        public function setValue($name, $value, $validator = null, array $options = array())
+        public function setValue($name, $value)
         /**/
         {
             if ((self::$storage[$this->name]['flags'] & self::T_READONLY) == self::T_READONLY) {
                 throw new \Exception("access to data '$this->name' is readonly");
             }
 
-            if (!is_null($validator)) {
-                if (is_scalar($validator) && class_exists($validator) && is_subclass_of($validator, '\org\octris\core\validate\type')) {
-                    $validator = new $validator($options);
-                }
-
-                if (!($validator instanceof \org\octris\core\validate\type)) {
-                    throw new \Exception(sprintf("'%s' is not a validation type", get_class($validator)));
-                }
-
-                self::$storage[$this->name]['data'][$name] = $value;
-
-                $return = $this->isValid($name, $validator, $options);
-            } else {
-                self::$storage[$this->name]['data'][$name] = $value;
-
-                $return = null;
-            }
-
-
-            return $return;
+            self::$storage[$this->name]['data'][$name] = $value;
         }
 
         /**
