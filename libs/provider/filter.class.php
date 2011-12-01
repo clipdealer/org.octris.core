@@ -39,7 +39,7 @@ namespace org\octris\core\provider {
         public function __construct($prefix, array $keys)
         /**/
         {
-            parent::__construct(new ArrayIterator($keys));
+            parent::__construct(new \ArrayIterator($keys));
 
             $this->prefix = $prefix;
             $this->rewind();
