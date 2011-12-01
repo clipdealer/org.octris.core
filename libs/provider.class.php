@@ -272,7 +272,7 @@ namespace org\octris\core {
             if (!isset($this->validated[$key])) {
                 \org\octris\core\logger::notice(sprintf("'%s' has not been validated", $name));
             } else {
-                $return = $this->validated[$key]['value']
+                $return = $this->validated[$key]['value'];
             }
 
             return $return;
