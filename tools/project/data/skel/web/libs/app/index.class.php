@@ -64,6 +64,8 @@ namespace {{$namespace}}\app {
         public function render()
         /**/
         {
+            $tpl = \org\octris\core\app::getInstance()->getTemplate();
+            $tpl->render('index.html');
         }
     }
 }
