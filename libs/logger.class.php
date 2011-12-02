@@ -287,6 +287,10 @@ namespace org\octris\core {
                     // fetch line and file from debug backtrace
                     $trace = debug_backtrace(0);
 
+                    while (count($trace) > 0 && substr($trace[0]['file'], -38) == '/org.octris.core/libs/logger.class.php') {
+                        array_shift($trace);
+                    }
+
                     if (count($trace) > 0) {
                         $line = $trace[0]['line'];
                         $code = 0;
