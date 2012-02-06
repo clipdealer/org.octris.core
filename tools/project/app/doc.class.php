@@ -171,7 +171,7 @@ namespace org\octris\core\project\app {
         protected $depth = array(
             'h' => 1,
             'v' => 1, 'f' => 1,
-            'c' => 2, 'i' => 2, 't' => 2,
+            'c' => 1, 'i' => 1, 't' => 1,
             'd' => 3, 'p' => 3, 'm' => 3,
 
             'scope' => 5
