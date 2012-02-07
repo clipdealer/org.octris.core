@@ -11,8 +11,22 @@
 /**/
 
 $sapi = php_sapi_name();
+$info = posix_getpwuid(posix_getuid());
+$home = $info['dir'] . '/.octdoc';
 
 if ($sapi == 'cli') {
+    // create working directory
+    if (!is_dir($home)) {
+        mkdir($home, 0755);
+    }
+
+    // leave, if octdocd server is already running
+    exec('ps ax | grep octdocd.php | grep -v grep', $out, $ret);
+
+    if ($ret === 0) {
+        die("octdocd is already running\n");
+    }
+
     // restart octdocd using php's webserver
     $cmd    = exec('which php', $out, $ret);
     $router = __FILE__;
@@ -34,20 +48,22 @@ if ($sapi == 'cli') {
 // remove shebang from output
 ob_end_clean();
 
-// create working directory
-$info = posix_getpwuid(posix_getuid());
-$home = $info['dir'] . '/.octdoc';
-
-if (!is_dir($home)) {
-    mkdir($home, 0755);
-}
-
+// view controller
 if (isset($_POST['ACTION'])) {
-    $return = array('status' => '');
+    $return = array('status' => '', 'error' => '');
+    $action = $_POST['ACTION'];
 
-    switch($_POST['ACTION']) {
-        case 'recreate':
+    switch($action) {
+        case 'load':
+            if (!isset($_POST['file']) || !is_file(($file = $home . '/doc/' . $_POST['file']))) {
+                $return['error'] = "Unable to load '$file'";
+                break;
+            }
+
+            $return['text'] = file_get_contents($file);
+
             break;
+        case 'recreate':
         case 'poll':
             // test if documentation creator is still running
             exec('ps ax | grep doc.php | grep -v grep', $out, $ret);
@@ -56,12 +72,18 @@ if (isset($_POST['ACTION'])) {
                 $return['status'] = 'ok';
             }
 
+            if ($action == 'poll') {
+                break;
+            }
+
+            exec(sprintf('((%s -p org.octris.core 2>/dev/null | (cd %s && tar -xpf -) &) &)', __DIR__ . '/doc.php', $home));
             break;
     }
 
     die(json_encode($return));
 }
 
+// render documentation browser
 ?>
 <html>
     <head>
@@ -76,6 +98,13 @@ if (isset($_POST['ACTION'])) {
 
             font-family: Verdana, Arial, Helvetica, sans-serif;
             font-size:   0.9em;
+        }
+        #error {
+            margin:      10px;
+            padding:     10px;
+            font-weight: bold;
+            color:       darkred;
+            border:      1px solid darkred;
         }
 
         /* content */
@@ -199,6 +228,14 @@ if (isset($_POST['ACTION'])) {
         }
         </style>
         <script type="text/javascript">
+        function $(id) {
+            var node = document.getElementById(id);
+
+            return new function() {
+                this.node = node;
+            }
+        }
+
         var request = (function() {
             var getRequest = (function() {
                 if (window.ActiveXObject) {
@@ -243,7 +280,8 @@ if (isset($_POST['ACTION'])) {
                 if (request) {
                     request.onreadystatechange = function() {
                         if (request.readyState == 4) {
-                            var data = {};
+                            var data  = {};
+                            var error = false;
 
                             try {
                                 data = (request.responseText != ''
@@ -252,7 +290,14 @@ if (isset($_POST['ACTION'])) {
                             } catch(e) {
                             }
 
-                            cb(data);
+                            if ((error = ('error' in data && data['error'] != ''))) {
+                                $('error').node.style.display = 'block';
+                                $('error').node.innerHTML = data['error'];
+                            } else {
+                                $('error').node.style.display = 'none';
+                            }
+
+                            cb(data, error);
                         }
                     }
 
@@ -266,12 +311,16 @@ if (isset($_POST['ACTION'])) {
         })();
 
         window.onload = (function() {
-            function $(id) {
-                var node = document.getElementById(id);
+            function load(name, cb) {
+                cb = cb || function() {};
 
-                return new function() {
-                    this.node = node;
-                }
+                request('/', {'ACTION': 'load', 'file': name}, function(data) {
+                    if (!('text' in data)) return;
+
+                    $('text').node.innerHTML = data['text'];
+
+                    cb();
+                });
             }
 
             var recreate = false;
@@ -281,21 +330,28 @@ if (isset($_POST['ACTION'])) {
                     if (!recreate) {
                         $('bt_recreate').node.className = 'working';
     
-                        request('/', {'ACTION': 'recreate'}, function(data) {
+                        request('/', {'ACTION': 'recreate'}, function(data, error) {
                             var to = 1500;
                             var cb = function() {
-                                request('/', {'ACTION': 'poll'}, function(data) {
+                                request('/', {'ACTION': 'poll'}, function(data, error) {
                                     if (!('status' in data) || data['status'] != 'ok') {
                                         window.setTimeout(cb, to);
                                         return;
                                     }
 
-                                    $('bt_recreate').node.className = 'recreate';
-                                    recreate = false;
+                                    if (error) {
+                                        $('bt_recreate').node.className = 'recreate';
+                                        recreate = false;
+                                    } else {
+                                        load('index.html', function() {
+                                            $('bt_recreate').node.className = 'recreate';
+                                            recreate = false;
+                                        });
+                                    }
                                 });
                             }
 
-                            window.setTimeout(cb, to);
+                            if (!error) window.setTimeout(cb, to);
                         });
 
                         recreate = true;
@@ -327,13 +383,19 @@ if (isset($_POST['ACTION'])) {
         </div>
 
         <div id="content">
+            <div id="error">No documentation is available &mdash; press "Recreate" to create it!</div>
 
+            <div id="text">
         <?php
 
-        require_once('/var/folders/zj/dnyn_y450yv72f2zpb6dgxmh0000gn/T/octdoc.JYgTKzILFx/doc/libs_tpl_compiler.html');
+        if (is_file($home . '/doc/index.html')) {
+            require_once($home . '/doc/index.html');
+        } else {
+            print '<script type="text/javascript">$(\'error\').node.style.display = \'block\';</script>';
+        }
 
         ?>
-
+            </div>
         </div>
     </body>
 </html>
