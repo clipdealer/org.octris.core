@@ -92,7 +92,7 @@ if (isset($_POST['ACTION'])) {
         /* generic settings */
         body {
             margin: 0 auto;
-            width:  780px;
+            width:  900px;
 
             background-color: #fff;
 
@@ -108,14 +108,30 @@ if (isset($_POST['ACTION'])) {
             display:     none;
         }
 
+        /* index */
+        #index {
+            display:    inline-block;
+            min-height: 100%;
+            width:      239px;
+
+            vertical-align: bottom;
+            padding:        30px 5px;
+
+            border-left:  1px solid #ddd;
+            background-color: #ededed;
+        }
+
         /* content */
         #content {
-            border-left:  1px solid #ddd;
+            display: inline-block;
+            width:   638px;
+
+            border-left:  1px dotted #ddd;
             border-right: 1px solid #ddd;
 
-            padding:     40px 5px;
+            vertical-align: bottom;
+            padding:        30px 5px;
 
-            line-height: 100%;
             min-height:  100%;
 
             color:            #000;
@@ -148,8 +164,38 @@ if (isset($_POST['ACTION'])) {
             vertical-align: top;
         }
 
+        /* footer */
+        #footer {
+            z-index:  1;
+
+            position: fixed;
+            bottom:   0;
+            
+            opacity:  0.9;
+
+            background-color: #fff;
+            border-top:       1px solid #ddd;
+            border-left:      1px solid #ddd;
+            border-right:     1px solid #ddd;
+
+            height:           30px;
+            width:           898px;
+
+            font-size:        10px;
+            line-height:      12px;
+            color:            #000;
+
+            text-align:       center;
+            vertical-align:   center;
+        }
+        #footer a {
+            color: #000;
+        }
+
         /* toolbar */
         #toolbar {
+            z-index:  1;
+
             position: fixed;
             top:      0;
 
@@ -160,8 +206,9 @@ if (isset($_POST['ACTION'])) {
             border-left:      1px solid #ddd;
             border-right:     1px solid #ddd;
             height:           30px;
-            width:           768px;
-            padding:          5px;
+            width:           888px;
+
+            padding:           5px;
 
             font-size:        22px;
             line-height:     26px;
@@ -188,35 +235,10 @@ if (isset($_POST['ACTION'])) {
             background: url("data:image/gif;base64,R0lGODlhHgAeAMQAADc3Nzs7O0NDQ0pKSlNTU1tbW2JiYmxsbHNzc3t7e4ODg4uLi5SUlJubm6Ojo6urq7S0tLy8vMLCwsrKytPT09vb2+Li4uzs7PX19f7+/gAAAAAAAAAAAAAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQFCgAaACwAAAAAHgAeAAAFzmAmjmRpnmiqriYFvVLFptQyCHhOMPIsYoqccLjA+IK6hVJBEBIoswQOAS1RpDiChYWJVFGSm6Bw8a0oYsVJIjGLJLneCEMgGN3YRQmpdlNwAyRwOW1uBTgTP006dz4LOA8iSEJ9Pg04DSQOOA5ukzl9EDh6ZheLWWUZfwIGbhmDOIUii19HOJUijwIJrqYEqSMVhK5sJ7oDta4kGIcCA7InFhCNKRWnB4klFVi41c1ZCAsMTEK8Mxi6Q0MJwDMVC6c6DMl+LxARcsr6+ywhACH5BAUKABoALAAAAQAeABwAAAX/YCaO2Ghm5Zme7GlFEPREUrWipEpSSlEEwEEB0ai0jqLKQQAMCAbMYMOCvGUoBudBoWAkEASnwCDRHSmRCVWEqUQS0HH5KJmYrKbHL3AwsipDLHgiEj8CDVYUBwEDc0c3EQOMFCYUCWIKbHctFwoCApkiEwhATAV2SCcTkgVrEwsEn0CIOWYZFqQEESYQUAoNU6knngEQJBBODVU4JwtMDyvIAwubjyMNkg+8n6G2JhbACE/aIxE/CFSDzCgNTQIEC6gWPwOowqKGTAf2zgELFy1WrPDEJAGlERQkDdh1j1CYAxRuYGhgyp43FAgKHDxRgVQAAg7UqXK0LsMEA58GOySAYGOEBQp1RJ6QgDLlFgZcEEiCmKpECgsLJJWS1cSAn4YiKDDIGEWAD4MXH1GYACOGhDUllwkSeSMEACH5BAUKABoALAAAAAAeAB0AAAX/YCaK2GieaKqubCteUdQ0klSVbkohRDAEAULCMbnkTpCfAChYBgoNHOtiGWEcCYRjoeA5DRIpCsNYVF/GUQWiGDQPFFUl0ay0MJDC8nA2QQ5AAw4pGGISBQECCWkiDE2PC2IrET0EEyYXDm6JBZIqF3QBDScVCEEEA5c5Ek0FfRkSPwoWFXFWJmIXgAQRJhKJCkcmdAK9Iw5NDMIkDT6Dxz8OUp64jUvPIhGJCcsibQESvj0IRtQnFBVzQcYviALhJ9QTA6gCcLgNTQqM8Zh6TQOimJhAQACvHGQSLRHAYJqCJQQg5EC2B4IkC4CeWCQhp0kCOzoOAEwAASQJRhUWMzRcgUGCASYFECRYgEWBwAwYLJib1qAHk4UAInbLcEEClh6PBiCwNRRDLaMOYvAzN5RFCAAh+QQFCgAaACwBAAAAHQAeAAAF/2AmjiSJlWhqqmxbSo0DSdjpsk8hBIRQNJLLTSSh2CSEwG55cFBamMhiwBhhYIsFQadMVFKXiWIgEDRWoqiCW5igHAOlYJBoXRw6QcJiFT3IOwo2fSRIAQELg0QGZQEGUCIRSQVPGScYDUoLCQd8KYMYCoeCVgWOEhlfQxJkBZ4ZrAIGijcXBzyqGRFxCyi0JaFKECMPSgyXaCqZZiMOO2csvxkLOw8jEGWkli42CwEDESMUZAdCQ2l5biIWjAOowGlWfBEGAQWg1HrSJRYHCFMCGJgTQUHHgGE36pUpEM4ENXvvookqM8BaiQoIFjZ4lSJBmR0DoJGYYMqHAggDSzs0oKhgQkpxGZUUKMCAgYMgI6YsiCDtEgUHt5QIHaAOA4WILi5IwDMgjgACCM/BmxDBAQOeUrNqPSctBAAh+QQFCgAaACwCAAAAHAAeAAAF/2AmjmRpnmiqruIVQZLFklf1VKNDDMKRVBfVRfJA7CAjySAQEAgGDArKcnA6BziRJZJAWAUKCeZE4TkJ0pJlkjA0E5RxieJ1HmQnjKMaQMhHFwxnAQZ/IoYPBgIBCoYVPAYRDH4rD04GaSIKT40ZWSuCAQsjFnWZJYYjETx3IhNOCEF5I38YdRIiEEsJMyQYCU1IGQ5ODIe9GYICEbmLxrSzJMoOzWCpKH/AA8JKfbIZ1yalThNaVQLC0SRlAa0iC02jJqk4v4sKJBOKAg8rtgwQFGHxpaBJgX4pMLghUOxbCwRNDjyQk+rCuR7lTEjwEqAAAgoORVBgeCUjqgmbmjMIQJBgAp4MIxfZeTnHgZlFA3DlGkAAgYMJIVFVWOCFJzURNiwEVbHmAYRw4ZBJTQiORQgAIfkEBQoAGgAsAgABABoAHQAABf9gJo5kOWJmilnXdJGVlZbTgiQGQURo9hgHxaQ3OwQCAkFBJnogA4bEawZJJhPEicIaQAxLGAnCKoCAIYtkd1K6IJDGATv1OAgCCspJAZ84DkQmEEYCDlMUBgEDZhlzYCMOBYoVInwCDDMkPW5JChkXdosmgTRJBxYSdwikmSIWYwITEVczrCMJAgMRD3eYmr8mDXcNDki+GbYpDEgPEANdmbYYlhETpkzJgW6KExZ2sY+ZEQMCpxlb5ckpaXgiFc8EDq2NTUkFep/CAQeMIoEYBxxIsBMAywgKlgw8mEHhmYE7B6aMmPAmCQMeJZxZOYBRE0UkufKcwGVl4YwLCxIm3TGZwUIBLgdaYdBiQOGICAUIREEgZF5LfCJaWLCAQZ3Po0gzhQAAIfkEBQoAGgAsAgABABwAHAAABf9gJoqYhWEjOmbq6o6WYSTIslBvmq9JIPyCyKjimOxekwVQsEgpBoRF5SiiJAQ+wUCSavgCCO5uQvAZBgFFK2NJlAUEylpUQfwOEMjA6MJACFgIOCsYSgEFfA4XOiMRBj+KKxQFAQRCVCMOlAZ8IgpYaoRHFp8BDioxAVuYLCMQlAUqE2gHi3NHGAU/fBA/CqwvDJVCGA5oDTsqtwtoDyIPPgktt6IZXgIOInoBTa1Uygo+ECKzcHMo1BkXB1p8uarOwCISaAYWIhfXCovJhKXd8wwciscqAiBEKy44+FFADIkRF+JJKMPtRYUecCTcmpWHnQAEU+ZU0FVJwT0nqig2VeqE5EqAAAz4ZZj45SPLahUUEBiwoIUSIApuJpvgYIqICGiwgJGXg4INBApknGTKSF0JaiEAACH5BAUKABoALAIAAAAcAB4AAAX/YCaOYkWeaHoiyjNZKIap6RIMg4FI6kxbEoVgeIvQSD4RplEYDgeQESbygNEwEkPgRhAMFJeRxSA4TJInymFYWEACBQqpcgiUjShLXWDAK3gnEl0CBWgZGAsCcHgZFoYiEVoBDWEjggIEjClJEANwgCIMQ2BHSIkCDpUYTQOgUkooDwUBCXIZEQQBCJUnjyIUCAEEthF2B70xJwmKEyIOng0zvio2qM6KC5uwKA43DyISxqUpywGAlwgm24evYsEEgMBwUeOWA5iq3QIKyOsiF0ICMEgigRW9cbgINRtxoYEdA66kWLk1K0C2XmsUGorA7xaZAAYmkpCwJsABW79mOj1YMMgMEilZ+PACyMbTolIWHGh6cM9JgYH9jkTw5EQBBF5X2I2YgMBAF4v1ksmwMOGBAgRR66lTEQIAIfkEBQoAGgAsAQAAAB0AHgAABf9gJo5kJkVXqa5sFBxQVWIkzYpX5Qj8wUyz2whDaRwKgoEgMIAIVxbGIEDlJR2pJ0lyWAoKCiShkc1cJDIWZtIVEBSSS0NAJkEIh0gwU0EsCxA2FA4zDgFfaTVzAQVANRk2kBQEPAyRIhRKTXsqD0oCFCULSguXlyI2GAlLDZEXBkmOWiIRBS+htAQvibMWCIyyEEsKj0OnkApJEiMQh8RalwtLETQYD4cJkMU3yQHUtEoKx2oiyQJ6IhO2CBbaQ6gqvgIGy5i/BOhCkRJKBWUYDahkewdvhjQBC0pUUELAySwImnCRYMCjQLsn6g5ZUlEBVgAsJRrgwgABiQB2LQ5CNCRxYQeDCxEUUJpXz507CnGGNOgXxoqBfAVZyJm5pMqCMuSGQLTixofEWSMmGOHxcUIqmwSDYoLQpSbUGzCBsggBACH5BAUKABoALAEAAAAdAB4AAAXMYCaOJKlgZaqumUBIbExSkCPcp6xWC3H/t5duhFkAjy7YsFIAGhY2HGrpuyUoo+RQhGkKBspRjoRJjEvGL1YXwaUqv7CM8luP0oetCHFblKoTehl0XzNBgiJVdhA3CIgZaRAjjAJ+iJGTNwyPmCJtAgqPCjdhcC6PVRUkqYKEBCUMVoIJmiWEAhZbEj+qJbQCkjoUA30qF2ZTIxehJBLELsk6Ej4jFL8udjLLPw0LXjcFuUPTSEAKF3rkSAMLvYLbNw0PgY/N1PXGzEMhACH5BAUKABoALAAAAAAeAB4AAAX/YCaOGUaeE3WuLIuZC6K29HhFEPRARJDMJ1PrQlkUCoJAYJAMHCoiYa3SYCqXgmRWUJDQpBNEIDs4KBgNhVJAQExWUpHEkBwoJpZRI1BQSOItFnQBBBGADQ4TgFErC1kEbyt5KxNQKxVMAw5BNBQHB0AiFwxjCYuMJBgRSgonFWIDEHA0E0kFeUISBU6WqKcZFmKFJBFMCr+pJGoBslEQYwwji6cKSRBSzwIJLjUMSQ/YSQstUnEXCQIDESS6AQiTJTUiFQd8kSIWuwOh8hkRPQh6iUAXwEu5ZNISKGkAiIKBA/f6PcgkMEoFfiUusJiAREC0fiImNGgQBMIuAQZwTaEKIkHBro8ZKkxYMECJAS/yPPVQkoDBAgUIamY5gJOcnJNbBtRcM6BBRYQjPI1Jd4VAH0XSQL4i9MDBjggaQWYVQQHBuFPIaGHkJiIEACH5BAUKABoALAAAAAAeAB4AAAX/YCaOIkaeaKqe5ngta4xhkuQ40lQ5QhSjNEaBEBAIAgQE8VD5jSwLgrFYHFCPidZIW6IcjkZEwsFQKKRgxiUWOQSQComFZCEGBoLFXIUpGAkRaycVAwYMDhUVXCQXDUUFPikUExeLWyMSBUUQKZYyDkUIJJ4sDxQnFAkBBZyjQC4OAwiCIhNECU2kQAoAA5EiEkUJTigJR78ZPAEwnSUsoAIOJA9WDlq6GS0LR9IjEcLOK1wKRxIkEQMACnwqFAhIE4wIAw604SoQmghNJBQQ9s1IkIuGjVgGCFYKxPuB4cKEUyki+AnQwN61RGQMDODHKIKBIgZ0QRFghSQ/ExYkPJx5cwAZEAZgSJo5lGDeFAQQA14wZuRISTBIEuxx4oXkgZ93CjSQUPAEhGgUIkhogCOQQRRqnMy4ypVECAAh+QQFCgAaACwBAAAAHQAdAAAF/2AmjmRpniiGrixpUZDzQBOmZs3VihilGASBIDAYGBqSx2CysywKAWEgSg0YBoHFDTVJTAWDg6LBWBgKWOEAkqIUhoOE5LLFSBZC4QJF8QoKEFslfnASPCMXDkIFhigVB2IJZRQjNxIGAQUNJIIiFjYlW4lECjonnSyYgKc7JBNCBKgZN6gXEoEjEAQBDJw7dgQEjRkOUQydyCUNUZsiDUPNrSN4AQ+5BcKslSULRGw8DxOm0hkXbwJM5LMmEKqyK6gWCtC0hzwYnywOUAfDIxQMGiRQAMnCCgnnHIwbISHNlAQpdA1JUAEFnjwLIIzDYEsBlD8V3kEYkEeAAQMLAi8SJPkwXYpuA6BQGfIl0wKDLV7NaPAmjQACBhJQeFfiQjM6EyA8aAChAk515FCFAAAh+QQFCgAaACwBAAEAHAAdAAAF/2AmjmRpnqh4TdHjRJOVoutyDEKOI0p1iZUUBqMwBASBIzIpGDQolMPPhJEgmAJEgtFIIJo5BE5ymlxzi8cFM7pQirncw/Q+FuYoTIQQl5IwDjkHeCkMSgIEMiMVAwEFDiVsJBUIBgcEBAOEGQphkjNDFhQVEBQjFl8CppF/MxkSYVOfIrMzD0gKoK4iEJkTuyYWEg2SgBFBrFQjEgMEEcontSMJRxDAeRkWBzm/1yOzE4LIGaQVFBZrtEIJuCS3mAcGCEHSIw0FAQPj2Xw5AQyuIBjI0WCKim05CECoJ+LBQAEKVrlDksNAgnPfLkRg4C/BBGkS8n05MkBLAwZecDIgQSCxxIUDFCYwaORvyZEABhQMSYHsQgUvTUgKOLDgozcRFiZAcAABQgSDR6NeY3giBAAh+QQFCgAaACwCAAIAHAAcAAAF/2AmjqM1Rc4TTRfpvuJVKYcwBEJ+KBMGv5TGICfAFXOBgqL1y2AmiqPggGgwEodhESHxTV4TRCBAOEwqpEtkMQwgIIeF6yKeOnw/ONFNwixwBhB9I3gZEgc4AQlMGRMGOA9NJA9EAgUWIwo4DC+FIxNZSARMFgY2gpKEExAJBQUSIhQFAXKpnWqMDw9ftj6eIp6/eL+2LsTAxcmEsbojFxIWxxjHGReaBmiGrgkQPU2eEDcGpARGA2bFfwEKJaZIDss/D2MGvE4JRgawqXqKhRhitBxABQODA1Nufi048ABRDgYRLhQy0WpLFxdfMERAhGMAAgUMGiRAgEQAD2oxEiI8KjJGSoABDigUe6LAwIA2Qz5WQPnjwgkHDVZgUka0qNEQACH5BAUKABoALAEAAAAdABwAAAX/YCaOZGliZqqeq3phE/Q4EGW1rtQYwhAIAoJhQUHhRBSH4Sf4MQOBwuKGqySaQcJC0VAcfE3EpDUp/AqKx2WEuUwUhHMxRUEADWoVJlIIjy1GGRgKUAQSJUaBEgc/CwkHVBllAgURRyIRS00GgQ4+C4E4EANAAQmBFQsMa4gkRp5QQAgoiawsoW4LBE0MR6EpFxILA6ArvzgRcxgUEccizi3DCxLQlyMLPwMKE5GtzyK2I3ZYAw7WFV0VIxcJTAIQKYGJ7eUkmgIG8K4qEaQEFCMsGEig4M4YHBLiBFAg78YEBGeauVAiS923ZxN2BSCgQMILNhAU9Nl4aIUEiE0GKxzgwkCXRgEJAOKwoKuJEyxQDDiYYwzjAgNgAgwYgMejNRJuIDigcahahhAAIfkEBQoAGgAsAAAAAB4AHgAABf9gJo5kaZ5ommJqiVWT1DiRdLXoJTkJEQiDQKHQkLBWJIyjEGgKnD8BYWHBYSSHaOGQWDS4A8EzQTmiJgfxQAGpiFg6hU9wiKQqhp8BYi7pCmIFfSQOTwUTOBGAAQ03JhEGCYgjZoMRPgUSSSMXFCiVbwtiCgwJbjgqEIBPCpuUOBaiagMPbxN2n69vimJAmiIJAg+ObzgUCmEHVRkWeWueJ4OcDwMJIxNhgTZWJDUj1ECjyy6oGQpRBBC5xZ8VXcECC+UZGBQX0hmKAenkJ1gGuEpYaKDnVz8RlwIMcKDrzSqAxExAMCDGwDgTWJ4QUCDhYgUIC7IdmIQPwwSKahIyJHCwQCWBJ0Ii4BO44GUvKD8KMJgZbQKDAj7C7FsZIaKKSlciPHAwgUIFngfnSY3aIgQAIfkEBQoAGgAsAAAAAB4AHgAABf9gJo5kaYrYqZbp6rLVFD0QJF1nu2JUgxSDQEBQKCwouhzJwggKBQIndNCovEQRA5SIWCy6hyAUMXlRDlACImLRVSQLsSFi0kkIAQJkFylADRYrFxAOgSMtSRJ+AgsvOFcZD0EDFJA7KHEBDY8pExCPSicSBgEIlSMMApsqSSQXC0QOEhIZFQd5DUm6JT0FQ0J0EFsEDZYYDVtQBxgXCFtDuTqtJA0EW3sRAkNEDackuyIX1QEHVhIRDtYIoNMnFw4CDCRnAQW0liODZfkMQwut0vBRmPLAEqhDJFIR2eeCgoNPgrQImNNOxAM8BO61y6KN0QQrKN4gsCbggDcVEpwyTeniBcGPLXMgMYHy69mTBYZYfaOwwIAWIQMKIOhW8ZuJC+ciQIgwAYlOfEVdtItqIgQAOw==") no-repeat left center;
         }
 
-        /* footer */
-        #footer {
-            position: fixed;
-            bottom:   0;
-            
-            opacity:  0.9;
-
-            background-color: #fff;
-            border-top:       1px solid #ddd;
-            border-left:      1px solid #ddd;
-            border-right:     1px solid #ddd;
-
-            height:           30px;
-            width:           768px;
-            padding:          5px;
-
-            font-size:        10px;
-            line-height:      12px;
-            color:            #000;
-
-            text-align:       center;
-        }
-        #footer a {
-            color: #000;
-        }
-
         /* styles for printing */
         @media print {
             #content {
+                display:          block;
                 border:           0;
                 background-color: #fff;
             }
@@ -224,6 +246,9 @@ if (isset($_POST['ACTION'])) {
                 display: none;
             }
             #footer {
+                display: none;
+            }
+            #index {
                 display: none;
             }
         }
@@ -383,15 +408,14 @@ if (isset($_POST['ACTION'])) {
             Icons (c) by Glyphish &mdash; <a target="_blank" href="http://www.glyphish.com/">www.glyphish.com</a>
         </div>
 
-        <div id="content">
+        <div id="index">
+            <div class="text">
+                <h1>Index</h1>
+            </div>
+        </div><div id="content">
             <div id="error"></div>
 
             <div id="text">
-        <?php
-            if (is_file($home . '/doc/index.html')) {
-                require_once($home . '/doc/index.html');
-            } else {
-        ?>
                 <h1>Basic installation</h1>
 
                 <h2>Instructions</h2>
@@ -438,9 +462,6 @@ if (isset($_POST['ACTION'])) {
                     <br /><br />                
                     <button onclick="window.location.reload();">Reload</button>
                 </center>
-        <?php
-            }
-        ?>
             </div>
         </div>
     </body>
