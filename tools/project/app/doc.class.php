@@ -48,7 +48,7 @@ namespace org\octris\core\project\app {
          * @octdoc  p:doc/$format
          * @var     string
          */
-        protected $format = '';
+        protected $format = 'html';
         /**/
 
         /**
@@ -241,13 +241,15 @@ namespace org\octris\core\project\app {
             if ($args->isExist('p') && ($project = $args->getValue('p', \org\octris\core\validate::T_PROJECT))) {
                 $this->project = $project;
             } else {
-                die("usage: ./doc.php -p project-name\n");
+                $this->log('usage: ./doc.php -p project-name');
+                die(1);
             }
 
             exec('which pandoc', $out, $ret);
 
             if ($ret !== 0) {
-                die("unable to locate 'pandoc' in path\n");
+                $this->log('unable to locate \'pandoc\' in path');
+                die(1);
             }
         }
 
@@ -502,7 +504,8 @@ namespace org\octris\core\project\app {
             $descriptors = array(
                 array('pipe', 'r'),
                 array('pipe', 'w'),
-                array('file', '/dev/null', 'w')
+                STDERR
+                // array('file', '/dev/null', 'w')
             );
 
             $pipes = array();
@@ -542,6 +545,42 @@ namespace org\octris\core\project\app {
         }
 
         /**
+         * Write documentation index to temporary directory.
+         *
+         * @octdoc  m:doc/index
+         * @param   string                          $file           File to write index into.
+         * @param   array                           $parts          Documentation parts to create index for.
+         */
+        protected function index($file, array $parts)
+        /**/
+        {
+            if (!($fp = fopen($file, 'w'))) {
+                $this->log("unable to open file '$file' for writing");
+                return false;
+            }
+
+            fputs($fp, "<h1>Index</h1>\n");
+
+            $type = '';
+
+            foreach ($parts as $part) {
+                // write section header
+                if ($type != $part['type']) {
+                    if ($type != '') fputs($fp, "</ul>\n");
+
+                    $type = $part['type'];
+
+                    fputs($fp, sprintf("<h%1\$d>%2\$s</h%1\$d>\n", $this->depth[$type] + 1, htmlentities($this->types[$type])));
+                    fputs($fp, "<ul>\n");
+                }
+
+                fputs($fp, sprintf("<li><a href=\"%s\">%s</a></li>\n", basename($part['file']), htmlentities($part['name'])));
+            }
+
+            fclose($fp);
+        }
+
+        /**
          * Write documentation to temporary directory.
          *
          * @octdoc  m:doc/write
@@ -552,6 +591,7 @@ namespace org\octris\core\project\app {
         /**/
         {
             if (!($fp = fopen($file, 'w'))) {
+                $this->log("unable to open file '$file' for writing");
                 return false;
             }
 
@@ -668,8 +708,6 @@ namespace org\octris\core\project\app {
                 }
 
                 fputs($fp, "</dl>\n");
-
-                // print_r($part);
             }
 
             fclose($fp);
@@ -700,10 +738,9 @@ namespace org\octris\core\project\app {
 
             $tmp_dir = sys_get_temp_dir();
             if (!($tmp_name = trim(`mktemp -d $tmp_dir/octdoc.XXXXXXXXXX 2>/dev/null`)) || !is_dir($tmp_name) || !is_writable($tmp_name)) {
-                die("unable to create temporary directory '$tmp_name'\n");
+                $this->log('unable to create temporary directory \'$tmp_name\'');
+                die(1);
             }
-
-            print "$tmp_name\n";
 
             mkdir($tmp_name . '/tmp');
             mkdir($tmp_name . '/doc');
@@ -723,7 +760,9 @@ namespace org\octris\core\project\app {
 
                     $parts[str_replace('/', '|', $scope)] = array(
                         'scope' => $scope,
-                        'file'  => ($name = $tmp_name . '/doc/' . $name . '.html')
+                        'file'  => ($name = $tmp_name . '/doc/' . $name . '.html'),
+                        'type'  => $doc[0]['type'],
+                        'name'  => $doc[0]['scope']
                     );
 
                     $this->write($name, $doc); //$scope, $doc);
@@ -732,7 +771,16 @@ namespace org\octris\core\project\app {
 
             ksort($parts);
 
-            print_r($parts);
+            if ($this->format == 'html') {
+                $this->index($tmp_name . '/doc/index.html', $parts);
+            }
+
+
+            // passthru("cd $tmp_name && tar -cf - doc/", $ret);
+
+            // if ($ret !== 0) {
+            //     $this->log("error creating tar from documentation '$ret'");
+            // }
 
             // `rm -rf $tmp_name 1>/dev/null 2>&1`;
         }
