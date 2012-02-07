@@ -383,17 +383,38 @@ if (isset($_POST['ACTION'])) {
         </div>
 
         <div id="content">
-            <div id="error">No documentation is available &mdash; press "Recreate" to create it!</div>
+            <div id="error"></div>
 
             <div id="text">
         <?php
+            if (is_file($home . '/doc/index.html')) {
+                require_once($home . '/doc/index.html');
+            } else {
+        ?>
+                <h1>Basic installation</h1>
 
-        if (is_file($home . '/doc/index.html')) {
-            require_once($home . '/doc/index.html');
-        } else {
-            print '<script type="text/javascript">$(\'error\').node.style.display = \'block\';</script>';
-        }
+                <h2>Settings</h2>
 
+                <table border="0" cellspacing="5" cellpadding="0" style="font-weight: bold;">
+                    <tr>
+                        <td>
+                            OCTRIS_BASE
+                        </td><td><?php
+                        if (getenv('OCTRIS_BASE')) {
+                             print '<span style="color: darkgreen">yes</span>';
+                        } else {
+                             print '<span style="color: darkred">no</span>';
+                        }
+                        ?></td>
+                    </tr>
+                </table>
+                
+                <h2>Instructions</h2>
+
+                <p>
+                </p>
+        <?php
+            }
         ?>
             </div>
         </div>
