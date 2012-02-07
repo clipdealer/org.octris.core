@@ -21,7 +21,7 @@ if ($sapi == 'cli') {
     }
 
     // leave, if octdocd server is already running
-    exec('ps ax | grep octdocd.php | grep -v grep', $out, $ret);
+    exec('ps ax | grep octdocd.php | grep -v grep | grep "\-S"', $out, $ret);
 
     if ($ret === 0) {
         die("octdocd is already running\n");
