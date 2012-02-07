@@ -38,7 +38,7 @@ if ($sapi == 'cli') {
     $host = '127.0.0.1';
     $port = '8888';
 
-    exec(sprintf('((%s -B "ob_start();" -S %s:%s %s 1>/dev/null 2>&1 &) &)', $cmd, $host, $port, $router));
+    exec(sprintf('((%s -d output_buffering=on -S %s:%s %s 1>/dev/null 2>&1 &) &)', $cmd, $host, $port, $router));
 
     die(sprintf("octdocd server started on '%s:%s'\n", $host, $port));
 } elseif ($sapi != 'cli-server') {
