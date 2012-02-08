@@ -776,7 +776,7 @@ namespace org\octris\core\project\app {
             }
 
 
-            // passthru("cd $tmp_name && tar -cf - doc/", $ret);
+            passthru("cd $tmp_name && tar -cf - doc/", $ret);
 
             // if ($ret !== 0) {
             //     $this->log("error creating tar from documentation '$ret'");
