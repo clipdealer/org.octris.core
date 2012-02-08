@@ -48,7 +48,7 @@ namespace org\octris\core\project\app {
          * @octdoc  p:doc/$format
          * @var     string
          */
-        protected $format = 'html';
+        protected $format = 'octdoc';
         /**/
 
         /**
