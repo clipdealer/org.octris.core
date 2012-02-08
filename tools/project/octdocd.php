@@ -15,6 +15,13 @@ $info = posix_getpwuid(posix_getuid());
 $home = $info['dir'] . '/.octdoc';
 
 if ($sapi == 'cli') {
+    // test php version
+    $version = '5.4.0RC7';
+
+    if (version_compare(PHP_VERSION, $version) < 0) {
+        die(sprintf("unable to start webserver. please upgrade to PHP version >= '%s'. your version is '%s'\n", $version, PHP_VERSION));
+    }
+
     // create working directory
     if (!is_dir($home)) {
         mkdir($home, 0755);
