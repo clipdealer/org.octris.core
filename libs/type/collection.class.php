@@ -526,7 +526,7 @@ namespace org\octris\core\type {
         /**
          * Applies the callback to the elements of the given arrays.
          *
-         * @octdoc  f:collection/map
+         * @octdoc  m:collection/map
          * @param   callback    $cb                 Callback to apply to each element.
          * @param   mixed       $arg1, ...          The input array(s), ArrayObject(s) and / or collection(s).
          * @return  array                           Returns an array containing all the elements of arg1 after applying the
@@ -572,7 +572,7 @@ namespace org\octris\core\type {
         /**
          * Apply a user public static function to every member of an array. 
          *
-         * @octdoc  f:collection/walk
+         * @octdoc  m:collection/walk
          * @param   mixed       $arg                The input array, ArrayObject or collection.
          * @param   callback    $cb                 Callback to apply to each element.
          * @param   mixed       $userdata           Optional userdata parameter will be passed as the third parameter to the 
