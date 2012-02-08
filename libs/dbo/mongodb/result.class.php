@@ -24,7 +24,7 @@ namespace org\octris\core\dbo\mongodb {
         /**
          * MongoDB cursor.
          *
-         * @octdoc  v:result/$cursor
+         * @octdoc  p:result/$cursor
          * @var     MongoCursor
          */
         private $cursor = null;
@@ -33,7 +33,7 @@ namespace org\octris\core\dbo\mongodb {
         /**
          * Instance of connection pool.
          *
-         * @octdoc  v:result/$pool
+         * @octdoc  p:result/$pool
          * @var     \org\octris\core\dbo\mongodb\pool
          */
         protected $pool = null;
@@ -42,7 +42,7 @@ namespace org\octris\core\dbo\mongodb {
         /**
          * Collection name.
          *
-         * @octdoc  v:result/$collection
+         * @octdoc  p:result/$collection
          * @var     string
          */
         protected $collection = '';
@@ -51,7 +51,7 @@ namespace org\octris\core\dbo\mongodb {
         /**
          * Object namespace for result objects.
          *
-         * @octdoc  v:result/$object_ns
+         * @octdoc  p:result/$object_ns
          * @var     string
          */
         protected $object_ns = '';

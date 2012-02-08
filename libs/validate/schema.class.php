@@ -25,7 +25,7 @@ namespace org\octris\core\validate {
         /**
          * Validation schema.
          *
-         * @octdoc  v:schema/$schema
+         * @octdoc  p:schema/$schema
          * @var     array
          */
         protected $schema = array();
@@ -34,7 +34,7 @@ namespace org\octris\core\validate {
         /**
          * Validation mode.
          *
-         * @octdoc  v:schema/$mode
+         * @octdoc  p:schema/$mode
          * @var     int
          */
         protected $mode;
@@ -46,7 +46,7 @@ namespace org\octris\core\validate {
          * fields before it returns. With 'fail early' the validator will fail and
          * return on the first invalid field.
          *
-         * @octdoc  v:schema/$fail
+         * @octdoc  p:schema/$fail
          * @var     int
          */
         protected $fail = false;
@@ -55,7 +55,7 @@ namespace org\octris\core\validate {
         /**
          * Collected errors.
          *
-         * @octdoc  v:schema/$errors
+         * @octdoc  p:schema/$errors
          * @var     array
          */
         protected $errors = array();
@@ -64,7 +64,7 @@ namespace org\octris\core\validate {
         /**
          * Sanitzed data.
          *
-         * @octdoc  v:schema/$data
+         * @octdoc  p:schema/$data
          * @var     array
          */
         protected $data = array();

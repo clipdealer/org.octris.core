@@ -23,7 +23,7 @@ namespace org\octris\core\app\cli\readline {
         /**
          * Set bash command.
          *
-         * @octdoc  v:bash/$cmd
+         * @octdoc  p:bash/$cmd
          * @var     string
          */
         private static $cmd = '';

@@ -35,7 +35,7 @@ namespace org\octris\core {
         /**
          * Instance of auth class.
          *
-         * @octdoc  v:auth/$instance
+         * @octdoc  p:auth/$instance
          * @var     \org\octris\core\auth
          */
         private static $instance = null;
@@ -44,7 +44,7 @@ namespace org\octris\core {
         /**
          * Authentication storage handler.
          *
-         * @octdoc  v:auth/$storage
+         * @octdoc  p:auth/$storage
          * @var     \org\octris\core\auth\storage_if
          */
         protected $storage;

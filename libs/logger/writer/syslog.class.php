@@ -62,7 +62,7 @@ namespace org\octris\core\logger\writer {
         /**
          * For internal usage only.
          *
-         * @octdoc  v:syslog/$facilities
+         * @octdoc  p:syslog/$facilities
          * @var     array
          */
         private static $facilities = null;
@@ -71,7 +71,7 @@ namespace org\octris\core\logger\writer {
         /**
          * Mapping of logger levels to syslog levels.
          *
-         * @octdoc  v:syslog/$syslog_levels
+         * @octdoc  p:syslog/$syslog_levels
          * @var     array
          */
         private static $syslog_levels = array(
@@ -89,7 +89,7 @@ namespace org\octris\core\logger\writer {
         /**
          * Syslog was opened.
          *
-         * @octdoc  v:syslog/$is_open
+         * @octdoc  p:syslog/$is_open
          * @var     bool
          */
         private static $is_open = false;
@@ -98,7 +98,7 @@ namespace org\octris\core\logger\writer {
         /**
          * Last facility that wrote to syslog.
          *
-         * @octdoc  v:syslog/$last_facility
+         * @octdoc  p:syslog/$last_facility
          * @var     string
          */
         private static $last_facility = '';
@@ -107,7 +107,7 @@ namespace org\octris\core\logger\writer {
         /**
          * Syslog facility.
          *
-         * @octdoc  v:syslog/$facility
+         * @octdoc  p:syslog/$facility
          * @var     string
          */
         protected $facility;

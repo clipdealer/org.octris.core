@@ -23,7 +23,7 @@ namespace org\octris\core\logger\writer {
         /**
          * Make sure, that parent class will use STDERR for logging.
          *
-         * @octdoc  v:stderr/$filename
+         * @octdoc  p:stderr/$filename
          * @var     string
          */
         protected $filename = 'php://stderr';

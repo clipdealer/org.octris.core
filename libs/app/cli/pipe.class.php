@@ -23,7 +23,7 @@ namespace org\octris\core\app\cli {
         /**
          * Command to execute.
          *
-         * @octdoc  v:pipe/$cmd
+         * @octdoc  p:pipe/$cmd
          * @var     string
          */
         protected $cmd;
@@ -32,7 +32,7 @@ namespace org\octris\core\app\cli {
         /**
          * File to write to STDIN of command.
          *
-         * @octdoc  v:pipe/$input
+         * @octdoc  p:pipe/$input
          * @var     string|resource|null
          */
         protected $input = null;
@@ -41,7 +41,7 @@ namespace org\octris\core\app\cli {
         /**
          * File to write STDOUT of command to.
          *
-         * @octdoc  v:pipe/$output
+         * @octdoc  p:pipe/$output
          * @var     string|resource|null
          */
         protected $output = null;

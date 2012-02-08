@@ -23,7 +23,7 @@ namespace org\octris\core\dbo\mongodb {
         /**
          * Object ID
          *
-         * @octdoc  v:object/$_id
+         * @octdoc  p:object/$_id
          * @var     MongoId
          */
         private $_id = null;
@@ -32,7 +32,7 @@ namespace org\octris\core\dbo\mongodb {
         /**
          * Database connection.
          *
-         * @octdoc  v:object/$pool
+         * @octdoc  p:object/$pool
          * @var     \org\octris\core\dbo\mongodb\pool
          */
         protected $pool = null;

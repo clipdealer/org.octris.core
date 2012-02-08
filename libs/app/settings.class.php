@@ -23,7 +23,7 @@ namespace org\octris\core\app
         /**
          * Stores instance of settings object.
          *
-         * @octdoc  v:settings/$instance
+         * @octdoc  p:settings/$instance
          * @var     \org\octris\core\settings
          */
         protected $instance = null;

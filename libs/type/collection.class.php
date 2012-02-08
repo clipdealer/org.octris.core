@@ -23,7 +23,7 @@ namespace org\octris\core\type {
         /**
          * Stores keys of items stored in collection.
          *
-         * @octdoc  v:collection/$keys
+         * @octdoc  p:collection/$keys
          * @var     array
          */
         protected $keys = array();

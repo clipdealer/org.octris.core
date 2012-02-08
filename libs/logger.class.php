@@ -50,7 +50,7 @@ namespace org\octris\core {
         /**
          * Configured writers.
          *
-         * @octdoc  v:logger/$writers
+         * @octdoc  p:logger/$writers
          * @var     array
          */
         private $writers = array(
@@ -68,7 +68,7 @@ namespace org\octris\core {
         /**
          * Logger instance.
          *
-         * @octdoc  v:logger/$instance
+         * @octdoc  p:logger/$instance
          * @var     \org\octris\core\logger
          */
         private static $instance = null;
@@ -78,7 +78,7 @@ namespace org\octris\core {
          * Facility the error was logged from. Either a value set using setValue
          * will be used or an optional string provided for 'log' method.
          *
-         * @octdoc  v:logger/$facility
+         * @octdoc  p:logger/$facility
          * @var     string
          */
         protected $facility = '';
@@ -87,7 +87,7 @@ namespace org\octris\core {
         /**
          * Standard data to write to log.
          *
-         * @octdoc  v:logger/$data
+         * @octdoc  p:logger/$data
          * @var     array
          */
         protected $data = array();

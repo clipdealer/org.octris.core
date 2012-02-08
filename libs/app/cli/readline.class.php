@@ -25,7 +25,7 @@ namespace org\octris\core\app\cli {
         /**
          * Class to use for new instance.
          *
-         * @octdoc  v:readline/$class
+         * @octdoc  p:readline/$class
          * @var     \org\octris\core\app\cli\readline
          */
         private static $class = null;
@@ -34,7 +34,7 @@ namespace org\octris\core\app\cli {
         /**
          * Instances of readline. Each history-file has it's own instance.
          *
-         * @octdoc  v:readline/$instances
+         * @octdoc  p:readline/$instances
          * @var     array
          */
         private static $instances = array();
@@ -43,7 +43,7 @@ namespace org\octris\core\app\cli {
         /**
          * Whether readline history is supported.
          *
-         * @octdoc  v:readline/$history
+         * @octdoc  p:readline/$history
          * @var     bool
          */
         private static $history = false;
@@ -52,7 +52,7 @@ namespace org\octris\core\app\cli {
         /**
          * Available readline drivers.
          *
-         * @octdoc  v:readline/$drivers
+         * @octdoc  p:readline/$drivers
          * @var     array
          */
         private static $drivers = array(
@@ -66,7 +66,7 @@ namespace org\octris\core\app\cli {
          * Number of commands allowed in history file. This is globally the same value for all readline drivers and all
          * readline instances.
          *
-         * @octdoc  v:readline/$history_size
+         * @octdoc  p:readline/$history_size
          * @var     int
          */
         protected static $history_size = 30;
@@ -75,7 +75,7 @@ namespace org\octris\core\app\cli {
         /**
          * History file bound to instance of readline. If no file is specified, the history will not be used.
          *
-         * @octdoc  v:readline/$history_file
+         * @octdoc  p:readline/$history_file
          * @var     string
          */
         protected $history_file = '';

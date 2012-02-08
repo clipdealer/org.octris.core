@@ -21,7 +21,7 @@ namespace org\octris\core\auth\acl {
         /**
          * Name of resource.
          *
-         * @octdoc  v:resource/$name
+         * @octdoc  p:resource/$name
          * @var     string
          */
         protected $name;
@@ -30,7 +30,7 @@ namespace org\octris\core\auth\acl {
         /**
          * Default policy for resource.
          *
-         * @octdoc  v:resource/$policy
+         * @octdoc  p:resource/$policy
          * @var     int
          */
         protected $policy = \org\octris\core\auth\acl::T_ALLOW;
@@ -39,7 +39,7 @@ namespace org\octris\core\auth\acl {
         /**
          * Actions available for resource.
          *
-         * @octdoc  v:resource/$actions
+         * @octdoc  p:resource/$actions
          * @var     array
          */
         protected $actions = array();

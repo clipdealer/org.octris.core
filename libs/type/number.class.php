@@ -14,7 +14,7 @@ namespace org\octris\core\type {
         /**
          * Value of object.
          *
-         * @octdoc  v:number/$value
+         * @octdoc  p:number/$value
          * @var     float
          */
         protected $value = 0;

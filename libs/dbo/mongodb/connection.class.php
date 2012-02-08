@@ -23,7 +23,7 @@ namespace org\octris\core\dbo\mongodb {
         /**
          * Stores instance of pool that should handle this connection.
          *
-         * @octdoc  v:connection/$pool
+         * @octdoc  p:connection/$pool
          * @var     \org\octris\core\dbo\mongodb\pool
          */
         protected $pool = null;
@@ -32,7 +32,7 @@ namespace org\octris\core\dbo\mongodb {
         /**
          * Connection type of this instance.
          *
-         * @octdoc  v:connection/$type
+         * @octdoc  p:connection/$type
          * @var     string
          */
         protected $type = '';
@@ -41,7 +41,7 @@ namespace org\octris\core\dbo\mongodb {
         /**
          * Connection to database.
          *
-         * @octdoc  v:connection/$cn
+         * @octdoc  p:connection/$cn
          * @var     MongoDB
          */
         protected $cn = null;

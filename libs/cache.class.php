@@ -23,7 +23,7 @@ namespace org\octris\core {
         /**
          * Standard caching backend.
          *
-         * @octdoc  v:cache/$backend
+         * @octdoc  p:cache/$backend
          * @var     \org\octris\core\cache\storage_if
          */
         protected $backend;
@@ -32,7 +32,7 @@ namespace org\octris\core {
         /**
          * Fallback caching backend.
          *
-         * @octdoc  v:cacbe/$fallback
+         * @octdoc  p:cacbe/$fallback
          * @var     \org\octris\core\cache\storage_if|null
          */
         protected $fallback = null;
@@ -41,7 +41,7 @@ namespace org\octris\core {
         /**
          * Logger instance.
          *
-         * @octdoc  v:cache/$logger
+         * @octdoc  p:cache/$logger
          * @var     \org\octris\core\logger $logger|null
          */
         protected $logger = null;

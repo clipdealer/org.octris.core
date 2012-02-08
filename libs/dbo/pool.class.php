@@ -23,7 +23,7 @@ namespace org\octris\core\dbo {
         /**
          * Connection parameters of pool instance.
          *
-         * @octdoc  v:pool/$params
+         * @octdoc  p:pool/$params
          * @var     array
          */
         protected $params = array();
@@ -32,7 +32,7 @@ namespace org\octris\core\dbo {
         /**
          * Connection pool handled by pool instance.
          *
-         * @octdoc  v:pool/$pool
+         * @octdoc  p:pool/$pool
          * @var     array
          */
         protected $pool = array(

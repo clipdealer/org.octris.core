@@ -23,7 +23,7 @@ namespace org\octris\core\type {
         /**
          * Currency of money object (ISO 4217)
          *
-         * @octdoc  v:money/$currency
+         * @octdoc  p:money/$currency
          * @var     string
          */
         protected $currency = 'EUR';
@@ -32,7 +32,7 @@ namespace org\octris\core\type {
         /**
          * Stores callback for an optional exchange service.
          *
-         * @octdoc  v:money/$xchg_service
+         * @octdoc  p:money/$xchg_service
          * @var     callback
          */
         protected static $xchg_service = null;

@@ -23,7 +23,7 @@ namespace org\octris\core\dbo {
         /**
          * Namespace of objects to create from result items.
          *
-         * @octdoc  v:mongodb/$object_ns
+         * @octdoc  p:mongodb/$object_ns
          * @var     string
          */
         protected static $object_ns = '';
@@ -32,7 +32,7 @@ namespace org\octris\core\dbo {
         /**
          * Connection pool.
          *
-         * @octdoc  v:mongodb/$pool
+         * @octdoc  p:mongodb/$pool
          * @var     \org\octris\core\dbo\mongodb\pool
          */
         private static $pool = null;

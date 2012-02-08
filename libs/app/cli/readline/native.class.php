@@ -23,7 +23,7 @@ namespace org\octris\core\app\cli\readline {
         /**
          * Name of history file that was used for previous call to readline.
          *
-         * @octdoc  v:native/$last_history
+         * @octdoc  p:native/$last_history
          * @var     string
          */
         private static $last_history = '';
