@@ -112,7 +112,8 @@ if (isset($_POST['ACTION'])) {
             font-size:   0.9em;
         }
         #error {
-            margin:      30px 0;
+            width:       868px;
+            margin:      50px 5px -40px;
             padding:     10px;
             font-weight: bold;
             color:       darkred;
@@ -327,7 +328,7 @@ if (isset($_POST['ACTION'])) {
                             }
 
                             if ((error = ('error' in data && data['error'] != ''))) {
-                                $('error').node.style.display = 'block';
+                                $('error').node.style.display = 'inline-block';
                                 $('error').node.innerHTML = data['error'];
                             } else {
                                 $('error').node.style.display = 'none';
@@ -350,12 +351,12 @@ if (isset($_POST['ACTION'])) {
             function load(name, cb) {
                 cb = cb || function() {};
 
-                request('/', {'ACTION': 'load', 'file': name}, function(data) {
-                    if (!('text' in data)) return;
+                request('/', {'ACTION': 'load', 'file': name}, function(data, error) {
+                    if ('text' in data) {
+                        $('text').node.innerHTML = data['text'];
+                    }
 
-                    $('text').node.innerHTML = data['text'];
-
-                    cb();
+                    cb(data, error);
                 });
             }
 
@@ -419,11 +420,11 @@ if (isset($_POST['ACTION'])) {
         </div>
 
         <div id="main">
+            <div id="error">Error</div>
+
             <div id="index">
                 <h1>Index</h1>
             </div><div id="content">
-                <div id="error" style="display: block">Error</div>
-
                 <div id="text">
                     <h1>Basic installation</h1>
 
