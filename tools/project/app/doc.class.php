@@ -554,22 +554,40 @@ namespace org\octris\core\project\app {
                 return false;
             }
 
-            fputs($fp, "<h1>Index</h1>\n");
+            print "$file\n";
 
-            $type = '';
+            $path = function($scope) use ($fp, &$path) {
+                fputs($fp, "<ul>\n");
 
-            foreach ($parts as $part) {
-                // write section header
-                if ($type != $part['type']) {
-                    if ($type != '') fputs($fp, "</ul>\n");
+                foreach ($scope as $name => $p) {
+                    if (isset($p['scope'])) {
+                        fputs($fp, sprintf("<li><a href=\"%s\">%s</a></li>\n", basename($p['file']), htmlentities($p['name'])));
+                    } else {
+                        fputs($fp, sprintf("<li><strong>%s</strong>\n", $name));
+    
+                        $path($p);
 
-                    $type = $part['type'];
-
-                    fputs($fp, sprintf("<h%1\$d>%2\$s</h%1\$d>\n", $this->depth[$type] + 1, htmlentities($this->types[$type])));
-                    fputs($fp, "<ul>\n");
+                        fputs($fp, "</li>\n");
+                    }
                 }
 
-                fputs($fp, sprintf("<li><a href=\"%s\">%s</a></li>\n", basename($part['file']), htmlentities($part['name'])));
+                fputs($fp, "</ul>\n");
+            };
+
+            fputs($fp, "<h1>Index</h1>\n");
+
+            foreach ($parts as $section => $part) {
+                // section header
+                fputs($fp, sprintf("<h2>%s</h2>\n", $this->sections[$section]));
+
+                foreach ($part as $type => $scope) {
+                    // type header
+                    fputs($fp, sprintf("<h3>%s</h3>\n", $this->types[$type]));
+
+                    $path($scope);
+
+                    fputs($fp, "</ol></li>\n");
+                }
             }
 
             fclose($fp);
@@ -845,10 +863,6 @@ namespace org\octris\core\project\app {
             }
 
             $parts = $this->organize($parts);
-
-            //ksort($parts);
-
-            print_r($parts);
 
             $this->index($tmp_name . '/doc/index.html', $parts);
 
