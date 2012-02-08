@@ -112,7 +112,7 @@ if (isset($_POST['ACTION'])) {
             font-size:   0.9em;
         }
         #error {
-            margin:      10px 0;
+            margin:      30px 0;
             padding:     10px;
             font-weight: bold;
             color:       darkred;
@@ -120,17 +120,23 @@ if (isset($_POST['ACTION'])) {
             display:     none;
         }
 
+        /* main container */
+        #main {
+            min-height:  100%;
+
+            border-left:  1px dotted #ddd;
+            border-right: 1px solid #ddd;
+
+            background-color: #eee;
+        }
+
         /* index */
         #index {
             display:    inline-block;
-            min-height: 100%;
             width:      239px;
 
-            vertical-align: bottom;
-            padding:        30px 5px;
-
-            border-left:  1px solid #ddd;
-            background-color: #ededed;
+            vertical-align: top;
+            margin:         30px 5px;
         }
 
         /* content */
@@ -138,16 +144,8 @@ if (isset($_POST['ACTION'])) {
             display: inline-block;
             width:   638px;
 
-            border-left:  1px dotted #ddd;
-            border-right: 1px solid #ddd;
-
-            vertical-align: bottom;
-            padding:        30px 5px;
-
-            min-height:  100%;
-
-            color:            #000;
-            background-color: #eee;
+            vertical-align: top;
+            margin:         30px 5px;
         }
         #content pre {
             border:           1px solid #ccc;
@@ -420,60 +418,60 @@ if (isset($_POST['ACTION'])) {
             Icons (c) by Glyphish &mdash; <a target="_blank" href="http://www.glyphish.com/">www.glyphish.com</a>
         </div>
 
-        <div id="index">
-            <div class="text">
+        <div id="main">
+            <div id="index">
                 <h1>Index</h1>
-            </div>
-        </div><div id="content">
-            <div id="error"></div>
+            </div><div id="content">
+                <div id="error" style="display: block">Error</div>
 
-            <div id="text">
-                <h1>Basic installation</h1>
+                <div id="text">
+                    <h1>Basic installation</h1>
 
-                <h2>Instructions</h2>
+                    <h2>Instructions</h2>
 
-                <p>
-                </p>
+                    <p>
+                    </p>
 
-                <h2>Verification</h2>
+                    <h2>Verification</h2>
 
-                <p>
-                    Make sure, that all requirements below are fulfilled. Follow the instructions
-                    above to install and configure the octris framework. Press the &quot;Reload&quot;
-                    button below to retest the fulfillment of all requirements.
-                </p>
+                    <p>
+                        Make sure, that all requirements below are fulfilled. Follow the instructions
+                        above to install and configure the octris framework. Press the &quot;Reload&quot;
+                        button below to retest the fulfillment of all requirements.
+                    </p>
 
-                <center>
-                    <table width="50%" border="0" cellspacing="5" cellpadding="0" style="font-weight: bold;">
-                        <tr>
-                            <td>
-                                OCTRIS_BASE
-                            </td><td><?php
-                            if (getenv('OCTRIS_BASE')) {
-                                 print '<span style="color: darkgreen">yes</span>';
-                            } else {
-                                 print '<span style="color: darkred">no</span>';
-                            }
-                            ?></td>
-                        </tr><tr>
-                            <td>
-                                include_path
-                            </td><td><?php
-                            $incl = explode(PATH_SEPARATOR, get_include_path());
+                    <center>
+                        <table width="50%" border="0" cellspacing="5" cellpadding="0" style="font-weight: bold;">
+                            <tr>
+                                <td>
+                                    OCTRIS_BASE
+                                </td><td><?php
+                                if (getenv('OCTRIS_BASE')) {
+                                     print '<span style="color: darkgreen">yes</span>';
+                                } else {
+                                     print '<span style="color: darkred">no</span>';
+                                }
+                                ?></td>
+                            </tr><tr>
+                                <td>
+                                    include_path
+                                </td><td><?php
+                                $incl = explode(PATH_SEPARATOR, get_include_path());
 
-                            if (!($path = getenv('OCTRIS_BASE'))) {
-                                 print '<span style="color: darkyellow">fix OCTRIS_BASE first</span>';
-                            } elseif (array_search($path . '/libs', $incl) !== false) {
-                                 print '<span style="color: darkgreen">yes</span>';
-                            } else {
-                                 print '<span style="color: darkred">no</span>';
-                            }
-                            ?></td>
-                        </tr>
-                    </table>
-                    <br /><br />                
-                    <button onclick="window.location.reload();">Reload</button>
-                </center>
+                                if (!($path = getenv('OCTRIS_BASE'))) {
+                                     print '<span style="color: darkyellow">fix OCTRIS_BASE first</span>';
+                                } elseif (array_search($path . '/libs', $incl) !== false) {
+                                     print '<span style="color: darkgreen">yes</span>';
+                                } else {
+                                     print '<span style="color: darkred">no</span>';
+                                }
+                                ?></td>
+                            </tr>
+                        </table>
+                        <br /><br />                
+                        <button onclick="window.location.reload();">Reload</button>
+                    </center>
+                </div>
             </div>
         </div>
     </body>
