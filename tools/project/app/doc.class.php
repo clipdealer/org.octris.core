@@ -52,6 +52,17 @@ namespace org\octris\core\project\app {
         /**/
 
         /**
+         * Supported output formats.
+         *
+         * @octdoc  p:doc/$formats
+         * @var     array
+         */
+        protected $formats = array(
+            'html', 'octdoc'
+        );
+        /**/
+
+        /**
          * Dot command.
          *
          * @octdoc  p:doc/$cmd
@@ -118,6 +129,21 @@ namespace org\octris\core\project\app {
         /**/
 
         /**
+         * Documentation sections.
+         *
+         * @octdoc  p:doc/$sections
+         * @var     array
+         */
+        protected $sections = array(
+            'libs'   => 'Libraries',
+            'libsjs' => 'Javascript Libraries',
+            'styles' => 'Stylesheets',
+            'tools'  => 'Tools',
+            ''       => 'Misc'
+        );
+        /**/
+
+        /**
          * Sorting criteria configuration.
          *
          * @octdoc  p:doc/$sort
@@ -150,6 +176,12 @@ namespace org\octris\core\project\app {
                 'param',
                 'return',
                 'todo'
+            ),
+            'sections' => array(
+                'libs', 'libsjs', 'styles', 'tools', ''
+            ),
+            'indextypes' => array(
+                'h', 'c', 't', 'i'
             )
         );
         /**/
@@ -242,7 +274,7 @@ namespace org\octris\core\project\app {
             if ($args->isExist('p') && ($project = $args->getValue('p', \org\octris\core\validate::T_PROJECT))) {
                 $this->project = $project;
             } else {
-                $this->log('usage: ./doc.php -p project-name');
+                $this->log('usage: ./doc.php -p project-name [-f output-format]');
                 die(1);
             }
 
@@ -438,44 +470,6 @@ namespace org\octris\core\project\app {
             fclose($fp);
 
             return $return;
-        }
-
-        /**
-         * Sort parsed documentation in various ways.
-         *
-         * @octdoc  m:doc/sort
-         * @param   array                           $doc            Unsorted documentation.
-         * @return  array                                           Sorted documentation.
-         */
-        protected function sort(array $doc)
-        /**/
-        {
-            $sort =& $this->sort;
-
-            usort($doc, function($a, $b) use ($sort) {
-                // sort by docblock type
-                if (!isset($sort['types'][$a['type']]) || !isset($sort['types'][$b['type']])) {
-                    if (!isset($sort['types'][$a['type']])) {
-                        $this->log(sprintf("unknown type '%s' in:", $a['type']), $a);
-                    }
-                    if (!isset($sort['types'][$b['type']])) {
-                        $this->log(sprintf("unknown type '%s' in:", $b['type']), $b);
-                    }
-
-                    return -1;
-                }
-
-                if (($diff = $sort['types'][$a['type']] - $sort['types'][$b['type']]) !== 0) {
-                    return $diff;
-                }
-
-                // sort by scope
-                $diff = $a['scope'] - $b['scope'];
-
-                return $diff;
-            });
-
-            return $doc;
         }
 
         /**
@@ -717,6 +711,81 @@ namespace org\octris\core\project\app {
         }
 
         /**
+         * Create organizational structure for documentation.
+         *
+         * @octdoc  m:doc/organize
+         * @param   array                           $parts          Documentation parts to organize.
+         * @return  array                                           Organized parts.
+         */
+        protected function organize(array $parts)
+        /**/
+        {
+            // create tree structure of documentation
+            $return = array();
+
+            $path = function($part, &$data, $scope) use (&$path) {
+                $tmp = array_shift($scope);
+
+                if (!isset($data[$tmp])) $data[$tmp] = array();
+
+                if (count($scope) > 1) {
+                    $path($part, $data[$tmp], $scope);
+                } else {
+                    $data[$tmp][basename($part['scope'])] = $part;
+                }
+            };
+
+            foreach ($parts as $part) {
+                // sections
+                $section = explode('/', ltrim(dirname($part['scope']), '/'))[0];
+
+                if ($section == '') { print_r($part); die; }
+
+                if (!isset($return[$section])) $return[$section] = array();
+
+                // type
+                $type = $part['type'];
+
+                if (!isset($return[$section][$type])) $return[$section][$type] = array();
+
+                // directory
+                $scope = explode('/', ltrim($part['scope'], '/'));
+                array_shift($scope);
+
+                if (count($scope) > 1) {
+                    $path($part, $return[$section][$type], $scope);
+                } else {
+                    $return[$section][$type][basename($part['scope'])] = $part;
+                }
+            }
+
+            // sort tree structure
+            $pathsort = function(&$v) use (&$pathsort) {
+                ksort($v);
+
+                foreach ($v as &$_v) {
+                    if (!isset($_v['scope'])) $pathsort($_v);
+                }
+            };
+
+            uksort($return, function($a, $b) {
+                return (array_search($a, $this->sort['sections']) - array_search($b, $this->sort['sections']));
+            });
+
+            foreach ($return as &$types) {
+                uksort($types, function($a, $b) {
+                    return (array_search($a, $this->sort['indextypes']) - array_search($b, $this->sort['indextypes']));
+                });
+
+                foreach ($types as &$type) {
+                    $pathsort($type);
+                }
+            }
+
+            return $return;
+        }
+
+        /**
          * Render.
          *
          * @octdoc  m:doc/render
@@ -755,27 +824,33 @@ namespace org\octris\core\project\app {
                         continue;
                     }
 
-                    $doc   = $this->sort($doc);
                     $scope = dirname($path) . '/' . preg_replace('/' . $strip . '/', '', basename($path));
                     $name  = preg_replace('/[\/\.]/', '_', ltrim($scope, '/'));
 
-                    $parts[str_replace('/', '|', $scope)] = array(
+                    if (!in_array($doc['0']['type'], array('h', 'c', 'i', 't'))) {
+                        $this->log("first part in a file must be of type 'class', 'header', 'interface' or 'trait'", $doc[0]);
+
+                        continue;
+                    }
+
+                    $parts[] = array(
                         'scope' => $scope,
                         'file'  => ($name = $tmp_name . '/doc/' . $name . '.html'),
                         'type'  => $doc[0]['type'],
                         'name'  => $doc[0]['scope']
                     );
 
-                    $this->write($name, $doc); //$scope, $doc);
+                    //$this->write($name, $doc); //$scope, $doc);
                 }
             }
 
-            ksort($parts);
+            $parts = $this->organize($parts);
 
-            if ($this->format == 'html') {
-                $this->index($tmp_name . '/doc/index.html', $parts);
-            }
+            //ksort($parts);
 
+            print_r($parts);
+
+            $this->index($tmp_name . '/doc/index.html', $parts);
 
             passthru("cd $tmp_name && tar -cf - doc/", $ret);
 
