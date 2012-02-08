@@ -96,6 +96,7 @@ namespace org\octris\core\project\app {
             'i' => 'Interface',
             'l' => 'License',
             'm' => 'Method',
+            'p' => 'Property',
             't' => 'Trait',
             'v' => 'Variable'
         );
