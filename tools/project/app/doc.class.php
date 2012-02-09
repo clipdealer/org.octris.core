@@ -565,44 +565,32 @@ namespace org\octris\core\project\app {
             }
 
             // API documentation index
-            $indent = array();
+            $indent = 0;
             $output = function($file = null) use ($fp, &$indent) {
                 if (!is_null($file)) {
                     $scope = explode('/', ltrim(dirname($file['scope']), '/'));
-                    array_shift($file);
+                    array_shift($scope);
 
-                    $n_cnt = count($file);
+                    $cnt = count($scope);
                 } else {
-                    $n_cnt = 0;
+                    $cnt = 0;
                 }
 
-                $c_cnt = count($indent);
-
-                if ($n_cnt < $c_cnt) {
-                    for (; $c_cnt > $n_cnt; --$c_cnt) {
+                if ($cnt < $indent) {
+                    for (; $indent > $cnt; --$indent) {
                         fputs($fp, "</li></ul>\n");
-                        array_pop($indent);
                     }
-                } elseif ($n_cnt > $c_cnt) {
-                    fputs($fp, "<ul>\n");
-                    ++$c_cnt;
-
-                    if ($n_cnt > $c_cnt) {
-                        for (; $c_cnt < $n_cnt; ++$c_cnt) {
-                            fputs($fp, sprintf("<li>%s</li>", )
-                        }
-                    }
-                }
-
-                if ($n_cnt + 1 == $c_cnt) {
-                } elseif ($indent < $cnt) {
+                } elseif ($cnt > $indent + 1) {
                     for (; $indent < $cnt; ++$indent) {
-                        
+                        fputs($fp, sprintf("<li>%s<ul>", $scope[$indent]));
                     }
+                } elseif ($cnt > $indent) {
+                    fputs($fp, "<ul>\n");
+                    ++$indent;
                 }
-                    
-                if ($cnt > 0) {
-                    fputs($fp, sprintf("<li>%s</li>\n", $file['name']));
+
+                if (!is_null($file)) {
+                    fputs($fp, sprintf("<li><a href=\"%s\">%s</a>\n", basename($file['file']), htmlentities($file['name'])));
                 }
             };
 
@@ -619,10 +607,10 @@ namespace org\octris\core\project\app {
                         $output($file);
                     }
 
+                    $output();
+    
                     fputs($fp, "</ul>\n");
                 }
-
-                $output();
             }
 
             fclose($fp);
