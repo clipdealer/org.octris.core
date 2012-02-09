@@ -592,22 +592,29 @@ namespace org\octris\core\project\app {
             $putList = function(array $tree, $level = 0) use ($fp, &$putList) {
                 fputs($fp, "<ul>\n");
 
-                $idx = 0;
-                foreach ($tree as $key => $node) {
+                array_walk($tree, function($node, $key) use ($fp, &$tree, $putList) {
+                    static $li = true;
+
+                    next($tree);
+
                     if (is_int($key)) {
                         fputs($fp, sprintf('<li><a href="%s">%s</a>', basename($node['file']), htmlentities($node['name'])));
+
+                        if (!is_string(key($tree))) fputs($fp, '</li>');
+
+                        $li = false;
                     } elseif (count($node) > 0) {
-                        if ($idx == 0) {
+                        if ($li) {
                             fputs($fp, '<li>' . $key);
                         }
 
                         $putList($node);
+
+                        fputs($fp, "</li>\n");
+
+                        $li = true;
                     }
-
-                    fputs($fp, "</li>\n");
-
-                    ++$idx;
-                }
+                });
 
                 fputs($fp, "</ul>\n");
             };
