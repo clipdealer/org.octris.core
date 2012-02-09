@@ -457,7 +457,6 @@ if (isset($_POST['ACTION'])) {
             <div id="error">Error</div>
 
             <div id="index">
-                <h1>Index</h1>
             </div><div id="content">
                 <h1>Basic installation</h1>
 
