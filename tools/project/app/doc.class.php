@@ -565,51 +565,66 @@ namespace org\octris\core\project\app {
             }
 
             // API documentation index
-            $indent = 0;
-            $output = function($file = null) use ($fp, &$indent) {
-                if (!is_null($file)) {
-                    $scope = explode('/', ltrim(dirname($file['scope']), '/'));
-                    array_shift($scope);
+            /* create tree from flat array */
+            $getTree = function(array $files) {
+                $tree = array();
+                
+                foreach ($files as $file) {
+                    $node  =& $tree;
 
-                    $cnt = count($scope);
-                } else {
-                    $cnt = 0;
-                }
+                    if ($file['scope'] !== '') {
+                        $scope = explode('/', $file['scope']);
 
-                if ($cnt < $indent) {
-                    for (; $indent > $cnt; --$indent) {
-                        fputs($fp, "</li></ul>\n");
+                        foreach ($scope as $s) {
+                            if (!array_key_exists($s, $node)) $node[$s] = array();
+
+                            $node =& $node[$s];
+                        }
                     }
-                } elseif ($cnt > $indent + 1) {
-                    for (; $indent < $cnt; ++$indent) {
-                        fputs($fp, sprintf("<li>%s<ul>", $scope[$indent]));
-                    }
-                } elseif ($cnt > $indent) {
-                    fputs($fp, "<ul>\n");
-                    ++$indent;
+
+                    $node[] = $file;
                 }
 
-                if (!is_null($file)) {
-                    fputs($fp, sprintf("<li><a href=\"%s\">%s</a>\n", basename($file['file']), htmlentities($file['name'])));
+                return $tree;    
+            };
+
+            /* write list to file */
+            $putList = function(array $tree, $level = 0) use ($fp, &$putList) {
+                fputs($fp, "<ul>\n");
+
+                $idx = 0;
+                foreach ($tree as $key => $node) {
+                    if (is_int($key)) {
+                        fputs($fp, sprintf('<li><a href="%s">%s</a>', basename($node['file']), htmlentities($node['name'])));
+                    } elseif (count($node) > 0) {
+                        if ($idx == 0) {
+                            fputs($fp, '<li>' . $key);
+                        }
+
+                        $putList($node);
+                    }
+
+                    fputs($fp, "</li>\n");
+
+                    ++$idx;
                 }
+
+                fputs($fp, "</ul>\n");
             };
 
             foreach ($source as $section => $part) {
                 // section header
                 fputs($fp, sprintf("<h2>%s</h2>\n", $this->sections[$section]));
 
-                foreach ($part as $type => $scope) {
+                foreach ($part as $type => $files) {
+                    if (count($files) == 0) continue;
+
                     // type header
                     fputs($fp, sprintf("<h3>%s</h3>\n", $this->types[$type]));
-                    fputs($fp, "<ul>\n");
 
-                    foreach ($scope as $file) {
-                        $output($file);
+                    if (count(($tree = $getTree($files))) > 0) {
+                        $putList($tree);
                     }
-
-                    $output();
-    
-                    fputs($fp, "</ul>\n");
                 }
             }
 
@@ -766,7 +781,15 @@ namespace org\octris\core\project\app {
 
             foreach ($parts as $part) {
                 // sections
-                $section = explode('/', ltrim(dirname($part['scope']), '/'))[0];
+                $name    = basename($part['scope']);
+                $scope   = explode('/', ltrim(dirname($part['scope']), '/'));
+                $section = array_shift($scope);
+
+                if (($part['sortkey'] = $part['scope'] = implode('/', $scope)) != '') {
+                    $part['sortkey'] .= '/' . $name;
+                } else {
+                    $part['sortkey'] = $name;
+                }
 
                 if ($section == '') { print_r($part); die; }
 
@@ -793,7 +816,7 @@ namespace org\octris\core\project\app {
 
                 foreach ($types as &$type) {
                     usort($type, function($a, $b) {
-                        return strcmp($a['scope'], $b['scope']);
+                        return strcmp($a['sortkey'], $b['sortkey']);
                     });
                 }
             }
