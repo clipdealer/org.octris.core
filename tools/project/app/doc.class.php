@@ -544,9 +544,10 @@ namespace org\octris\core\project\app {
          *
          * @octdoc  m:doc/index
          * @param   string                          $file           File to write index into.
-         * @param   array                           $parts          Documentation parts to create index for.
+         * @param   array                           $doc            Generic module documentation.
+         * @param   array                           $source         Documentation parts extracted from source code.
          */
-        protected function index($file, array $parts)
+        protected function index($file, array $doc, array $source)
         /**/
         {
             if (!($fp = fopen($file, 'w'))) {
@@ -554,40 +555,74 @@ namespace org\octris\core\project\app {
                 return false;
             }
 
-            print "$file\n";
+            fputs($fp, "<h1>Index</h1>\n");
 
-            $path = function($scope) use ($fp, &$path) {
-                fputs($fp, "<ul>\n");
+            // generic documentation index
+            if (count($doc) > 0) {
+                fputs($fp, "<h2>Documentation</h2>\n");
 
-                foreach ($scope as $name => $p) {
-                    if (isset($p['scope'])) {
-                        fputs($fp, sprintf("<li><a href=\"%s\">%s</a></li>\n", basename($p['file']), htmlentities($p['name'])));
-                    } else {
-                        fputs($fp, sprintf("<li><strong>%s</strong>\n", $name));
-    
-                        $path($p);
+                // TODO
+            }
 
-                        fputs($fp, "</li>\n");
+            // API documentation index
+            $indent = array();
+            $output = function($file = null) use ($fp, &$indent) {
+                if (!is_null($file)) {
+                    $scope = explode('/', ltrim(dirname($file['scope']), '/'));
+                    array_shift($file);
+
+                    $n_cnt = count($file);
+                } else {
+                    $n_cnt = 0;
+                }
+
+                $c_cnt = count($indent);
+
+                if ($n_cnt < $c_cnt) {
+                    for (; $c_cnt > $n_cnt; --$c_cnt) {
+                        fputs($fp, "</li></ul>\n");
+                        array_pop($indent);
+                    }
+                } elseif ($n_cnt > $c_cnt) {
+                    fputs($fp, "<ul>\n");
+                    ++$c_cnt;
+
+                    if ($n_cnt > $c_cnt) {
+                        for (; $c_cnt < $n_cnt; ++$c_cnt) {
+                            fputs($fp, sprintf("<li>%s</li>", )
+                        }
                     }
                 }
 
-                fputs($fp, "</ul>\n");
+                if ($n_cnt + 1 == $c_cnt) {
+                } elseif ($indent < $cnt) {
+                    for (; $indent < $cnt; ++$indent) {
+                        
+                    }
+                }
+                    
+                if ($cnt > 0) {
+                    fputs($fp, sprintf("<li>%s</li>\n", $file['name']));
+                }
             };
 
-            fputs($fp, "<h1>Index</h1>\n");
-
-            foreach ($parts as $section => $part) {
+            foreach ($source as $section => $part) {
                 // section header
                 fputs($fp, sprintf("<h2>%s</h2>\n", $this->sections[$section]));
 
                 foreach ($part as $type => $scope) {
                     // type header
                     fputs($fp, sprintf("<h3>%s</h3>\n", $this->types[$type]));
+                    fputs($fp, "<ul>\n");
 
-                    $path($scope);
+                    foreach ($scope as $file) {
+                        $output($file);
+                    }
 
-                    fputs($fp, "</ol></li>\n");
+                    fputs($fp, "</ul>\n");
                 }
+
+                $output();
             }
 
             fclose($fp);
@@ -741,18 +776,6 @@ namespace org\octris\core\project\app {
             // create tree structure of documentation
             $return = array();
 
-            $path = function($part, &$data, $scope) use (&$path) {
-                $tmp = array_shift($scope);
-
-                if (!isset($data[$tmp])) $data[$tmp] = array();
-
-                if (count($scope) > 1) {
-                    $path($part, $data[$tmp], $scope);
-                } else {
-                    $data[$tmp][basename($part['scope'])] = $part;
-                }
-            };
-
             foreach ($parts as $part) {
                 // sections
                 $section = explode('/', ltrim(dirname($part['scope']), '/'))[0];
@@ -766,26 +789,11 @@ namespace org\octris\core\project\app {
 
                 if (!isset($return[$section][$type])) $return[$section][$type] = array();
 
-                // directory
-                $scope = explode('/', ltrim($part['scope'], '/'));
-                array_shift($scope);
-
-                if (count($scope) > 1) {
-                    $path($part, $return[$section][$type], $scope);
-                } else {
-                    $return[$section][$type][basename($part['scope'])] = $part;
-                }
+                // part
+                $return[$section][$type][] = $part;
             }
 
             // sort tree structure
-            $pathsort = function(&$v) use (&$pathsort) {
-                ksort($v);
-
-                foreach ($v as &$_v) {
-                    if (!isset($_v['scope'])) $pathsort($_v);
-                }
-            };
-
             uksort($return, function($a, $b) {
                 return (array_search($a, $this->sort['sections']) - array_search($b, $this->sort['sections']));
             });
@@ -796,7 +804,9 @@ namespace org\octris\core\project\app {
                 });
 
                 foreach ($types as &$type) {
-                    $pathsort($type);
+                    usort($type, function($a, $b) {
+                        return strcmp($a['scope'], $b['scope']);
+                    });
                 }
             }
 
@@ -864,7 +874,8 @@ namespace org\octris\core\project\app {
 
             $parts = $this->organize($parts);
 
-            $this->index($tmp_name . '/doc/index.html', $parts);
+            $this->index('/tmp/index.html', array(), $parts);
+            // $this->index($tmp_name . '/doc/index.html', array(), $parts);
 
             passthru("cd $tmp_name && tar -cf - doc/", $ret);
 
