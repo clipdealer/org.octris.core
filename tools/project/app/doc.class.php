@@ -886,14 +886,13 @@ namespace org\octris\core\project\app {
                         'name'  => $doc[0]['scope']
                     );
 
-                    //$this->write($name, $doc); //$scope, $doc);
+                    $this->write($name, $doc); //$scope, $doc);
                 }
             }
 
             $parts = $this->organize($parts);
 
-            $this->index('/tmp/index.html', array(), $parts);
-            // $this->index($tmp_name . '/doc/index.html', array(), $parts);
+            $this->index($tmp_name . '/doc/index.html', array(), $parts);
 
             passthru("cd $tmp_name && tar -cf - doc/", $ret);
 
