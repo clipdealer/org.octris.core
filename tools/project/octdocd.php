@@ -139,6 +139,17 @@ if (isset($_POST['ACTION'])) {
             vertical-align: top;
             margin:         30px 5px;
         }
+        #index ul {
+            list-style:   none;
+            margin-left:  0;
+            padding-left: 1em;
+            text-indent:  -1em;
+
+            line-height: 150%;
+        }
+        #index ul li:before {
+            content: '\00BB \0020';
+        }
 
         /* content */
         #content {
