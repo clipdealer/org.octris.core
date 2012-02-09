@@ -379,6 +379,8 @@ if (isset($_POST['ACTION'])) {
                 request('/', {'ACTION': 'load', 'file': name}, function(data, error) {
                     if ('text' in data) {
                         $(target).node.innerHTML = data['text'];
+
+                        window.scrollTo(0, 0);
                     }
 
                     cb(data, error);
