@@ -348,12 +348,12 @@ if (isset($_POST['ACTION'])) {
         })();
 
         window.onload = (function() {
-            function load(name, cb) {
+            function load(name, target, cb) {
                 cb = cb || function() {};
 
                 request('/', {'ACTION': 'load', 'file': name}, function(data, error) {
                     if ('text' in data) {
-                        $('text').node.innerHTML = data['text'];
+                        $(target).node.innerHTML = data['text'];
                     }
 
                     cb(data, error);
@@ -380,7 +380,7 @@ if (isset($_POST['ACTION'])) {
                                         $('bt_recreate').node.className = 'recreate';
                                         recreate = false;
                                     } else {
-                                        load('index.html', function() {
+                                        load('index.html', 'index', function() {
                                             $('bt_recreate').node.className = 'recreate';
                                             recreate = false;
                                         });
@@ -425,54 +425,52 @@ if (isset($_POST['ACTION'])) {
             <div id="index">
                 <h1>Index</h1>
             </div><div id="content">
-                <div id="text">
-                    <h1>Basic installation</h1>
+                <h1>Basic installation</h1>
 
-                    <h2>Instructions</h2>
+                <h2>Instructions</h2>
 
-                    <p>
-                    </p>
+                <p>
+                </p>
 
-                    <h2>Verification</h2>
+                <h2>Verification</h2>
 
-                    <p>
-                        Make sure, that all requirements below are fulfilled. Follow the instructions
-                        above to install and configure the octris framework. Press the &quot;Reload&quot;
-                        button below to retest the fulfillment of all requirements.
-                    </p>
+                <p>
+                    Make sure, that all requirements below are fulfilled. Follow the instructions
+                    above to install and configure the octris framework. Press the &quot;Reload&quot;
+                    button below to retest the fulfillment of all requirements.
+                </p>
 
-                    <center>
-                        <table width="50%" border="0" cellspacing="5" cellpadding="0" style="font-weight: bold;">
-                            <tr>
-                                <td>
-                                    OCTRIS_BASE
-                                </td><td><?php
-                                if (getenv('OCTRIS_BASE')) {
-                                     print '<span style="color: darkgreen">yes</span>';
-                                } else {
-                                     print '<span style="color: darkred">no</span>';
-                                }
-                                ?></td>
-                            </tr><tr>
-                                <td>
-                                    include_path
-                                </td><td><?php
-                                $incl = explode(PATH_SEPARATOR, get_include_path());
+                <center>
+                    <table width="50%" border="0" cellspacing="5" cellpadding="0" style="font-weight: bold;">
+                        <tr>
+                            <td>
+                                OCTRIS_BASE
+                            </td><td><?php
+                            if (getenv('OCTRIS_BASE')) {
+                                 print '<span style="color: darkgreen">yes</span>';
+                            } else {
+                                 print '<span style="color: darkred">no</span>';
+                            }
+                            ?></td>
+                        </tr><tr>
+                            <td>
+                                include_path
+                            </td><td><?php
+                            $incl = explode(PATH_SEPARATOR, get_include_path());
 
-                                if (!($path = getenv('OCTRIS_BASE'))) {
-                                     print '<span style="color: darkyellow">fix OCTRIS_BASE first</span>';
-                                } elseif (array_search($path . '/libs', $incl) !== false) {
-                                     print '<span style="color: darkgreen">yes</span>';
-                                } else {
-                                     print '<span style="color: darkred">no</span>';
-                                }
-                                ?></td>
-                            </tr>
-                        </table>
-                        <br /><br />                
-                        <button onclick="window.location.reload();">Reload</button>
-                    </center>
-                </div>
+                            if (!($path = getenv('OCTRIS_BASE'))) {
+                                 print '<span style="color: darkyellow">fix OCTRIS_BASE first</span>';
+                            } elseif (array_search($path . '/libs', $incl) !== false) {
+                                 print '<span style="color: darkgreen">yes</span>';
+                            } else {
+                                 print '<span style="color: darkred">no</span>';
+                            }
+                            ?></td>
+                        </tr>
+                    </table>
+                    <br /><br />                
+                    <button onclick="window.location.reload();">Reload</button>
+                </center>
             </div>
         </div>
     </body>
