@@ -136,7 +136,7 @@ namespace org\octris\core\project\app {
          */
         protected $sections = array(
             'libs'   => 'Libraries',
-            'libsjs' => 'Javascript Libraries',
+            'libsjs' => 'Javascript',
             'styles' => 'Stylesheets',
             'tools'  => 'Tools',
             ''       => 'Misc'
