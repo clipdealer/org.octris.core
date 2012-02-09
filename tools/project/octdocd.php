@@ -266,11 +266,25 @@ if (isset($_POST['ACTION'])) {
         </style>
         <script type="text/javascript">
         function $(id) {
-            var node = document.getElementById(id);
-
-            return new function() {
+            return new (function _node(node) {
                 this.node = node;
-            }
+
+                // set/get specified attribute of the node
+                this.attr = function(name, value) {
+                    var _value = node.getAttribute(name);
+                    
+                    if (typeof value != 'undefined') node.setAttribute(name, value);
+
+                    return _value;
+                }
+
+                // iterate all nodes of specified tag below the node
+                this.each = function(tag, cb) {
+                    var tags = node.getElementsByTagName(tag);
+
+                    for (var i = 0, cnt = tags.length; i < cnt; ++i) cb(new _node(tags[i]));
+                }
+            })(document.getElementById(id));
         }
 
         var request = (function() {
