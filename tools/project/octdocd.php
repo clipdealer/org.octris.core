@@ -410,6 +410,13 @@ if (isset($_POST['ACTION'])) {
                                         load('index.html', 'index', function() {
                                             $('bt_recreate').node.className = 'recreate';
                                             recreate = false;
+
+                                            $('index').each('a', function(tag) {
+                                                var href = tag.attr('href', 'javascript://');
+                                                tag.node.onclick = function() {
+                                                    load(href, 'content');
+                                                }
+                                            });
                                         });
                                     }
                                 });
