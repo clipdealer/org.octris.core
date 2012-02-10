@@ -66,6 +66,11 @@ if (isset($_POST['ACTION'])) {
     $action = $_POST['ACTION'];
 
     switch($action) {
+        case 'modules':
+            $return['data'] = array_map(function($v) {
+                return basename($v);
+            }, glob(getenv('OCTRIS_BASE') . '/work/*', GLOB_ONLYDIR));
+            break;
         case 'load':
             if (!isset($_POST['file']) || !is_file(($file = $home . '/doc/' . $_POST['file']))) {
                 $return['error'] = "Unable to load '$file'";
@@ -390,6 +395,20 @@ if (isset($_POST['ACTION'])) {
             var recreate = false;
 
             return function() {
+                request('/', {'ACTION': 'modules'}, function(data, error) {
+                    if ('data' in data) {
+                        var html = '';
+
+                        for (var html = '', i = 0, cnt = data['data'].length; i < cnt; ++i) {
+                            html += '<li><a href="javascript://" onclick="">' + data['data'][i] + '</a></li>';
+                        }
+
+                        $('index').node.innerHTML = '<h1>Modules</h1><ul>' + html + '</ul>';
+
+                        window.scrollTo(0, 0);
+                    }
+                });
+
                 $('bt_recreate').node.onclick = function() {
                     if (!recreate) {
                         $('bt_recreate').node.className = 'working';
