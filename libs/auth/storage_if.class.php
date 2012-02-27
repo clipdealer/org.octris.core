@@ -17,7 +17,9 @@ namespace org\octris\core\auth {
      * @copyright   copyright (c) 2011 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    interface storage_if {
+    interface storage_if 
+    /**/
+    {
         /**
          * Returns whether storage contains an identity or not.
          *

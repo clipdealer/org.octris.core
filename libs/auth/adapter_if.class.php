@@ -17,7 +17,9 @@ namespace org\octris\core\auth {
      * @copyright   copyright (c) 2011 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    interface adapter_if {
+    interface adapter_if 
+    /**/
+    {
         /**
          * Authentication method, needs to be implemented by adapter.
          *

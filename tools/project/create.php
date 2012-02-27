@@ -14,7 +14,7 @@ namespace org\octris\core\project {
     /**
      * Tool for creating a new web application project based on a skeleton.
      *
-     * @octdoc      h:tools/project
+     * @octdoc      h:project/create
      * @copyright   copyright (c) 2011 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
