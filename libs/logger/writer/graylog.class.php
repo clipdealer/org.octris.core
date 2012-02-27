@@ -13,7 +13,7 @@ namespace org\octris\core\logger\writer {
     /**
      * Logger for graylog backend. Inspired by official GELF library.
      *
-     * @octdoc      c:logger/graylog
+     * @octdoc      c:writer/graylog
      * @copyright   copyright (c) 2011 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
