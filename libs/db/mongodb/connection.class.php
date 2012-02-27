@@ -32,12 +32,12 @@ namespace org\octris\core\db\mongodb {
 		/**/
 
 		/**
-		 * Connection.
+		 * Connection to a database.
 		 *
-		 * @octdoc  p:connection/$cn
+		 * @octdoc  p:connection/$db
 		 * @var     \MongoDB
 		 */
-		protected $cn;
+		protected $db;
 		/**/
 
 		/**
@@ -53,7 +53,34 @@ namespace org\octris\core\db\mongodb {
 			$this->mongo = $mongo;
 			$this->mongo->connect();
 
-			$this->cn = $this->mongo->selectDB($database);
+			$this->db = $this->mongo->selectDB($database);
+		}
+
+		/**
+		 * Create an empty object for storing data into specified collection.
+		 *
+		 * @octdoc  m:connection/create
+		 * @param   string 			$collection 				Name of collection to create object for.
+		 * @return 	\org\octris\core\db\mongodb\dataobject 		Data object.
+		 */
+		public function create($collection)
+		/**/
+		{
+			$cl = $this->db->selectCollection($collection);
+
+		    return new \org\octris\core\db\mongodb\dataobject($cl);
+		}
+
+		/**
+		 * Query a MongoDB collection.
+		 *
+		 * @octdoc  m:connection/query
+		 */
+		public function query($collection)
+		/**/
+		{
+		    $cl = $this->db->selectCollection($collection);
+		    $cl->query();
 		}
 	}
 }
