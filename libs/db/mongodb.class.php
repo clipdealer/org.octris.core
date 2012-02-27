@@ -21,39 +21,21 @@ namespace org\octris\core\db {
 	/**/
 	{
 		/**
-		 * Host of database server.
+		 * Instance of mongo class.
 		 *
-		 * @octdoc	p:mongodb/$host
-		 * @var 	string
+		 * @octdoc  p:mongodb/$mongo
+		 * @var     \Mongo
 		 */
-		protected $host;
+		protected $mongo;
 		/**/
 
 		/**
-		 * Port of database server.
+		 * Name of database to connect to.
 		 *
-		 * @octdoc	p:mongodb/$port
-		 * @var 	int
+		 * @octdoc  p:mongodb/$database
+		 * @var     string
 		 */
-		protected $port;
-		/**/
-
-		/**
-		 * User to use for connection.
-		 *
-		 * @octdoc 	p:mongodb/$user
-		 * @var 	string
-		 */
-		protected $user;
-		/**/
-
-		/**
-		 * Password to use for connection
-		 *
-		 * @octdoc 	p:mongodb/$password
-		 * @var 	string
-		 */
-		protected $password;
+		protected $database;
 		/**/
 
 		/**
@@ -62,29 +44,36 @@ namespace org\octris\core\db {
 		 * @octdoc	m:mongodb/__construct
 		 * @param 	string 			$host 				Host of database server.
 		 * @param 	int 			$port 				Port of database server.
-		 * @param 	string 			$user 				User to use for connection.
+		 * @param 	string 			$database 			Name of database.
+		 * @param 	string 			$username 			Username to use for connection.
 		 * @param 	string 			$password 			Optional password to use for connection.
 		 */
-		public __construct($host, $port, $user, $password = '')
+		public __construct($host, $port, $database, $username, $password = '')
 		/**/
 		{
-			$this->host 	= $host;
-			$this->user 	= $user;
-			$this->port 	= $port;
-			$this->password = $password;
+			$this->mongo = new \Mongo(
+				'mongodb://' . $host . ':' . $port,
+				array(
+					'connect'  => false,
+					'username' => $username,
+					'password' => $password,
+					'db'	   => $database
+				)
+			);
+
+			$this->database = $database;
 		}
 
 		/**
 		 * Create database connection.
 		 *
 		 * @octdoc 	m:mongodb/getConnection
-		 * @param 	\org\octris\core\db\pool 		$pool 			Optional instance of pool, if connection is part of one.
 		 * @return 	\prg\octris\core\db\mongodb\connection 			Connection to a MongoDB database.
 		 */
-		public getConnection(\org\octris\core\db\pool $pool = null)
+		public getConnection()
 		/**/
 		{
-			return new \org\octris\core\db\mongodb\connection($host, $port, $user, $password, $pool);
+			return new \org\octris\core\db\mongodb\connection($this->mongo, $this->database);
 		}
 	}
 }
