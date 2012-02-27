@@ -28,7 +28,7 @@ namespace org\octris\core {
 		const T_DB_MASTER = 'master';
 		const T_DB_SLAVE  = 'slave';
 		/*
-		
+
 		/**
 		 * Name of database device.
 		 *
@@ -116,8 +116,19 @@ namespace org\octris\core {
 						$device = $this->slaves[0];
 					}
 
-					$cn = $device->getConnection($this);
-				}				
+					$cn = $device->getConnection();
+
+					if (!($cn instanceof \org\octris\core\db\connection_if))) {
+						throw new \Exception('connection handler needs to implement interface "\org\octris\core\db\connection"');
+					} else {
+						$traits = class_uses($cn);
+
+						if (isset($traits['org\octris\core\db\pool_tr'])) {
+							// use connection pooling, if connection handler implements the pool trait
+							$cn->setPool($this);
+						}
+					}
+				}
 			}
 
 			return $cn;
