@@ -18,5 +18,13 @@ namespace org\octris\core\db {
      * @author      Harald Lapp <harald@octris.org>
      */
     interface device_if {
+		/**
+		 * Create database connection.
+		 *
+		 * @octdoc 	m:device_if/getConnection
+		 * @return 	\org\octris\core\db\mongodb\connection 			Connection to a MongoDB database.
+		 */
+		public getConnection();
+		/**/
     }
 }
