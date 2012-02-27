@@ -68,7 +68,7 @@ namespace org\octris\core\db {
 		 * Create database connection.
 		 *
 		 * @octdoc 	m:mongodb/getConnection
-		 * @return 	\prg\octris\core\db\mongodb\connection 			Connection to a MongoDB database.
+		 * @return 	\org\octris\core\db\mongodb\connection 			Connection to a MongoDB database.
 		 */
 		public getConnection()
 		/**/
