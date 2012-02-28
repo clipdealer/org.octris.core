@@ -78,12 +78,34 @@ namespace org\octris\core\db\mongodb {
 		 * Query a MongoDB collection.
 		 *
 		 * @octdoc  m:connection/query
+	     * @param 	string 			$collection 				Name of collection to query.
+	     * @param 	array 			$query 						Query conditions.
+	     * @param 	int 			$offset 					Optional offset to start query result from.
+	     * @param 	int 			$limit 						Optional limit of result items.
+	     * @param 	array 			$sort 						Optional sorting parameters.
+	     * @param 	array 			$fields 					Optional fields to return.
+	     * @param 	array 			$hint 						Optional query hint.
 		 */
-		public function query($collection)
+		public function query($collection, array $query, $offset = 0, $limit = null, array $sort = null, array $fields = array(), array $hint = null)
 		/**/
 		{
 		    $cl = $this->db->selectCollection($collection);
-		    $cl->query();
+
+	        if (($cursor = $cl->find($query, $fields)) === false) {
+	            throw new \Exception('unable to query database');
+	        } else {
+	            if (!is_null($sort)) {
+	                $cursor->sort($sort);
+	            }
+	            if ($offset > 0) {
+	                $cursor->skip($offset);
+	            }
+	            if (!is_null($limit)) {
+	                $cursor->limit($limit);
+	            }
+	        }
+	        
+	        return new \org\octris\core\db\mongodb\result($this->getPool(), $collection, $cursor);
 		}
 	}
 }
