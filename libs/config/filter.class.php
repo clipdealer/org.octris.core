@@ -16,10 +16,10 @@ namespace org\octris\core\config {
      * @octdoc      c:config/filter
      * @copyright   copyright (c) 2010-2011 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
-     **
      */
-
-    class filter extends \FilterIterator {
+    class filter extends \FilterIterator 
+    /**/
+    {
         /**
          * Prefix to use as filter.
          *

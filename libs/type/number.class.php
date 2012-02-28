@@ -10,7 +10,16 @@
  */
 
 namespace org\octris\core\type {
-    class number extends \org\octris\core\type {
+    /**
+     * Number type.
+     *
+     * @octdoc      c:type/number
+     * @copyright   copyright (c) 2010-2011 by Harald Lapp
+     * @author      Harald Lapp <harald@octris.org>
+     */
+    class number extends \org\octris\core\type 
+    /**/
+    {
         /**
          * Value of object.
          *

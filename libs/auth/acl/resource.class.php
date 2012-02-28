@@ -17,7 +17,9 @@ namespace org\octris\core\auth\acl {
      * @copyright   copyright (c) 2011 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    class resource {
+    class resource 
+    /**/
+    {
         /**
          * Name of resource.
          *
