@@ -60,15 +60,22 @@ namespace org\octris\core\db\mongodb {
 		 * Constructor.
 		 *
 		 * @octdoc  m:dataobject/__construct
-		 * @param 	\org\octris\core\db 		$pool 		Instance of pool responsable for connections.
-		 * @param 	
-		 * @param 	string
+		 * @param 	\org\octris\core\db 		$pool 			Instance of pool responsable for connections.
+		 * @param 	string 						$collection 	Name of collection to dataobject belongs to.
+		 * @param 	array 						$data 			Data to initialize dataobject with,
 		 */
-		public function __construct(\org\octris\core\db $pool, $collection)
+		public function __construct(\org\octris\core\db $pool, $collection, array $data = array())
 		/**/
 		{
 		    $this->pool 	  = $pool;
 		    $this->collection = $collection;
+
+		    if (isset($data['_id'])) {
+		    	$this->_id = (string)$data['_id'];
+		    	unset($data['_id']);
+		    }
+
+		    $this->data = $data;
 		}
 
 		/**
@@ -92,7 +99,13 @@ namespace org\octris\core\db\mongodb {
 		public function __get($name)
 		/**/
 		{
-		    
+			$value = null;
+
+		    if (isset($this->data[$name])) {
+		    	$value = $this->data[$name];
+		    }
+
+		    return $value;
 		}
 
 		/**
@@ -108,23 +121,8 @@ namespace org\octris\core\db\mongodb {
 		    if ($name == '_id') {
 		    	throw new \Exception('property "_id" is read-only');
 		    } else {
-		    	
+		    	$this->data[$name] = $value;
 		    }
-		}
-
-		/**
-		 * Load object with specified Id.
-		 *
-		 * @octdoc  m:dataobject/load
-		 */
-		public function load($_id)
-		/**/
-		{
-		    $cn = $this->pool->getConnection(\org\octris\core\db::T_DB_SLAVE);
-
-		    $cn->query($this->collection);
-
-		    $cn->release();
 		}
 
 		/**
@@ -139,8 +137,19 @@ namespace org\octris\core\db\mongodb {
 
 		    if (is_null($this->_id)) {
 		    	// insert new object
+		    	$cn->insert($this->data);
+
+		    	if (isset($this->data['_id'])) {
+		    		$this->_id = (string)$this->data['_id'];
+
+		    		unset($this->data['_id']);
+		    	}
 		    } else {
 		    	// update object
+		    	$cn->update(
+		    		array('_id'  => new MongoId($this->_id)),
+		    		array('$set' => $this->data)
+		    	);
 		    }
 
 		    $cn->release();
