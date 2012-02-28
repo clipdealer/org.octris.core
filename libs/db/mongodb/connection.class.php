@@ -44,14 +44,23 @@ namespace org\octris\core\db\mongodb {
 		 * Constructor.
 		 *
 		 * @octdoc  m:connection/__construct
-		 * @param 	\Mongo 			$mongo 				Instance of mongo class.
-		 * @param 	string 			$database 			Name of database to connect to.
+		 * @param 	string 			$host 				Host of database server.
+		 * @param 	int 			$port 				Port of database server.
+		 * @param 	string 			$database 			Name of database.
+		 * @param 	string 			$username 			Username to use for connection.
+		 * @param 	string 			$password 			Optional password to use for connection.
 		 */
-		public function __construct(\Mongo $mongo, $database)
+		public function __construct($host, $port, $database, $username, $password = '')
 		/**/
 		{
-			$this->mongo = $mongo;
-			$this->mongo->connect();
+			$this->mongo = new \Mongo(
+				'mongodb://' . $host . ':' . $port,
+				array(
+					'username' => $username,
+					'password' => $password,
+					'db'	   => $database
+				)
+			);
 
 			$this->db = $this->mongo->selectDB($database);
 		}
@@ -68,7 +77,7 @@ namespace org\octris\core\db\mongodb {
 		{
 			$cl = $this->db->selectCollection($collection);
 
-		    return new \org\octris\core\db\mongodb\dataobject($cl);
+		    return new \org\octris\core\db\mongodb\dataobject($this->pool);
 		}
 
 		/**

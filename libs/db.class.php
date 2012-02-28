@@ -70,26 +70,32 @@ namespace org\octris\core {
 		 * connection to a database.
 		 *
 		 * @octdoc	m:db/__construct
+		 * @param 	\org\octris\core\db\device 		$master 			Database device to set as master connection.
 		 */
-		public function __construct(\org\octris\core\db\device_if $device)
+		public function __construct(\org\octris\core\db\device $master)
 		/**/
 		{
-			$this->slaves[] = $this->master = $device;
-			$this->device_name = get_class($device);
+			$master->setPool($this);
+
+			$this->slaves[] = $this->master = $master;
+			$this->device_name = get_class($master);
 		}
 
 		/**
 		 * Add a database device for a slave connection to the datbase.
 		 *
 		 * @octdoc	m:db/addSlave
+		 * @param 	\org\octris\core\db\device 		$slave 				Database device to set as slave connection.
 		 */
-		public function addSlave(\org\octris\core\db\device_if $device)
+		public function addSlave(\org\octris\core\db\device $slave)
 		/**/
 		{
-			if (!($device instanceof $this->device_name)) {
+			$slave->setPool($this);
+
+			if (!($slave instanceof $this->device_name)) {
 				throw new \Exception('master and slaves must be of the same device');
 			} else {
-				$this->slaves[] = $device;
+				$this->slaves[] = $slave;
 			}
 		}
 
@@ -120,13 +126,6 @@ namespace org\octris\core {
 
 					if (!($cn instanceof \org\octris\core\db\connection_if))) {
 						throw new \Exception('connection handler needs to implement interface "\org\octris\core\db\connection"');
-					} else {
-						$traits = class_uses($cn);
-
-						if (isset($traits['org\octris\core\db\pool_tr'])) {
-							// use connection pooling, if connection handler implements the pool trait
-							$cn->setPool($this);
-						}
 					}
 				}
 			}

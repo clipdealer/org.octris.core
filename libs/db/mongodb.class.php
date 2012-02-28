@@ -17,7 +17,7 @@ namespace org\octris\core\db {
      * @copyright   copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-	class mongodb implements \org\octris\core\db\device_if
+	class mongodb extends \org\octris\core\db\device
 	/**/
 	{
 		/**
@@ -51,17 +51,11 @@ namespace org\octris\core\db {
 		public __construct($host, $port, $database, $username, $password = '')
 		/**/
 		{
-			$this->mongo = new \Mongo(
-				'mongodb://' . $host . ':' . $port,
-				array(
-					'connect'  => false,
-					'username' => $username,
-					'password' => $password,
-					'db'	   => $database
-				)
-			);
-
+			$this->host 	= $host;
+			$this->port 	= $port;
 			$this->database = $database;
+			$this->username = $username;
+			$this->password = $password;
 		}
 
 		/**
@@ -73,7 +67,10 @@ namespace org\octris\core\db {
 		public getConnection()
 		/**/
 		{
-			return new \org\octris\core\db\mongodb\connection($this->mongo, $this->database);
+			$cn = new \org\octris\core\db\mongodb\connection($this->host, $this->port, $this->database, $this->username, $this->password);
+			$cn->setPool($this->pool);
+
+			return $cn;
 		}
 	}
 }

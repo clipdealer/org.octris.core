@@ -99,11 +99,15 @@ namespace org\octris\core\db\mongodb {
 		public function save()
 		/**/
 		{
+			$cn = $this->pool->getConnection(\org\octris\core\db::T_DB_MASTER);
+
 		    if (is_null($this->_id)) {
 		    	// insert new object
 		    } else {
 		    	// update object
 		    }
+
+		    $cn->release();
 		}
 	}
 }
