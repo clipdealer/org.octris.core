@@ -17,7 +17,7 @@ namespace org\octris\core\db\mongodb {
      * @copyright   copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-	class connection implements \org\octris\core\db\connection_if
+	class connection implements \org\octris\core\db\connection_if, \org\octris\core\db\pool_if
 	/**/
 	{
 		use \org\octris\core\db\pool_tr;
@@ -44,21 +44,17 @@ namespace org\octris\core\db\mongodb {
 		 * Constructor.
 		 *
 		 * @octdoc  m:connection/__construct
-		 * @param 	string 			$host 				Host of database server.
-		 * @param 	int 			$port 				Port of database server.
-		 * @param 	string 			$database 			Name of database.
-		 * @param 	string 			$username 			Username to use for connection.
-		 * @param 	string 			$password 			Optional password to use for connection.
+         * @param   array                       $options            Connection options.
 		 */
-		public function __construct($host, $port, $database, $username, $password = '')
+		public function __construct(array $options)
 		/**/
 		{
 			$this->mongo = new \Mongo(
-				'mongodb://' . $host . ':' . $port,
+				'mongodb://' . $options['host'] . ':' . $options['port'],
 				array(
-					'username' => $username,
-					'password' => $password,
-					'db'	   => $database
+					'username' => $options['username'],
+					'password' => $options['password'],
+					'db'	   => $options['database']
 				)
 			);
 
@@ -75,9 +71,7 @@ namespace org\octris\core\db\mongodb {
 		public function create($collection)
 		/**/
 		{
-			$cl = $this->db->selectCollection($collection);
-
-		    return new \org\octris\core\db\mongodb\dataobject($this->pool);
+		    return new \org\octris\core\db\mongodb\dataobject($this->getPool(), $collection);
 		}
 
 		/**

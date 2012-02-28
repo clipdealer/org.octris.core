@@ -21,12 +21,12 @@ namespace org\octris\core\db\mongodb {
 	/**/
 	{
 		/**
-		 * Instance of MongoCollection class the object belongs to.
+		 * Instance of pool responsable for connection
 		 *
-		 * @octdoc  p:dataobject/$cl
-		 * @var     \MongoCollection
+		 * @octdoc  p:dataobject/$pool
+		 * @var     \org\octris\core\db
 		 */
-		protected $cl;
+		protected $pool;
 		/**/
 
 		/**
@@ -39,15 +39,36 @@ namespace org\octris\core\db\mongodb {
 		/**/
 
 		/**
+		 * Name of collection the dataobject has access to.
+		 *
+		 * @octdoc  p:dataobject/$collection
+		 * @var     string
+		 */
+		protected $collection;
+		/**/
+
+		/**
+		 * Data to store in object.
+		 *
+		 * @octdoc  p:dataobject/$data
+		 * @var     array
+		 */
+		protected $data = array();
+		/**/
+
+		/**
 		 * Constructor.
 		 *
 		 * @octdoc  m:dataobject/__construct
-		 * @param 	\MongoCollection 		$cl 			Instance of MongoCollection class.
+		 * @param 	\org\octris\core\db 		$pool 		Instance of pool responsable for connections.
+		 * @param 	
+		 * @param 	string
 		 */
-		public function __construct(\MongoCollection $cl)
+		public function __construct(\org\octris\core\db $pool, $collection)
 		/**/
 		{
-		    $this->cl = $cl;
+		    $this->pool 	  = $pool;
+		    $this->collection = $collection;
 		}
 
 		/**
@@ -89,6 +110,21 @@ namespace org\octris\core\db\mongodb {
 		    } else {
 		    	
 		    }
+		}
+
+		/**
+		 * Load object with specified Id.
+		 *
+		 * @octdoc  m:dataobject/load
+		 */
+		public function load($_id)
+		/**/
+		{
+		    $cn = $this->pool->getConnection(\org\octris\core\db::T_DB_SLAVE);
+
+		    $cn->query($this->collection);
+
+		    $cn->release();
 		}
 
 		/**

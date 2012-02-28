@@ -11,68 +11,42 @@
 
 namespace org\octris\core\db {
     /**
-     * Implements functionality required for using a connection pool.
+     * Interface for implementing connection pool functionality. Note, that a connection handler has
+     * to implement this interface, but only needs to make use of the trait "pool_tr" to have all
+     * required functionality implemented.
      *
-     * @octdoc      t:db/pool_tr
+     * @octdoc      i:db/pool_if
      * @copyright   copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    trait pool_tr
+    interface pool_if 
     /**/
     {
         /**
-         * Type of pool the device is related to.
-         *
-         * @octdoc  p:device/$type
-         * @var     string
-         */
-        protected $type = '';
-        /**/
-
-        /**
-         * Pool that handles this connection.
-         *
-         * @octdoc  p:pool_tr/$pool
-         * @var     \org\octris\core\db|null 
-         */
-        protected $pool = null;
-        /**/
-
-        /**
          * Set pool for connection, to be called from constructor.
          *
-         * @octdoc  m:pool_tr/setPool
+         * @octdoc  m:pool_if/setPool
          * @param   string                              $type       Type of pool, 'master' or 'slave'.
          * @param   \org\octris\core\db                 $pool       Pool to assigned to connection.
          */
-        public function setPool($type, \org\octris\core\db $pool)
+        public function setPool($type, \org\octris\core\db $pool);
         /**/
-        {
-            $this->type = $type;
-            $this->pool = $pool;   
-        }
 
         /**
          * Get instance of connection pool.
          * 
-         * @octdoc  m:pool_tr/setPool
+         * @octdoc  m:pool_if/setPool
          * @return  \org\octris\core\db                             Pool assigned to connection.
          */
-        public function getPool()
+        public function getPool();
         /**/
-        {
-            return $this->pool;
-        }
 
         /**
          * Release connection, hand connection over to pool.
          *
-         * @octdoc  m:pool_tr/release
+         * @octdoc  m:pool_if/release
          */
-        public function release()
+        public function release();
         /**/
-        {
-            $this->pool->release($this->type, $this);
-        }
     }
 }

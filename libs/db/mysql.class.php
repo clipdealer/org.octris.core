@@ -11,19 +11,37 @@
 
 namespace org\octris\core\db {
 	/**
-	 * MongoDB database device.
+	 * MySQL database device.
 	 *
-	 * @octdoc		c:db/mongodb
+	 * @octdoc		c:db/mysql
      * @copyright   copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-	class mongodb extends \org\octris\core\db\device
+	class mysql extends \org\octris\core\db\device
 	/**/
 	{
 		/**
+		 * Configuration of attempts a query should be executed, till a deadlock is actually
+		 * recognized and query is failing.
+		 *
+		 * @octdoc 	d:device/T_DEADLOCK_ATTEMPTS
+		 */
+		const T_DEADLOCK_ATTEMPTS = 5;
+		/**/
+
+		/**
+		 * Flags to indicate that a query consists of multiple SQL statements.
+		 *
+		 * @octdoc 	d:mysql/T_QUERY_MULTI, T_QUERY_SINGLE
+		 */
+		const T_QUERY_MULTI  = true;
+		const T_QUERY_SINGLE = false;
+		/**/
+
+		/**
 		 * Host of database server.
 		 *
-		 * @octdoc  p:mongodb/$host
+		 * @octdoc  p:mysql/$host
 		 * @var     string
 		 */
 		protected $host;
@@ -32,7 +50,7 @@ namespace org\octris\core\db {
 		/**
 		 * Port of database server.
 		 *
-		 * @octdoc  p:mongodb/$port
+		 * @octdoc  p:mysql/$port
 		 * @var     int
 		 */
 		protected $port;
@@ -41,7 +59,7 @@ namespace org\octris\core\db {
 		/**
 		 * Name of database to connect to.
 		 *
-		 * @octdoc  p:mongodb/$database
+		 * @octdoc  p:mysql/$database
 		 * @var     string
 		 */
 		protected $database;
@@ -50,7 +68,7 @@ namespace org\octris\core\db {
 		/**
 		 * Username to use for connection.
 		 *
-		 * @octdoc  p:mongodb/$username
+		 * @octdoc  p:mysql/$username
 		 * @var     string
 		 */
 		protected $username;
@@ -59,7 +77,7 @@ namespace org\octris\core\db {
 		/**
 		 * Password to use for connection.
 		 *
-		 * @octdoc  p:mongodb/$password
+		 * @octdoc  p:mysql/$password
 		 * @var     string
 		 */
 		protected $password;
@@ -68,7 +86,7 @@ namespace org\octris\core\db {
 		/**
 		 * Constructor.
 		 *
-		 * @octdoc	m:mongodb/__construct
+		 * @octdoc	m:mysql/__construct
 		 * @param 	string 			$host 				Host of database server.
 		 * @param 	int 			$port 				Port of database server.
 		 * @param 	string 			$database 			Name of database.
@@ -88,13 +106,13 @@ namespace org\octris\core\db {
 		/**
 		 * Create database connection.
 		 *
-		 * @octdoc 	m:mongodb/getConnection
-		 * @return 	\org\octris\core\db\mongodb\connection 			Connection to a MongoDB database.
+		 * @octdoc 	m:mysql/getConnection
+		 * @return 	\org\octris\core\db\mysql\connection 			Connection to a mysql database.
 		 */
 		public getConnection()
 		/**/
 		{
-			$cn = new \org\octris\core\db\mongodb\connection(
+			$cn = new \org\octris\core\db\mysql\connection(
 				array(
 					'host'	   => $this->host,
 					'port'	   => $this->port,

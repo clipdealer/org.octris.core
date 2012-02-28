@@ -62,7 +62,10 @@ namespace org\octris\core {
 		 * @octdoc 	p:db/$pool
 		 * @var 	array
 		 */
-		protected $pool = array();
+		protected $pool = array(
+			'master' => array(),
+			'slave'  => array()
+		);
 		/**/
 
 		/**
@@ -75,7 +78,7 @@ namespace org\octris\core {
 		public function __construct(\org\octris\core\db\device $master)
 		/**/
 		{
-			$master->setPool($this);
+			$master->setPool(self::T_DB_MASTER, $this);
 
 			$this->slaves[] = $this->master = $master;
 			$this->device_name = get_class($master);
@@ -90,7 +93,7 @@ namespace org\octris\core {
 		public function addSlave(\org\octris\core\db\device $slave)
 		/**/
 		{
-			$slave->setPool($this);
+			$slave->setPool(self::T_DB_SLAVE, $this);
 
 			if (!($slave instanceof $this->device_name)) {
 				throw new \Exception('master and slaves must be of the same device');
@@ -115,8 +118,10 @@ namespace org\octris\core {
 				if (!($cn = array_shift($this->pool[$type]))) {
 					// no more connections in the pool, create new one
 					if ($type == \org\octris\core\db::T_DB_MASTER) {
+						// there's only one master host
 						$device = $this->master;
 					} else {
+						// pick a random slave host
 						shuffle($this->slaves);
 
 						$device = $this->slaves[0];
@@ -125,12 +130,29 @@ namespace org\octris\core {
 					$cn = $device->getConnection();
 
 					if (!($cn instanceof \org\octris\core\db\connection_if))) {
-						throw new \Exception('connection handler needs to implement interface "\org\octris\core\db\connection"');
+						throw new \Exception('connection handler needs to implement interface "\org\octris\core\db\connection_if"');
+					} elseif (!($cn instanceof \org\octris\core\db\pool_if)) {
+						throw new \Exception('connection handler needs to implement interface "\org\octris\core\db\pool_if"');
+					} else {
+						$cn->setPool($type, $this);
 					}
 				}
 			}
 
 			return $cn;
+		}
+
+		/**
+		 * Push a connection back 
+		 *
+		 * @octdoc  m:db/release
+		 * @param 	string 								$type 			Connection type ('master' or 'slave', db::T_DB_MASTER or db::T_DB_SLAVE).
+		 * @Return 	\org\octris\core\db\connection 		$cn 			Connection to release to pool.
+		 */
+		public function release($type, \org\octris\core\db\connection $cn)
+		/**/
+		{
+		    array_push($this->pool[$type], $cn);
 		}
 	}
 }

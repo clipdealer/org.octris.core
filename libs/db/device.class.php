@@ -24,7 +24,7 @@ namespace org\octris\core\db {
          * @octdoc  p:device/$pool
          * @var     \org\octris\core\db|null 
          */
-        protected $pool = null;
+        private $pool = null;
         /**/
 
         /**
@@ -33,36 +33,23 @@ namespace org\octris\core\db {
          * @octdoc  p:device/$released
          * @var     bool
          */
-        protected $released = false;
+        private $released = false;
         /**/
 
         /**
          * Set pool for connection.
          * 
          * @octdoc  m:device/setPool
+         * @param   string                      $type           Type of pool.
          * @param   \org\octris\core\db         $pool           Pool to handle connection with.
          */
-        public function setPool(\org\octris\core\db $pool)
+        public function setPool($type, \org\octris\core\db $pool)
         {
             if (!is_null($this->pool)) {
                 throw new \Exception('connection is already assigned to a pool');
             } else {
+                $this->type = $type;
                 $this->pool = $pool;
-            }
-        }
-
-        /**
-         * Release connection, hand connection over to pool.
-         *
-         * @octdoc  m:device/release
-         */
-        public function release()
-        /**/
-        {
-            if (!is_null($this->pool)) {
-                $this->pool->release($this);
-
-                $this->released = true;
             }
         }
 
