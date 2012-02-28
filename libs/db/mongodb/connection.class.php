@@ -62,6 +62,31 @@ namespace org\octris\core\db\mongodb {
 		}
 
 		/**
+		 * Resolve a database reference.
+		 *
+		 * @octdoc  m:connection/resolve
+		 * @param 	array 			$ref 						Database reference to resolve.
+		 * @param 	\org\octris\core\db\mongodb\dataobject 		Data object.
+		 */
+		public function resolve(array $ref)
+		/**/
+		{
+			$return = false;
+
+	    	if (!\MongoDBRef::isRef($ref)) {
+	    		throw new \Exception('no database reference provided');
+	    	} else {
+	    		$cl = $this->db->selectCollection($collection);
+
+	    		$data = $cl->getDBRef($ref);
+
+	    		$return = new \org\octris\core\db\mongodb\dataobject($this->getPool(), $collection, $data);
+	    	}
+
+	    	return $return;
+		}
+
+		/**
 		 * Create an empty object for storing data into specified collection.
 		 *
 		 * @octdoc  m:connection/create
