@@ -17,7 +17,7 @@ namespace org\octris\core\type {
      * @copyright   copyright (c) 2011 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    class iterator implements \Iterator, \SeekableIterator, \Countable
+    class iterator implements \org\octris\core\type\iterator_if, \Iterator, \SeekableIterator, \Countable
     /**/
     {
         /**
