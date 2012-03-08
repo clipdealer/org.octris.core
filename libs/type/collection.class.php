@@ -17,7 +17,7 @@ namespace org\octris\core\type {
      * @copyright   copyright (c) 2010-2011 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    class collection extends \ArrayObject implements \org\octris\core\type\collection_if
+    class collection extends \ArrayObject
     /**/
     {
         /**
