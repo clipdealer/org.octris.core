@@ -84,6 +84,15 @@ namespace org\octris\core {
 		/**/
 
 		/**
+		 * Whether to delete the file, when it get's closed (deconstructed).
+		 *
+		 * @octdoc  p:file/$delete_on_close
+		 * @var     bool
+		 */
+		private $delete_on_close = false;
+		/**/
+
+		/**
 		 * Constructor. Takes either a name of file to read/write or a stream-resource. The 
 		 * second parameter will be ignored, if the first parameter is a stream-resource. If
 		 * the first parameter is a string, it is considered to be a filename. The constructor
@@ -92,9 +101,9 @@ namespace org\octris\core {
 		 * @octdoc  m:file/__construct
 		 * @param 	string|resource 			$file 			Stream resource or filename.
 		 * @param 	string 						$open_mode 		File open mode.
-		 * @param 	bool 						$delete 		Whether to delete file, when 
+		 * @param 	bool 						$delete 		Whether to delete file, when object is get's deconstructed.
 		 */
-		public function __construct($file, $open_mode = 'r')
+		public function __construct($file, $open_mode = 'r', $delete = false)
 		/**/
 		{
 		    if (is_resource($file)) {
@@ -112,6 +121,10 @@ namespace org\octris\core {
 		    		throw new \Exception($info['message'], $info['type']);
 		    	}
 		    }
+
+		    if ($this->isLocal()) {
+		    	$this->delete_on_close = $delete;	
+		    }
 		}
 
 		/**
@@ -122,7 +135,16 @@ namespace org\octris\core {
 		public function __destruct()
 		/**/
 		{
-		    fclose($this->fh);
+			if ($this->delete_on_close) {
+				$info = stream_get_meta_info(this->fh);
+				$path = parse_url($info['uri'], PHP_URL_PATH);
+
+			    fclose($this->fh);
+
+			    if (file_exists($path)) unlink($path);
+			} else {
+			    fclose($this->fh);
+			}
 		}
 
 		/**
