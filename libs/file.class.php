@@ -302,6 +302,20 @@ namespace org\octris\core {
 		}
 
 		/**
+		 * Test whether file is seekable.
+		 *
+		 * @octdoc  m:file/isSeekable
+		 * @return 	bool 										Returns true if file is seekable.
+		 */
+		public function isSeekable()
+		/**/
+		{
+			$info = stream_get_meta_data($this->fh);
+  
+  			return $info['seekable'];
+		}
+
+		/**
 		 * Read from file.
 		 *
 		 * @octdoc  m:file/read
@@ -375,17 +389,6 @@ namespace org\octris\core {
 		/**/
 		{
 		    fpassthru($this->fh);
-		}
-
-		/**
-		 * 
-		 *
-		 * @octdoc  m:file/seek
-		 */
-		public function seek($offset, $flag = SEEK_SET)
-		/**/
-		{
-	    	fseek($this->fh, $offset, $flag);
 		}
 
 		/**
@@ -471,7 +474,7 @@ namespace org\octris\core {
         {
         	if ($this->valid()) {
         		$this->current = $this->read();
-        		$this->row     = (is_null($this->row) ? 0 : ++$this->row);
+        		$this->row     = (is_null($this->row) ? 1 : ++$this->row);
         	}
         }
 
@@ -494,5 +497,31 @@ namespace org\octris\core {
 
             return $return;
         }
+
+		/**
+		 * Seek file to specified row number.
+		 *
+		 * @octdoc  m:file/seek
+		 * @param 	int 							$row 					Number of row to seek to.
+		 */
+		public function seek($row)
+		/**/
+		{
+			if ($this->isSeekable()) {
+				if ($row == $this->row) {
+					// same row, nothing to do
+					$start = ($row > $this->row ? $start = $this->row : 0);	// relative or absolute seek
+
+					for ($i = $start; $i < $row && !feof($this->fh); ++$i) {
+						++$this->row;
+						fgets($this->fh);
+					}
+
+					$this->next();
+				}
+			} else {
+				trigger_error("file is not seekable");
+			}
+		}
 	}
 }
