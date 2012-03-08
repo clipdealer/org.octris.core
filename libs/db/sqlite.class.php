@@ -20,7 +20,7 @@ namespace org\octris\core\db {
      * @todo 		Support encryption Libraries:
 	 * 				* http://sqlcipher.net/
 	 * 				* http://www.hwaci.com/sw/sqlite/see.html
-	 *
+	 *				* http://sqlite-crypt.com/index.htm
      */
 	class sqlite extends \org\octris\core\db\device
 	/**/
