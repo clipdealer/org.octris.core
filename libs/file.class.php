@@ -21,6 +21,18 @@ namespace org\octris\core {
 	/**/
 	{
 		/**
+		 * File handling flags:
+		 * 
+		 * * T_READ_TRIM_NEWLINE -- Remove trailing newline characters.
+		 * * T_DELETE_ON_CLOSE -- Whether to delete file when object is deconstructed.
+		 * 
+		 * @octdoc	d:file/T_READ_TRIM_NEWLINE
+		 */
+		const T_READ_TRIM_NEWLINE = 1;
+		const T_DELETE_ON_CLOSE   = 2;
+		/**/
+
+		/**
 		 * File opening mode.
 		 *
 		 * @octdoc  p:file/$open_mode
@@ -72,7 +84,7 @@ namespace org\octris\core {
 		 * @var     bool
 		 */
 		private $can_write = false;
-		/**/		
+		/**/
 
 		/**
 		 * If file is opened in binary mode.
@@ -84,21 +96,30 @@ namespace org\octris\core {
 		/**/
 
 		/**
-		 * Whether to delete the file, when it get's closed (deconstructed).
-		 *
-		 * @octdoc  p:file/$delete_on_close
-		 * @var     bool
+		 * File handling flags.
+		 * 
+		 * @octdoc	p:file/$flags
+		 * @var 	int
 		 */
-		private $delete_on_close = false;
+		private $flags = 0;
 		/**/
 
 		/**
-		 * 
+		 * Current row number.
+		 *
+		 * @octdoc  p:file/$row
+		 * @var     int
+		 */
+		protected $row = null;
+		/**/
+
+		/**
+		 * Contents of current line of file.
 		 *
 		 * @octdoc  p:file/$current
-		 * @var     
+		 * @var     string
 		 */
-		protected $current;
+		protected $current = '';
 		/**/
 		
 		/**
@@ -110,19 +131,19 @@ namespace org\octris\core {
 		 * @octdoc  m:file/__construct
 		 * @param 	string|resource 			$file 			Stream resource or filename.
 		 * @param 	string 						$open_mode 		File open mode.
-		 * @param 	bool 						$delete 		Whether to delete file, when object is get's deconstructed.
+		 * @param 	int 						$flags 			Additional flags to set.
 		 */
-		public function __construct($file, $open_mode = 'r', $delete = false)
+		public function __construct($file, $open_mode = 'r', $flags = 0)
 		/**/
 		{
 		    if (is_resource($file)) {
 		    	$info = stream_get_meta_data($file);
 
-		    	$this->setFlags($info['mode']);
+		    	$this->setProperties($info['mode']);
 
 		    	$this->fh = $file;
 		    } elseif (is_string($file)) {
-		    	$this->setFlags($open_mode);
+		    	$this->setProperties($open_mode);
 
 		    	if (!($this->fh = @fopen($file, $open_mode))) {
 		    		$info = error_get_last();
@@ -131,9 +152,14 @@ namespace org\octris\core {
 		    	}
 		    }
 
-		    if ($this->isLocal()) {
-		    	$this->delete_on_close = $delete;	
+		    if (($flags & self::T_DELETE_ON_CLOSE) == self::T_DELETE_ON_CLOSE && !$this->isLocal()) {
+		    	// remove 'delete on close' flag, if file is not local
+		    	$flags = $flags ^ self::T_DELETE_ON_CLOSE;
+
+		    	trigger_error("remote file cannot be deleted");
 		    }
+
+		    $this->flags = $flags;
 		}
 
 		/**
@@ -144,7 +170,7 @@ namespace org\octris\core {
 		public function __destruct()
 		/**/
 		{
-			if ($this->delete_on_close) {
+			if (($this->flags & self::T_DELETE_ON_CLOSE) == self::T_DELETE_ON_CLOSE) {
 				$info = stream_get_meta_info(this->fh);
 				$path = parse_url($info['uri'], PHP_URL_PATH);
 
@@ -157,11 +183,12 @@ namespace org\octris\core {
 		}
 
 		/**
-		 * Set file flags according to open mode.
+		 * Set file properties according to open mode: whether it's opened in binary mode or not,
+		 * where it's possible to read from and / or write to file.
 		 *
-		 * @octdoc  m:file/setFlags
+		 * @octdoc  m:file/setProperties
 		 */
-		private function setFlags($mode)
+		private function setProperties($mode)
 		/**/
 		{
 			$tmp = $mode;
@@ -284,7 +311,13 @@ namespace org\octris\core {
 		public function read($len = null)
 		/**/
 		{
-			return fgets($this->fh, $len);
+			$row = fgets($this->fh, $len);
+
+			if (($this->flags & self::T_READ_TRIM_NEWLINE) == self::T_READ_TRIM_NEWLINE) {
+				rtrim($row, "\n\r");
+			}
+
+			return $row;
 		}
 
 		/**
@@ -399,6 +432,7 @@ namespace org\octris\core {
         public function current()
         /**/
         {
+        	$this->current;
         }
 
         /**
@@ -410,6 +444,7 @@ namespace org\octris\core {
         public function key()
         /**/
         {
+        	return $this->row;
         }
 
         /**
@@ -420,6 +455,10 @@ namespace org\octris\core {
         public function rewind()
         /**/
         {
+        	rewind($this->fh);
+
+        	$this->row = null;
+        	$this->next();
         }
 
         /**
@@ -430,6 +469,10 @@ namespace org\octris\core {
         public function next()
         /**/
         {
+        	if ($this->valid()) {
+        		$this->current = $this->read();
+        		$this->row     = (is_null($this->row) ? 0 : ++$this->row);
+        	}
         }
 
         /**
@@ -441,18 +484,15 @@ namespace org\octris\core {
         public function valid()
         /**/
         {
-            return $this->collection->isValid($this->position);
-        }
+        	if (!$this->can_read) {
+        		trigger_error("unable to iterate non readable file");
 
-        /**
-         * Seek to row.
-         *
-         * @octdoc  m:file/seek
-         * @param   int         $row                                   		Row of file to seek to.
-         */
-        public function seek($row)
-        /**/
-        {
-        }		
+        		$return = false;
+        	} else {
+        		$return = !$this->eof();
+        	}
+
+            return $return;
+        }
 	}
 }
