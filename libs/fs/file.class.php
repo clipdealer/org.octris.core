@@ -17,7 +17,7 @@ namespace org\octris\core\fs {
      * @copyright   copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-	class file implements \Iterator, \SeekableIterator
+	class file implements \IteratorAggregate
 	/**/
 	{
 		/**
@@ -105,24 +105,6 @@ namespace org\octris\core\fs {
 		/**/
 
 		/**
-		 * Current row number.
-		 *
-		 * @octdoc  p:file/$row
-		 * @var     int
-		 */
-		protected $row = null;
-		/**/
-
-		/**
-		 * Contents of current line of file.
-		 *
-		 * @octdoc  p:file/$current
-		 * @var     string
-		 */
-		protected $current = '';
-		/**/
-		
-		/**
 		 * Constructor. Takes either a name of file to read/write or a stream-resource. The 
 		 * second parameter will be ignored, if the first parameter is a stream-resource. If
 		 * the first parameter is a string, it is considered to be a filename. The constructor
@@ -171,7 +153,7 @@ namespace org\octris\core\fs {
 		/**/
 		{
 			if (($this->flags & self::T_DELETE_ON_CLOSE) == self::T_DELETE_ON_CLOSE) {
-				$info = stream_get_meta_info(this->fh);
+				$info = stream_get_meta_data(this->fh);
 				$path = parse_url($info['uri'], PHP_URL_PATH);
 
 			    fclose($this->fh);
@@ -180,6 +162,21 @@ namespace org\octris\core\fs {
 			} else {
 			    fclose($this->fh);
 			}
+		}
+
+		/**
+		 * Return a new fileiterator instance for iterating file contents. Note, that this will open
+		 * another file handle to the file in read-only mode.
+		 *
+		 * @octdoc  m:file/getIterator
+		 * @return 	\org\octris\core\fs\fileiterator 			Instance of fileiterator.
+		 */
+		public function getIterator()
+		/**/
+		{
+			$info = stream_get_meta_data($this->fh);
+
+			return new \org\octris\core\fs\fileiterator($info['uri'], $this->flags);
 		}
 
 		/**
@@ -411,106 +408,6 @@ namespace org\octris\core\fs {
 		/**/
 		{
 		    ftruncate($this->fh, $size);
-		}
-
-		/** iterator interfaces **/
-
-        /**
-         * Return current row of file.
-         *
-         * @octdoc  m:file/current
-         * @return  string 													Current row of file.
-         */
-        public function current()
-        /**/
-        {
-        	$this->current;
-        }
-
-        /**
-         * Return number of current row.
-         *
-         * @octdoc  m:file/key
-         * @return  int 													Number of current row.
-         */
-        public function key()
-        /**/
-        {
-        	return $this->row;
-        }
-
-        /**
-         * Rewind file to beginning.
-         *
-         * @octdoc  m:file/rewind
-         */
-        public function rewind()
-        /**/
-        {
-        	rewind($this->fh);
-
-        	$this->row = null;
-        	$this->next();
-        }
-
-        /**
-         * Fetch next row.
-         *
-         * @octdoc  m:file/next
-         */
-        public function next()
-        /**/
-        {
-        	if ($this->valid()) {
-        		$this->current = $this->read();
-        		$this->row     = (is_null($this->row) ? 1 : ++$this->row);
-        	}
-        }
-
-        /**
-         * Check if eof is reached.
-         *
-         * @octdoc  m:file/valid
-         * @return  bool                                                    Returns true, if eof is not reached.
-         */
-        public function valid()
-        /**/
-        {
-        	if (!$this->can_read) {
-        		trigger_error("unable to iterate non readable file");
-
-        		$return = false;
-        	} else {
-        		$return = !$this->eof();
-        	}
-
-            return $return;
-        }
-
-		/**
-		 * Seek file to specified row number.
-		 *
-		 * @octdoc  m:file/seek
-		 * @param 	int 							$row 					Number of row to seek to.
-		 */
-		public function seek($row)
-		/**/
-		{
-			if ($this->isSeekable()) {
-				if ($row == $this->row) {
-					// same row, nothing to do
-					$start = ($row > $this->row ? $start = $this->row : 0);	// relative or absolute seek
-
-					for ($i = $start; $i < $row && !feof($this->fh); ++$i) {
-						++$this->row;
-						fgets($this->fh);
-					}
-
-					$this->next();
-				}
-			} else {
-				trigger_error("file is not seekable");
-			}
 		}
 	}
 }
