@@ -20,6 +20,7 @@ class sandboxTest extends PHPUnit_Framework_TestCase {
         $this->sandbox = new \org\octris\core\tpl\sandbox();
     }
     
+    // test for #foreach template method
     public function testEachArrayObject() {
     	$data = new ArrayObject(array('a', 'b', 'c'));
     	$item = null;
@@ -82,5 +83,30 @@ class sandboxTest extends PHPUnit_Framework_TestCase {
 
 	    	$this->assertEquals($test, $buffer);
     	}
+    }
+
+    // test for #cron template method
+    public function testCron() {
+
+    }
+
+    // test for #loop template method
+    public function testLoop() {
+
+    }
+
+    // test for #trigger template method
+    public function testTrigger() {
+
+    }
+
+    // test for #onchange template method
+    public function testOnchange() {
+
+    }
+
+    // test for #cycle template method
+    public function testCycle() {
+
     }
 }
