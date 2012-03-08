@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace org\octris\core {
+namespace org\octris\core\fs {
 	/**
 	 * File object.
 	 *
-	 * @octdoc		c:core/file
+	 * @octdoc		c:fs/file
      * @copyright   copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
