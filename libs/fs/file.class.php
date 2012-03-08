@@ -253,17 +253,6 @@ namespace org\octris\core\fs {
 		}
 
 		/**
-		 * 
-		 *
-		 * @octdoc  m:file/getBasename
-		 */
-		public function getBasename()
-		/**/
-		{
-		    return basename($)
-		}
-
-		/**
 		 * Create a temporary file.
 		 *
 		 * @octdoc  m:file/createTempFile
