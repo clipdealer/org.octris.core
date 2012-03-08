@@ -17,7 +17,7 @@ namespace org\octris\core {
      * @copyright   copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-	class file
+	class file implements \Iterator, \SeekableIterator
 	/**/
 	{
 		/**
@@ -92,6 +92,15 @@ namespace org\octris\core {
 		private $delete_on_close = false;
 		/**/
 
+		/**
+		 * 
+		 *
+		 * @octdoc  p:file/$current
+		 * @var     
+		 */
+		protected $current;
+		/**/
+		
 		/**
 		 * Constructor. Takes either a name of file to read/write or a stream-resource. The 
 		 * second parameter will be ignored, if the first parameter is a stream-resource. If
@@ -378,5 +387,72 @@ namespace org\octris\core {
 		{
 		    ftruncate($this->fh, $size);
 		}
+
+		/** iterator interfaces **/
+
+        /**
+         * Return current row of file.
+         *
+         * @octdoc  m:file/current
+         * @return  string 													Current row of file.
+         */
+        public function current()
+        /**/
+        {
+        }
+
+        /**
+         * Return number of current row.
+         *
+         * @octdoc  m:file/key
+         * @return  int 													Number of current row.
+         */
+        public function key()
+        /**/
+        {
+        }
+
+        /**
+         * Rewind file to beginning.
+         *
+         * @octdoc  m:file/rewind
+         */
+        public function rewind()
+        /**/
+        {
+        }
+
+        /**
+         * Fetch next row.
+         *
+         * @octdoc  m:file/next
+         */
+        public function next()
+        /**/
+        {
+        }
+
+        /**
+         * Check if eof is reached.
+         *
+         * @octdoc  m:file/valid
+         * @return  bool                                                    Returns true, if eof is not reached.
+         */
+        public function valid()
+        /**/
+        {
+            return $this->collection->isValid($this->position);
+        }
+
+        /**
+         * Seek to row.
+         *
+         * @octdoc  m:file/seek
+         * @param   int         $row                                   		Row of file to seek to.
+         */
+        public function seek($row)
+        /**/
+        {
+        }		
 	}
 }
