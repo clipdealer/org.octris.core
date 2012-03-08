@@ -132,5 +132,37 @@ namespace org\octris\core\db\mongodb {
 	        
 	        return new \org\octris\core\db\mongodb\result($this->getPool(), $collection, $cursor);
 		}
+
+		/**
+		 * Insert an object into a database collection.
+		 *
+		 * @octdoc  m:connection/insert
+		 * @param 	string 			$collection 				Name of collection to insert data into.
+		 * @param 	array 			$object 					Data to insert into collection.
+		 */
+		public function insert($collection, array $object)
+		/**/
+		{
+        	$cl = $this->db->selectCollection($collection);
+        
+        	return $cl->insert($object);
+        }
+
+        /**
+         * Update data in database collection.
+         *
+         * @octdoc  m:connection/update
+         * @param 	string 			$collection 				Name of collection to update data in.
+         * @param 	array 			$criteria 					Search criteria for object(s) to update.
+         * @param 	array 			$object 					Data to update collection with.
+         * @param 	array 			$options 					Optional options.
+         */
+        public function update($collection, array $criteria, array $object, array $options = null)
+        /**/
+        {
+	        $cl = $this->link->selectCollection($collection);
+	        
+	        return $cl->update($criteria, $object, $options);
+	    }
 	}
 }
