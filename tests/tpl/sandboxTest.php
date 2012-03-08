@@ -65,4 +65,22 @@ class sandboxTest extends PHPUnit_Framework_TestCase {
 	    	}
     	}
     }
+
+    // test for #buffer template method
+    public function testBuffer() {
+    	$tests = array(
+    		'Buffer Test #1',
+    		'Buffer Test #2'
+    	);
+
+    	foreach ($tests as $test) {
+	    	$this->sandbox->bufferStart($buffer, true);
+
+	    	print $test;
+
+	    	$this->sandbox->bufferEnd();
+
+	    	$this->assertEquals($test, $buffer);
+    	}
+    }
 }
