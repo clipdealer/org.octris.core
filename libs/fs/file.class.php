@@ -105,6 +105,15 @@ namespace org\octris\core\fs {
 		/**/
 
 		/**
+		 * Meta data available for the s
+		 *
+		 * @octdoc  p:file/$meta
+		 * @var     array
+		 */
+		protected $meta = array();
+		/**/
+
+		/**
 		 * Constructor. Takes either a name of file to read/write or a stream-resource. The 
 		 * second parameter will be ignored, if the first parameter is a stream-resource. If
 		 * the first parameter is a string, it is considered to be a filename. The constructor
@@ -119,9 +128,9 @@ namespace org\octris\core\fs {
 		/**/
 		{
 		    if (is_resource($file)) {
-		    	$info = stream_get_meta_data($file);
+		    	$this->meta = stream_get_meta_data($file);
 
-		    	$this->setProperties($info['mode']);
+		    	$this->setProperties($this->meta['mode']);
 
 		    	$this->fh = $file;
 		    } elseif (is_string($file)) {
@@ -131,6 +140,8 @@ namespace org\octris\core\fs {
 		    		$info = error_get_last();
 
 		    		throw new \Exception($info['message'], $info['type']);
+		    	} else {
+			    	$this->meta = stream_get_meta_data($this->fh);
 		    	}
 		    }
 
@@ -153,8 +164,7 @@ namespace org\octris\core\fs {
 		/**/
 		{
 			if (($this->flags & self::T_DELETE_ON_CLOSE) == self::T_DELETE_ON_CLOSE) {
-				$info = stream_get_meta_data(this->fh);
-				$path = parse_url($info['uri'], PHP_URL_PATH);
+				$path = parse_url($this->meta['uri'], PHP_URL_PATH);
 
 			    fclose($this->fh);
 
@@ -162,6 +172,18 @@ namespace org\octris\core\fs {
 			} else {
 			    fclose($this->fh);
 			}
+		}
+
+		/**
+		 * Return file URI if file object is casted to a string.
+		 *
+		 * @octdoc  m:file/__toString
+		 * @return 	string 										URI of file.
+		 */
+		public function __toString()
+		/**/
+		{
+		    return $this->meta['uri'];
 		}
 
 		/**
@@ -174,9 +196,7 @@ namespace org\octris\core\fs {
 		public function getIterator()
 		/**/
 		{
-			$info = stream_get_meta_data($this->fh);
-
-			return new \org\octris\core\fs\fileiterator($info['uri'], $this->flags);
+			return new \org\octris\core\fs\fileiterator($this->meta['uri'], $this->flags);
 		}
 
 		/**
@@ -296,9 +316,7 @@ namespace org\octris\core\fs {
 		public function isSeekable()
 		/**/
 		{
-			$info = stream_get_meta_data($this->fh);
-  
-  			return $info['seekable'];
+  			return $this->meta['seekable'];
 		}
 
 		/**
