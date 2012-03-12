@@ -14,7 +14,7 @@ namespace org\octris\core\type {
      * Collection type. Implements special access on array objects.
      *
      * @octdoc      c:type/collection
-     * @copyright   copyright (c) 2010-2011 by Harald Lapp
+     * @copyright   copyright (c) 2010-2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
     class collection extends \ArrayObject
