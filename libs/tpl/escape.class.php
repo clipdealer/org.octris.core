@@ -11,7 +11,7 @@
 
 namespace org\octris\core\tpl {
     /**
-     * Sandbox to execute templates in.
+     * Implements static methods for auto-escaping functionality.
      *
      * Related articles:
      *
