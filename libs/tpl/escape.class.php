@@ -17,7 +17,7 @@ namespace org\octris\core\tpl {
      *
      * * https://www.owasp.org/index.php/XSS_(Cross_Site_Scripting)_Prevention_Cheat_Sheet
      *
-     * @octdoc      c:tpl/sandbox
+     * @octdoc      c:tpl/escape
      * @copyright   copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
