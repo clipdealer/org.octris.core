@@ -34,5 +34,30 @@ namespace org\octris\core\tpl {
     	{
     	    
     	}
+
+        /**
+         * Escape javascript.
+         *
+         * @octdoc  m:escape/escapeJs
+         */
+        public static function escapeJs($str)
+        /**/
+        {
+            
+        }
+
+        /**
+         * Escape URI attribute value.
+         *
+         * @octdoc  m:escape/escapeUri
+         */
+        public static function escapeUri($str)
+        /**/
+        {
+            if (preg_match('/javascript:/i', $val)) {
+                // switch to javascript escaping instead
+                $this->escapeJs($val);
+            }
+        }
     }
 }
