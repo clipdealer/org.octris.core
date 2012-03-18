@@ -20,6 +20,18 @@ namespace org\octris\core\type {
     class string
     /**/
     {
+        /**
+         * Various constants.
+         *
+         * @octdoc  d:string/T_...
+         */
+        const T_CASE_UPPER       = MB_CASE_UPPER;
+        const T_CASE_LOWER       = MB_CASE_LOWER;
+        const T_CASE_TITLE       = MB_CASE_TITLE;
+        const T_CASE_UPPER_FIRST = 1000;
+        const T_CASE_LOWER_FIRST = 1001;
+        /**/
+
         /** make class static **/
         protected function __construct() {}
         
@@ -51,6 +63,36 @@ namespace org\octris\core\type {
             return preg_replace_callback('/.{' . $chunklen . '}/us', function($m) use ($end) {
                 return $m[0] . $end;
             }, $str) . (mb_strlen($str, 'UTF-8') % $len == 0 ? '' : $end);
+        }
+
+        /**
+         * Performs case folding on a string.
+         *
+         * @octdoc  f:string/convert_case 
+         * @param   string      $string         String to convert.
+         * @param   int         $mode           Mode of case folding.
+         * @return  string                      Converted string.
+         */
+        public static function convert_case($string, $mode)
+        /**/
+        {
+            switch ($mode) {
+            case self::T_CASE_LOWER_FIRST:
+                $return = preg_replace_callback('/^(.)/u', function($m) {
+                    return mb_strtolower($m[1], 'UTF-8');
+                }, $string);
+                break;
+            case self::T_CASE_UPPER_FIRST:
+                $return = preg_replace_callback('/^(.)/u', function($m) {
+                    return mb_strtoupper($m[1], 'UTF-8');
+                }, $string);
+                break;
+            default:
+                $return = mb_convert_case($string, $mode, 'UTF-8');
+                break;
+            }
+
+            return = $return;
         }
 
         /**
@@ -101,6 +143,32 @@ namespace org\octris\core\type {
             return mb_ereg_replace($pattern, $replacement, $string, $options);
         }
     
+        /**
+         * Make's the first character of a string lowercase.
+         * 
+         * @octdoc  f:string/ucfirst
+         * @param   string      $string         String to convert.
+         * @return  string                      Converted string.
+         */
+        public static function lcfirst($string)
+        /**/
+        {
+            return self::convert_case($string, self::T_CASE_LOWER_FIRST);
+        }
+
+        /**
+         * Make's the first character of a string uppercase.
+         * 
+         * @octdoc  f:string/ucfirst
+         * @param   string      $string         String to convert.
+         * @return  string                      Converted string.
+         */
+        public static function ucfirst($string)
+        /**/
+        {
+            return self::convert_case($string, self::T_CASE_UPPER_FIRST);
+        }
+
         /**
          * Split multibyte string using regular expression.
          *
