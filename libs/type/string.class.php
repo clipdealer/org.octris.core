@@ -16,6 +16,9 @@ namespace org\octris\core\type {
      * @octdoc      c:type/string
      * @copyright   copyright (c) 2011 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
+     * 
+     * @todo        convert match/replace methods to use preg_match / replace? see b2u helper method
+     *              for using PREG_MATCH_CAPTURE_OFFSET.
      */
     class string
     /**/
