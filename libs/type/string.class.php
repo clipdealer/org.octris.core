@@ -146,7 +146,7 @@ namespace org\octris\core\type {
                 break;
             }
 
-            return = $return;
+            return $return;
         }
 
         /**
@@ -910,7 +910,7 @@ namespace org\octris\core\type {
         /**/
         {
             $args = func_get_args();
-            array_shift($argv);
+            array_shift($args);
         
             return vsprintf($format, $args);
         }
@@ -940,8 +940,8 @@ namespace org\octris\core\type {
                             die('argument not set for ' . $idx . "\n");
                         }
 
-                        if (($diff = \strlen($args[$idx]) - strlen($args[$idx], 'UTF-8')) > 0) {
-                            if ($prec !== '') $prec = '.' . ((int)\substr($prec, 1) + $diff);
+                        if (($diff = strlen($args[$idx]) - self::strlen($args[$idx], 'UTF-8')) > 0) {
+                            if ($prec !== '') $prec = '.' . ((int)substr($prec, 1) + $diff);
                             if ($size !== '') $size = (int)$size + $diff;
                         }
 
@@ -955,7 +955,7 @@ namespace org\octris\core\type {
                 $format
             );
 
-            return \vsprintf($format, $args);
+            return vsprintf($format, $args);
         }
     
         /**
