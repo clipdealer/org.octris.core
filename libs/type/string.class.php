@@ -180,7 +180,7 @@ namespace org\octris\core\type {
          * @param   int         $tolarance      Optional tolarance to catch space character.
          * @return  string                      Cut string.
          */
-        public function cut($string, $maxlen, $continue = ' ...', $tolarance = 10)
+        public static function cut($string, $maxlen, $continue = ' ...', $tolarance = 10)
         /**/
         {
             if (mb_strlen($string, 'UTF-8') <= $maxlen) {
