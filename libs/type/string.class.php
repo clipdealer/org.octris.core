@@ -49,6 +49,63 @@ namespace org\octris\core\type {
         }
         
         /**
+         * This implements a helper function to pad an string or ID to a specified lenght and chunk it using a specified chunk length.
+         * Note, that this function requires that 'pad' is a multiple of 'len', because each chunk needs to be of the same length. Note
+         * further, that resulting string get's an extra 'chunk_char' appended. This function is especially useful for creating nested
+         * numeric path names, see the following example using the default arguments:
+         *
+         * string: 123456
+         * result: 000/123/456/
+         *
+         * The padding parameter 'pad' allows for padding or cutting the string -- according to the number compared to the length of the
+         * string to pad/cut. The following are the rules:
+         *
+         * * $pad < 0 -- padding/cutting on the left
+         * * $pad > 0 -- padding/cutting on the right
+         * * $pad = 0 -- no padding / cutting
+         * * abs($pad) < len($string) -- the string will be cut
+         * * abs($pad) > len($string) -- the string will be padded
+         *
+         * The side off cutting is specified through the sign of the 'pad' parameter:
+         *
+         * * $pad < 0 && abs($pad) < len($string) -- the string get's cut on the left
+         * * $pad > 0 && abs($pad) < len($string) -- the string get's cut on the right
+         *
+         * @octdoc  m:string/chunk_id
+         * @param   int|string  $string         String or number to chunk.
+         * @param   int         $pad            Optional number of characters to pad to.
+         * @param   int         $chunk_len      Optional length of each chunk.
+         * @param   string      $pad_char       Optional character for padding.
+         * @param   string      $chunk_char     Optional character for chunking.
+         * @return  string                      Chunked string.
+         */
+        public static function chunk_id($string, $pad = 9, $chunk_len = 3, $pad_char = '0', $chunk_char = '/')
+        /**/
+        {
+            $len  = mb_strlen($string, 'UTF-8');
+            $abs  = ($pad == 0 ? $len : abs($pad));
+            $diff = $len - $abs;
+
+            $chunk_len = ($chunk_len > $abs ? $abs : $chunk_len);
+
+            if ($abs % $chunk_len != 0) {
+                throw new \Exception("'pad' ($pad) is not divisable by 'chunk_len' ($chunk_len)");
+            } else {
+                if ($diff < 0) {
+                    $string = ($pad < 0
+                                ? mb_substr($string, $diff, $abs, 'UTF-8')
+                                : mb_substr($string, 0, $abs, 'UTF-8'));
+                } elseif ($diff > 0) {
+                    $string = ($pad < 0
+                                ? self::str_pad($string, $abs, $pad_char, STR_PAD_LEFT)
+                                : self::str_pad($string, $abs, $pad_char, STR_PAD_RIGHT));
+                }
+
+                return self::chunk_split($string, $chunk_len, $chunk_char);
+            }
+        }
+
+        /**
          * Split a string into smaller chunks.
          *
          * @octdoc  f:string/chunk_split
