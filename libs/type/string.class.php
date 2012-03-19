@@ -39,6 +39,22 @@ namespace org\octris\core\type {
         protected function __construct() {}
         
         /**
+         * This is a helper method to convert byte offsets to utf8 character units. This is useful
+         * for example when working with PREG_MATCH_CAPTURE_OFFSET to convert the byte-offset to 
+         * utf8 character unit offset.
+         *
+         * @octdoc  m:string/b2u
+         * @param   string      $string         String to calculate character units for.
+         * @param   int         $byte_offset    Byte offset to convert.
+         * @return  int                         Character units.
+         */
+        public static function b2u($string, $byte_offset)
+        /**/
+        {
+            return mb_strlen(substr($string, 0, $byte_offset), 'UTF-8');
+        }
+
+        /**
          * Return a specific character.
          *
          * @octdoc  f:string/chr
