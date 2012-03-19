@@ -116,7 +116,7 @@ namespace org\octris\core\type {
         {
             return preg_replace_callback('/.{' . $chunk_len . '}/us', function($m) use ($end) {
                 return $m[0] . $end;
-            }, $str) . (mb_strlen($str, 'UTF-8') % $chunk_len == 0 ? '' : $end);
+            }, $string) . (mb_strlen($string, 'UTF-8') % $chunk_len == 0 ? '' : $end);
         }
 
         /**
