@@ -82,24 +82,21 @@ namespace org\octris\core\type {
         public static function chunk_id($string, $pad = 9, $chunk_len = 3, $pad_char = '0', $chunk_char = '/')
         /**/
         {
-            $len  = mb_strlen($string, 'UTF-8');
-            $abs  = ($pad == 0 ? $len : abs($pad));
-            $diff = $len - $abs;
-
+            $abs       = abs($pad);
             $chunk_len = ($chunk_len > $abs ? $abs : $chunk_len);
 
             if ($abs % $chunk_len != 0) {
                 throw new \Exception("'pad' ($pad) is not divisable by 'chunk_len' ($chunk_len)");
             } else {
-                if ($diff < 0) {
-                    $string = ($pad < 0
-                                ? mb_substr($string, $diff, $abs, 'UTF-8')
-                                : mb_substr($string, 0, $abs, 'UTF-8'));
-                } elseif ($diff > 0) {
-                    $string = ($pad < 0
-                                ? self::str_pad($string, $abs, $pad_char, STR_PAD_LEFT)
-                                : self::str_pad($string, $abs, $pad_char, STR_PAD_RIGHT));
-                }
+                $format = sprintf(
+                    '%%%s%s%d.%ds',
+                    $pad_char,
+                    ($pad < 0 ? '-' : ''),
+                    $abs,
+                    $abs
+                );
+
+                $string = self::sprintf($format, $string);
 
                 return self::chunk_split($string, $chunk_len, $chunk_char);
             }
