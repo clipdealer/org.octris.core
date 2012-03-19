@@ -57,7 +57,7 @@ namespace org\octris\core\type {
         /**
          * Return a specific character.
          *
-         * @octdoc  f:string/chr
+         * @octdoc  m:string/chr
          * @param   int         $chr            Code of the character to return.
          * @return  string                      The specified character.
          */
@@ -124,7 +124,7 @@ namespace org\octris\core\type {
         /**
          * Split a string into smaller chunks.
          *
-         * @octdoc  f:string/chunk_split
+         * @octdoc  m:string/chunk_split
          * @param   string      $string         The string to be chunked.
          * @param   int         $chunk_len      The chunk length.
          * @param   string      $end            The line ending sequence.
@@ -141,7 +141,7 @@ namespace org\octris\core\type {
         /**
          * Performs case folding on a string.
          *
-         * @octdoc  f:string/convert_case 
+         * @octdoc  m:string/convert_case 
          * @param   string      $string         String to convert.
          * @param   int         $mode           Mode of case folding.
          * @return  string                      Converted string.
@@ -171,7 +171,7 @@ namespace org\octris\core\type {
         /**
          * Regular expression match for multibyte string.
          *
-         * @octdoc  f:string/match
+         * @octdoc  m:string/match
          * @param   string      $pattern        The search pattern.
          * @param   string      $string         The search string.
          * @param   string      $options        If 'i' is specified for this parameter, the case will be ignored.
@@ -197,7 +197,7 @@ namespace org\octris\core\type {
         /**
          * Replace regular expression with multibyte support.
          *
-         * @octdoc  f:string/replace
+         * @octdoc  m:string/replace
          * @param   string      $pattern        The search pattern.
          * @param   string      $string         The search string.
          * @param   string      $options        Matching condition can be set by option parameter. If i is specified for this
@@ -219,7 +219,7 @@ namespace org\octris\core\type {
         /**
          * Make's the first character of a string lowercase.
          * 
-         * @octdoc  f:string/ucfirst
+         * @octdoc  m:string/ucfirst
          * @param   string      $string         String to convert.
          * @return  string                      Converted string.
          */
@@ -232,7 +232,7 @@ namespace org\octris\core\type {
         /**
          * Make's the first character of a string uppercase.
          * 
-         * @octdoc  f:string/ucfirst
+         * @octdoc  m:string/ucfirst
          * @param   string      $string         String to convert.
          * @return  string                      Converted string.
          */
@@ -336,7 +336,7 @@ namespace org\octris\core\type {
         /**
          * Split multibyte string using regular expression.
          *
-         * @octdoc  f:string/split
+         * @octdoc  m:string/split
          * @param   string      $pattern        The regular expression pattern.
          * @param   string      $string         The string being split.
          * @return  array                       Array of splitted strings.
@@ -352,7 +352,7 @@ namespace org\octris\core\type {
         /**
          * Case-insensitive string comparison.
          *
-         * @octdoc  f:string/strcasecmp
+         * @octdoc  m:string/strcasecmp
          * @param   string      $string1        The first string.
          * @param   string      $string2        The second string.
          * @param   Collator    $collator       Optional collator to use for comparision.
@@ -388,7 +388,7 @@ namespace org\octris\core\type {
         /**
          * Finds position of first occurrence of a string within another, case insensitive.
          *
-         * @octdoc  f:string/stripos
+         * @octdoc  m:string/stripos
          * @param   string      $string         String to return length for.
          * @param   string      $needle         The position counted from the beginning of haystack.
          * @param   int         $offset         The search offset. If it is not specified, 0 is used.
@@ -404,7 +404,7 @@ namespace org\octris\core\type {
         /**
          * Finds first occurrence of a string within another, case insensitive.
          *
-         * @octdoc  f:string/stristr
+         * @octdoc  m:string/stristr
          * @param   string      $string         The string from which to get the first occurrence of needle.
          * @param   string      $needle         The string to find in string.
          * @param   bool        $part           Determines which portion of haystack this public static function returns. If set to 
@@ -422,7 +422,7 @@ namespace org\octris\core\type {
         /**
          * Return length of the given string.
          *
-         * @octdoc  f:string/strlen
+         * @octdoc  m:string/strlen
          * @param   string      $string         String to return length for.
          */
         public static function strlen($string)
@@ -434,7 +434,7 @@ namespace org\octris\core\type {
         /**
          * Find position of first occurrence of string in a string.
          *
-         * @octdoc  f:string/strpos
+         * @octdoc  m:string/strpos
          * @param   string      $string         String to return length for.
          * @param   string      $needle         The position counted from the beginning of haystack.
          * @param   int         $offset         The search offset. If it is not specified, 0 is used.
@@ -450,7 +450,7 @@ namespace org\octris\core\type {
         /**
          * Case-insensitive string comparison using natural sorting algorithm.
          *
-         * @octdoc  f:string/strnatcasecmp
+         * @octdoc  m:string/strnatcasecmp
          * @param   string      $string1        The first string.
          * @param   string      $string2        The second string.
          * @param   Collator    $collator       Optional collator to use for comparision.
@@ -467,7 +467,7 @@ namespace org\octris\core\type {
         /**
          * String comparison using natural sorting algorithm.
          *
-         * @octdoc  f:string/strcasecmp
+         * @octdoc  m:string/strcasecmp
          * @param   string      $string1        The first string.
          * @param   string      $string2        The second string.
          * @param   Collator    $collator       Optional collator to use for comparision.
@@ -492,7 +492,7 @@ namespace org\octris\core\type {
         /**
          * Case-insensitive string comparison of the first n characters.
          *
-         * @octdoc  f:string/strncasecmp
+         * @octdoc  m:string/strncasecmp
          * @param   string      $string1        The first string.
          * @param   string      $string2        The second string.
          * @param   int         $length         Number of characters to use in the comparison.
@@ -510,7 +510,7 @@ namespace org\octris\core\type {
         /**
          * String comparison of the first n characters.
          *
-         * @octdoc  f:string/strncmp
+         * @octdoc  m:string/strncmp
          * @param   string      $string1        The first string.
          * @param   string      $string2        The second string.
          * @param   int         $length         Number of characters to use in the comparison.
@@ -531,7 +531,7 @@ namespace org\octris\core\type {
         /**
          * Pad a string to a certain length with another string.
          *
-         * @octdoc  f:string/str_pad
+         * @octdoc  m:string/str_pad
          * @param   string      $string         String to pad.
          * @param   int         $length         Length to pad string to.
          * @param   string      $chr            Optional character to use for padding.
@@ -553,7 +553,7 @@ namespace org\octris\core\type {
         /**
          * Randomly shuffles a string.
          *
-         * @octdoc  f:string/str_shuffle
+         * @octdoc  m:string/str_shuffle
          * @param   string      $string         The string to shuffle.
          * @return  string                      The shuffled string.
          */
@@ -566,7 +566,7 @@ namespace org\octris\core\type {
         /**
          * Convert a string to an array.
          *
-         * @octdoc  f:string/str_split
+         * @octdoc  m:string/str_split
          * @param   string      $string         The string to be chunked.
          * @param   int         $split_length   Optional maximum length of the chunk.
          * @return  array                       The chunked string.
@@ -584,7 +584,7 @@ namespace org\octris\core\type {
         /**
          * Reverse a string.
          *
-         * @octdoc  f:string/strrev
+         * @octdoc  m:string/strrev
          * @param   string      $string         The string to be reversed.
          * @return  string                      Reversed string.
          */
@@ -597,7 +597,7 @@ namespace org\octris\core\type {
         /**
          * Find position of last occurrence of a string in a string.
          *
-         * @octdoc  f:string/strrpos
+         * @octdoc  m:string/strrpos
          * @param   string      $string         String to return length for.
          * @param   string      $needle         The string to find in haystack.
          * @param   int         $offset         May be specified to begin searching an arbitrary number of characters 
@@ -615,7 +615,7 @@ namespace org\octris\core\type {
         /**
          * Finds position of last occurrence of a string within another, case insensitive.
          *
-         * @octdoc  f:string/strripos
+         * @octdoc  m:string/strripos
          * @param   string      $string         String to return length for.
          * @param   string      $needle         The string to find in haystack.
          * @param   int         $offset         May be specified to begin searching an arbitrary number of characters 
@@ -633,7 +633,7 @@ namespace org\octris\core\type {
         /**
          * Finds first occurrence of a string within another.
          *
-         * @octdoc  f:string/strstr
+         * @octdoc  m:string/strstr
          * @param   string      $string         The string from which to get the first occurrence of needle.
          * @param   string      $needle         The string to find in string.
          * @param   bool        $part           Determines which portion of haystack this public static function returns. If set to 
@@ -651,7 +651,7 @@ namespace org\octris\core\type {
         /**
          * Make a string lowercase.
          *
-         * @octdoc  f:string/strtolower
+         * @octdoc  m:string/strtolower
          * @param   string      $string         The string being lowercased.
          * @return  string                      String with all alphabetic characters converted to lowercase.
          */
@@ -664,7 +664,7 @@ namespace org\octris\core\type {
         /**
          * Make a string uppercase.
          *
-         * @octdoc  f:string/strtoupper
+         * @octdoc  m:string/strtoupper
          * @param   string      $string         The string being uppercased.
          * @return  string                      String with all alphabetic characters converted to uppercase.
          */
@@ -677,7 +677,7 @@ namespace org\octris\core\type {
         /**
          * Get part of string.
          *
-         * @octdoc  f:string/substr
+         * @octdoc  m:string/substr
          * @param   string      $string         The string to extract a part from.
          * @param   int         $start          The first position used in string.
          * @param   int|null    $length         Optional length of the part to extract.
@@ -691,7 +691,7 @@ namespace org\octris\core\type {
         /**
          * Comparison of two strings from an offset, up to length characters.
          *
-         * @octdoc  f:string/substr_compare
+         * @octdoc  m:string/substr_compare
          * @param   string      $string         The main string being compared.
          * @param   string      $compare        The secondary string being compared.
          * @param   int         $offset         The start position for the comparison. If negative, it starts counting from 
@@ -716,7 +716,7 @@ namespace org\octris\core\type {
         /**
          * Count the number of substring occurences.
          *
-         * @octdoc  f:string/substr_count
+         * @octdoc  m:string/substr_count
          * @param   string      $string         The string being checked.
          * @param   string      $needle         The string being found.
          * @return  string                      The number of times the needle substring occurs in the haystack string.     
@@ -730,7 +730,7 @@ namespace org\octris\core\type {
         /**
          * Replace text within a portion of a string.
          *
-         * @octdoc  f:string/substr_replace
+         * @octdoc  m:string/substr_replace
          * @param   string      $string         The input string.
          * @param   string      $replacement    The replacement string.
          * @param   int         $start          If start is positive, the replacing will begin at the start'th offset 
@@ -755,7 +755,7 @@ namespace org\octris\core\type {
         /**
          * Convert a specified string to 7bit.
          *
-         * @octdoc  f:string/to7bit
+         * @octdoc  m:string/to7bit
          * @param   string      $string         String to convert.
          * @return  string                      Converted string to 7bit.
          */
@@ -775,7 +775,7 @@ namespace org\octris\core\type {
         /**
          * Replaces PHP's htmlentities to safely convert using specified encoding.
          *
-         * @octdoc  f:string/htmlentities
+         * @octdoc  m:string/htmlentities
          * @param   string      $string         String to convert.
          * @param   int         $quote_style    Optional parameter to define what will be done with 'single' and "double" quotes.
          * @return  string                      Converted string.
@@ -789,7 +789,7 @@ namespace org\octris\core\type {
         /**
          * 
          *
-         * @octdoc  f:string/html_entity_decode
+         * @octdoc  m:string/html_entity_decode
          * @param   string      $string         The input string.
          * @param   int         $quote_style    Optional parameter to define what will be done with 'single' and "double" quotes.
          * @return  string
@@ -804,7 +804,7 @@ namespace org\octris\core\type {
         /**
          * Convert special characters to HTML entities.
          *
-         * @octdoc  f:string/htmlspecialchars
+         * @octdoc  m:string/htmlspecialchars
          * @param   string      $string         String to convert.
          * @param   int         $quote_style    Optional parameter to define what will be done with 'single' and "double" quotes.
          * @return  string                      Converted string.
@@ -818,7 +818,7 @@ namespace org\octris\core\type {
         /**
          * Convert a string to UTF-8
          *
-         * @octdoc  f:string/toUtf8
+         * @octdoc  m:string/toUtf8
          * @param   string      $string         String to convert.
          * @param   string      $encoding       Optional convert from this encoding to UTF-8.
          * @return  string                      Converted string.
@@ -840,7 +840,7 @@ namespace org\octris\core\type {
         /**
          * Convert character encoding of a string.
          *
-         * @octdoc  f:string/convert
+         * @octdoc  m:string/convert
          * @param   string      $string         The string being encoded.
          * @param   string      $to_encoding    The type of encoding that str is being converted to.
          * @param   string      $from_encoding  Optional source encoding is specified by character code names before conversion. 
@@ -857,7 +857,7 @@ namespace org\octris\core\type {
         /**
          * Strip whitespace (or other characters) from the beginning of a string.
          *
-         * @octdoc  f:string/ltrim
+         * @octdoc  m:string/ltrim
          * @param   string      $string         The input string.
          * @param   string      $charlist       Optional characters to strip.
          * @return  string                      Stripped string.
@@ -878,7 +878,7 @@ namespace org\octris\core\type {
         /**
          * Strip whitespace (or other characters) from the end of a string.
          *
-         * @octdoc  f:string/rtrim
+         * @octdoc  m:string/rtrim
          * @param   string      $string         The input string.
          * @param   string      $charlist       Optional characters to strip.
          * @return  string                      Stripped string.
@@ -899,7 +899,7 @@ namespace org\octris\core\type {
         /**
          * Strip whitespace (or other characters) from the both start and end of a string.
          *
-         * @octdoc  f:string/trim
+         * @octdoc  m:string/trim
          * @param   string      $string         The input string.
          * @param   string      $charlist       Optional characters to strip.
          * @return  string                      Stripped string.
@@ -919,7 +919,7 @@ namespace org\octris\core\type {
         /**
          * Return a formatted string.
          *
-         * @octdoc  f:string/sprintf
+         * @octdoc  m:string/sprintf
          * @param   string      $format         Formatting pattern.
          * @param   mixed       $args           Arguments for formatting.
          * @param   mixed       ...             
@@ -937,7 +937,7 @@ namespace org\octris\core\type {
         /**
          * Return a formatted string.
          *
-         * @octdoc  f:string/vsprintf
+         * @octdoc  m:string/vsprintf
          * @param   string      $format         Formatting pattern.
          * @param   mixed       $args           Arguments for formatting.
          * @param   mixed       ...             
@@ -980,7 +980,7 @@ namespace org\octris\core\type {
         /**
          * Check if a specified string is valid UTF-8.
          *
-         * @octdoc  f:string/isUtf8
+         * @octdoc  m:string/isUtf8
          * @param   string      $string         String to validate.
          * @return  bool                        Returns true, if a string is valid UTF-8.
          */
