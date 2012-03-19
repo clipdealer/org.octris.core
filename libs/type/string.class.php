@@ -53,16 +53,16 @@ namespace org\octris\core\type {
          *
          * @octdoc  f:string/chunk_split
          * @param   string      $string         The string to be chunked.
-         * @param   int         $chunklen       The chunk length.
+         * @param   int         $chunk_len      The chunk length.
          * @param   string      $end            The line ending sequence.
          * @return  string                      The chunked string.
          */
-        public static function chunk_split($string, $chunklen = 76, $end = "\r\n")
+        public static function chunk_split($string, $chunk_len = 76, $end = "\r\n")
         /**/
         {
-            return preg_replace_callback('/.{' . $chunklen . '}/us', function($m) use ($end) {
+            return preg_replace_callback('/.{' . $chunk_len . '}/us', function($m) use ($end) {
                 return $m[0] . $end;
-            }, $str) . (mb_strlen($str, 'UTF-8') % $len == 0 ? '' : $end);
+            }, $str) . (mb_strlen($str, 'UTF-8') % $chunk_len == 0 ? '' : $end);
         }
 
         /**
