@@ -170,6 +170,97 @@ namespace org\octris\core\type {
         }
 
         /**
+         * Cut a string after a specified number of characters. If possible and definied through the
+         * parameter 'tolerance', this function will try to cut the string at a whitespace character.
+         *
+         * @octdoc  m:string/cut
+         * @param   string      $string         String to cut.
+         * @param   int         $maxlen         Max length of string.
+         * @param   string      $continue       Optional string to add if string is cut.
+         * @param   int         $tolarance      Optional tolarance to catch space character.
+         * @return  string                      Cut string.
+         */
+        public function cut($string, $maxlen, $continue = ' ...', $tolarance = 10)
+        /**/
+        {
+            if (mb_strlen($string, 'UTF-8') <= $maxlen) {
+                return $string;
+            }
+            
+            $string = mb_substr($string, 0, $maxlen - mb_strlen($continue, 'UTF-8'), 'UTF-8');
+            
+            $pos = mb_strrpos($string, ' ', null, 'UTF-8');
+            
+            if ($pos !== false && mb_strlen($string, 'UTF-8') - $pos <= $tolarance) {
+                $string = mb_substr($string, 0, $pos, 'UTF-8');
+            }
+            
+            $string = trim($string);
+            $chr    = mb_substr($string, -1, 1, 'UTF-8');
+            
+            if ($chr == '.' || $chr == '!' || $chr == '?') {
+                return $string;
+            }
+            
+            $string = rtrim($string, '-:,;') . $continue;
+            
+            return $string;
+        }
+
+        /**
+         * Obliterate a string. Replace part of a string with a specified character, to make
+         * it unusable by hiding information.
+         *
+         * @octdoc  m:string/obliterate
+         * @param   string      $string         String to obliterate.
+         * @param   int         $len            Length the returned string should have.
+         * @param   int         $readable       Optional number of characters to keep readable (>0 = from beginning; <0 = from end).
+         * @param   string      $char           Character to use to make string unreadable.
+         * @return  string                      Obliterated string.
+         */
+        public static function obliterate($string, $len, $readable = -2, $char = '*')
+        /**/
+        {
+            $return = '';
+            
+            if ($string != '') {
+                $tmp = str_repeat($char, $len - abs($readable));
+            
+                $return = ($readable > 0 
+                        ? mb_substr($string, 0, $readable, 'UTF-8') . $tmp
+                        : $tmp . mb_substr($string, $readable));
+            }
+                    
+            return $return;
+        }
+
+        /**
+         * Shorten a string by cutting information from it. For example:
+         * 
+         * makes: http://www.itunesreg[...]om/index.php
+         * from:  http://www.itunesregistry.com/index.php
+         *
+         * If a string is longer than the specified 'maxlen', it get's shortened. If it's shorter or exactly
+         * 'maxlen' characters long, it will be returned without any modification.
+         * 
+         * @octdoc  m:string/shorten
+         * @param   string      $string         String to shorten.
+         * @param   int         $maxlen         Optional maximum length a string may have.
+         * @param   int         $offset         Optional characters from the left that should be displayed before inserting characters.
+         * @return  string                      Shortened string.
+         */
+        public static function shorten($string, $maxlen = 40, $offset = 20)
+        /**/
+        {
+            if (($len = mb_strlen($string, 'UTF-8')) <= $maxlen) {
+                return $string;
+            }
+
+            return mb_substr($string, 0, $offset, 'UTF-8') . '[...]' . 
+                   mb_substr($string, $len - ($maxlen - $offset - 5));
+        }
+
+        /**
          * Split multibyte string using regular expression.
          *
          * @octdoc  f:string/split
@@ -220,7 +311,7 @@ namespace org\octris\core\type {
             
             return $collator::compare($string, $string2);
         }
-    
+
         /**
          * Finds position of first occurrence of a string within another, case insensitive.
          *
