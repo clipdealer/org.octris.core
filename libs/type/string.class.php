@@ -103,6 +103,7 @@ namespace org\octris\core\type {
         {
             $abs       = abs($pad);
             $chunk_len = ($chunk_len > $abs ? $abs : $chunk_len);
+            $pad_char  = substr($pad_char, 0, 1);
 
             if ($abs % $chunk_len != 0) {
                 throw new \Exception("'pad' ($pad) is not divisable by 'chunk_len' ($chunk_len)");
