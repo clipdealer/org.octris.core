@@ -109,7 +109,7 @@ namespace org\octris\core\type {
                 throw new \Exception("'pad' ($pad) is not divisable by 'chunk_len' ($chunk_len)");
             } else {
                 $format = sprintf(
-                    '%%%s%s%d.%ds',
+                    '%%\'%s%s%d.%ds',
                     $pad_char,
                     ($pad < 0 ? '-' : ''),
                     $abs,
