@@ -14,7 +14,7 @@ namespace org\octris\core\project {
     /**
      * Tool for generating/updating ACL resources from project modules/pages/actions.
      *
-     * @octdoc      h:tools/project
+     * @octdoc      h:project/updateacl
      * @copyright   copyright (c) 2011 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */

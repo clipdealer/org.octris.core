@@ -26,7 +26,7 @@ namespace org\octris\core\app\cli {
         /**
          * Next valid actions.
          *
-         * @octdoc  v:page/$next_page
+         * @octdoc  p:page/$next_page
          * @var     array
          */
         protected $next_page = array();

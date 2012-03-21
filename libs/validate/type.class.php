@@ -23,12 +23,12 @@ namespace org\octris\core\validate {
         /**
          * Stores validation options.
          *
-         * @octdoc  v:type/$options
+         * @octdoc  p:type/$options
          * @var     array
          */
         protected $options = array();
         /**/
-        
+
         /**
          * Constructor.
          *
@@ -40,7 +40,7 @@ namespace org\octris\core\validate {
         {
             $this->options = $options;
         }
-    
+
         /**
          * Validator implementation.
          *
@@ -64,10 +64,10 @@ namespace org\octris\core\validate {
         {
             // replace nullbytes
             $value = str_replace("\0", '', $value);
-        
+
             return $value;
         }
- 
+
         /**
          * Return possible set options.
          *

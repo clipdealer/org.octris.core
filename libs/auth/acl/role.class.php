@@ -17,11 +17,13 @@ namespace org\octris\core\auth\acl {
      * @copyright   copyright (c) 2011 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    class role {
+    class role 
+    /**/
+    {
         /**
          * Name of role.
          *
-         * @octdoc  v:role/$name
+         * @octdoc  p:role/$name
          * @var     string
          */
         protected $name;
@@ -30,7 +32,7 @@ namespace org\octris\core\auth\acl {
         /**
          * Additional policies assigned to role.
          *
-         * @octdoc  v:role/$policies
+         * @octdoc  p:role/$policies
          * @var     array
          */
         protected $policies = array();
@@ -39,7 +41,7 @@ namespace org\octris\core\auth\acl {
         /**
          * Parent roles.
          *
-         * @octdoc  v:role/$parents
+         * @octdoc  p:role/$parents
          * @var     array
          */
         protected $parents = array();

@@ -23,7 +23,7 @@ namespace org\octris\core\auth\adapter {
         /**
          * Username to authenticate with adapter.
          *
-         * @octdoc  v:htpasswd/$username
+         * @octdoc  p:htpasswd/$username
          * @var     string
          */
         protected $username = '';
@@ -32,7 +32,7 @@ namespace org\octris\core\auth\adapter {
         /**
          * Credential to authenticate with adapter.
          *
-         * @octdoc  v:htpasswd/$credential
+         * @octdoc  p:htpasswd/$credential
          * @var     string
          */
         protected $credential = '';
@@ -41,7 +41,7 @@ namespace org\octris\core\auth\adapter {
         /**
          * Htpasswd file to use for authentication.
          *
-         * @octdoc  v:htpasswd/$file
+         * @octdoc  p:htpasswd/$file
          * @var     string
          */
         protected $file;

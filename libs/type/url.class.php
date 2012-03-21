@@ -23,7 +23,7 @@ namespace org\octris\core\type {
         /**
          * Stores URL.
          *
-         * @octdoc  v:url/$url
+         * @octdoc  p:url/$url
          * @var     string
          */
         protected $url = '';
@@ -32,7 +32,7 @@ namespace org\octris\core\type {
         /**
          * Stores URL components.
          *
-         * @octdoc  v:url/$components
+         * @octdoc  p:url/$components
          * @var     array
          */
         protected $components = array();

@@ -23,7 +23,7 @@ namespace org\octris\core {
         /**
          * Instance of l10n class for singleton pattern.
          *
-         * @octdoc  v:l10n/$instance
+         * @octdoc  p:l10n/$instance
          * @var     \org\octris\core\l10n
          */
         private static $instance = null;
@@ -32,7 +32,7 @@ namespace org\octris\core {
         /**
          * Locale string.
          *
-         * @octdoc  v:l10n/$lc
+         * @octdoc  p:l10n/$lc
          * @var     string
          */
         protected $lc = null;
@@ -41,7 +41,7 @@ namespace org\octris\core {
         /**
          * Stores language codes for restoreLocale
          *
-         * @octdoc  v:l10n/$lc_mem
+         * @octdoc  p:l10n/$lc_mem
          * @var     array
          */
         protected $lc_mem = array();
@@ -50,7 +50,7 @@ namespace org\octris\core {
         /**
          * Gettext compiler cache -- an array -- is only used, if a caching backend is not set.
          *
-         * @octdoc  v:l10n/$compiler_cache
+         * @octdoc  p:l10n/$compiler_cache
          * @var     array
          * @see     l10n::setCache
          */
@@ -60,7 +60,7 @@ namespace org\octris\core {
         /**
          * L10n caching backend.
          *
-         * @octdoc  v:l10n/$cache
+         * @octdoc  p:l10n/$cache
          * @var     \org\octris\core\cache
          */
         protected static $cache = null;
@@ -69,7 +69,7 @@ namespace org\octris\core {
         /**
          * Directory of dictionary
          *
-         * @octdoc  v:l10n/$directory
+         * @octdoc  p:l10n/$directory
          * @var     string
          */
         protected $directory = '';

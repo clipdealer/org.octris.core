@@ -24,7 +24,7 @@ namespace org\octris\core\tpl {
         /**
          * Default options for yuicompressor.
          *
-         * @octdoc  v:compress/$defaults
+         * @octdoc  p:compress/$defaults
          * @var     array
          */
         protected static $defaults = array('js' => array(), 'css' => array());
@@ -33,7 +33,7 @@ namespace org\octris\core\tpl {
         /**
          * Enable / disable YUI compressor.
          *
-         * @octdoc  v:compress/$enabled
+         * @octdoc  p:compress/$enabled
          * @var     bool
          */
         protected static $enabled = false;

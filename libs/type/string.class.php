@@ -16,17 +16,48 @@ namespace org\octris\core\type {
      * @octdoc      c:type/string
      * @copyright   copyright (c) 2011 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
+     * 
+     * @todo        convert match/replace methods to use preg_match / replace? see b2u helper method
+     *              for using PREG_MATCH_CAPTURE_OFFSET.
      */
     class string
     /**/
     {
+        /**
+         * Various constants.
+         *
+         * @octdoc  d:string/T_...
+         */
+        const T_CASE_UPPER       = MB_CASE_UPPER;
+        const T_CASE_LOWER       = MB_CASE_LOWER;
+        const T_CASE_TITLE       = MB_CASE_TITLE;
+        const T_CASE_UPPER_FIRST = 1000;
+        const T_CASE_LOWER_FIRST = 1001;
+        /**/
+
         /** make class static **/
         protected function __construct() {}
         
         /**
+         * This is a helper method to convert byte offsets to utf8 character units. This is useful
+         * for example when working with PREG_MATCH_CAPTURE_OFFSET to convert the byte-offset to 
+         * utf8 character unit offset.
+         *
+         * @octdoc  m:string/b2u
+         * @param   string      $string         String to calculate character units for.
+         * @param   int         $byte_offset    Byte offset to convert.
+         * @return  int                         Character units.
+         */
+        public static function b2u($string, $byte_offset)
+        /**/
+        {
+            return mb_strlen(substr($string, 0, $byte_offset), 'UTF-8');
+        }
+
+        /**
          * Return a specific character.
          *
-         * @octdoc  f:string/chr
+         * @octdoc  m:string/chr
          * @param   int         $chr            Code of the character to return.
          * @return  string                      The specified character.
          */
@@ -37,26 +68,111 @@ namespace org\octris\core\type {
         }
         
         /**
+         * This implements a helper function to pad an string or ID to a specified lenght and chunk it using a specified chunk length.
+         * Note, that this function requires that 'pad' is a multiple of 'len', because each chunk needs to be of the same length. Note
+         * further, that resulting string get's an extra 'chunk_char' appended. This function is especially useful for creating nested
+         * numeric path names, see the following example using the default arguments:
+         *
+         * string: 123456
+         * result: 000/123/456/
+         *
+         * The padding parameter 'pad' allows for padding or cutting the string -- according to the number compared to the length of the
+         * string to pad/cut. The following are the rules:
+         *
+         * * $pad < 0 -- padding/cutting on the left
+         * * $pad > 0 -- padding/cutting on the right
+         * * $pad = 0 -- no padding / cutting
+         * * abs($pad) < len($string) -- the string will be cut
+         * * abs($pad) > len($string) -- the string will be padded
+         *
+         * The side off cutting is specified through the sign of the 'pad' parameter:
+         *
+         * * $pad < 0 && abs($pad) < len($string) -- the string get's cut on the left
+         * * $pad > 0 && abs($pad) < len($string) -- the string get's cut on the right
+         *
+         * @octdoc  m:string/chunk_id
+         * @param   int|string  $string         String or number to chunk.
+         * @param   int         $pad            Optional number of characters to pad to.
+         * @param   int         $chunk_len      Optional length of each chunk.
+         * @param   string      $pad_char       Optional character for padding.
+         * @param   string      $chunk_char     Optional character for chunking.
+         * @return  string                      Chunked string.
+         */
+        public static function chunk_id($string, $pad = 9, $chunk_len = 3, $pad_char = '0', $chunk_char = '/')
+        /**/
+        {
+            $abs       = abs($pad);
+            $chunk_len = ($chunk_len > $abs ? $abs : $chunk_len);
+            $pad_char  = substr($pad_char, 0, 1);
+
+            if ($abs % $chunk_len != 0) {
+                throw new \Exception("'pad' ($pad) is not divisable by 'chunk_len' ($chunk_len)");
+            } else {
+                $format = sprintf(
+                    '%%\'%s%s%d.%ds',
+                    $pad_char,
+                    ($pad < 0 ? '-' : ''),
+                    $abs,
+                    $abs
+                );
+
+                $string = self::sprintf($format, $string);
+
+                return self::chunk_split($string, $chunk_len, $chunk_char);
+            }
+        }
+
+        /**
          * Split a string into smaller chunks.
          *
-         * @octdoc  f:string/chunk_split
+         * @octdoc  m:string/chunk_split
          * @param   string      $string         The string to be chunked.
-         * @param   int         $chunklen       The chunk length.
+         * @param   int         $chunk_len      The chunk length.
          * @param   string      $end            The line ending sequence.
          * @return  string                      The chunked string.
          */
-        public static function chunk_split($string, $chunklen = 76, $end = "\r\n")
+        public static function chunk_split($string, $chunk_len = 76, $end = "\r\n")
         /**/
         {
-            return preg_replace_callback('/.{' . $chunklen . '}/us', function($m) use ($end) {
+            return preg_replace_callback('/.{' . $chunk_len . '}/us', function($m) use ($end) {
                 return $m[0] . $end;
-            }, $str) . (mb_strlen($str, 'UTF-8') % $len == 0 ? '' : $end);
+            }, $string) . (mb_strlen($string, 'UTF-8') % $chunk_len == 0 ? '' : $end);
+        }
+
+        /**
+         * Performs case folding on a string.
+         *
+         * @octdoc  m:string/convert_case 
+         * @param   string      $string         String to convert.
+         * @param   int         $mode           Mode of case folding.
+         * @return  string                      Converted string.
+         */
+        public static function convert_case($string, $mode)
+        /**/
+        {
+            switch ($mode) {
+            case self::T_CASE_LOWER_FIRST:
+                $return = preg_replace_callback('/^(.)/u', function($m) {
+                    return mb_strtolower($m[1], 'UTF-8');
+                }, $string);
+                break;
+            case self::T_CASE_UPPER_FIRST:
+                $return = preg_replace_callback('/^(.)/u', function($m) {
+                    return mb_strtoupper($m[1], 'UTF-8');
+                }, $string);
+                break;
+            default:
+                $return = mb_convert_case($string, $mode, 'UTF-8');
+                break;
+            }
+
+            return $return;
         }
 
         /**
          * Regular expression match for multibyte string.
          *
-         * @octdoc  f:string/match
+         * @octdoc  m:string/match
          * @param   string      $pattern        The search pattern.
          * @param   string      $string         The search string.
          * @param   string      $options        If 'i' is specified for this parameter, the case will be ignored.
@@ -82,7 +198,7 @@ namespace org\octris\core\type {
         /**
          * Replace regular expression with multibyte support.
          *
-         * @octdoc  f:string/replace
+         * @octdoc  m:string/replace
          * @param   string      $pattern        The search pattern.
          * @param   string      $string         The search string.
          * @param   string      $options        Matching condition can be set by option parameter. If i is specified for this
@@ -102,9 +218,126 @@ namespace org\octris\core\type {
         }
     
         /**
+         * Make's the first character of a string lowercase.
+         * 
+         * @octdoc  m:string/ucfirst
+         * @param   string      $string         String to convert.
+         * @return  string                      Converted string.
+         */
+        public static function lcfirst($string)
+        /**/
+        {
+            return self::convert_case($string, self::T_CASE_LOWER_FIRST);
+        }
+
+        /**
+         * Make's the first character of a string uppercase.
+         * 
+         * @octdoc  m:string/ucfirst
+         * @param   string      $string         String to convert.
+         * @return  string                      Converted string.
+         */
+        public static function ucfirst($string)
+        /**/
+        {
+            return self::convert_case($string, self::T_CASE_UPPER_FIRST);
+        }
+
+        /**
+         * Cut a string after a specified number of characters. If possible and definied through the
+         * parameter 'tolerance', this function will try to cut the string at a whitespace character.
+         *
+         * @octdoc  m:string/cut
+         * @param   string      $string         String to cut.
+         * @param   int         $maxlen         Max length of string.
+         * @param   string      $continue       Optional string to add if string is cut.
+         * @param   int         $tolarance      Optional tolarance to catch space character.
+         * @return  string                      Cut string.
+         */
+        public static function cut($string, $maxlen, $continue = ' ...', $tolarance = 10)
+        /**/
+        {
+            if (mb_strlen($string, 'UTF-8') <= $maxlen) {
+                return $string;
+            }
+            
+            $string = mb_substr($string, 0, $maxlen - mb_strlen($continue, 'UTF-8'), 'UTF-8');
+            
+            $pos = mb_strrpos($string, ' ', null, 'UTF-8');
+            
+            if ($pos !== false && mb_strlen($string, 'UTF-8') - $pos <= $tolarance) {
+                $string = mb_substr($string, 0, $pos, 'UTF-8');
+            }
+            
+            $string = trim($string);
+            $chr    = mb_substr($string, -1, 1, 'UTF-8');
+            
+            if ($chr == '.' || $chr == '!' || $chr == '?') {
+                return $string;
+            }
+            
+            $string = rtrim($string, '-:,;') . $continue;
+            
+            return $string;
+        }
+
+        /**
+         * Obliterate a string. Replace part of a string with a specified character, to make
+         * it unusable by hiding information.
+         *
+         * @octdoc  m:string/obliterate
+         * @param   string      $string         String to obliterate.
+         * @param   int         $len            Length the returned string should have.
+         * @param   int         $readable       Optional number of characters to keep readable (>0 = from beginning; <0 = from end).
+         * @param   string      $char           Character to use to make string unreadable.
+         * @return  string                      Obliterated string.
+         */
+        public static function obliterate($string, $len, $readable = -2, $char = '*')
+        /**/
+        {
+            $return = '';
+            
+            if ($string != '') {
+                $tmp = str_repeat($char, $len - abs($readable));
+            
+                $return = ($readable > 0 
+                        ? mb_substr($string, 0, $readable, 'UTF-8') . $tmp
+                        : $tmp . mb_substr($string, $readable));
+            }
+                    
+            return $return;
+        }
+
+        /**
+         * Shorten a string by cutting information from it. For example:
+         * 
+         * makes: http://www.itunesreg[...]om/index.php
+         * from:  http://www.itunesregistry.com/index.php
+         *
+         * If a string is longer than the specified 'maxlen', it get's shortened. If it's shorter or exactly
+         * 'maxlen' characters long, it will be returned without any modification.
+         * 
+         * @octdoc  m:string/shorten
+         * @param   string      $string         String to shorten.
+         * @param   int         $maxlen         Optional maximum length a string may have.
+         * @param   int         $offset         Optional characters from the left that should be displayed before inserting characters.
+         * @return  string                      Shortened string.
+         */
+        public static function shorten($string, $maxlen = 40, $offset = 20)
+        /**/
+        {
+            if (($len = mb_strlen($string, 'UTF-8')) <= $maxlen) {
+                return $string;
+            }
+
+            return mb_substr($string, 0, $offset, 'UTF-8') . '[...]' . 
+                   mb_substr($string, $len - ($maxlen - $offset - 5));
+        }
+
+        /**
          * Split multibyte string using regular expression.
          *
-         * @octdoc  f:string/split
+         * @octdoc  m:string/split
          * @param   string      $pattern        The regular expression pattern.
          * @param   string      $string         The string being split.
          * @return  array                       Array of splitted strings.
@@ -120,7 +353,7 @@ namespace org\octris\core\type {
         /**
          * Case-insensitive string comparison.
          *
-         * @octdoc  f:string/strcasecmp
+         * @octdoc  m:string/strcasecmp
          * @param   string      $string1        The first string.
          * @param   string      $string2        The second string.
          * @param   Collator    $collator       Optional collator to use for comparision.
@@ -152,11 +385,11 @@ namespace org\octris\core\type {
             
             return $collator::compare($string, $string2);
         }
-    
+
         /**
          * Finds position of first occurrence of a string within another, case insensitive.
          *
-         * @octdoc  f:string/stripos
+         * @octdoc  m:string/stripos
          * @param   string      $string         String to return length for.
          * @param   string      $needle         The position counted from the beginning of haystack.
          * @param   int         $offset         The search offset. If it is not specified, 0 is used.
@@ -172,7 +405,7 @@ namespace org\octris\core\type {
         /**
          * Finds first occurrence of a string within another, case insensitive.
          *
-         * @octdoc  f:string/stristr
+         * @octdoc  m:string/stristr
          * @param   string      $string         The string from which to get the first occurrence of needle.
          * @param   string      $needle         The string to find in string.
          * @param   bool        $part           Determines which portion of haystack this public static function returns. If set to 
@@ -190,7 +423,7 @@ namespace org\octris\core\type {
         /**
          * Return length of the given string.
          *
-         * @octdoc  f:string/strlen
+         * @octdoc  m:string/strlen
          * @param   string      $string         String to return length for.
          */
         public static function strlen($string)
@@ -202,7 +435,7 @@ namespace org\octris\core\type {
         /**
          * Find position of first occurrence of string in a string.
          *
-         * @octdoc  f:string/strpos
+         * @octdoc  m:string/strpos
          * @param   string      $string         String to return length for.
          * @param   string      $needle         The position counted from the beginning of haystack.
          * @param   int         $offset         The search offset. If it is not specified, 0 is used.
@@ -218,7 +451,7 @@ namespace org\octris\core\type {
         /**
          * Case-insensitive string comparison using natural sorting algorithm.
          *
-         * @octdoc  f:string/strnatcasecmp
+         * @octdoc  m:string/strnatcasecmp
          * @param   string      $string1        The first string.
          * @param   string      $string2        The second string.
          * @param   Collator    $collator       Optional collator to use for comparision.
@@ -235,7 +468,7 @@ namespace org\octris\core\type {
         /**
          * String comparison using natural sorting algorithm.
          *
-         * @octdoc  f:string/strcasecmp
+         * @octdoc  m:string/strcasecmp
          * @param   string      $string1        The first string.
          * @param   string      $string2        The second string.
          * @param   Collator    $collator       Optional collator to use for comparision.
@@ -260,7 +493,7 @@ namespace org\octris\core\type {
         /**
          * Case-insensitive string comparison of the first n characters.
          *
-         * @octdoc  f:string/strncasecmp
+         * @octdoc  m:string/strncasecmp
          * @param   string      $string1        The first string.
          * @param   string      $string2        The second string.
          * @param   int         $length         Number of characters to use in the comparison.
@@ -278,7 +511,7 @@ namespace org\octris\core\type {
         /**
          * String comparison of the first n characters.
          *
-         * @octdoc  f:string/strncmp
+         * @octdoc  m:string/strncmp
          * @param   string      $string1        The first string.
          * @param   string      $string2        The second string.
          * @param   int         $length         Number of characters to use in the comparison.
@@ -299,7 +532,7 @@ namespace org\octris\core\type {
         /**
          * Pad a string to a certain length with another string.
          *
-         * @octdoc  f:string/str_pad
+         * @octdoc  m:string/str_pad
          * @param   string      $string         String to pad.
          * @param   int         $length         Length to pad string to.
          * @param   string      $chr            Optional character to use for padding.
@@ -321,7 +554,7 @@ namespace org\octris\core\type {
         /**
          * Randomly shuffles a string.
          *
-         * @octdoc  f:string/str_shuffle
+         * @octdoc  m:string/str_shuffle
          * @param   string      $string         The string to shuffle.
          * @return  string                      The shuffled string.
          */
@@ -334,7 +567,7 @@ namespace org\octris\core\type {
         /**
          * Convert a string to an array.
          *
-         * @octdoc  f:string/str_split
+         * @octdoc  m:string/str_split
          * @param   string      $string         The string to be chunked.
          * @param   int         $split_length   Optional maximum length of the chunk.
          * @return  array                       The chunked string.
@@ -352,7 +585,7 @@ namespace org\octris\core\type {
         /**
          * Reverse a string.
          *
-         * @octdoc  f:string/strrev
+         * @octdoc  m:string/strrev
          * @param   string      $string         The string to be reversed.
          * @return  string                      Reversed string.
          */
@@ -365,7 +598,7 @@ namespace org\octris\core\type {
         /**
          * Find position of last occurrence of a string in a string.
          *
-         * @octdoc  f:string/strrpos
+         * @octdoc  m:string/strrpos
          * @param   string      $string         String to return length for.
          * @param   string      $needle         The string to find in haystack.
          * @param   int         $offset         May be specified to begin searching an arbitrary number of characters 
@@ -383,7 +616,7 @@ namespace org\octris\core\type {
         /**
          * Finds position of last occurrence of a string within another, case insensitive.
          *
-         * @octdoc  f:string/strripos
+         * @octdoc  m:string/strripos
          * @param   string      $string         String to return length for.
          * @param   string      $needle         The string to find in haystack.
          * @param   int         $offset         May be specified to begin searching an arbitrary number of characters 
@@ -401,7 +634,7 @@ namespace org\octris\core\type {
         /**
          * Finds first occurrence of a string within another.
          *
-         * @octdoc  f:string/strstr
+         * @octdoc  m:string/strstr
          * @param   string      $string         The string from which to get the first occurrence of needle.
          * @param   string      $needle         The string to find in string.
          * @param   bool        $part           Determines which portion of haystack this public static function returns. If set to 
@@ -419,7 +652,7 @@ namespace org\octris\core\type {
         /**
          * Make a string lowercase.
          *
-         * @octdoc  f:string/strtolower
+         * @octdoc  m:string/strtolower
          * @param   string      $string         The string being lowercased.
          * @return  string                      String with all alphabetic characters converted to lowercase.
          */
@@ -432,7 +665,7 @@ namespace org\octris\core\type {
         /**
          * Make a string uppercase.
          *
-         * @octdoc  f:string/strtoupper
+         * @octdoc  m:string/strtoupper
          * @param   string      $string         The string being uppercased.
          * @return  string                      String with all alphabetic characters converted to uppercase.
          */
@@ -445,7 +678,7 @@ namespace org\octris\core\type {
         /**
          * Get part of string.
          *
-         * @octdoc  f:string/substr
+         * @octdoc  m:string/substr
          * @param   string      $string         The string to extract a part from.
          * @param   int         $start          The first position used in string.
          * @param   int|null    $length         Optional length of the part to extract.
@@ -459,7 +692,7 @@ namespace org\octris\core\type {
         /**
          * Comparison of two strings from an offset, up to length characters.
          *
-         * @octdoc  f:string/substr_compare
+         * @octdoc  m:string/substr_compare
          * @param   string      $string         The main string being compared.
          * @param   string      $compare        The secondary string being compared.
          * @param   int         $offset         The start position for the comparison. If negative, it starts counting from 
@@ -484,7 +717,7 @@ namespace org\octris\core\type {
         /**
          * Count the number of substring occurences.
          *
-         * @octdoc  f:string/substr_count
+         * @octdoc  m:string/substr_count
          * @param   string      $string         The string being checked.
          * @param   string      $needle         The string being found.
          * @return  string                      The number of times the needle substring occurs in the haystack string.     
@@ -498,7 +731,7 @@ namespace org\octris\core\type {
         /**
          * Replace text within a portion of a string.
          *
-         * @octdoc  f:string/substr_replace
+         * @octdoc  m:string/substr_replace
          * @param   string      $string         The input string.
          * @param   string      $replacement    The replacement string.
          * @param   int         $start          If start is positive, the replacing will begin at the start'th offset 
@@ -523,7 +756,7 @@ namespace org\octris\core\type {
         /**
          * Convert a specified string to 7bit.
          *
-         * @octdoc  f:string/to7bit
+         * @octdoc  m:string/to7bit
          * @param   string      $string         String to convert.
          * @return  string                      Converted string to 7bit.
          */
@@ -543,7 +776,7 @@ namespace org\octris\core\type {
         /**
          * Replaces PHP's htmlentities to safely convert using specified encoding.
          *
-         * @octdoc  f:string/htmlentities
+         * @octdoc  m:string/htmlentities
          * @param   string      $string         String to convert.
          * @param   int         $quote_style    Optional parameter to define what will be done with 'single' and "double" quotes.
          * @return  string                      Converted string.
@@ -557,7 +790,7 @@ namespace org\octris\core\type {
         /**
          * 
          *
-         * @octdoc  f:string/html_entity_decode
+         * @octdoc  m:string/html_entity_decode
          * @param   string      $string         The input string.
          * @param   int         $quote_style    Optional parameter to define what will be done with 'single' and "double" quotes.
          * @return  string
@@ -572,7 +805,7 @@ namespace org\octris\core\type {
         /**
          * Convert special characters to HTML entities.
          *
-         * @octdoc  f:string/htmlspecialchars
+         * @octdoc  m:string/htmlspecialchars
          * @param   string      $string         String to convert.
          * @param   int         $quote_style    Optional parameter to define what will be done with 'single' and "double" quotes.
          * @return  string                      Converted string.
@@ -586,7 +819,7 @@ namespace org\octris\core\type {
         /**
          * Convert a string to UTF-8
          *
-         * @octdoc  f:string/toUtf8
+         * @octdoc  m:string/toUtf8
          * @param   string      $string         String to convert.
          * @param   string      $encoding       Optional convert from this encoding to UTF-8.
          * @return  string                      Converted string.
@@ -608,7 +841,7 @@ namespace org\octris\core\type {
         /**
          * Convert character encoding of a string.
          *
-         * @octdoc  f:string/convert
+         * @octdoc  m:string/convert
          * @param   string      $string         The string being encoded.
          * @param   string      $to_encoding    The type of encoding that str is being converted to.
          * @param   string      $from_encoding  Optional source encoding is specified by character code names before conversion. 
@@ -625,7 +858,7 @@ namespace org\octris\core\type {
         /**
          * Strip whitespace (or other characters) from the beginning of a string.
          *
-         * @octdoc  f:string/ltrim
+         * @octdoc  m:string/ltrim
          * @param   string      $string         The input string.
          * @param   string      $charlist       Optional characters to strip.
          * @return  string                      Stripped string.
@@ -646,7 +879,7 @@ namespace org\octris\core\type {
         /**
          * Strip whitespace (or other characters) from the end of a string.
          *
-         * @octdoc  f:string/rtrim
+         * @octdoc  m:string/rtrim
          * @param   string      $string         The input string.
          * @param   string      $charlist       Optional characters to strip.
          * @return  string                      Stripped string.
@@ -667,7 +900,7 @@ namespace org\octris\core\type {
         /**
          * Strip whitespace (or other characters) from the both start and end of a string.
          *
-         * @octdoc  f:string/trim
+         * @octdoc  m:string/trim
          * @param   string      $string         The input string.
          * @param   string      $charlist       Optional characters to strip.
          * @return  string                      Stripped string.
@@ -687,7 +920,7 @@ namespace org\octris\core\type {
         /**
          * Return a formatted string.
          *
-         * @octdoc  f:string/sprintf
+         * @octdoc  m:string/sprintf
          * @param   string      $format         Formatting pattern.
          * @param   mixed       $args           Arguments for formatting.
          * @param   mixed       ...             
@@ -697,7 +930,7 @@ namespace org\octris\core\type {
         /**/
         {
             $args = func_get_args();
-            array_shift($argv);
+            array_shift($args);
         
             return vsprintf($format, $args);
         }
@@ -705,7 +938,7 @@ namespace org\octris\core\type {
         /**
          * Return a formatted string.
          *
-         * @octdoc  f:string/vsprintf
+         * @octdoc  m:string/vsprintf
          * @param   string      $format         Formatting pattern.
          * @param   mixed       $args           Arguments for formatting.
          * @param   mixed       ...             
@@ -727,8 +960,8 @@ namespace org\octris\core\type {
                             die('argument not set for ' . $idx . "\n");
                         }
 
-                        if (($diff = \strlen($args[$idx]) - strlen($args[$idx], 'UTF-8')) > 0) {
-                            if ($prec !== '') $prec = '.' . ((int)\substr($prec, 1) + $diff);
+                        if (($diff = strlen($args[$idx]) - self::strlen($args[$idx], 'UTF-8')) > 0) {
+                            if ($prec !== '') $prec = '.' . ((int)substr($prec, 1) + $diff);
                             if ($size !== '') $size = (int)$size + $diff;
                         }
 
@@ -742,13 +975,13 @@ namespace org\octris\core\type {
                 $format
             );
 
-            return \vsprintf($format, $args);
+            return vsprintf($format, $args);
         }
     
         /**
          * Check if a specified string is valid UTF-8.
          *
-         * @octdoc  f:string/isUtf8
+         * @octdoc  m:string/isUtf8
          * @param   string      $string         String to validate.
          * @return  bool                        Returns true, if a string is valid UTF-8.
          */

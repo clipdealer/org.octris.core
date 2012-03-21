@@ -31,7 +31,7 @@ namespace org\octris\core {
         /**
          * Provider instances.
          *
-         * @octdoc  v:provider/$instances
+         * @octdoc  p:provider/$instances
          * @var     array
          */
         protected static $instances = array();
@@ -40,7 +40,7 @@ namespace org\octris\core {
         /**
          * Internal data storage
          *
-         * @octdoc  v:provider/$storage
+         * @octdoc  p:provider/$storage
          * @var     array
          */
         protected static $storage = array();
@@ -49,7 +49,7 @@ namespace org\octris\core {
         /**
          * Data validators
          *
-         * @octdoc  v:provider/$validators
+         * @octdoc  p:provider/$validators
          * @var     array
          */
         protected $validators = array();
@@ -58,7 +58,7 @@ namespace org\octris\core {
         /**
          * Stores validation flags and sanitized values.
          *
-         * @octdoc  v:provider/$validated
+         * @octdoc  p:provider/$validated
          * @var     array
          */
         protected $validated = array();
@@ -67,7 +67,7 @@ namespace org\octris\core {
         /**
          * Stores name of data that is granted access to by instance.
          *
-         * @octdoc  v:provider/$name
+         * @octdoc  p:provider/$name
          * @var     string
          */
         protected $name = null;

@@ -13,7 +13,7 @@ namespace org\octris\core\validate\type {
     /**
      * Validator for testing if a string contains only printable characters.
      *
-     * @octdoc      c:validate/printable
+     * @octdoc      c:type/printable
      * @copyright   copyright (c) 2010-2011 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
@@ -23,7 +23,7 @@ namespace org\octris\core\validate\type {
         /**
          * Validator implementation.
          *
-         * @octdoc  m:print/validate
+         * @octdoc  m:printable/validate
          * @param   mixed       $value          Value to validate.
          * @return  bool                        Returns true if value is valid.
          */

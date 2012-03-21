@@ -23,7 +23,7 @@ namespace org\octris\core\logger\writer {
         /**
          * Mapping of logger levels to textual names.
          *
-         * @octdoc  v:file/$level_names
+         * @octdoc  p:file/$level_names
          * @var     array
          */
         private static $level_names = array(
@@ -41,7 +41,7 @@ namespace org\octris\core\logger\writer {
         /**
          * Name of file to log to.
          *
-         * @octdoc  v:file/$filename
+         * @octdoc  p:file/$filename
          * @var     string
          */
         protected $filename;
