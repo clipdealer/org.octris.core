@@ -11,28 +11,28 @@
 
 namespace org\octris\core\type {
     /**
-     * URL parser and pseudo-type.
+     * URI parser and pseudo-type.
      *
-     * @octdoc      c:type/url
-     * @copyright   copyright (c) 2010-2011 by Harald Lapp
+     * @octdoc      c:type/uri
+     * @copyright   copyright (c) 2010-2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    class url
+    class uri
     /**/
     {
         /**
-         * Stores URL.
+         * Stores URI.
          *
-         * @octdoc  p:url/$url
+         * @octdoc  p:uri/$uri
          * @var     string
          */
-        protected $url = '';
+        protected $uri = '';
         /**/
         
         /**
-         * Stores URL components.
+         * Stores URI components.
          *
-         * @octdoc  p:url/$components
+         * @octdoc  p:uri/$components
          * @var     array
          */
         protected $components = array();
@@ -41,34 +41,34 @@ namespace org\octris\core\type {
         /**
          * Constructor.
          *
-         * @octdoc  m:url/__construct
-         * @param   string          $url                URL to parse and store.
+         * @octdoc  m:uri/__construct
+         * @param   string          $uri                URI to parse and store.
          */
-        public function __construct($url)
+        public function __construct($uri)
         /**/
         {
-            $this->url = $url;
+            $this->uri = $uri;
             
-            $this->components = parse_url($url);
+            $this->components = parse_uri($uri);
         }
         
         /**
-         * Returns stored URL when object instance is casted to a string.
+         * Returns stored URI when object instance is casted to a string.
          *
-         * @octdoc  m:url/__toString
-         * @return  string                              Stored URL.
+         * @octdoc  m:uri/__toString
+         * @return  string                              Stored URI.
          */
         public function __toString()
         /**/
         {
-            return $this->url;
+            return $this->uri;
         }
 
         /**
-         * Getter for URL components.
+         * Getter for URI components.
          *
-         * @octdoc  m:url/__get
-         * @param   string          $name               Component of URL to return.
+         * @octdoc  m:uri/__get
+         * @param   string          $name               Component of URI to return.
          */
         public function __get($name)
         /**/
@@ -81,14 +81,14 @@ namespace org\octris\core\type {
         }
 
         /**
-         * This method is called internally after modification of any URL component to update the URL string.
+         * This method is called internally after modification of any URI component to update the URI string.
          *
-         * @octdoc  m:url/updateUrl
+         * @octdoc  m:uri/updateUri
          */
-        protected function updateUrl()
+        protected function updateUri()
         /**/
         {
-            $this->url = 
+            $this->uri = 
                 (isset($this->components['scheme'])
                     ? $this->components['scheme'] . '://'
                     : '') .
@@ -121,9 +121,9 @@ namespace org\octris\core\type {
         }
         
         /**
-         * Returns top-level-domain (TLD) of stored URL.
+         * Returns top-level-domain (TLD) of stored URI.
          *
-         * @octdoc  m:url/getTld
+         * @octdoc  m:uri/getTld
          * @return  string                                  Top-level-domain.
          */
         public function getTld()
@@ -138,7 +138,7 @@ namespace org\octris\core\type {
         /**
          * Return query parsed to an array.
          *
-         * @octdoc  m:url/parseQuery
+         * @octdoc  m:uri/parseQuery
          * @return  array                                   Array representation of query parameters.
          */
         public function parseQuery()
@@ -150,7 +150,7 @@ namespace org\octris\core\type {
         /**
          * Build query string from provided array.
          *
-         * @octdoc  m:url/buildQuery
+         * @octdoc  m:uri/buildQuery
          * @param   array           $data                   Data to build query from.
          */
         public function buildQuery(array $data)
@@ -158,19 +158,19 @@ namespace org\octris\core\type {
         {
             $this->components['query'] = http_build_query($data);
             
-            $this->updateUrl();
+            $this->updateUri();
         }
 
         /**
-         * Return stored URL.
+         * Return stored URI.
          *
-         * @octdoc  m:url/getUrl
-         * @return  string                                  Stored URL.
+         * @octdoc  m:uri/getUri
+         * @return  string                                  Stored URI.
          */
-        public function getUrl()
+        public function getUri()
         /**/
         {
-            return $this->url;
+            return $this->uri;
         }
     }
 }
