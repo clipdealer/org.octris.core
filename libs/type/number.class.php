@@ -11,7 +11,7 @@
 
 namespace org\octris\core\type {
     /**
-     * Number type.
+     * Number type. Uses bcmath functionality for number calculations.
      *
      * @octdoc      c:type/number
      * @copyright   copyright (c) 2010-2012 by Harald Lapp
@@ -26,19 +26,34 @@ namespace org\octris\core\type {
          * @octdoc  p:number/$value
          * @var     float
          */
-        protected $value = 0;
+        protected $value = '0';
         /**/
         
+        /**
+         * Number of digits after the decimal point for a calculated result.
+         *
+         * @octdoc  p:number/$scale
+         * @var     int|null 
+         */
+        protected $scale = null;
+        /**/
+
         /**
          * Constructor.
          *
          * @octdoc  m:number/__construct
          * @param   float       $value      Optional value for number.
+         * @param   int         $scale      Number of digits after the decimal point for a calculated result.
          */
-        public function __construct($value = 0)
+        public function __construct($value = 0, $scale = null)
         /**/
         {
-            $this->value = $value;
+            $this->value = (string)$value;
+            $this->scale = (is_null($scale)
+                            ? (($scale = ini_get('precision'))
+                                ? $scale
+                                : null)
+                            : $scale);
         }
 
         /**
@@ -50,7 +65,7 @@ namespace org\octris\core\type {
         public function __toString()
         /**/
         {
-            return (string)$this->value;
+            return (string)$this->get();
         }
 
         /**
@@ -58,49 +73,37 @@ namespace org\octris\core\type {
          *
          * @octdoc  m:number/__call
          * @param   string              $func                                       Name of function to perform.
-         * @param   array               $args                                       Arbitrary number of arguments of type float or money.
+         * @param   array               $args                                       Arbitrary number of arguments of type float, number or money.
          * @return  \org\octris\core\type\number|\org\octris\core\type\money        Instance of current object.
          */
         public function __call($func, $args)
         /**/
         {
-            $args = array_map(function($v) {
-                if ($v instanceof number) {
-                    $v = (float)$v->get();
-                } else {
-                    $v = (float)$v;
-                }
-                
-                return $v;
-            });
-            
             switch ($func) {
             case 'add':
-                $this->value += array_sum($args);
+                array_walk($args, function($v) {
+                    $this->value = bcadd($this->value, (string)$v, $this->scale);
+                });
                 break;
             case 'sub':
-                $this->value = array_reduce($args, function($v, $w) {
-                    return $v -= $w;
-                }, $this->value);
+                array_walk($args, function($v) {
+                    $this->value = bcsub($this->value, (string)$v, $this->scale);
+                });
                 break;
             case 'mul':
-                $this->value *= array_product($args);
+                array_walk($args, function($v) {
+                    $this->value = bcmul($this->value, (string)$v, $this->scale);
+                });
                 break;
             case 'div':
-                $this->value = array_reduce(
-                    array_filter($args, function($v) {
-                        return ((int)$v !== 0);
-                    }), 
-                    function($v, $w) {
-                        return $v /= $w;
-                    }, 
-                    $this->value
-                );
+                array_walk($args, function($v) {
+                    $this->value = bcdiv($this->value, (string)$v, $this->scale);
+                });
                 break;
             case 'mod':
-                $this->value = array_reduce($args, function($v, $w) {
-                    return $v %= $w;
-                }, $this->value);
+                array_walk($args, function($v) {
+                    $this->value = bcmod($this->value, (string)$v, $this->scale);
+                });
                 break;
             }
 
@@ -116,7 +119,7 @@ namespace org\octris\core\type {
         public function abs()
         /**/
         {
-            $this->value = abs($this->value);
+            $this->value = ltrim($this->value, '-');
 
             return $this;
         }
@@ -130,9 +133,24 @@ namespace org\octris\core\type {
         public function ceil()
         /**/
         {
-            $this->value = ceil($this->value);
+            $this->value = (substr($this->value, 0, 1) == '-'
+                            ? bcsub($this->value, 0, 0)
+                            : bcadd($this->value, 1, 0));
 
             return $this;
+        }
+
+        /**
+         * Compare number with another one.
+         *
+         * @octdoc  m:number/compare
+         * @param   mixed               $num    Number to compare with.
+         * @return  int                         Returns 0 if the both numbers are equal, 1 if the current number object is larger, -1 if the specified number is larger.
+         */
+        public function compare($num)
+        /**/
+        {
+            return bccomp($this->value, (string)$num, $this->scale);
         }
 
         /**
@@ -144,7 +162,25 @@ namespace org\octris\core\type {
         public function floor()
         /**/
         {
-            $this->value = floor($this->value);
+            $this->value = (substr($this->value, 0, 1) == '-'
+                            ? bcsub($this->value, 1, 0)
+                            : bcadd($this->value, 0, 0));
+
+            return $this;
+        }
+
+        /**
+         * Negate value.
+         *
+         * @octdoc  m:number/neg
+         * @return  \org\octris\core\type\number|\org\octris\core\type\money        Instance of current object.
+         */
+        public function neg()
+        /**/
+        {
+            $this->value = (substr($this->value, 0, 1) == '-'
+                            ? substr($this->value, 1)
+                            : '-' . $this->value);
 
             return $this;
         }
@@ -159,7 +195,7 @@ namespace org\octris\core\type {
         public function pow($exp)
         /**/
         {
-            $this->value = pow($this->value, $exp);
+            $this->value = bcpow($this->value, (string)$exp, $this->scale);
 
             return $this;
         }
@@ -175,7 +211,23 @@ namespace org\octris\core\type {
         public function round($precision = 0, $mode = PHP_ROUND_HALF_UP)
         /**/
         {
-            $this->value = round($this->value, $precision, $mode);
+            $this->value = (substr($this->value, 0, 1) == '-' || PHP_ROUND_HALF_UP
+                            ? bcsub($number, '0.' . str_repeat('0', $precision) . '5', $precision)
+                            : bcadd($number, '0.' . str_repeat('0', $precision) . '5', $precision));
+
+            return $this;
+        }
+
+        /**
+         * Calculate the square root.
+         *
+         * @octdoc  m:number/sqrt
+         * @return  \org\octris\core\type\number|\org\octris\core\type\money        Instance of current object.
+         */
+        public function sqrt()
+        /**/
+        {
+            $this->value = bcsqrt($this->value, $this->scale);
 
             return $this;
         }
@@ -189,7 +241,7 @@ namespace org\octris\core\type {
         public function get()
         /**/
         {
-            return $this->value;
+            return (float)(!(bool)(float)$this->value ? ltrim($this->value, '-') : $this->value); // prevents signed zero, which we do not want for formatting reasons.
         }
 
         /**
@@ -197,11 +249,14 @@ namespace org\octris\core\type {
          *
          * @octdoc  m:number/set
          * @param   float               $amount             Value to set.
+         * @return  \org\octris\core\type\number|\org\octris\core\type\money        Instance of current object.
          */
         public function set($value)
         /**/
         {
             $this->value = $value;
+
+            return $this;
         }
     }
 }

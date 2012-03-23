@@ -40,13 +40,16 @@ namespace org\octris\core\type {
 
         /**
          * Constructor. Note that a money object can have a currency, which is not bound to the 
-         * currently set locale.
+         * currently set locale. If a precision is specifed, the precision will only be used for 
+         * returning the money amount. For internal calculations the default precision will be
+         * used.
          *
          * @octdoc  m:money/__construct
          * @param   float       $value      Optional value for money object without locale specific characters.
          * @param   string      $currency   Optional curreny (ISO 4217) to set.
+         * @param   int         $precision  Optional precision to use.
          */
-        public function __construct($value = 0, $currency = null)
+        public function __construct($value = 0, $currency = null, $precision = 2)
         /**/
         {
             if (!is_null($currency)) {
