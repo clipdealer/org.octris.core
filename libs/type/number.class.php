@@ -14,7 +14,7 @@ namespace org\octris\core\type {
      * Number type.
      *
      * @octdoc      c:type/number
-     * @copyright   copyright (c) 2010-2011 by Harald Lapp
+     * @copyright   copyright (c) 2010-2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
     class number extends \org\octris\core\type 
@@ -57,8 +57,9 @@ namespace org\octris\core\type {
          * Magic caller to implement calculation functionality.
          *
          * @octdoc  m:number/__call
-         * @param   string              $func               Name of function to perform.
-         * @param   array               $args               Arbitrary number of arguments of type float or money.
+         * @param   string              $func                                       Name of function to perform.
+         * @param   array               $args                                       Arbitrary number of arguments of type float or money.
+         * @return  \org\octris\core\type\number|\org\octris\core\type\money        Instance of current object.
          */
         public function __call($func, $args)
         /**/
@@ -102,6 +103,8 @@ namespace org\octris\core\type {
                 }, $this->value);
                 break;
             }
+
+            return $this;
         }
         
         /**
