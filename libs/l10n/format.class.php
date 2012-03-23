@@ -24,7 +24,7 @@ namespace org\octris\core\l10n {
          * Number formatter.
          *
          * @octdoc  m:format/number
-         * @param   int|float|\org\octris\core\type\money|\org\octris\core\type\money   $value          Value to format.
+         * @param   int|float|\org\octris\core\type\number|\org\octris\core\type\money  $value          Value to format.
          * @return  string                                                                              Formatted number value.
          */
         public static function number($value)
@@ -37,7 +37,7 @@ namespace org\octris\core\l10n {
          * Money formatter.
          *
          * @octdoc  m:format/money
-         * @param   int|float|\org\octris\core\type\money|\org\octris\core\type\money   $value          Value to format.
+         * @param   int|float|\org\octris\core\type\money                               $value          Value to format.
          * @param   string                                                              $currency       Optional currency in ISO 4217.
          * @return  string                                                                              Formatted money value.
          */
