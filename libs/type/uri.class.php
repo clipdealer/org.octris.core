@@ -39,6 +39,15 @@ namespace org\octris\core\type {
         /**/
 
         /**
+         * Stores query parameters.
+         *
+         * @octdoc  p:uri/$query
+         * @var     stdClass
+         */
+        protected $query;
+        /**/
+
+        /**
          * Constructor.
          *
          * @octdoc  m:uri/__construct
@@ -50,6 +59,15 @@ namespace org\octris\core\type {
             $this->uri = $uri;
             
             $this->components = parse_uri($uri);
+
+            if (isset($this->components['query'])) {
+                $this->query = (object)parse_str($this->components['query']);
+            } else {
+                $this->query = new stdClass;
+            }
+
+            // TODO: parse host to subdomain(s) + 2nd level domain + tld and store it in components
+            //       see: http://www.dkim-reputation.org/regdom-libs/, http://publicsuffix.org/
         }
         
         /**
@@ -61,7 +79,7 @@ namespace org\octris\core\type {
         public function __toString()
         /**/
         {
-            return $this->uri;
+            return $this->buildUri();
         }
 
         /**
@@ -73,19 +91,44 @@ namespace org\octris\core\type {
         public function __get($name)
         /**/
         {
-            $component = (isset($this->components[$name])
-                            ? $this->components[$name]
-                            : '');
+            if ($name == 'query') {
+                $component = $this->query;
+            } else {
+                $component = (isset($this->components[$name])
+                                ? $this->components[$name]
+                                : '');
+            }
             
             return $component;
         }
 
         /**
-         * This method is called internally after modification of any URI component to update the URI string.
+         * Setter for URI components.
          *
-         * @octdoc  m:uri/updateUri
+         * @octdoc  m:uri/__set
+         * @param   string          $name               Component of URI to set.
+         * @param   mixed           $value              Value to set for component.
          */
-        protected function updateUri()
+        public function __set($name, $value)
+        /**/
+        {
+            if ($name == 'query') {
+                throw new \Exception('Overwriting of "query" is not allowed');
+            } elseif (!array_key_exists($this->components[$name]))  {
+                throw new \Exception(sprintf('Unknown URI component "%s"', $name));
+            } else {
+                // TODO: validate value regarding to component type?
+                $this->components[$name] = $value;
+            }
+        }
+
+        /**
+         * This method is called when the object is casted to a string.
+         *
+         * @octdoc  m:uri/buildUri
+         * @return  string                              URI.
+         */
+        protected function buildUri()
         /**/
         {
             $this->uri = 
@@ -112,65 +155,12 @@ namespace org\octris\core\type {
                     : '') .
                 
                 (isset($this->components['query'])
-                    ? '?' . $this->components['query']
+                    ? '?' . http_build_query((array)$this->query)
                     : '') . 
                     
                 (isset($this->components['fragment'])
                     ? '#' . $this->components['fragment']
                     : '');
-        }
-        
-        /**
-         * Returns top-level-domain (TLD) of stored URI.
-         *
-         * @octdoc  m:uri/getTld
-         * @return  string                                  Top-level-domain.
-         */
-        public function getTld()
-        /**/
-        {
-            $host = $this->components['host'];
-            $tld = substr($host, strrpos('.', $host));
-            
-            return $tld;
-        }
-
-        /**
-         * Return query parsed to an array.
-         *
-         * @octdoc  m:uri/parseQuery
-         * @return  array                                   Array representation of query parameters.
-         */
-        public function parseQuery()
-        /**/
-        {
-            return parse_str($this->components['query']);
-        }
-
-        /**
-         * Build query string from provided array.
-         *
-         * @octdoc  m:uri/buildQuery
-         * @param   array           $data                   Data to build query from.
-         */
-        public function buildQuery(array $data)
-        /**/
-        {
-            $this->components['query'] = http_build_query($data);
-            
-            $this->updateUri();
-        }
-
-        /**
-         * Return stored URI.
-         *
-         * @octdoc  m:uri/getUri
-         * @return  string                                  Stored URI.
-         */
-        public function getUri()
-        /**/
-        {
-            return $this->uri;
         }
     }
 }
