@@ -108,6 +108,79 @@ namespace org\octris\core\type {
         }
         
         /**
+         * Absolute value.
+         *
+         * @octdoc  m:number/abs
+         * @return  \org\octris\core\type\number|\org\octris\core\type\money        Instance of current object.
+         */
+        public function abs()
+        /**/
+        {
+            $this->value = abs($this->value);
+
+            return $this;
+        }
+
+        /**
+         * Round fractions up.
+         *
+         * @octdoc  m:number/ceil
+         * @return  \org\octris\core\type\number|\org\octris\core\type\money        Instance of current object.
+         */
+        public function ceil()
+        /**/
+        {
+            $this->value = ceil($this->value);
+
+            return $this;
+        }
+
+        /**
+         * Round fractions down.
+         *
+         * @octdoc  m:number/floor
+         * @return  \org\octris\core\type\number|\org\octris\core\type\money        Instance of current object.
+         */
+        public function floor()
+        /**/
+        {
+            $this->value = floor($this->value);
+
+            return $this;
+        }
+
+        /**
+         * Exponential expression.
+         *
+         * @octdoc  m:number/pow
+         * @exp     mixed               $exp                The exponent.
+         * @return  \org\octris\core\type\number|\org\octris\core\type\money        Instance of current object.
+         */
+        public function pow($exp)
+        /**/
+        {
+            $this->value = pow($this->value, $exp);
+
+            return $this;
+        }
+
+        /**
+         * Rounds the number.
+         *
+         * @octdoc  m:number/round
+         * @param   int                 $precision          Optional number of decimals to round to.
+         * @param   int                 $mode               Optional rounding mode.
+         * @return  \org\octris\core\type\number|\org\octris\core\type\money        Instance of current object.
+         */
+        public function round($precision = 0, $mode = PHP_ROUND_HALF_UP)
+        /**/
+        {
+            $this->value = round($this->value, $precision, $mode);
+
+            return $this;
+        }
+
+        /**
          * Return value of object.
          *
          * @octdoc  m:number/get
