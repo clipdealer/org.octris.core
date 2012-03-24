@@ -56,8 +56,6 @@ namespace org\octris\core\type {
                 $this->currency = $currency;
             }
 
-            $value = $this->prepare($value);
-
             parent::__construct($value);
         }
 
