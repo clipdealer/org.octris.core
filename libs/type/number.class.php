@@ -76,9 +76,19 @@ namespace org\octris\core\type {
          * @param   array               $args                                       Arbitrary number of arguments of type float, number or money.
          * @return  \org\octris\core\type\number|\org\octris\core\type\money        Instance of current object.
          */
-        public function __call($func, $args)
+        public function __call($func, array $args)
         /**/
         {
+            if (($cnt = count($args)) == 0) {
+                throw new \Exception('Function must be called with one or multiple operands or an array of operands');
+            } elseif ($cnt == 1 && is_array($args[0])) {
+                $args = array_shift($args);
+
+                if (count($args) == 0) {
+                    throw new \Exception('Function must be called with one or multiple operands or an array of operands');
+                }
+            }
+
             switch ($func) {
             case 'add':
                 array_walk($args, function($v) {
@@ -104,6 +114,9 @@ namespace org\octris\core\type {
                 array_walk($args, function($v) {
                     $this->value = bcmod($this->value, (string)$v, $this->scale);
                 });
+                break;
+            default:
+                throw new \Exception(sprintf('Unknown method "%s"', $func));
                 break;
             }
 
