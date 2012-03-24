@@ -101,6 +101,28 @@ namespace org\octris\core\type {
         }
 
         /**
+         * Allocate the amount of money between multiple targets.
+         *
+         * @octdoc  m:money/allocate
+         */
+        public function allocate(array $ratios)
+        /**/
+        {
+            $total  = (new \org\octris\core\type\number())->add($ratios);
+            $remain = new \org\octris\core\type\number($this->value);
+            $return = array();
+
+            for ($i = 0, $cnt = count($ratios); $i < $cnt; ++$i) {
+                $return[$i] = clone $this;
+                $return[$i]->mul($ratios[$i])->div($total);
+
+                $remain->sub($return[$i]);
+            }
+
+            return $return;
+        }
+
+        /**
          * Convert money object to an other currency using specified exchange rate.
          *
          * @octdoc  m:money/exchange
