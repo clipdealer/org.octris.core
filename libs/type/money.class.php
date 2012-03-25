@@ -141,13 +141,20 @@ namespace org\octris\core\type {
         public function exchange($currency, $rate = null, &$old_currency = null)
         /**/
         {
-            if (!is_null($rate)) {
-                $service =& self::$xchg_service;
-                $value = $service($value, $this->currency, $currency);
-            } else {
-                $value *= $rate;
+            if (is_null($rate)) {
+                if (is_null(self::$xchg_service)) {
+                    throw new \Exception('No money exchange service has been configured');
+                } elseif (($rate = self::$xchg_service->getExchangeRate($this->currency, $currency)) === false) {
+                    throw new \Exception(sprintf(
+                        'Unable to determine exchange rate for "%s/%s"',
+                        $this->currency,
+                        $currency
+                    ));
+                }
             }
-            
+
+            $this->mul($rate);
+
             $old_currency = $this->currency;
             $this->currency = $currency;
             
