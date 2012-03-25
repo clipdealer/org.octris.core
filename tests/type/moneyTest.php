@@ -16,7 +16,9 @@ use \org\octris\core\app\test as test;
 class moneyTest extends PHPUnit_Framework_TestCase {
     public function testAllocate() {
         $tests = array(
-            array(90, array(70, 30), array(63, 27))
+            array(90, array(70, 30),     array(63  , 27  )),
+            array(99, array(70, 30),     array(69.3, 29.7)),
+            array( 1, array(30, 30, 30), array(0.34, 0.33, 0.33))
         );
 
         $mon = new \org\octris\core\type\money();
@@ -27,8 +29,17 @@ class moneyTest extends PHPUnit_Framework_TestCase {
             $results = $mon->set($initial)->allocate($ratios);
 
             for ($i = 0, $cnt = count($results); $i < $cnt; ++$i) {
-                $this->assertEquals($results[$i]->get(), $expected[$i]);
+                $this->assertEquals($expected[$i], $results[$i]->get());
             }
         }
+    }
+
+    public function testExchange() {
+        // $exchange = new \org\octris\core\type\money\exchange\openexchangerates();
+
+        // $mon = new \org\octris\core\type\money();
+        // $mon->setExchangeService($exchange);
+
+        // $mon->set(100, 'EUR')->exchange('GBP');
     }
 }

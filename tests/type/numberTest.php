@@ -45,12 +45,27 @@ class numberTest extends PHPUnit_Framework_TestCase {
         $num = new \org\octris\core\type\number();
 
         $tests = array(
-            '3.4' => 0, '3.5' => 0, '3.6' => 0,
-            '1.95583' => 2, '5.045' => 2, '5.055' => 2, '9.999' => 2
+            array( '3.4'    , '0',   '3.0' ),
+            array( '3.5'    , '0',   '4.0' ),
+            array( '3.6'    , '0',   '4.0' ),
+            array( '1.95583', '2',   '1.96'),
+            array( '5.045'  , '2',   '5.05'),
+            array( '5.055'  , '2',   '5.06'),
+            array( '9.999'  , '2',  '10.00'),
+
+            array('-3.4'    , '0',  '-3.0' ),
+            array('-3.5'    , '0',  '-4.0' ),
+            array('-3.6'    , '0',  '-4.0' ),
+            array('-1.95583', '2',  '-1.96'),
+            array('-5.045'  , '2',  '-5.05'),
+            array('-5.055'  , '2',  '-5.06'),
+            array('-9.999'  , '2', '-10.00'),
         );
 
-        foreach ($tests as $val => $prec) {
-            $this->assertEquals($num->set($val)->round($prec)->get(), round($val, $prec));
+        foreach ($tests as $test) {
+            list($value, $precision, $expected) = $test;
+
+            $this->assertEquals($expected, $num->set($value)->round($precision)->get());
         }
     }
 }
