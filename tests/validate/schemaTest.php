@@ -48,7 +48,7 @@ class schemaTest extends PHPUnit_Framework_TestCase {
             'websites'  => array(
                 array(
                     'url'   => 'http://www.octris.org/',
-                    'tyoe'  => 'Homepage'
+                    'type'  => 'Homepage'
                 )
             )
         );
