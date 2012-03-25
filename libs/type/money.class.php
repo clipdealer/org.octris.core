@@ -39,6 +39,15 @@ namespace org\octris\core\type {
         /**/
 
         /**
+         * Stores money precision.
+         *
+         * @octdoc  p:money/$precision
+         * @var     int
+         */
+        protected $precision;
+        /**/
+
+        /**
          * Constructor. Note that a money object can have a currency, which is not bound to the 
          * currently set locale. If a precision is specifed, the precision will only be used for 
          * returning the money amount. For internal calculations the default precision will be
@@ -55,6 +64,8 @@ namespace org\octris\core\type {
             if (!is_null($currency)) {
                 $this->currency = $currency;
             }
+
+            $this->precision = $precision;
 
             parent::__construct($value);
         }
