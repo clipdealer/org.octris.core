@@ -30,10 +30,10 @@ namespace org\octris\core\type {
         /**/
 
         /**
-         * Stores callback for an optional exchange service.
+         * Stores instance of money exchange class.
          *
          * @octdoc  p:money/$xchg_service
-         * @var     callback
+         * @var     \org\octris\core\type\money\exchange_if
          */
         protected static $xchg_service = null;
         /**/
@@ -84,20 +84,15 @@ namespace org\octris\core\type {
         }
 
         /**
-         * Set a callback as exchange service to allow calculating with exchange rates using
-         * external services.
+         * Set an object instance, that handles money exchange between currencies.
          *
          * @octdoc  m:money/setExchangeService
-         * @param   callback        $service    Service callback.
+         * @param   \org\octris\core\type\money\exchange_if     $service    Instance of a money exchange service.
          */
-        public static function setExchangeService($service)
+        public static function setExchangeService(\org\octris\core\type\money\exchange_if $service)
         /**/
         {
-            if (!is_callable($service)) {
-                throw new Exception('exchange service is not callable');
-            } else {
-                self::$xchg_service = $service;
-            }
+            self::$xchg_service = $service;
         }
 
         /**
@@ -181,10 +176,6 @@ namespace org\octris\core\type {
             return $this;
         }
     }
-    
-    // set default exchange service
-    money::setExchangeService(function($value, $source_currency, $target_currency) {
-        return $value;
-    });
 }
 
+   
