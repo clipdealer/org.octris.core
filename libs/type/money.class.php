@@ -110,6 +110,8 @@ namespace org\octris\core\type {
          * Allocate the amount of money between multiple targets.
          *
          * @octdoc  m:money/allocate
+         * @param   array               $ratios         Ratios to allocate.
+         * @return  array                               Array of objects of type \org\octris\core\type\money.
          */
         public function allocate(array $ratios)
         /**/
@@ -120,9 +122,19 @@ namespace org\octris\core\type {
 
             for ($i = 0, $cnt = count($ratios); $i < $cnt; ++$i) {
                 $return[$i] = clone $this;
-                $return[$i]->mul($ratios[$i])->div($total);
+                $return[$i]->mul($ratios[$i])->div($total)->round($this->precision);
 
                 $remain->sub($return[$i]);
+            }
+
+            $unit = (new \org\octris\core\type\number(10))->pow(-$this->precision);
+            $i    = 0;
+
+            while ($remain->get() > 0) {
+                $return[($i % $cnt)]->add($unit);
+                $remain->sub($unit);
+
+                ++$i;
             }
 
             return $return;
