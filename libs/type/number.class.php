@@ -218,15 +218,14 @@ namespace org\octris\core\type {
          *
          * @octdoc  m:number/round
          * @param   int                 $precision          Optional number of decimals to round to.
-         * @param   int                 $mode               Optional rounding mode.
          * @return  \org\octris\core\type\number|\org\octris\core\type\money        Instance of current object.
          */
-        public function round($precision = 0, $mode = PHP_ROUND_HALF_UP)
+        public function round($precision = 0)
         /**/
         {
-            $this->value = (substr($this->value, 0, 1) == '-' || PHP_ROUND_HALF_UP
-                            ? bcsub($number, '0.' . str_repeat('0', $precision) . '5', $precision)
-                            : bcadd($number, '0.' . str_repeat('0', $precision) . '5', $precision));
+            $this->value = (substr($this->value, 0, 1) == '-'
+                            ? bcsub($this->value, '0.' . str_repeat('0', $precision) . '5', $precision)
+                            : bcadd($this->value, '0.' . str_repeat('0', $precision) . '5', $precision));
 
             return $this;
         }
