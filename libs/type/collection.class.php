@@ -138,9 +138,9 @@ namespace org\octris\core\type {
          * Sort the entries with a user-defined comparison function and maintain key association.
          *
          * @octdoc  m:collection/uasort
-         * @param   callback    $callback                   The callback comparision function.
+         * @param   callable    $callback                   The callback comparision function.
          */
-        public function uasort($callback)
+        public function uasort(callable $callback)
         /**/
         {
             parent::uasort($callback);
@@ -152,9 +152,9 @@ namespace org\octris\core\type {
          * Sort the entries by keys using a user-defined comparison function.
          *
          * @octdoc  m:collection/uksort
-         * @param   callback    $callback                   The callback comparison function.
+         * @param   callable    $callback                   The callback comparison function.
          */
-        public function uksort($callback)
+        public function uksort(callable $callback)
         /**/
         {
             parent::uksort($callback);
@@ -527,12 +527,12 @@ namespace org\octris\core\type {
          * Applies the callback to the elements of the given arrays.
          *
          * @octdoc  m:collection/map
-         * @param   callback    $cb                 Callback to apply to each element.
+         * @param   callable    $cb                 Callback to apply to each element.
          * @param   mixed       $arg1, ...          The input array(s), ArrayObject(s) and / or collection(s).
          * @return  array                           Returns an array containing all the elements of arg1 after applying the
          *                                          callback public static function to each one.
          */
-        public static function map($cb, $arg1)
+        public static function map(callable $cb, $arg1)
         /**/
         {
             $args = func_get_args();
@@ -574,12 +574,12 @@ namespace org\octris\core\type {
          *
          * @octdoc  m:collection/walk
          * @param   mixed       $arg                The input array, ArrayObject or collection.
-         * @param   callback    $cb                 Callback to apply to each element.
+         * @param   callable    $cb                 Callback to apply to each element.
          * @param   mixed       $userdata           Optional userdata parameter will be passed as the third parameter to the 
          *                                          callback function.
          * @return  bool                            Returns TRUE on success or FALSE on failure.
          */
-        public static function walk(&$arg, $cb, $userdata = null)
+        public static function walk(&$arg, callable $cb, $userdata = null)
         /**/
         {
             return array_walk($arg, $cb, $userdata);
