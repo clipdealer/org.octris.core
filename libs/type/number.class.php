@@ -167,6 +167,19 @@ namespace org\octris\core\type {
         }
 
         /**
+         * Compare number with another one and return true, if both numbers are equal.
+         *
+         * @octdoc  m:number/equals
+         * @param   mixed               $num    Number to compare with.
+         * @return  bool                        Returns true, if numbers are equal.
+         */
+        public function equals($num)
+        /**/
+        {
+            return ($this->compare($num) === 0);
+        }
+
+        /**
          * Round fractions down.
          *
          * @octdoc  m:number/floor
