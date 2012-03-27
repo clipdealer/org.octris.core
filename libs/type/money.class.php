@@ -71,27 +71,44 @@ namespace org\octris\core\type {
         }
 
         /**
-         * Set currency for money object.
+         * Magic setter.
          *
-         * @octdoc  m:money/setCurrency
-         * @param   string      $currency           Currency (ISO 4217) to set.
+         * @octdoc  m:money/__set
+         * @param   string          $name           Name of property to set.
+         * @param   mixed           $value          Value to set for property.
          */
-        public function setCurrency($currency)
+        public function __set($name, $value)
         /**/
         {
-            $this->currency = $currency;
+            switch ($name) {
+            case 'value':
+                $this->value = (string)$value;
+                break;
+            case 'currency':
+                throw new \Exception('The currency is read-only');
+                break;
+            }
         }
-        
+
         /**
-         * Return currency of money object.
+         * Magic getter.
          *
-         * @octdoc  m:money/getCurrency
-         * @return  string                          Currency (ISO 4217).
+         * @octdoc  m:money/__get
+         * @param   string          $name           Name of property to get.
          */
-        public function getCurrency($currency)
+        public function __set($name, $value)
         /**/
         {
-            return $this->currency;
+            switch ($name) {
+            case 'value':
+                $return = $this->get();
+                break;
+            case 'currency':
+                $return = $this->currency;
+                break;
+            }
+
+            return $return;
         }
 
         /**
