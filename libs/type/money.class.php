@@ -141,6 +141,24 @@ namespace org\octris\core\type {
         }
 
         /**
+         * Compare money with another one and return true, if both money objects are equal. Comparing includes currency. Only money
+         * objects with the same currency can ever by equal.
+         *
+         * @octdoc  m:money/equals
+         * @param   mixed               $num    Number to compare with.
+         * @return  bool                        Returns true, if money objects are equal.
+         */
+        public function equals($num)
+        /**/
+        {
+            if (($return = (is_object($num) && $num instanceof \org\octris\core\type\money))) {
+                $return = ($this->currency === $num->currency && parent::equals($num));
+            }
+
+            return $return;
+        }
+
+        /**
          * Convert money object to an other currency using specified exchange rate.
          *
          * @octdoc  m:money/exchange
