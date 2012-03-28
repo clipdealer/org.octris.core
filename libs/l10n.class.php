@@ -380,39 +380,19 @@ namespace org\octris\core {
         }
 
         /**
-         * Alias for '_'
-         *
-         * @octdoc  m:l10n/gettext
-         * @param   string          $msg                Message to lookup in directory.
-         * @param   string          ...                 Optional parameters for embedding into message.
-         * @return  string                              Translated text or text from 'msg' parameter, if no translation was found.
-         */
-        public function gettext()
-        /**/
-        {
-            $this->_(func_get_args());
-        }
-
-        /**
          * Translate message with currently set dictionary.
          *
-         * @octdoc  m:l10n/_
-         * @param   string          $msg                Message to lookup in directory.
-         * @param   string          ...                 Optional parameters for embedding into message.
+         * @octdoc  m:l10n/translate
+         * @param   string          $msg                Message to translate.
+         * @param   array           $args               Optional parameters for inline functions.
          * @return  string                              Translated text or text from 'msg' parameter, if no translation was found.
          */
-        public function _()
+        public function translate($msg, array $args = array())
         /**/
         {
-            $args = func_get_args();
-
-            if (is_array($args[0])) $args = $args[0];
-
-            $msg = (string)array_shift($args);
-
             // get localized text from dictionary
             if ($msg !== '') {
-                $msg = $this->translate($msg);
+                $msg = $this->lookup($msg);
             }
 
             // compile included function calls if not in cache
@@ -433,14 +413,14 @@ namespace org\octris\core {
 
         /**
          * Lookup a message in the dictionary and return it's translation.
-         * This method differs from '_' and 'gettext' in that it won't
+         * This method differs from '__' and 'translate' in that it won't 
          * compile any inline functions.
          *
-         * @octdoc  m:l10n/translate
+         * @octdoc  m:l10n/lookup
          * @param   string          $msg                Message to lookup
          * @return  string                              Translated message.
          */
-        public function translate($msg)
+        public function lookup($msg)
         /**/
         {
             return ($msg !== '' && (($out = gettext($msg)) !== '') 
@@ -496,14 +476,17 @@ namespace {
     /**
      * Global translate function.
      *
-     * @octdoc  m:l10n/translate
-     * @param   string      $txt            Text to lookup dictionary.
+     * @octdoc  m:l10n/__
+     * @param   string      $msg            Message to translate.
      * @param   mixed       $arg, ...       Optional additional arguments.
      * @return  string                      Localized text.
      */
-    function translate()
+    function __($msg)
     /**/
     {
-        return \org\octris\core\l10n::getInstance()->_(func_get_args());
+        $args = func_get_args();
+        array_shift($args);
+
+        return \org\octris\core\l10n::getInstance()->translate($msg, $args);
     }
 }
