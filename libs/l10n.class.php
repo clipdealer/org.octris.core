@@ -246,6 +246,18 @@ namespace org\octris\core {
         }
 
         /**
+         * Percentage formatter.
+         *
+         * @octdoc  m:l10n/perf
+         * @param   mixed           $number             Numerical value to format.
+         * @return  string                              Formatted number.
+         */
+        public function perf($percentage)
+        /**/
+        {
+        }
+
+        /**
          * Date formatter. Can either be an ISO date string, a timestamp or
          * a PHP DateTime object.
          *
