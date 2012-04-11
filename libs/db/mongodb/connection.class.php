@@ -100,6 +100,20 @@ namespace org\octris\core\db\mongodb {
 		}
 
 		/**
+		 * Query a MongoDB collection and return the first found item.
+		 *
+		 * @octdoc  m:connection/first
+	     * @param 	string 			$collection 				Name of collection to query.
+	     * @param 	array 			$query 						Query conditions.
+	     * @return 	\org\octris\core\db\mongodb\dataobject|bool Either a data object containing the found item or false if no item was found.
+		 */
+		public function first($collection, array $query)
+		/**/
+		{
+			// TODO
+		}
+
+		/**
 		 * Query a MongoDB collection.
 		 *
 		 * @octdoc  m:connection/query
@@ -110,6 +124,7 @@ namespace org\octris\core\db\mongodb {
 	     * @param 	array 			$sort 						Optional sorting parameters.
 	     * @param 	array 			$fields 					Optional fields to return.
 	     * @param 	array 			$hint 						Optional query hint.
+	     * @return 	\org\octris\core\db\mongodb\result 			Result object.
 		 */
 		public function query($collection, array $query, $offset = 0, $limit = null, array $sort = null, array $fields = array(), array $hint = null)
 		/**/
