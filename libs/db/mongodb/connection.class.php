@@ -100,17 +100,70 @@ namespace org\octris\core\db\mongodb {
 		}
 
 		/**
+		 * Execute a database command.
+		 *
+		 * @octdoc  m:connection/command
+		 * @param 	array 			$command 					Command to execute in database.
+		 * @param 	array 			$options 					Optional options for command.
+		 * @return 	mixed 										Return value of executed command.
+		 */
+		public function command(array $command, array $options = array())
+		/**/
+		{
+		    return $this->db->command($command, $options);
+		}
+
+		/**
+		 * Query the database and count the results.
+		 *
+		 * @octdoc  m:connection/count
+	     * @param 	string 			$collection 				Name of collection to query.
+	     * @param 	array 			$query 						Query conditions.
+	     * @param 	int 			$offset 					Optional offset to start query result from.
+	     * @param 	int 			$limit 						Optional limit of result items.
+	     * @return 	int 										Number of items found.
+		 */
+		public function count($collection, array $query, $offset = 0, $limit = null)
+		/**/
+		{
+		    $cl = $this->db->selectCollection($collection);
+
+		    return $cl->count($query, $offset, $limit);
+		}
+
+		/**
+		 * Create an index in database.
+		 *
+		 * @octdoc  m:connection/ensureIndex
+	     * @param 	string 			$collection 				Name of collection to create index in.
+	     * @param 	array 			$keys 						Key(s) to create index for.
+	     * @param 	array 			$options 					Optional options for index.
+		 */
+		public function ensureIndex($collection, array $keys, array $options = array())
+		/**/
+		{
+		    $cl = $this->db->selectCollection($collection);
+
+		    $cl->ensureIndex($keys, $options);
+		}
+
+		/**
 		 * Query a MongoDB collection and return the first found item.
 		 *
 		 * @octdoc  m:connection/first
 	     * @param 	string 			$collection 				Name of collection to query.
 	     * @param 	array 			$query 						Query conditions.
+	     * @param 	array 			$sort 						Optional sorting parameters.
+	     * @param 	array 			$fields 					Optional fields to return.
+	     * @param 	array 			$hint 						Optional query hint.
 	     * @return 	\org\octris\core\db\mongodb\dataobject|bool Either a data object containing the found item or false if no item was found.
 		 */
-		public function first($collection, array $query)
+		public function first($collection, array $query, array $sort = null, array $fields = array(), array $hint = null)
 		/**/
 		{
-			// TODO
+			$cursor = $this->query($collection, $query, 0, 1, $sort, $fields, $hint);
+
+			return ($cursor->next() ? $cursor->current : false);
 		}
 
 		/**
@@ -178,6 +231,22 @@ namespace org\octris\core\db\mongodb {
 	        $cl = $this->link->selectCollection($collection);
 	        
 	        return $cl->update($criteria, $object, $options);
+	    }
+
+	    /**
+	     * Remove data from database.
+	     *
+	     * @octdoc  m:connection/remove
+         * @param 	string 			$collection 				Name of collection to remove data from.
+         * @param 	array 			$criteria 					Search criteria for object(s) to remove.
+         * @param 	array 			$options 					Optional options.
+	     */
+	    public function remove($collection, array $criteria, array $options = array())
+	    /**/
+	    {
+	        $cl = $this->link->selectCollection($collection);
+	        
+	        $cl->remove($criteria, $options);
 	    }
 	}
 }
