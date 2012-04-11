@@ -32,6 +32,7 @@ namespace org\octris\core\cache\storage {
          * Constructor.
          *
          * @octdoc  m:apc/__construct
+         * @param   array           $options                Cache options
          */
         public function __construct(array $options)
         /**/
