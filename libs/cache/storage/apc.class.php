@@ -146,6 +146,19 @@ namespace org\octris\core\cache\storage {
         }
 
         /**
+         * Checks if a key exists in the cache.
+         *
+         * @octdoc  m:apc/exists
+         * @param   string          $key                    The key to test.
+         * @return  bool                                    Returns true if the key exists, otherwise false.
+         */
+        public function exists($key)
+        /**/
+        {
+            return apc_exists($this->ns . $key);
+        }
+
+        /**
          * Remove a value from the cache.
          *
          * @octdoc  m:apc/remove
