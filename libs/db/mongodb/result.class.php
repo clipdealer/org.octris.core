@@ -17,7 +17,7 @@ namespace org\octris\core\db\mongodb {
      * @copyright   copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-	class result
+	class result implements \Iterator, \Countable
 	/**/
 	{
 		/**
@@ -64,25 +64,83 @@ namespace org\octris\core\db\mongodb {
 		}
 
 		/**
-		 * Fetch next result object.
+		 * Count number of items in the result set.
 		 *
-		 * @octdoc  m:result/fetchNext
-		 * @return 	\org\octris\core\db\mongodb\dataobject 		Dataobject of result item.
+		 * @octdoc  m:result/count
+		 * @return 	int 										Number of items in the result-set.
 		 */
-		public function fetchNext()
+		public function count()
 		/**/
 		{
-			$dataobject = false;
+		    return $this->cursor->count();
+		}
 
-			if ($this->cursor->hasNext()) {
-				$dataobject = new \org\octris\core\db\mongodb\dataobject(
+		/**
+		 * Return current item of the search result.
+		 *
+		 * @octdoc  m:result/current
+		 * @return 	\org\octris\core\db\mongodb\dataobject|bool 	Returns either a dataobject with the stored contents of the current item or false, if the cursor position is invalid.
+		 */
+		public function current()
+		/**/
+		{
+			if (!$this->valid()) {
+				$return = false;
+			} else {
+				$return = new \org\octris\core\db\mongodb\dataobject(
 					$this->pool, 
 					$this->collection,
-					$this->cursor->getNext()
+					$this->cursor->current()
 				);
 			}
-        
-	        return $dataobject;
-    	}
+
+			return $return;
+		}
+
+		/**
+		 * Advance cursor to the next item.
+		 *
+		 * @octdoc  m:result/next
+		 */
+		public function next()
+		/**/
+		{
+			$this->cursor->next();
+		}
+
+		/**
+		 * Returns the object-ID of the current search result item.
+		 *
+		 * @octdoc  m:result/key
+		 * @return 	string 										Object-ID.
+		 */
+		public function key()
+		/**/
+		{
+		    return $this->cursor->key();
+		}
+
+		/**
+		 * Rewind cursor.
+		 *
+		 * @octdoc  m:result/rewind
+		 */
+		public function rewind()
+		/**/
+		{
+		    $this->cursor->rewind();
+		}
+
+		/**
+		 * Tests if cursor position is valid.
+		 *
+		 * @octdoc  m:result/valid
+		 * @return 	bool 										Returns true, if cursor position is valid.
+		 */
+		public function valid()
+		/**/
+		{
+		    return $this->cursor->valid();
+		}
     }
 }
