@@ -63,6 +63,9 @@ namespace org\octris\core\cache\storage {
             parent::__construct($options);
 
             $this->ns = 'caches' . $this->ns_separator . $this->ns;
+
+            // create indexes
+            $this->cn->ensureIndex(array('key' => 1), array('unique' => true));
         }
 
         /**
@@ -88,11 +91,14 @@ namespace org\octris\core\cache\storage {
         public function cas($key, $v_current, $v_new)
         /**/
         {
-            return $this->cn->update(
+            $result = $this->cn->update(
                 $this->ns, 
                 array('key' => $key, 'value' => (int)$v_current),
                 array('$set' => array('value' => (int)$v_new))
+                // array('safe' => true)
             );
+
+            return $result;
         }
 
         /**
@@ -107,7 +113,16 @@ namespace org\octris\core\cache\storage {
         public function inc($key, $step, &$success = null)
         /**/
         {
-            // TODO
+            $result = $this->cn->command(
+                array(
+                    'findandmodify' => $this->ns,
+                    'query'         => array('key' => $key),
+                    'update'        => array('$inc' => array('value' => $step)),
+                    'new'           => true
+                )
+            );
+
+            return $result['value']['value'];
         }
 
         /**
@@ -122,7 +137,16 @@ namespace org\octris\core\cache\storage {
         public function dec($key, $step, &$success = null)
         /**/
         {
-            // TODO
+            $result = $this->cn->command(
+                array(
+                    'findandmodify' => $this->ns,
+                    'query'         => array('key' => $key),
+                    'update'        => array('$dec' => array('value' => $step)),
+                    'new'           => true
+                )
+            );
+
+            return $result['value']['value'];
         }
 
         /**
@@ -138,7 +162,13 @@ namespace org\octris\core\cache\storage {
         public function load($key, callable $cb, $ttl = null)
         /**/
         {
-            // TODO
+            if (!($data = $this->cn->first($this->ns, array('key' => $key)))) {
+                $data = $cb();
+
+                $this->save($key, $data, $ttl);
+            }
+
+            return $data;
         }
 
         /**
@@ -152,7 +182,25 @@ namespace org\octris\core\cache\storage {
         public function save($key, $data, $ttl = null)
         /**/
         {
-            // TODO
+            $this->cn->update(
+                $this->ns,
+                array('key'    => $key),
+                array('$set'   => array('value' => $data)),
+                array('upsert' => true)
+            );
+        }
+
+        /**
+         * Checks if a key exists in the cache.
+         *
+         * @octdoc  m:mongodb/exists
+         * @param   string          $key                    The key to test.
+         * @return  bool                                    Returns true if the key exists, otherwise false.
+         */
+        public function exists($key)
+        /**/
+        {
+            return ($this->cn->count($this->ns, array('key' => $key)) > 0);
         }
 
         /**
@@ -164,7 +212,7 @@ namespace org\octris\core\cache\storage {
         public function remove($key)
         /**/
         {
-            // TODO
+            $this->cn->remove($this->ns, array('key' => $key));
         }
 
         /**
@@ -175,7 +223,7 @@ namespace org\octris\core\cache\storage {
         public function clear()
         /**/
         {
-            // TODO
+            $this->cn->remove($this->ns, array());
         }
     }
 }
