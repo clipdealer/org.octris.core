@@ -96,7 +96,7 @@ namespace org\octris\core\type {
          * @octdoc  m:money/__get
          * @param   string          $name           Name of property to get.
          */
-        public function __set($name, $value)
+        public function __get($name)
         /**/
         {
             switch ($name) {
