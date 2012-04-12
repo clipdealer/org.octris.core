@@ -17,7 +17,7 @@ namespace org\octris\core\cache\storage {
      * @copyright   copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    class apc extends \org\octris\core\cache\storage implements \org\octris\core\cache\storage_if
+    class apc extends \org\octris\core\cache\storage
     /**/
     {
         /**
