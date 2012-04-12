@@ -42,9 +42,9 @@ namespace org\octris\core\cache\storage {
          * Constructor.
          *
          * @octdoc  m:file/__construct
-         * @param   array                           $options                Cache options
+         * @param   array           $options                Optional cache options.
          */
-        public function __construct(array $options)
+        public function __construct(array $options = array())
         /**/
         {
             parent::__construct($options);

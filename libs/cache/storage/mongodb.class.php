@@ -52,9 +52,9 @@ namespace org\octris\core\cache\storage {
          *
          * @octdoc  m:mongodb/__construct
          * @param   \org\octris\core\db\mongodb     $db                     Instance of MongoDB database device.
-         * @param   array                           $options                Cache options
+         * @param   array                           $options                Optional cache options.
          */
-        public function __construct(\org\octris\core\db\mongodb $db, array $options)
+        public function __construct(\org\octris\core\db\mongodb $db, array $options = array())
         /**/
         {
             $this->db = $db;
