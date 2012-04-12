@@ -15,15 +15,58 @@ use \org\octris\core\app\test as test;
 
 class apcTest extends PHPUnit_Framework_TestCase {
     protected $cache;
+
+    protected $ns = 'org.octris.core.test';
     
     public function setUp() {
-        $this->cache = new \org\octris\core\cache\storage\apc();
+        $this->cache = new \org\octris\core\cache\storage\apc(array(
+            'ns' => $this->ns
+        ));
     }
 
-    public function testSave() {
-        $value = uniqid();
+    public function tearDown() {
+        print_r($this->cache);
 
-        $this->cache->save('test1', $value);
-        $this->assertEquals(apc_fetch('test1'), $value);
+        $this->cache->clean();
+        unset($this->cache);
+    }
+
+    /** **/
+
+    public function testSave() {
+        $tests = array(
+            'scalar' => uniqid(),
+            'array'  => array(1, 2, 3, 4),
+            'int'    => 1,
+        );
+
+        foreach ($tests as $name => $value) {
+            $this->cache->save($name, $value);
+            $this->assertEquals(apc_fetch($name), $value);
+        }
+    }
+
+    /**
+     * @depends testSave
+     */
+    public function testInc() {
+        $this->cache->inc('int', 2);
+        $this->assertEquals(apc_fetch('int', 3));
+    }
+
+    /**
+     * @depends testInc
+     */
+    public function testDec() {
+        $this->cache->dec('int', 1);
+        $this->assertEquals(apc_fetch('int', 2));
+    }
+
+    /**
+     * @depends testDec
+     */
+    public function testCas() {
+        $this->cache->cas('int', 2, 0);
+        $this->assertEquals(apc_fetch('int', 0));
     }
 }
