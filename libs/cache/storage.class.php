@@ -70,7 +70,8 @@ namespace org\octris\core\cache {
         /** methods that need to be implemented by child class **/
 
         /**
-         * Compare and update a value. The value get's only updated, if the current value matches.
+         * Compare and update a value. The value get's only updated, if the current value matches. The name of the
+         * method CAS means: 'Compare And Swap'.
          *
          * @octdoc  m:storage/cas
          * @param   string          $key                    The key of the value to be updated.
