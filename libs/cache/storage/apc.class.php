@@ -121,7 +121,7 @@ namespace org\octris\core\cache\storage {
         /**/
         {
             if (apc_exists($this->ns . $key)) {
-                $data = apc_load($this->ns . $key);
+                $data = apc_fetch($this->ns . $key);
             } else {
                 $data = $cb();
 
