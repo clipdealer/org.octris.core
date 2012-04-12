@@ -43,7 +43,7 @@ namespace org\octris\core\auth\storage {
         /**
          * Returns whether storage contains an identity or not.
          *
-         * @octdoc  m:storage/isEmpty
+         * @octdoc  m:session/isEmpty
          * @return                                                  Returns true, if storage is empty.
          */
         public function isEmpty()
@@ -55,7 +55,7 @@ namespace org\octris\core\auth\storage {
         /**
          * Store identity in storage.
          *
-         * @octdoc  m:storage_if/setIdentity
+         * @octdoc  m:session/setIdentity
          * @param   \org\octris\core\auth\identity  $identity       Identity to store in storage.
          */
         public function setIdentity(\org\octris\core\auth\identity $identity)
@@ -67,7 +67,7 @@ namespace org\octris\core\auth\storage {
         /**
          * Return identity from storage.
          *
-         * @octdoc  m:storage_if/getIdentity
+         * @octdoc  m:session/getIdentity
          * @return  \org\octris\core\auth\identity                  Identity stored in storage.
          */
         public function getIdentity()
@@ -79,7 +79,7 @@ namespace org\octris\core\auth\storage {
         /**
          * Deletes identity from storage.
          *
-         * @octdoc  m:storage/unsetIdentity
+         * @octdoc  m:session/unsetIdentity
          */
         public function unsetIdentity()
         /**/

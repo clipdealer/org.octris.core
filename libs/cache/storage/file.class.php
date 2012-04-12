@@ -17,7 +17,7 @@ namespace org\octris\core\cache\storage {
      * @copyright   copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    class file extends \org\octris\core\cache\storage implements \org\octris\core\cache\storage_if, \IteratorAggregate
+    class file extends \org\octris\core\cache\storage
     /**/
     {
         /**
@@ -107,6 +107,20 @@ namespace org\octris\core\cache\storage {
         }
 
         /**
+         * Fetch data from cache without populating the cache, if no data is stored for specified id.
+         *
+         * @octdoc  m:file/fetch
+         * @param   string          $key                    The key of the value to fetch.
+         * @param   bool            $success                Optional parameter that returns true, if the fetch succeeded.
+         * @return  mixed                                   The data stored in the cache.
+         */
+        public function fetch($key, &$success = null)
+        /**/
+        {
+            // TODO
+        }
+
+        /**
          * Load a value from cache or create it from specified callback. In the latter case the created data returned by 
          * the callback will be stored in the cache.
          *
@@ -131,6 +145,19 @@ namespace org\octris\core\cache\storage {
          * @param   int             $ttl                    Optional ttl. Uses the configured ttl if not specified.
          */
         public function save($key, $data, $ttl = null)
+        /**/
+        {
+            // TODO
+        }
+
+        /**
+         * Checks if a key exists in the cache.
+         *
+         * @octdoc  m:file/exists
+         * @param   string          $key                    The key to test.
+         * @return  bool                                    Returns true if the key exists, otherwise false.
+         */
+        public function exists($key)
         /**/
         {
             // TODO

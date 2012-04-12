@@ -55,7 +55,7 @@ namespace org\octris\core\auth\storage {
         /**
          * Store identity in storage.
          *
-         * @octdoc  m:storage_if/setIdentity
+         * @octdoc  m:transient/setIdentity
          * @param   \org\octris\core\auth\identity  $identity       Identity to store in storage.
          */
         public function setIdentity(\org\octris\core\auth\identity $identity)
@@ -67,7 +67,7 @@ namespace org\octris\core\auth\storage {
         /**
          * Return identity from storage.
          *
-         * @octdoc  m:storage_if/getIdentity
+         * @octdoc  m:transient/getIdentity
          * @return  \org\octris\core\auth\identity                  Identity stored in storage.
          */
         public function getIdentity()
@@ -79,7 +79,7 @@ namespace org\octris\core\auth\storage {
         /**
          * Deletes identity from storage.
          *
-         * @octdoc  m:storage_if/unsetIdentity
+         * @octdoc  m:transient/unsetIdentity
          */
         public function unsetIdentity()
         /**/

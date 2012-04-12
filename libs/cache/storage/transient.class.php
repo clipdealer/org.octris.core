@@ -11,78 +11,67 @@
 
 namespace org\octris\core\cache\storage {
     /**
-     * MongoDB cache storage.
+     * Request cache storage. Stores data only within the curren request
+     * (transaction / execution).
      *
-     * @octdoc      c:storage/mongodb
+     * @octdoc      c:storage/transient
      * @copyright   copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    class mongodb extends \org\octris\core\cache\storage
+    class transient extends \org\octris\core\cache\storage
     /**/
     {
         /**
-         * Instance of MongoDB database device.
+         * Local data storage.
          *
-         * @octdoc  p:mongodb/$db
-         * @var     \org\octris\core\db\mongodb
+         * @octdoc  p:transient/$data
+         * @var     array
          */
-        protected $db;
-        /**/
-        
-        /**
-         * Database connection.
-         *
-         * @octdoc  p:mongodb/$cn
-         * @var     \org\octris\core\db\mongodb\connection
-         */
-        protected $cn;
+        protected $data = array();
         /**/
 
         /**
-         * Namespace separator.
+         * Meta data for cache keys.
+         * 
+         * - ttl   -- time to live
+         * - ctime -- time the cache key was created
+         * - mtime -- time the cache key was last modified (write)
+         * - atime -- time the cache key was last accessed (read)
          *
-         * @octdoc  p:mongodb/$ns_separator
-         * @var     string
+         * @octdoc  p:transient/$meta
+         * @var     array
          */
-        protected $ns_separator = '.';
+        protected $meta = array();
         /**/
 
         /**
          * Constructor.
          *
-         * @octdoc  m:mongodb/__construct
-         * @param   \org\octris\core\db\mongodb     $db                     Instance of MongoDB database device.
-         * @param   array                           $options                Cache options
+         * @octdoc  m:transient/__construct
+         * @param   array           $options                Cache options
          */
-        public function __construct(\org\octris\core\db\mongodb $db, array $options)
+        public function __construct(array $options)
         /**/
         {
-            $this->db = $db;
-            $this->cn = $db->getConnection();
-
             parent::__construct($options);
-
-            $this->ns = 'caches' . $this->ns_separator . $this->ns;
-
-            // create indexes
-            $this->cn->ensureIndex(array('key' => 1), array('unique' => true));
         }
 
         /**
          * Make cache iteratable.
          *
-         * @octdoc  m:mongodb/getIterator
+         * @octdoc  m:transient/getIterator
+         * @return  \ArrayIterator                          Cache iterator.
          */
         public function getIterator()
         /**/
         {
-            // TODO
+            return new \ArrayIterator($this->data);
         }
 
         /**
          * Compare and update a value. The value get's only updated, if the current value matches.
          *
-         * @octdoc  m:mongodb/cas
+         * @octdoc  m:transient/cas
          * @param   string          $key                    The key of the value to be updated.
          * @param   int             $v_current              Current stored value.
          * @param   int             $v_new                  New value to store.
@@ -91,20 +80,21 @@ namespace org\octris\core\cache\storage {
         public function cas($key, $v_current, $v_new)
         /**/
         {
-            $result = $this->cn->update(
-                $this->ns, 
-                array('key' => $key, 'value' => (int)$v_current),
-                array('$set' => array('value' => (int)$v_new))
-                // array('safe' => true)
-            );
+            $v_current = (int)$v_current;
+            $v_new     = (int)$v_new;
 
-            return $result;
+            if (($success = ($this->exists($key) && $this->data[$key] === $v_current))) {
+                $this->data[$key] = $v_new;
+                $this->meta[$key]['mtime'] = time();
+            }
+
+            return $success;
         }
 
         /**
          * Increment a stored value
          *
-         * @octdoc  m:mongodb/inc
+         * @octdoc  m:transient/inc
          * @param   string          $key                    The key of the value to be incremented.
          * @param   int             $step                   The step that the value should be incremented by.
          * @param   bool            $success                Optional parameter that returns true, if the update succeeded.
@@ -113,22 +103,20 @@ namespace org\octris\core\cache\storage {
         public function inc($key, $step, &$success = null)
         /**/
         {
-            $result = $this->cn->command(
-                array(
-                    'findandmodify' => $this->ns,
-                    'query'         => array('key' => $key),
-                    'update'        => array('$inc' => array('value' => $step)),
-                    'new'           => true
-                )
-            );
+            $return = null;
 
-            return $result['value']['value'];
+            if (($success = $this->exists($key))) {
+                $return = ($this->data[$key] += $step);
+                $this->meta[$key]['mtime'] = time();
+            }
+
+            return $return;
         }
 
         /**
          * Decrement a stored value.
          *
-         * @octdoc  m:mongodb/dec
+         * @octdoc  m:transient/dec
          * @param   string          $key                    The key of the value to be decremented.
          * @param   int             $step                   The step that the value should be decremented by.
          * @param   bool            $success                Optional parameter that returns true, if the update succeeded.
@@ -137,22 +125,20 @@ namespace org\octris\core\cache\storage {
         public function dec($key, $step, &$success = null)
         /**/
         {
-            $result = $this->cn->command(
-                array(
-                    'findandmodify' => $this->ns,
-                    'query'         => array('key' => $key),
-                    'update'        => array('$dec' => array('value' => $step)),
-                    'new'           => true
-                )
-            );
+            $return = null;
 
-            return $result['value']['value'];
+            if (($success = $this->exists($key))) {
+                $return = ($this->data[$key] -= $step);
+                $this->meta[$key]['mtime'] = time();
+            }
+
+            return $return;
         }
 
         /**
          * Fetch data from cache without populating the cache, if no data is stored for specified id.
          *
-         * @octdoc  m:mongodb/fetch
+         * @octdoc  m:transient/fetch
          * @param   string          $key                    The key of the value to fetch.
          * @param   bool            $success                Optional parameter that returns true, if the fetch succeeded.
          * @return  mixed                                   The data stored in the cache.
@@ -162,8 +148,8 @@ namespace org\octris\core\cache\storage {
         {
             $return = null;
 
-            if (($success = (($data = $this->cn->first($this->ns, array('key' => $key))) !== false))) {
-                $return = $data;
+            if (($success = $this->exists($key))) {
+                $return = $this->data[$key];
             }
 
             return $return;
@@ -173,7 +159,7 @@ namespace org\octris\core\cache\storage {
          * Load a value from cache or create it from specified callback. In the latter case the created data returned by 
          * the callback will be stored in the cache.
          *
-         * @octdoc  m:mongodb/load
+         * @octdoc  m:transient/load
          * @param   string          $key                    The key of the value to be loaded.
          * @param   callable        $cb                     Callback to call if the key is not found in the cache.
          * @param   int             $ttl                    Optional ttl. Uses the configured ttl if not specified.
@@ -182,19 +168,17 @@ namespace org\octris\core\cache\storage {
         public function load($key, callable $cb, $ttl = null)
         /**/
         {
-            if (!($data = $this->cn->first($this->ns, array('key' => $key)))) {
-                $data = $cb();
-
-                $this->save($key, $data, $ttl);
+            if (!$this->exists($key)) {
+                $this->save($key, $cb(), $ttl);
             }
 
-            return $data;
+            return $this->data[$key];
         }
 
         /**
          * Store a value to the cache.
          *
-         * @octdoc  m:mongodb/save
+         * @octdoc  m:transient/save
          * @param   string          $key                    The key the value should be stored in.
          * @param   mixed           $data                   Arbitrary (almost) data to store.
          * @param   int             $ttl                    Optional ttl. Uses the configured ttl if not specified.
@@ -202,48 +186,62 @@ namespace org\octris\core\cache\storage {
         public function save($key, $data, $ttl = null)
         /**/
         {
-            $this->cn->update(
-                $this->ns,
-                array('key'    => $key),
-                array('$set'   => array('value' => $data)),
-                array('upsert' => true)
+            $t = time();
+            $c = (isset($this->meta[$key])
+                    ? $this->meta[$key]['ctime']
+                    : $t);
+
+            $this->data[$key] = $data;
+            $this->meta[$key] = array(
+                'ttl'   => $ttl,
+                'ctime' => $c,
+                'mtime' => $t,
+                'atime' => $t
             );
         }
 
         /**
          * Checks if a key exists in the cache.
          *
-         * @octdoc  m:mongodb/exists
+         * @octdoc  m:transient/exists
          * @param   string          $key                    The key to test.
          * @return  bool                                    Returns true if the key exists, otherwise false.
          */
         public function exists($key)
         /**/
         {
-            return ($this->cn->count($this->ns, array('key' => $key)) > 0);
+            if (($exists = array_key_exists($key, $this->data))) {
+                // key exists, test if it's expired
+                if (!($exists = (time() <= $this->meta[$key]['mtime'] + $ttl))) {
+                    $this->remove($key);
+                }
+            }
+
+            return $exists;
         }
 
         /**
          * Remove a value from the cache.
          *
-         * @octdoc  m:mongodb/remove
+         * @octdoc  m:transient/remove
          * @param   string          $key                    The key of the value that should be removed.
          */
         public function remove($key)
         /**/
         {
-            $this->cn->remove($this->ns, array('key' => $key));
+            unset($this->data[$key]);
+            unset($this->meta[$key]);
         }
 
         /**
          * Clear the entire cache.
          *
-         * @octdoc  m:mongodb/clear
+         * @octdoc  m:transient/clear
          */
         public function clear()
         /**/
         {
-            $this->cn->remove($this->ns, array());
+            $this->meta = $this->data = array();
         }
     }
 }

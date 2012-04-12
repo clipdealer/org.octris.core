@@ -107,6 +107,17 @@ namespace org\octris\core\cache {
         /**/
 
         /**
+         * Fetch data from cache without populating the cache, if no data is stored for specified id.
+         *
+         * @octdoc  m:storage/fetch
+         * @param   string          $key                    The key of the value to fetch.
+         * @param   bool            $success                Optional parameter that returns true, if the fetch succeeded.
+         * @return  mixed                                   The data stored in the cache.
+         */
+        abstract public function fetch($key, &$success = null);
+        /**/
+
+        /**
          * Load a value from cache or create it from specified callback. In the latter case the created data returned by 
          * the callback will be stored in the cache.
          *

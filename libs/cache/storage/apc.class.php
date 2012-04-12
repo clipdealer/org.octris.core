@@ -17,7 +17,7 @@ namespace org\octris\core\cache\storage {
      * @copyright   copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    class apc extends \org\octris\core\cache\storage implements \org\octris\core\cache\storage_if
+    class apc extends \org\octris\core\cache\storage
     /**/
     {
         /**
@@ -105,6 +105,20 @@ namespace org\octris\core\cache\storage {
         /**/
         {
             return apc_dec($this->ns . $key, $step, $success);
+        }
+
+        /**
+         * Fetch data from cache without populating the cache, if no data is stored for specified id.
+         *
+         * @octdoc  m:apc/fetch
+         * @param   string          $key                    The key of the value to fetch.
+         * @param   bool            $success                Optional parameter that returns true, if the fetch succeeded.
+         * @return  mixed                                   The data stored in the cache.
+         */
+        public function fetch($key, &$success = null)
+        /**/
+        {
+            return apc_fetch($key, $success);
         }
 
         /**
