@@ -32,16 +32,16 @@ namespace org\octris\core\cache\storage {
          * Constructor.
          *
          * @octdoc  m:apc/__construct
-         * @param   array           $options                Cache options
+         * @param   array           $options                Optional cache options.
          */
-        public function __construct(array $options)
+        public function __construct(array $options = array())
         /**/
         {
-            if (version_compare(self::T_APC_VERSION, phpversion('apc') > 0) {
+            if (version_compare(self::T_APC_VERSION, phpversion('apc')) > 0) {
                 throw new \Exception('Missing ext/apc >= ' . self::T_APC_VERSION);
             }
 
-            if (!(ini_get('apc.enabled') && (PHP_SAPI != 'cli' || ini_get('apc.enabled_cli')))) {
+            if (!(ini_get('apc.enabled') && (PHP_SAPI != 'cli' || ini_get('apc.enable_cli')))) {
                 throw new \Exception('ext/apc is disabled');
             }
 
