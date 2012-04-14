@@ -212,7 +212,7 @@ namespace org\octris\core\cache\storage {
         {
             if (($exists = array_key_exists($key, $this->data))) {
                 // key exists, test if it's expired
-                if (!($exists = (time() <= $this->meta[$key]['mtime'] + $ttl))) {
+                if (!($exists = (time() <= $this->meta[$key]['mtime'] + $this->meta[$key]['ttl']))) {
                     $this->remove($key);
                 }
             }
