@@ -193,7 +193,7 @@ namespace org\octris\core\cache\storage {
 
             $this->data[$key] = $data;
             $this->meta[$key] = array(
-                'ttl'   => $ttl,
+                'ttl'   => ((int)$ttl == 0 ? null : $ttl),
                 'ctime' => $c,
                 'mtime' => $t,
                 'atime' => $t
@@ -212,7 +212,10 @@ namespace org\octris\core\cache\storage {
         {
             if (($exists = array_key_exists($key, $this->data))) {
                 // key exists, test if it's expired
-                if (!($exists = (time() <= $this->meta[$key]['mtime'] + $this->meta[$key]['ttl']))) {
+                $exists = !(!is_null($this->meta[$key]['ttl']) && 
+                            time() >= $this->meta[$key]['mtime'] + $this->meta[$key]['ttl']);
+
+                if (!$exists) {
                     $this->remove($key);
                 }
             }
