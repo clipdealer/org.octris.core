@@ -11,9 +11,9 @@
 
 require_once(__DIR__ . '/../storageTest.php');
 
-class apcTest extends storageTest {
+class transientTest extends storageTest {
     public function setUp() {
-        $this->storage = new \org\octris\core\cache\storage\apc(array(
+        $this->storage = new \org\octris\core\cache\storage\transient(array(
             'ns' => 'org.octris.core.test'
         ));
 
