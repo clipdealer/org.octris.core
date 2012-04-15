@@ -182,3 +182,11 @@ onlyroot:
 		echo ""; \
 		exit 1; \
 	fi
+
+#**
+# Execute lint tool.
+#
+# @octdoc       t:Makefile/lint
+#**
+lint:
+	@$(CURSYMDIR)/../../tools/project/lint.php --project=$(project)
