@@ -144,7 +144,7 @@ namespace org\octris\core\type {
                     
                 $this->components['host'] .
                 
-                (isset(this->components['port']) 
+                (isset($this->components['port']) 
                     ? ':' . $this->components['port']
                     : '') .
                 
