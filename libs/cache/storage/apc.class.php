@@ -118,7 +118,7 @@ namespace org\octris\core\cache\storage {
         public function fetch($key, &$success = null)
         /**/
         {
-            return apc_fetch($key, $success);
+            return apc_fetch($this->ns . $key, $success);
         }
 
         /**
