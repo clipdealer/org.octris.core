@@ -15,7 +15,7 @@ use \org\octris\core\app\test as test;
 
 class httpTest extends PHPUnit_Framework_TestCase {
     public function testFetch() {
-        $curl = new \org\octris\core\net\http(new \org\octris\core\type\uri('http://www.example.org/'));
+        $curl = new \org\octris\core\net\client\http(new \org\octris\core\type\uri('http://www.example.org/'));
         $result = $curl->execute();
 
         print_r($result);
