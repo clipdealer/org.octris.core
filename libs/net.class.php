@@ -72,10 +72,10 @@ namespace org\octris\core {
          * Add a network transport client to the session.
          *
          * @octdoc  m:net/addClient
-         * @param   \org\octris\core\net\curl       $client         Client to add to session.
-         * @return  \org\octris\core\net\curl                       The client instance.
+         * @param   \org\octris\core\net\client     $client         Client to add to session.
+         * @return  \org\octris\core\net\client                     The client instance.
          */
-        public function addClient(\org\octris\core\net\curl $client)
+        public function addClient(\org\octris\core\net\client $client)
         /**/
         {
             $client->setSession($this);
