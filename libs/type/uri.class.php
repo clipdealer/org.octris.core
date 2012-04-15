@@ -58,7 +58,7 @@ namespace org\octris\core\type {
         {
             $this->uri = $uri;
             
-            $this->components = parse_uri($uri);
+            $this->components = parse_url($uri);
 
             if (isset($this->components['query'])) {
                 $this->query = (object)parse_str($this->components['query']);
