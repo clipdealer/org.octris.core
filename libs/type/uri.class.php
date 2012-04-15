@@ -42,7 +42,7 @@ namespace org\octris\core\type {
          * Stores query parameters.
          *
          * @octdoc  p:uri/$query
-         * @var     stdClass
+         * @var     \ArrayObject
          */
         protected $query;
         /**/
@@ -61,9 +61,12 @@ namespace org\octris\core\type {
             $this->components = parse_url($uri);
 
             if (isset($this->components['query'])) {
-                $this->query = (object)parse_str($this->components['query']);
+                $args = array();
+                parse_str($this->components['query'], $args);
+                
+                $this->query = new \ArrayObject($args);
             } else {
-                $this->query = new stdClass;
+                $this->query = new \ArrayObject();
             }
 
             // TODO: parse host to subdomain(s) + 2nd level domain + tld and store it in components
