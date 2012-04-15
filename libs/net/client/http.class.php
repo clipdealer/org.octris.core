@@ -9,15 +9,15 @@
  * file that was distributed with this source code.
  */
 
-namespace org\octris\core\net {
+namespace org\octris\core\net\client {
     /**
      * HTTP class.
      * 
-     * @octdoc      c:net/http
+     * @octdoc      c:client/http
      * @copyright   Copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    class http extends \org\octris\core\net\curl
+    class http extends \org\octris\core\net\client
     /**/
     {
         /**
