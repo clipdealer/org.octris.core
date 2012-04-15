@@ -161,6 +161,8 @@ namespace org\octris\core\type {
                 (isset($this->components['fragment'])
                     ? '#' . $this->components['fragment']
                     : '');
+
+            return $this->uri;
         }
     }
 }
