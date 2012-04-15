@@ -13,18 +13,18 @@ namespace org\octris\core\net {
     /**
      * Generic cURL class.
      * 
-     * @octdoc      c:net/curl
+     * @octdoc      c:net/client
      * @copyright   Copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    abstract class curl
+    abstract class client
     /**/
     {
         /**
          * Supported schemes. Is empty, if there is no limitation for 
          * protocols.
          *
-         * @octdoc  p:curl/$schemes
+         * @octdoc  p:client/$schemes
          * @var     array
          */
         protected static $schemes = array();
@@ -33,7 +33,7 @@ namespace org\octris\core\net {
         /**
          * Options for curl client.
          *
-         * @octdoc  p:curl/$options
+         * @octdoc  p:client/$options
          * @var     array
          */
         protected $options = array();
@@ -42,7 +42,7 @@ namespace org\octris\core\net {
         /**
          * Session assigned to the client.
          *
-         * @octdoc  p:curl/$session
+         * @octdoc  p:client/$session
          * @var     \org\octris\core\net|null
          */
         protected $session = null;
@@ -51,7 +51,7 @@ namespace org\octris\core\net {
         /**
          * Event listener.
          * 
-         * @octdoc  p:curl/$listener
+         * @octdoc  p:client/$listener
          * @var     callable|null
          */
         protected $listener = null;
@@ -60,7 +60,7 @@ namespace org\octris\core\net {
         /**
          * Constructor.
          *
-         * @octdoc  m:curl/__construct
+         * @octdoc  m:client/__construct
          * @param   \org\octris\core\type\uri       $uri            URI 
          */
         public function __construct(\org\octris\core\type\uri $uri)
@@ -84,7 +84,7 @@ namespace org\octris\core\net {
         /**
          * Clone.
          *
-         * @octdoc  m:curl/__clone
+         * @octdoc  m:client/__clone
          */
         public function __clone()
         /**/
@@ -126,7 +126,7 @@ namespace org\octris\core\net {
         /**
          * Add curl client to a session.
          *
-         * @octdoc  m:curl/setSession
+         * @octdoc  m:client/setSession
          * @param   \org\octris\core\net        $sesstion   Session to assign to the client.
          */
         public function setSession(\org\octris\core\net $session)
@@ -142,7 +142,7 @@ namespace org\octris\core\net {
         /**
          * Get session the client is assigned to.
          *
-         * @octdoc  m:curl/getSession
+         * @octdoc  m:client/getSession
          * @return  \org\octris\core\net                    Session the client is assigned to.
          */
         public function getSession()
@@ -154,7 +154,7 @@ namespace org\octris\core\net {
         /**
          * Set event listener.
          *
-         * @octdoc  m:curl/setListener
+         * @octdoc  m:client/setListener
          * @param   callable        $listener               Listener to set.
          */
         public function setListener(callable $listener)
@@ -166,7 +166,7 @@ namespace org\octris\core\net {
         /**
          * Get event listener.
          *
-         * @octdoc  m:curl/getListener
+         * @octdoc  m:client/getListener
          * @return  callable                                Listener set.
          */
         public function getListener()
@@ -178,7 +178,7 @@ namespace org\octris\core\net {
         /**
          * Execute client.
          *
-         * @octdoc  m:curl/execute
+         * @octdoc  m:client/execute
          */
         public function execute()
         /**/
