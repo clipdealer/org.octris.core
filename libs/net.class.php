@@ -21,12 +21,12 @@ namespace org\octris\core {
     /**/
     {
         /**
-         * cURL handler.
+         * Curl multi handle, if currently executed, otherwise null.
          *
-         * @octdoc  p:net/$ch
-         * @var     resource
+         * @octdoc  p:net/$mh
+         * @var     resource|null
          */
-        protected $ch;
+        protected $mh = null;
         /**/
 
         /**
@@ -48,12 +48,12 @@ namespace org\octris\core {
         /**/
 
         /**
-         * cURL options.
+         * Session queue.
          *
-         * @octdoc  p:net/$options
+         * @octdoc  p:net/$queue
          * @var     array
          */
-        protected $options = array();
+        protected $queue = array();
         /**/
 
         /**
@@ -78,9 +78,11 @@ namespace org\octris\core {
         public function addClient(\org\octris\core\net\client $client)
         /**/
         {
-            $client->setSession($this);
-
-            $this->clients[] = $clients;
+            if (!is_null($this->mh)) {
+                $this->clients[] = $clients;
+            } else {
+                // push directly into queue
+            }
 
             return $clients;
         }
@@ -93,17 +95,36 @@ namespace org\octris\core {
         public function execute()
         /**/
         {
-            $queue = array();
+            if (!is_null($this->mh)) {
+                throw new \Execution('Session is currently beeing executed');
+            }
+
+            $this->queue = $this->clients;
+
+            $active = null;
+
+            $this->mh = curl_multi_init();
+
+            for ($i = 0; $i < $this->sessions; ++$i) {
+                if (!($client = array_unshift($this->clients))) break;
+
+                $ch = curl_init();
+                curl_setopt_array($ch, $client->getOptions());
+
+                curl_multi_add_handle($ch);
+            }
 
             do {
-                // $ch = curl_init();
-                // curl_setopt_array($ch, $this->options);
+                curl_multi_select($this->mh);
 
-                // $return = curl_exec($ch);
+                while (($result = curl_multi_select($this->mh, $active)) == CURLM_CALL_MULTI_PERFORM);
 
-                // curl_close($ch);
+                if ($result != CURLM_OK) break;
 
             } while(true);
+
+            curl_multi_close($this->mh);
+            $this->mh = null;
         }
     }
 }
