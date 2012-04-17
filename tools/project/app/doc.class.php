@@ -271,8 +271,8 @@ namespace org\octris\core\project\app {
             // import project name
             $args = \org\octris\core\provider::access('args');
 
-            if ($args->isExist('p') && ($project = $args->getValue('p', \org\octris\core\validate::T_PROJECT))) {
-                $this->project = $project;
+            if ($args->isExist('p') && $args->isValid('p', \org\octris\core\validate::T_PROJECT)) {
+                $this->project = $args->getValue('p');
             } else {
                 $this->log('usage: ./doc.php -p project-name [-f output-format]');
                 die(1);

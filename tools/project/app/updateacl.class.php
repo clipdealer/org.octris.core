@@ -56,7 +56,9 @@ namespace org\octris\core\project\app {
             // import project name
             $args = \org\octris\core\provider::access('args');
 
-            if ($args->isExist('p') && ($project = $args->getValue('p', \org\octris\core\validate::T_PROJECT))) {
+            if ($args->isExist('p') && $args->isValid('p', \org\octris\core\validate::T_PROJECT)) {
+                $project = $args->getValue('p');
+
                 $path = \org\octris\core\app::getPath(\org\octris\core\app::T_PATH_LIBS, $project);
 
                 if (!is_dir($path . '/app') || !is_file($path . '/app/entry.class.php')) {

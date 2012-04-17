@@ -71,7 +71,9 @@ namespace org\octris\core\project\app {
             // import project name
             $args = \org\octris\core\provider::access('args');
 
-            if ($args->isExist('p') && ($project = $args->getValue('p', \org\octris\core\validate::T_PROJECT))) {
+            if ($args->isExist('p') && $args->isValid('p', \org\octris\core\validate::T_PROJECT)) {
+                $project = $args->getValue('p');
+
                 $tmp    = explode('.', $project);
                 $module = array_pop($tmp);
                 $domain = implode('.', array_reverse($tmp));
