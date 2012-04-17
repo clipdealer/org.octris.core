@@ -37,5 +37,5 @@ namespace org\octris\core\project {
     }, \org\octris\core\registry::T_SHARED | \org\octris\core\registry::T_READONLY);
 
     // run application
-    app\main::getInstance()->invoke(new app\create());
+    app\main::getInstance()->invoke(new app\lint());
 }
