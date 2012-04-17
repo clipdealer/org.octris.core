@@ -1,0 +1,13 @@
+rules:
+	- 
+		type: php
+			directory: 	"/"
+			exclude: 	
+				- "*/data/cldr/*"
+				- "*/tools/project/data/skel/*"
+
+
+	- 	
+		type: template
+			directory: 	"/tools/project/data/skel"
+
