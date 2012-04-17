@@ -189,4 +189,4 @@ onlyroot:
 # @octdoc       t:Makefile/lint
 #**
 lint:
-	@$(CURSYMDIR)/../../tools/project/lint.php --project=$(project)
+	@$(CURSYMDIR)/../../tools/org.octris.core/project/lint.php -p $(project)
