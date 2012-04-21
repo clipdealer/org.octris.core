@@ -210,7 +210,7 @@ namespace org\octris\core\project\app {
                 }
 
                 if (!$this->isBinary($filename)) {
-                    $cmp = $tpl->fetch($rel, \org\octris\core\tpl\sandbox::T_CONTEXT_TEXT);
+                    $cmp = $tpl->fetch($rel, \org\octris\core\tpl::T_ESC_NONE);
 
                     file_put_contents($dst, $cmp);
                 } else {
