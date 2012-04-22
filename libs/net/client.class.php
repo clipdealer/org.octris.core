@@ -31,6 +31,15 @@ namespace org\octris\core\net {
         /**/
 
         /**
+         * Curl info.
+         *
+         * @octdoc  p:client/$info
+         * @var     array
+         */
+        protected static $info = null;
+        /**/
+
+        /**
          * Options for curl client.
          *
          * @octdoc  p:client/$options
@@ -58,6 +67,15 @@ namespace org\octris\core\net {
         /**/
 
         /**
+         * Client URI.
+         *
+         * @octdoc  p:client/$uri
+         * @var     \org\octris\core\type\uri
+         */
+        protected $uri;
+        /**/
+
+        /**
          * Constructor.
          *
          * @octdoc  m:client/__construct
@@ -70,6 +88,10 @@ namespace org\octris\core\net {
                 throw new \Exception('Missing ext/curl');
             }
 
+            if (is_null(self::$info)) {
+                self::$info = curl_version();
+            }
+
             if (count(static::$schemes) > 0 && !in_array($uri->scheme, static::$schemes)) {
                 throw new \Exception(sprintf(
                     'Invalid URI specified, supported protocols are "%s"',
@@ -77,7 +99,8 @@ namespace org\octris\core\net {
                 ));
             }
 
-            $this->options[CURLOPT_URL]            = (string)$uri;
+            $this->uri = clone $uri;
+
             $this->options[CURLOPT_RETURNTRANSFER] = true;
         }
 
@@ -120,6 +143,8 @@ namespace org\octris\core\net {
         public function getOptions()
         /**/
         {
+            $this->options[CURLOPT_URL] = (string)$this->uri;
+
             return $this->options;
         }
 
@@ -188,7 +213,7 @@ namespace org\octris\core\net {
             }
     
             $ch = curl_init();
-            curl_setopt_array($ch, $this->options);
+            curl_setopt_array($ch, $this->getOptions());
 
             $return = curl_exec($ch);
 

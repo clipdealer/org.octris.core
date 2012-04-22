@@ -45,6 +45,15 @@ namespace org\octris\core\net\client {
         /**/
 
         /**
+         * Post body/arguments
+         *
+         * @octdoc  p:http/$post
+         * @var     null
+         */
+        protected $post;
+        /**/
+
+        /**
          * Constructor.
          *
          * @octdoc  m:http/__construct
@@ -76,6 +85,7 @@ namespace org\octris\core\net\client {
                 break;
             }
             
+            $this->options[CURLOPT_PROTOCOLS]  = CURLPROTO_HTTP | CURLPROTO_HTTPS;
             $this->options[CURLOPT_HTTPHEADER] = array();
 
             parent::__construct($url);
@@ -89,7 +99,17 @@ namespace org\octris\core\net\client {
         public function addHeader($name, $content)
         /**/
         {
-            $this->options[CURLOPT_HTTPHEADER][$name] = $content;
+            switch (strtolower($name)) {
+            case 'user-agent':
+                $this->setAgent($content);
+                break;
+            case 'referer':
+                $this->setReferer($content);
+                break;
+            default:
+                $this->options[CURLOPT_HTTPHEADER][$name] = $content;
+                break;
+            }
         }
 
         /**
@@ -99,12 +119,49 @@ namespace org\octris\core\net\client {
          * @param   int                             $num            Maximum number of redirects.
          * @param   bool                            $autoreferer    Optional whether to auto-set the referer for redirects.
          */
-        public function setMaxRedirects($num, $autoreferer = true)
+        public function setMaxRedirects($num, $autoreferer = true, $auth = false)
         /**/
         {
-            $this->options[CURLOPT_FOLLOWLOCATION] = true;
-            $this->options[CURLOPT_MAXREDIRS]      = $num;
-            $this->options[CURLOPT_AUTOREFERER]    = $autoreferer;
+            $this->options[CURLOPT_FOLLOWLOCATION]    = true;
+            $this->options[CURLOPT_MAXREDIRS]         = $num;
+            $this->options[CURLOPT_AUTOREFERER]       = $autoreferer;
+        }
+
+        /**
+         * Set user agent string.
+         *
+         * @octdoc  m:http/setAgent
+         * @param   string                          $agent          Agent to set.
+         */
+        public function setAgent($agent)
+        /**/
+        {
+            $this->options[CURLOPT_USERAGENT] = $agent;
+        }
+
+        /**
+         * Set HTTP authentication.
+         *
+         * @octdoc  m:http/setAuthentication
+         */
+        public function setAuthentication($username, $password, $method, $auth = false)
+        /**/
+        {
+            $this->options[CURLOPT_USERPWD]           = $username . ':' . $password;
+            $this->options[CURLOPT_HTTPAUTH]          = $method;
+            $this->options[CURLOPT_UNRESTRICTED_AUTH] = $auth;
+        }
+
+        /**
+         * Set HTTP referer.
+         *
+         * @octdoc  m:http/setReferer
+         * @param   string                          $referer        Referer to set.
+         */
+        public function setReferer($referer)
+        /**/
+        {
+            $this->options[CURLOPT_REFERER] = $referer;
         }
     }
 }
