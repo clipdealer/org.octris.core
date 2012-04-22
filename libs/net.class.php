@@ -117,7 +117,7 @@ namespace org\octris\core {
             do {
                 curl_multi_select($this->mh);
 
-                while (($result = curl_multi_select($this->mh, $active)) == CURLM_CALL_MULTI_PERFORM);
+                while (($result = curl_multi_exec($this->mh, $active)) == CURLM_CALL_MULTI_PERFORM);
 
                 if ($result != CURLM_OK) break;
 
