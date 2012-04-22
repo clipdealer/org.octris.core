@@ -121,6 +121,14 @@ namespace org\octris\core {
 
                 if ($result != CURLM_OK) break;
 
+                while (($done = curl_multi_info_read($this->mh))) {
+                    // code that parses, adds or removes links to mcurl
+                    print "ADD\n";
+                    print_r($done);
+                }
+
+                print "loop\n";
+                die;
             } while(true);
 
             curl_multi_close($this->mh);
