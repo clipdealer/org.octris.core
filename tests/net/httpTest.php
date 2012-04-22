@@ -18,7 +18,19 @@ class httpTest extends PHPUnit_Framework_TestCase {
         $curl = new \org\octris\core\net\client\http(new \org\octris\core\type\uri('http://www.example.org/'));
         $result = $curl->execute();
 
-        print_r($result);
+        // print_r($result);
+        // die;
+    }
+
+    public function testMultiFetch() {
+        $net = new \org\octris\core\net(2);
+
+        for ($i = 0; $i < 10; ++$i) {
+            $net->addClient(new \org\octris\core\net\client\http(new \org\octris\core\type\uri('http://www.example.org/')));
+        }
+
+        $net->execute();
+
         die;
     }
 }
