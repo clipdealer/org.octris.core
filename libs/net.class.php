@@ -79,12 +79,12 @@ namespace org\octris\core {
         /**/
         {
             if (!is_null($this->mh)) {
-                $this->clients[] = $clients;
+                $this->clients[] = $client;
             } else {
                 // push directly into queue
             }
 
-            return $clients;
+            return $client;
         }
 
         /**
