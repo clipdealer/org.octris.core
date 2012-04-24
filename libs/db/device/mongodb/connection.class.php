@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace org\octris\core\db\mongodb {
+namespace org\octris\core\db\device\mongodb {
 	/**
 	 * MongoDB database device.
 	 *
@@ -17,7 +17,7 @@ namespace org\octris\core\db\mongodb {
      * @copyright   copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-	class connection implements \org\octris\core\db\connection_if, \org\octris\core\db\pool_if
+	class connection implements \org\octris\core\db\device\connection_if, \org\octris\core\db\pool_if
 	/**/
 	{
 		use \org\octris\core\db\pool_tr;
@@ -65,8 +65,8 @@ namespace org\octris\core\db\mongodb {
 		 * Resolve a database reference.
 		 *
 		 * @octdoc  m:connection/resolve
-		 * @param 	array 			$ref 						Database reference to resolve.
-		 * @param 	\org\octris\core\db\mongodb\dataobject 		Data object.
+		 * @param 	array 			$ref 								Database reference to resolve.
+		 * @param 	\org\octris\core\db\device\mongodb\dataobject 		Data object.
 		 */
 		public function resolve(array $ref)
 		/**/
@@ -80,7 +80,7 @@ namespace org\octris\core\db\mongodb {
 
 	    		$data = $cl->getDBRef($ref);
 
-	    		$return = new \org\octris\core\db\mongodb\dataobject($this->getPool(), $collection, $data);
+	    		$return = new \org\octris\core\db\device\mongodb\dataobject($this->getPool(), $collection, $data);
 	    	}
 
 	    	return $return;
@@ -90,13 +90,13 @@ namespace org\octris\core\db\mongodb {
 		 * Create an empty object for storing data into specified collection.
 		 *
 		 * @octdoc  m:connection/create
-		 * @param   string 			$collection 				Name of collection to create object for.
-		 * @return 	\org\octris\core\db\mongodb\dataobject 		Data object.
+		 * @param   string 			$collection 						Name of collection to create object for.
+		 * @return 	\org\octris\core\db\device\mongodb\dataobject 		Data object.
 		 */
 		public function create($collection)
 		/**/
 		{
-		    return new \org\octris\core\db\mongodb\dataobject($this->getPool(), $collection);
+		    return new \org\octris\core\db\device\mongodb\dataobject($this->getPool(), $collection);
 		}
 
 		/**
@@ -151,12 +151,12 @@ namespace org\octris\core\db\mongodb {
 		 * Query a MongoDB collection and return the first found item.
 		 *
 		 * @octdoc  m:connection/first
-	     * @param 	string 			$collection 				Name of collection to query.
-	     * @param 	array 			$query 						Query conditions.
-	     * @param 	array 			$sort 						Optional sorting parameters.
-	     * @param 	array 			$fields 					Optional fields to return.
-	     * @param 	array 			$hint 						Optional query hint.
-	     * @return 	\org\octris\core\db\mongodb\dataobject|bool Either a data object containing the found item or false if no item was found.
+	     * @param 	string 			$collection 						Name of collection to query.
+	     * @param 	array 			$query 								Query conditions.
+	     * @param 	array 			$sort 								Optional sorting parameters.
+	     * @param 	array 			$fields 							Optional fields to return.
+	     * @param 	array 			$hint 								Optional query hint.
+	     * @return 	\org\octris\core\db\device\mongodb\dataobject|bool 	Either a data object containing the found item or false if no item was found.
 		 */
 		public function first($collection, array $query, array $sort = null, array $fields = array(), array $hint = null)
 		/**/
@@ -177,7 +177,7 @@ namespace org\octris\core\db\mongodb {
 	     * @param 	array 			$sort 						Optional sorting parameters.
 	     * @param 	array 			$fields 					Optional fields to return.
 	     * @param 	array 			$hint 						Optional query hint.
-	     * @return 	\org\octris\core\db\mongodb\result 			Result object.
+	     * @return 	\org\octris\core\db\device\mongodb\result 	Result object.
 		 */
 		public function query($collection, array $query, $offset = 0, $limit = null, array $sort = null, array $fields = array(), array $hint = null)
 		/**/
@@ -198,7 +198,7 @@ namespace org\octris\core\db\mongodb {
 	            }
 	        }
 	        
-	        return new \org\octris\core\db\mongodb\result($this->getPool(), $collection, $cursor);
+	        return new \org\octris\core\db\device\mongodb\result($this->getPool(), $collection, $cursor);
 		}
 
 		/**

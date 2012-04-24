@@ -89,12 +89,12 @@ namespace org\octris\core\db\device {
 		 * Create database connection.
 		 *
 		 * @octdoc 	m:mongodb/getConnection
-		 * @return 	\org\octris\core\db\mongodb\connection 			Connection to a MongoDB database.
+		 * @return 	\org\octris\core\db\device\mongodb\connection 			Connection to a MongoDB database.
 		 */
 		public getConnection()
 		/**/
 		{
-			$cn = new \org\octris\core\db\mongodb\connection(
+			$cn = new \org\octris\core\db\device\mongodb\connection(
 				array(
 					'host'	   => $this->host,
 					'port'	   => $this->port,

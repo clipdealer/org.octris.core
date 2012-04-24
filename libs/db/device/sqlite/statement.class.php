@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace org\octris\core\db\sqlite {
+namespace org\octris\core\db\device\sqlite {
 	/**
 	 * SQLite prepared statement.
 	 *

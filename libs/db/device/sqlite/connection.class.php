@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace org\octris\core\db\sqlite {
+namespace org\octris\core\db\device\sqlite {
 	/**
 	 * SQLite connection handler.
 	 *
@@ -17,7 +17,7 @@ namespace org\octris\core\db\sqlite {
      * @copyright   copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-	class connection extends \SQLite3 implements \org\octris\core\db\connection_if, \org\octris\core\db\pool_if
+	class connection extends \SQLite3 implements \org\octris\core\db\device\connection_if, \org\octris\core\db\pool_if
 	/**/
 	{
 		use \org\octris\core\db\pool_tr;

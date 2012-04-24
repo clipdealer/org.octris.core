@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace org\octris\core\db\mongodb {
+namespace org\octris\core\db\device\mongodb {
 	/**
 	 * Query result object.
 	 *
@@ -79,7 +79,7 @@ namespace org\octris\core\db\mongodb {
 		 * Return current item of the search result.
 		 *
 		 * @octdoc  m:result/current
-		 * @return 	\org\octris\core\db\mongodb\dataobject|bool 	Returns either a dataobject with the stored contents of the current item or false, if the cursor position is invalid.
+		 * @return 	\org\octris\core\db\device\mongodb\dataobject|bool 	Returns either a dataobject with the stored contents of the current item or false, if the cursor position is invalid.
 		 */
 		public function current()
 		/**/
@@ -87,7 +87,7 @@ namespace org\octris\core\db\mongodb {
 			if (!$this->valid()) {
 				$return = false;
 			} else {
-				$return = new \org\octris\core\db\mongodb\dataobject(
+				$return = new \org\octris\core\db\device\mongodb\dataobject(
 					$this->pool, 
 					$this->collection,
 					$this->cursor->current()

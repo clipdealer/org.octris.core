@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace org\octris\core\db\mongodb {
+namespace org\octris\core\db\device\mongodb {
     /**
      * MongoDB data object
      *

@@ -84,12 +84,12 @@ namespace org\octris\core\db\device {
 		 * Create database connection.
 		 *
 		 * @octdoc 	m:sqlite/getConnection
-		 * @return 	\org\octris\core\db\sqlite\connection 			Connection to a sqlite database.
+		 * @return 	\org\octris\core\db\device\sqlite\connection 			Connection to a sqlite database.
 		 */
 		public getConnection()
 		/**/
 		{
-			$cn = new \org\octris\core\db\sqlite\connection(
+			$cn = new \org\octris\core\db\device\sqlite\connection(
 				array(
 					'file'	=> $this->host,
 					'flags'	=> $this->port,

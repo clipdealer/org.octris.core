@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace org\octris\core\db\mongodb {
+namespace org\octris\core\db\device\mongodb {
     /**
      * MongoDB data object
      *
@@ -17,7 +17,7 @@ namespace org\octris\core\db\mongodb {
      * @copyright   copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    class dataobject extends \org\octris\core\db\mongodb\subobject implements \ArrayAccess
+    class dataobject extends \org\octris\core\db\device\mongodb\subobject implements \ArrayAccess
     /**/
     {
         /**
@@ -51,11 +51,11 @@ namespace org\octris\core\db\mongodb {
          * Constructor.
          *
          * @octdoc  m:dataobject/__construct
-         * @param   \org\octris\core\db         $pool           Instance of pool responsable for connections.
+         * @param   \org\octris\core\db\pool    $pool           Instance of pool responsable for connections.
          * @param   string                      $collection     Name of collection to dataobject belongs to.
          * @param   array                       $data           Data to initialize dataobject with,
          */
-        public function __construct(\org\octris\core\db $pool, $collection, array $data = array())
+        public function __construct(\org\octris\core\db\pool $pool, $collection, array $data = array())
         /**/
         {
             $this->pool       = $pool;
