@@ -116,7 +116,7 @@ namespace org\octris\core\db {
 
                     $cn = $device->getConnection();
 
-                    if (!($cn instanceof \org\octris\core\db\connection_if))) {
+                    if (!($cn instanceof \org\octris\core\db\connection_if)) {
                         throw new \Exception('connection handler needs to implement interface "\org\octris\core\db\connection_if"');
                     } elseif (!($cn instanceof \org\octris\core\db\pool_if)) {
                         throw new \Exception('connection handler needs to implement interface "\org\octris\core\db\pool_if"');
