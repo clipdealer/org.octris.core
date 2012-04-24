@@ -41,9 +41,9 @@ namespace org\octris\core\db {
          * 
          * @octdoc  m:device/setPool
          * @param   string                      $type           Type of pool.
-         * @param   \org\octris\core\db         $pool           Pool to handle connection with.
+         * @param   \org\octris\core\db\pool    $pool           Pool to handle connection with.
          */
-        public function setPool($type, \org\octris\core\db $pool)
+        public function setPool($type, \org\octris\core\db\pool $pool)
         {
             if (!is_null($this->pool)) {
                 throw new \Exception('connection is already assigned to a pool');
@@ -57,9 +57,9 @@ namespace org\octris\core\db {
 		 * Create database connection.
 		 *
 		 * @octdoc 	m:device/getConnection
-		 * @return 	\org\octris\core\db\mongodb\connection 			Connection to a MongoDB database.
+		 * @return 	\org\octris\core\db\device\onnection_if 	Connection to a database.
 		 */
-		abstract public getConnection();
+		abstract public function getConnection();
 		/**/
     }
 }
