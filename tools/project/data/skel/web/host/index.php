@@ -25,7 +25,7 @@ namespace {{$namespace}} {
     // load application configuration
     $registry = \org\octris\core\registry::getInstance();
     $registry->set('config', function() {
-        return new \org\octris\core\config('{{$directory}}');
+        return new \org\octris\core\config('{{$directory}}', 'config');
     }, \org\octris\core\registry::T_SHARED | \org\octris\core\registry::T_READONLY);
 
     // run application
