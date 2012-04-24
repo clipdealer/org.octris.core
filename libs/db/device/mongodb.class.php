@@ -75,7 +75,7 @@ namespace org\octris\core\db\device {
 		 * @param 	string 			$username 			Username to use for connection.
 		 * @param 	string 			$password 			Optional password to use for connection.
 		 */
-		public __construct($host, $port, $database, $username, $password = '')
+		public function __construct($host, $port, $database, $username, $password = '')
 		/**/
 		{
 			$this->host 	= $host;
@@ -91,7 +91,7 @@ namespace org\octris\core\db\device {
 		 * @octdoc 	m:mongodb/getConnection
 		 * @return 	\org\octris\core\db\device\mongodb\connection 			Connection to a MongoDB database.
 		 */
-		public getConnection()
+		public function getConnection()
 		/**/
 		{
 			$cn = new \org\octris\core\db\device\mongodb\connection(
