@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace org\octris\core\db {
+namespace org\octris\core\db\device {
 	/**
 	 * SQLite database device. 
 	 * 
-	 * @octdoc		c:db/sqlite
+	 * @octdoc		c:device/sqlite
      * @copyright   copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      * 
