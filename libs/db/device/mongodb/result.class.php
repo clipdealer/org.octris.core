@@ -24,9 +24,9 @@ namespace org\octris\core\db\device\mongodb {
 		 * Instance of connection pool.
 		 *
 		 * @octdoc  p:result/$pool
-		 * @var     \org\octris\core\db
+		 * @var     \org\octris\core\db|null
 		 */
-		protected $pool;
+		protected $pool = null;
 		/**/
 
 		/**
