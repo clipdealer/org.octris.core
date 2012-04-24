@@ -11,7 +11,7 @@
 
 namespace org\octris\core\db {
     /**
-     * Implements functionality required for using a connection pool.
+     * Pooling for database connections.
      *
      * @octdoc      t:db/pool_tr
      * @copyright   copyright (c) 2012 by Harald Lapp
@@ -28,7 +28,7 @@ namespace org\octris\core\db {
          */
         protected $type = '';
         /**/
-
+ 
         /**
          * Pool that handles this connection.
          *
@@ -42,7 +42,7 @@ namespace org\octris\core\db {
          * Set pool for connection, to be called from constructor.
          *
          * @octdoc  m:pool_tr/setPool
-         * @param   string                              $type       Type of pool, 'master' or 'slave'.
+         * @param   string                              $type       Type of connection, 'master' or 'slave'.
          * @param   \org\octris\core\db                 $pool       Pool to assigned to connection.
          */
         public function setPool($type, \org\octris\core\db $pool)
