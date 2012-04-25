@@ -17,10 +17,17 @@ namespace org\octris\core\db\device\mongodb {
      * @copyright   copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-	class connection implements \org\octris\core\db\device\connection_if, \org\octris\core\db\pool_if
+	class connection implements \org\octris\core\db\device\connection_if
 	/**/
 	{
-		use \org\octris\core\db\pool_tr;
+		/**
+		 * Device.
+		 *
+		 * @octdoc  p:connection/$device
+		 * @var     \org\octris\core\db\device\mongo
+		 */
+		protected $device;
+		/**/
 
 		/**
 		 * Instance of mongo class.
@@ -46,10 +53,11 @@ namespace org\octris\core\db\device\mongodb {
 		 * @octdoc  m:connection/__construct
          * @param   array                       $options            Connection options.
 		 */
-		public function __construct(array $options)
+		public function __construct(\org\octris\core\db\device\mongodb $device, array $options)
 		/**/
 		{
-			$this->mongo = new \Mongo(
+			$this->device = $device;
+			$this->mongo  = new \Mongo(
 				'mongodb://' . $options['host'] . ':' . $options['port'],
 				array(
 					'username' => $options['username'],
@@ -59,6 +67,17 @@ namespace org\octris\core\db\device\mongodb {
 			);
 
 			$this->db = $this->mongo->selectDB($database);
+		}
+
+		/**
+		 * Release connection.
+		 *
+		 * @octdoc  m:connection/release
+		 */
+		public function release()
+		/**/
+		{
+			$this->device->release($this);
 		}
 
 		/**

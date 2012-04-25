@@ -19,47 +19,124 @@ namespace org\octris\core\db {
      */
     abstract class device {
         /**
-         * Pool that handles this connection.
+         * Storage for host configurations.
+         *
+         * @octdoc  p:device/$hosts
+         * @var     array
+         */
+        protected $hosts = array(
+            \org\octris\core\db::T_DB_MASTER => array(),
+            \org\octris\core\db::T_DB_SLAVE  => array()
+        );
+        /**/
+
+        /**
+         * Active connections.
+         *
+         * @octdoc  p:device/$connections
+         * @var     array
+         */
+        protected $connections = array();
+        /**/
+
+        /**
+         * Storage of free database connections.
          *
          * @octdoc  p:device/$pool
-         * @var     \org\octris\core\db|null 
+         * @var     array
          */
-        private $pool = null;
+        protected $pool = array(
+            \org\octris\core\db::T_DB_MASTER => array(),
+            \org\octris\core\db::T_DB_SLAVE  => array()
+        );
         /**/
 
         /**
-         * Whether the connection was released to the pool.
+         * Constructor.
          *
-         * @octdoc  p:device/$released
-         * @var     bool
+         * @octdoc  m:device/__construct
          */
-        private $released = false;
+        public function __construct()
         /**/
+        {
+        }
 
         /**
-         * Set pool for connection.
-         * 
-         * @octdoc  m:device/setPool
-         * @param   string                      $type           Type of pool.
-         * @param   \org\octris\core\db\pool    $pool           Pool to handle connection with.
+         * Add host configuration of specified type.
+         *
+         * @octdoc  m:device/addHost
+         * @param   string                      $type               Type of host to add (master / slave).
+         * @param   array                       $options            Host configuration options for database master.
+         * @param   bool                        $master_as_slave    Whether to add a master connection as slave, too.
          */
-        public function setPool($type, \org\octris\core\db\pool $pool)
+        protected function addHost($type, array $options, $master_as_slave = true)
+        /**/
         {
-            if (!is_null($this->pool)) {
-                throw new \Exception('connection is already assigned to a pool');
-            } else {
-                $this->type = $type;
-                $this->pool = $pool;
+            $this->hosts[$type][] = $options;
+
+            if ($type == \org\octris\core\db::T_DB_MASTER && $master_as_slave) {
+                $this->hosts[\org\octris\core\db::T_DB_SLAVE][] = $options;
             }
         }
 
+        /**
+         * Create a new database connection for specified configuration options.
+         *
+         * @octdoc  m:device/createConnection
+         * @param   string                      $type           Type of connection.
+         * @param   array                       $options        Host configuration options.
+         * @return  \org\octris\core\db\device\onnection_if     Connection to a database.
+         */
+        abstract protected function createConnection($type, array $options);
+        /**/
+
 		/**
-		 * Create database connection.
+		 * Return a database connection of specified type.
 		 *
 		 * @octdoc 	m:device/getConnection
+         * @param   string                      $type           Type of connection.
 		 * @return 	\org\octris\core\db\device\onnection_if 	Connection to a database.
 		 */
-		abstract public function getConnection();
+		public function getConnection($type)
 		/**/
+        {
+            if ($type != \org\octris\core\db::T_DB_MASTER && $type != \org\octris\core\db::T_DB_SLAVE) {
+                throw new \Exception('unknown connection type "' . $type . '"');
+            } else {
+                if (!($cn = array_shift($this->pool[$type]))) {
+                    // no more connections in the pool, create new one
+                    $host = shuffle($this->hosts[$type])[0];
+
+                    $cn = $this->createConnection($host);
+
+                    if (!($cn instanceof \org\octris\core\db\device\connection_if)) {
+                        throw new \Exception('connection handler needs to implement interface "\org\octris\core\db\connection_if"');
+                    }
+                }
+
+                $this->connections[spl_object_hash($cn)] = $type;
+            }
+
+            return $cn;
+        }
+
+        /**
+         * Release a connection, push it back into the pool.
+         *
+         * @octdoc  m:pool/releaseConnection
+         * @param   \org\octris\core\db\connection_if   $cn     Connection to release to pool.
+         */
+        public function release(\org\octris\core\db\device\connection_if $cn)
+        /**/
+        {
+            $hash = spl_object_hash($cn);
+
+            if (!isset($this->connections[$hash])) {
+                throw new \Exception('Connection is not handled by this device');
+            }
+
+            array_push($this->pool[$this->connections[$hash]], $cn);
+            unset($this->connections[$hash]);
+        }
     }
 }
