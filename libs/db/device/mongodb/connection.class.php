@@ -99,7 +99,7 @@ namespace org\octris\core\db\device\mongodb {
 
 	    		$data = $cl->getDBRef($ref);
 
-	    		$return = new \org\octris\core\db\device\mongodb\dataobject($this->getPool(), $collection, $data);
+	    		$return = new \org\octris\core\db\device\mongodb\dataobject($this->device, $collection, $data);
 	    	}
 
 	    	return $return;
@@ -115,7 +115,7 @@ namespace org\octris\core\db\device\mongodb {
 		public function create($collection)
 		/**/
 		{
-		    return new \org\octris\core\db\device\mongodb\dataobject($this->getPool(), $collection);
+		    return new \org\octris\core\db\device\mongodb\dataobject($this->device, $collection);
 		}
 
 		/**
@@ -217,7 +217,7 @@ namespace org\octris\core\db\device\mongodb {
 	            }
 	        }
 	        
-	        return new \org\octris\core\db\device\mongodb\result($this->getPool(), $collection, $cursor);
+	        return new \org\octris\core\db\device\mongodb\result($this->device, $collection, $cursor);
 		}
 
 		/**

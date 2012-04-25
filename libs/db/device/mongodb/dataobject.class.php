@@ -21,12 +21,12 @@ namespace org\octris\core\db\device\mongodb {
     /**/
     {
         /**
-         * Instance of pool responsable for connection
+         * Instance of mongodb device responsable for connections.
          *
-         * @octdoc  p:dataobject/$pool
-         * @var     \org\octris\core\db
+         * @octdoc  p:dataobject/$device
+         * @var     \org\octris\core\db\device\mongodb
          */
-        protected $pool;
+        protected $device;
         /**/
 
         /**
@@ -51,14 +51,14 @@ namespace org\octris\core\db\device\mongodb {
          * Constructor.
          *
          * @octdoc  m:dataobject/__construct
-         * @param   \org\octris\core\db\pool    $pool           Instance of pool responsable for connections.
-         * @param   string                      $collection     Name of collection to dataobject belongs to.
-         * @param   array                       $data           Data to initialize dataobject with,
+         * @param   \org\octris\core\db\device\mongodb      $device         Instance of mongodb device responsable for connections.
+         * @param   string                                  $collection     Name of collection to dataobject belongs to.
+         * @param   array                                   $data           Data to initialize dataobject with,
          */
-        public function __construct(\org\octris\core\db\pool $pool, $collection, array $data = array())
+        public function __construct(\org\octris\core\db\device\mongodb $device, $collection, array $data = array())
         /**/
         {
-            $this->pool       = $pool;
+            $this->device     = $device;
             $this->collection = $collection;
 
             if (isset($data['_id'])) {
@@ -91,7 +91,7 @@ namespace org\octris\core\db\device\mongodb {
         public function save()
         /**/
         {
-            $cn = $this->pool->getConnection(\org\octris\core\db::T_DB_MASTER);
+            $cn = $this->device->getConnection(\org\octris\core\db::T_DB_MASTER);
 
             if (is_null($this->_id)) {
                 // insert new object
