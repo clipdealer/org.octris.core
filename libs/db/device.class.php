@@ -89,15 +89,15 @@ namespace org\octris\core\db {
         abstract protected function createConnection(array $options);
         /**/
 
-		/**
-		 * Return a database connection of specified type.
-		 *
-		 * @octdoc 	m:device/getConnection
+        /**
+         * Return a database connection of specified type.
+         *
+         * @octdoc  m:device/getConnection
          * @param   string                      $type           Type of connection.
-		 * @return 	\org\octris\core\db\device\onnection_if 	Connection to a database.
-		 */
-		public function getConnection($type)
-		/**/
+         * @return  \org\octris\core\db\device\onnection_if     Connection to a database.
+         */
+        public function getConnection($type)
+        /**/
         {
             if ($type != \org\octris\core\db::T_DB_MASTER && $type != \org\octris\core\db::T_DB_SLAVE) {
                 throw new \Exception('unknown connection type "' . $type . '"');
