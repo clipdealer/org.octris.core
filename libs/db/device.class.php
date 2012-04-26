@@ -104,9 +104,13 @@ namespace org\octris\core\db {
             } else {
                 if (!($cn = array_shift($this->pool[$type]))) {
                     // no more connections in the pool, create new one
-                    $host = shuffle($this->hosts[$type])[0];
+                    if (count($this->hosts[$type]) == 0) {
+                        throw new \Exception(sprintf('No database configuration available for connection to a "%s" host.', $type));
+                    }
 
-                    $cn = $this->createConnection($host);
+                    shuffle($this->hosts[$type]);
+
+                    $cn = $this->createConnection($this->hosts[$type][0]);
 
                     if (!($cn instanceof \org\octris\core\db\device\connection_if)) {
                         throw new \Exception('connection handler needs to implement interface "\org\octris\core\db\connection_if"');
