@@ -21,12 +21,12 @@ namespace org\octris\core\db\device\mongodb {
 	/**/
 	{
 		/**
-		 * Instance of connection pool.
+		 * Device the connection belongs to.
 		 *
-		 * @octdoc  p:result/$pool
-		 * @var     \org\octris\core\db|null
+		 * @octdoc  p:connection/$device
+		 * @var     \org\octris\core\db\device\mongodb
 		 */
-		protected $pool = null;
+		protected $device;
 		/**/
 
 		/**
@@ -51,14 +51,14 @@ namespace org\octris\core\db\device\mongodb {
 		 * Constructor.
 		 *
 		 * @octdoc  m:result/__construct
-		 * @param 	\org\octris\core\db 		$pool 			Instance of pool responsable for connections.
-		 * @param 	string 						$collection 	Name of collection the result belongs to.
-		 * @param 	\MongoCursor 				$cursor 		Cursor of query result.
+		 * @param 	\org\octris\core\db\device\mongodb 	$device 		Device the connection belongs to.
+		 * @param 	string 								$collection 	Name of collection the result belongs to.
+		 * @param 	\MongoCursor 						$cursor 		Cursor of query result.
 		 */
-		public function __construct(\org\octris\core\db $pool, $collection, \MongoCursor $cursor)
+		public function __construct(\org\octris\core\db\device $device, $collection, \MongoCursor $cursor)
 		/**/
 		{
-		    $this->pool   	  = $pool;
+		    $this->device     = $device;
 		    $this->collection = $collection;
 		    $this->cursor 	  = $cursor;
 		}
@@ -88,7 +88,7 @@ namespace org\octris\core\db\device\mongodb {
 				$return = false;
 			} else {
 				$return = new \org\octris\core\db\device\mongodb\dataobject(
-					$this->pool, 
+					$this->device, 
 					$this->collection,
 					$this->cursor->current()
 				);
