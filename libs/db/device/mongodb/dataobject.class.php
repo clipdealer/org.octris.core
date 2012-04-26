@@ -51,7 +51,7 @@ namespace org\octris\core\db\device\mongodb {
          * Constructor.
          *
          * @octdoc  m:dataobject/__construct
-         * @param   \org\octris\core\db\device\mongodb      $device         Instance of mongodb device responsable for connections.
+		 * @param 	\org\octris\core\db\device\mongodb 		$device 		Device the connection belongs to.
          * @param   string                                  $collection     Name of collection to dataobject belongs to.
          * @param   array                                   $data           Data to initialize dataobject with,
          */
