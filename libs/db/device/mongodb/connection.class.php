@@ -60,8 +60,8 @@ namespace org\octris\core\db\device\mongodb {
 			$this->mongo  = new \Mongo(
 				'mongodb://' . $options['host'] . ':' . $options['port'],
 				array(
-					'username' => $options['username'],
-					'password' => $options['password'],
+					// 'username' => $options['username'],
+					// 'password' => $options['password'],
 					'db'	   => $options['database']
 				)
 			);
