@@ -83,11 +83,10 @@ namespace org\octris\core\db {
          * Create a new database connection for specified configuration options.
          *
          * @octdoc  m:device/createConnection
-         * @param   string                      $type           Type of connection.
          * @param   array                       $options        Host configuration options.
          * @return  \org\octris\core\db\device\onnection_if     Connection to a database.
          */
-        abstract protected function createConnection($type, array $options);
+        abstract protected function createConnection(array $options);
         /**/
 
 		/**
