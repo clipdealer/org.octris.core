@@ -21,10 +21,10 @@ namespace org\octris\core\db\device\mongodb {
 	/**/
 	{
 		/**
-		 * Device.
+		 * Device the connection belongs to.
 		 *
 		 * @octdoc  p:connection/$device
-		 * @var     \org\octris\core\db\device\mongo
+		 * @var     \org\octris\core\db\device\mongodb
 		 */
 		protected $device;
 		/**/
@@ -51,7 +51,8 @@ namespace org\octris\core\db\device\mongodb {
 		 * Constructor.
 		 *
 		 * @octdoc  m:connection/__construct
-         * @param   array                       $options            Connection options.
+		 * @param 	\org\octris\core\db\device\mongodb 	$device 	Device the connection belongs to.
+         * @param   array                       		$options            Connection options.
 		 */
 		public function __construct(\org\octris\core\db\device\mongodb $device, array $options)
 		/**/
@@ -66,7 +67,7 @@ namespace org\octris\core\db\device\mongodb {
 				)
 			);
 
-			$this->db = $this->mongo->selectDB($database);
+			$this->db = $this->mongo->selectDB($options['database']);
 		}
 
 		/**
