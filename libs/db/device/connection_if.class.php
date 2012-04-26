@@ -25,7 +25,7 @@ namespace org\octris\core\db\device {
          *
          * @octdoc  m:connection_if/release
          */
-        public function release()
+        public function release();
         /**/
     }
 }
