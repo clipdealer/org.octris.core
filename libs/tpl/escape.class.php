@@ -32,7 +32,7 @@ namespace org\octris\core\tpl {
     	public static function escapeHtml($str)
     	/**/
     	{
-    	    
+    	   return $str;   
     	}
 
         /**
