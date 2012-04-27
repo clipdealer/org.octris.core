@@ -46,7 +46,7 @@ namespace org\octris\core\db\device\mongodb {
 		 */
 		protected $cursor;
 		/**/
-		
+
 		/**
 		 * Constructor.
 		 *
@@ -128,7 +128,7 @@ namespace org\octris\core\db\device\mongodb {
 		public function rewind()
 		/**/
 		{
-		    $this->cursor->rewind();
+	    	$this->cursor->rewind();
 		}
 
 		/**
