@@ -101,6 +101,35 @@ namespace org\octris\core\db\device\mongodb {
             return $value;
         }
 
+        /**
+         * Cast values from MongoDB to PHP types.
+         *
+         * @octdoc  m:subject/castFrom
+         */
+        public function castFrom($value)
+        /**/
+        {
+            if (is_object($value)) {
+                if ($value instanceof \MongoDate) {
+                    $return = explode(' ', (string)$value)[0];
+                } elseif ($value instanceof \MongoId) {
+                    $return = (string)$value;
+                } elseif ($value instanceof \MongoInt32) {
+                    $return = (int)(string)$value;
+                } elseif ($value instanceof \MongoInt64) {
+                    // TODO: check if PHP is 64Bit or use bcmath instead?
+                    // http://stackoverflow.com/questions/864058/how-to-have-64-bit-integer-on-php
+                    $return = (int)(string)$value;
+                } else {
+                    $return = (string)$value;
+                }
+            } else {
+                $return = $value;
+            }
+
+            return $return;
+        }
+
         /** ArrayAccess **/
 
         /**
