@@ -93,9 +93,9 @@ namespace org\octris\core\db\device\mongodb {
         /**
          * Cast values to MongoDB specific types.
          *
-         * @octdoc  m:subject/cast
+         * @octdoc  m:subject/castTo
          */
-        protected function cast($value)
+        protected function castTo($value)
         /**/
         {
             return $value;
