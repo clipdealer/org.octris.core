@@ -190,5 +190,33 @@ namespace org\octris\core\db\device\mongodb {
         {
             return isset($this->data[$name]);
         }
+
+        /** Countable **/
+
+        /**
+         * Returns number of items stored in object.
+         *
+         * @octdoc  m:subobject/count
+         * @return  int                                     Number of items stored.
+         */
+        public function count()
+        /**/
+        {
+            return count($this->data);
+        }
+
+        /** IteratorAggregate **/
+
+        /**
+         * Return iterator to iterate over object data.
+         *
+         * @octdoc  m:subobject/getIterator
+         * @return  \org\octris\core\db\device\mongodb\dataiterator     Instance of iterator.
+         */
+        public function getIterator()
+        /**/
+        {
+            return new \org\octris\core\db\device\mongodb\dataiterator(clone($this));
+        }
     }
 }
