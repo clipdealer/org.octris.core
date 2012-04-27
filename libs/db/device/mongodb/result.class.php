@@ -61,6 +61,8 @@ namespace org\octris\core\db\device\mongodb {
 		    $this->device     = $device;
 		    $this->collection = $collection;
 		    $this->cursor 	  = $cursor;
+
+		    if ($this->cursor->hasNext()) $this->cursor->next();
 		}
 
 		/**
