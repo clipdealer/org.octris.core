@@ -160,9 +160,9 @@ namespace org\octris\core\db\device\mongodb {
             }
 
             if ($name === null) {
-                $this->data[] = $this->cast($value);
+                $this->data[] = $this->castTo($value);
             } else {
-                $this->data[$name] = $this->cast($value);
+                $this->data[$name] = $this->castTo($value);
             }
         }
 
