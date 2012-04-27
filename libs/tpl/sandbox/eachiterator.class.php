@@ -1,0 +1,154 @@
+<?php
+
+/*
+ * This file is part of the 'org.octris.core' package.
+ *
+ * (c) Harald Lapp <harald@octris.org>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace org\octris\core\tpl\sandbox {
+    /**
+     * Implements an iterator for iterating in template sandbox using 'each'.
+     *
+     * @octdoc      c:sandbox/eachiterator
+     * @copyright   copyright (c) 2012 by Harald Lapp
+     * @author      Harald Lapp <harald@octris.org>
+     */
+    class eachiterator implements \Iterator
+    /**/
+    {
+    	/**
+    	 * Iterator object.
+    	 *
+    	 * @octdoc  p:eachiterator/$iterator
+    	 * @var     \Traversable
+    	 */
+    	protected $iterator;
+    	/**/
+
+        /**
+         * Iterator position.
+         *
+         * @octdoc  p:eachiterator/$position
+         * @var     int
+         */
+        protected $position = 0;
+        /**/
+
+        /**
+         * Number of items in iterator object.
+         *
+         * @octdoc  p:eachiterator/$count
+         * @var     int|null
+         */
+        protected $items = null;
+        /**/
+
+        /**
+         * Constructor.
+         *
+         * @octdoc  m:eachiterator/__construct
+         * @param   \Traversable    		$object         				Traversable object to iterate.
+         */
+        public function __construct(\Traversable $object)
+        /**/
+        {
+            $this->iterator = ($object instanceof \IteratorAggregate
+            					? $object->getIterator()
+            					: $object);
+
+           	if ($object instanceof \Countable) {
+           		$this->items = count($object);
+           	}
+        }
+
+        /**
+         * Get meta information about current position.
+         *
+         * @octdoc  m:eachiterator/getMeta
+         * @return  array 													Array with meta information.
+         */
+        public function getMeta()
+        /**/
+        {
+            return array(
+            	'key' 		=> $this->key(),
+            	'pos' 		=> $this->position,
+            	'count'		=> $this->items,
+            	'is_first'	=> ($this->position == 0),
+            	'is_last'	=> (!is_null($this->items) && $this->position == $this->items - 1)
+            );
+        }
+
+        /** Iterator **/
+
+        /**
+         * Return current item.
+         *
+         * @octdoc  m:eachiterator/current
+         * @return  mixed                                                   Item.
+         */
+        public function current()
+        /**/
+        {
+            $tmp = $this->iterator->current();
+
+            if (!is_scalar($tmp) && !(is_object($tmp) && $tmp instanceof \Traversable)) {
+	            $tmp = new \org\octris\core\type\collection($tmp);
+            }
+
+            return $tmp;
+        }
+
+        /**
+         * Return current key.
+         *
+         * @octdoc  m:eachiterator/key
+         * @return  mixed                                                   Key.
+         */
+        public function key()
+        /**/
+        {
+            return $this->iterator->key();
+        }
+
+        /**
+         * Rewind iterator to beginning.
+         *
+         * @octdoc  m:eachiterator/rewind
+         */
+        public function rewind()
+        /**/
+        {
+        	$this->iterator->rewind();
+            $this->position = 0;
+        }
+
+        /**
+         * Advance the iterator by 1.
+         *
+         * @octdoc  m:eachiterator/next
+         */
+        public function next()
+        /**/
+        {
+        	$this->iterator->next();
+            ++$this->position;
+        }
+
+        /**
+         * Checks if the position in the collection the iterator points to is valid.
+         *
+         * @octdoc  m:eachiterator/valid
+         * @return  bool                                                    Returns true, if position is valid.
+         */
+        public function valid()
+        /**/
+        {
+            return $this->iterator->valid();
+        }
+    }
+}
