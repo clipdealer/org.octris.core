@@ -17,7 +17,7 @@ namespace org\octris\core\db\device\mongodb {
      * @copyright   copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    class dataobject extends \org\octris\core\db\device\mongodb\subobject implements \ArrayAccess
+    class dataobject extends \org\octris\core\db\device\mongodb\subobject
     /**/
     {
         /**
