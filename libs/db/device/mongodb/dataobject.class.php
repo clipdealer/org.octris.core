@@ -30,15 +30,6 @@ namespace org\octris\core\db\device\mongodb {
         /**/
 
         /**
-         * Object Id.
-         *
-         * @octdoc  p:dataobject/$_id
-         * @var     string|null
-         */
-        protected $_id = null;
-        /**/
-
-        /**
          * Name of collection the dataobject has access to.
          *
          * @octdoc  p:dataobject/$collection
@@ -62,7 +53,10 @@ namespace org\octris\core\db\device\mongodb {
             $this->collection = $collection;
 
             if (isset($data['_id'])) {
-                $this->_id = (string)$data['_id'];
+                $this->data['_id'] = (is_object($data['_id']) && $data['_id'] instanceof \MongoId
+                                        ? $data['_id']
+                                        : new \MongoId($data['_id']));
+
                 unset($data['_id']);
             }
 
@@ -78,7 +72,7 @@ namespace org\octris\core\db\device\mongodb {
         public function __clone()
         /**/
         {
-            $this->_id = null;
+            unset($this->data['_id']);
 
             parent::__clone();
         }
@@ -93,20 +87,23 @@ namespace org\octris\core\db\device\mongodb {
         {
             $cn = $this->device->getConnection(\org\octris\core\db::T_DB_MASTER);
 
-            if (is_null($this->_id)) {
+            $tmp = $this->data;         // workaround strance reference issue with pecl_mongo
+
+            if (!isset($tmp['_id'])) {
                 // insert new object
-                $cn->insert($this->data);
+                $cn->insert($tmp);
 
-                if (isset($this->data['_id'])) {
-                    $this->_id = (string)$this->data['_id'];
-
-                    unset($this->data['_id']);
+                if (isset($tmp['_id'])) {
+                    $this->data['_id'] = $tmp['_id'];
                 }
             } else {
                 // update object
+                $_id = $tmp['_id'];
+                unset($tmp['_id']);
+
                 $cn->update(
-                    array('_id'  => new MongoId($this->_id)),
-                    array('$set' => $this->data)
+                    array('_id'  => $_id),
+                    array('$set' => $tmp)
                 );
             }
 
