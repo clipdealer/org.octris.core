@@ -61,17 +61,17 @@ namespace org\octris\core\db\device\mongodb {
         /**
          * Convert to array.
          *
-         * @octdoc  m:subobject/toArray
+         * @octdoc  m:subobject/getArrayCopy
          * @return  array                                   Array representation of object.
          */
-        public function toArray()
+        public function getArrayCopy()
         /**/
         {
             $data = $this->data;
 
             foreach ($data as $key => $value) {
                 if ($value instanceof self) {
-                    $data[$key] = $value->toArray();
+                    $data[$key] = $value->getArrayCopy();
                 }
             }
 
