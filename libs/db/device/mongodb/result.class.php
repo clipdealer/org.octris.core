@@ -85,7 +85,7 @@ namespace org\octris\core\db\device\mongodb {
 		/**/
 		{
 			if (!$this->valid()) {
-				$return = false;
+				$return = null;
 			} else {
 				$return = new \org\octris\core\db\device\mongodb\dataobject(
 					$this->device, 
