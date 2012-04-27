@@ -79,6 +79,18 @@ namespace org\octris\core\db\device\mongodb {
         }
 
         /**
+         * Return an array of keys stored in object.
+         *
+         * @octdoc  m:subobject/getKeys
+         * @return  array                                   Stored keys.
+         */
+        public function getKeys()
+        /**/
+        {
+            return array_keys($this->data);
+        }
+
+        /**
          * Cast values to MongoDB specific types.
          *
          * @octdoc  m:subject/cast
