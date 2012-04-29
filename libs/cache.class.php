@@ -51,9 +51,9 @@ namespace org\octris\core {
          * Constructor.
          *
          * @octdoc  m:cache/__construct
-         * @param   \org\octris\core\cache\storage_if   $storage        Instance of cache storage backend.
+         * @param   \org\octris\core\cache\storagen     $storage        Instance of cache storage backend.
          */
-        public function __construct(\org\octris\core\cache\storage_if $storage)
+        public function __construct(\org\octris\core\cache\storage $storage)
         /**/
         {
             $this->backend = $storage;
@@ -65,9 +65,9 @@ namespace org\octris\core {
          * if the first cache does not contain the looked-up data.
          *
          * @octdoc  m:cache/setFallback
-         * @param   \org\octris\core\cache\storage_if   $storage        Instance of cache storage backend.
+         * @param   \org\octris\core\cache\storage      $storage        Instance of cache storage backend.
          */
-        public function setFallback(\org\octris\core\cache\storage_if $storage)
+        public function setFallback(\org\octris\core\cache\storage $storage)
         /**/
         {
             $this->fallback = $storage;
