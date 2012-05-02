@@ -21,15 +21,6 @@ namespace org\octris\core\cache\storage {
     /**/
     {
         /**
-         * Hash algorithm
-         *
-         * @octdoc  p:file/$hash_algo
-         * @var     string
-         */
-        protected $hash_algo = 'adler32';
-        /**/
-        
-        /**
          * Namespace separator.
          *
          * @octdoc  p:file/$ns_separator
@@ -38,6 +29,15 @@ namespace org\octris\core\cache\storage {
         protected $ns_separator = '/';
         /**/
 
+        /**
+         * Cache path.
+         *
+         * @octdoc  p:file/$path
+         * @var     string
+         */
+        protected $path;
+        /**/
+        
         /**
          * Constructor.
          *
@@ -48,6 +48,108 @@ namespace org\octris\core\cache\storage {
         /**/
         {
             parent::__construct($options);
+
+            $path = rtrim((isset($options['path'])
+                                        ? $options['path']
+                                        : \org\octris\core\app::getPath(\org\octris\core\app::T_PATH_CACHE_DATA)), '/');
+
+            if ($this->ns != '') $path .= '/' . $this->ns;
+
+            $this->path = $path;
+
+            if (!is_dir($this->path) && !is_writable($this->path)) {
+                if (!@mkdir($this->path, 0777, true)) {
+                    throw new \Exception('Unable to create cache directory "' . $this->path . '".');
+                }
+            }
+        }
+
+        /**
+         * Serialize data and write it to a cache file. To make the writing of a cache file an atomic operation, 
+         * a temporary file is used to save the data and the atomic rename function is than used to move the temp-
+         * file to it's final destination.
+         *
+         * @octdoc  m:file/putContent
+         * @param   string          $key                    Key of data to store in cache.
+         * @param   mixed           $data                   Data to store in cache.
+         * @param   int             $ttl                    Optional ttl of cache item.
+         */
+        protected function putContent($key, $data, $ttl)
+        /**/
+        {
+            $file = $this->path . '/' . $key . '.ser';
+            $tmp  = tempnam('/tmp', 'cf');
+
+            file_put_contents($tmp, serialize(array('meta' => $this->createMetaData($ttl), 'data' => $data)));
+
+            rename($tmp, $file);
+        }
+
+        /**
+         * Get data from file.
+         *
+         * @octdoc  m:file/getContent
+         * @param   string          $key                    Key of data stored in cache.
+         * @return  array|bool                              Returns false if content could not be loaded or an array with first item is the meta data and second item is the cached data.
+         */
+        public function getContent($key)
+        /**/
+        {
+            $file = $this->path . '/' . $key . '.ser';
+
+            if (($return = (is_file($file) && is_readable($file)))) {
+                $return = unserialize(file_get_contents($file));
+            }
+
+            return $return;
+        }
+
+        /**
+         * Execute stat for specified cache key.
+         *
+         * @octdoc  m:file/getStat
+         * @param   string          $key                    Key of data stored in cache.
+         * @return  array|bool                              Returns stat data or false, if file does not exist.
+         */
+        public function getStat($key)
+        /**/
+        {
+            clearstatcache();
+
+            try {
+                $stat = stat($this->path . '/' . $key . '.ser');
+            } catch(\Exception $e) {
+                $stat = false;
+            }
+
+            return $stat;
+        }
+
+        /**
+         * Test if cache key is already expired.
+         *
+         * @octdoc  m:file/isExpired
+         * @param   string          $key                    Key of data stored in cache.
+         * @param   int             $ttl                    Optional ttl of cache item.
+         * @return  bool                                    Returns true if cache item is expired.
+         */
+        public function isExpired($key, $ttl = null)
+        /**/
+        {
+            $ttl = (is_null($ttl) ? $this->ttl : $ttl);
+
+            return (!(($stat = $this->getStat($key)) && ($ttl === -1 || $stat['mtime'] + $ttl > time())));
+        }
+
+        /**
+         * Return metadata from cache for a specified key.
+         *
+         * @octdoc  m:storage/getMetaData
+         * @param   string          $key                    The key of the value that should be removed.
+         */
+        public function getMetaData()
+        /**/
+        {
         }
 
         /**
@@ -58,7 +160,7 @@ namespace org\octris\core\cache\storage {
         public function getIterator()
         /**/
         {
-            // TODO
+            throw new \Exception('The method "' . __METHOD__ . '" is not currently implemented in this backend!');
         }
 
         /**
@@ -73,7 +175,7 @@ namespace org\octris\core\cache\storage {
         public function cas($key, $v_current, $v_new)
         /**/
         {
-            // TODO
+            throw new \Exception('The method "' . __METHOD__ . '" is not currently implemented in this backend!');
         }
 
         /**
@@ -88,7 +190,7 @@ namespace org\octris\core\cache\storage {
         public function inc($key, $step, &$success = null)
         /**/
         {
-            // TODO
+            throw new \Exception('The method "' . __METHOD__ . '" is not currently implemented in this backend!');
         }
 
         /**
@@ -103,7 +205,7 @@ namespace org\octris\core\cache\storage {
         public function dec($key, $step, &$success = null)
         /**/
         {
-            // TODO
+            throw new \Exception('The method "' . __METHOD__ . '" is not currently implemented in this backend!');
         }
 
         /**
@@ -117,7 +219,13 @@ namespace org\octris\core\cache\storage {
         public function fetch($key, &$success = null)
         /**/
         {
-            // TODO
+            if (($return = $success = !$this->isExpired($key))) {
+                if (($return = $this->getContent($key))) {
+                    $return = $return['data'];
+                }
+            }
+
+            return $return;
         }
 
         /**
@@ -133,7 +241,15 @@ namespace org\octris\core\cache\storage {
         public function load($key, callable $cb, $ttl = null)
         /**/
         {
-            // TODO
+            if (($return = !$this->isExpired($key, $ttl))) {
+                list(, $return) = $this->getContent($key);
+            } else {
+                $return = $cb();
+
+                $this->putContent($key, $return, $ttl);
+            }
+
+            return $return;
         }
 
         /**
@@ -147,7 +263,7 @@ namespace org\octris\core\cache\storage {
         public function save($key, $data, $ttl = null)
         /**/
         {
-            // TODO
+            $this->putContent($key, $data, $ttl);
         }
 
         /**
@@ -160,7 +276,7 @@ namespace org\octris\core\cache\storage {
         public function exists($key)
         /**/
         {
-            // TODO
+            return (!$this->isExpired($key));
         }
 
         /**
