@@ -97,6 +97,15 @@ namespace org\octris\core\cache {
         /** methods that need to be implemented by child class **/
 
         /**
+         * Return metadata from cache for a specified key.
+         *
+         * @octdoc  m:storage/getMetaData
+         * @param   string          $key                    The key of the value that should be removed.
+         */
+        abstract public function getMetaData();
+        /**/
+
+        /**
          * Compare and update a value. The value get's only updated, if the current value matches. The name of the
          * method CAS means: 'Compare And Swap'.
          *
