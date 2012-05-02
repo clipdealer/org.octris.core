@@ -60,7 +60,14 @@ namespace org\octris\core\cache {
                 $this->ns_separator = $options['ns_separator'];
             }
             if (isset($options['ns'])) {
-                $this->ns = $options['ns'] . $this->ns_separator;
+                if (preg_match('/[^0-9_a-z' . preg_quote($this->ns_separator, '/') . ']/i', $options['ns'])) {
+                    throw new \Exception(sprintf(
+                        'The namespace can only contain the characters "0-9", "a-z", "A-Z", "_" and "%s"',
+                        $this->ns_separator
+                    ));
+                } else {
+                    $this->ns = $options['ns'] . $this->ns_separator;
+                }
             }
             if (isset($options['ttl'])) {
                 $this->ttl = $options['ttl'];
