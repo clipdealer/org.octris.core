@@ -74,6 +74,26 @@ namespace org\octris\core\cache {
             }
         }
 
+        /**
+         * Create set of metadata intended to be stored with data to cache.
+         *
+         * @octdoc  m:storage/createMetaData
+         * @param   int             $ttl                    Optional ttl.
+         * @return  array                                   Array containing created meta data.
+         */
+        public function createMetaData($ttl = null)
+        /**/
+        {
+            $mtime = time();
+            $ttl   = (is_null($ttl) ? $this->ttl : $ttl);
+
+            return array(
+                'mtime'     => $mtime,
+                'expires'   => $mtime + $ttl,
+                'ttl'       => $ttl
+            );
+        }
+
         /** methods that need to be implemented by child class **/
 
         /**
