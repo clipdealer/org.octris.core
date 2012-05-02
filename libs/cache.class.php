@@ -21,6 +21,15 @@ namespace org\octris\core {
     /**/
     {
         /**
+         * Hash algorithm
+         *
+         * @octdoc  p:cache/$hash_algo
+         * @var     string
+         */
+        protected $hash_algo = 'adler32';
+        /**/
+        
+        /**
          * Standard caching backend.
          *
          * @octdoc  p:cache/$backend
@@ -83,6 +92,19 @@ namespace org\octris\core {
         /**/
         {
             $this->logger = $logger;
+        }
+
+        /**
+         * Hash the input value and create for example as usage for a cache key.
+         *
+         * @octdoc  m:cache/getCacheKey
+         * @param   mixed                               $data           Data to create hash for.
+         * @return  string                                              Cache key.
+         */
+        public function getCacheKey($data)
+        /**/
+        {
+            return hash($this->hash_algo, serialize($data));
         }
 
         /** Proxy **/
