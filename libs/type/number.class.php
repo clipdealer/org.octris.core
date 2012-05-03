@@ -124,6 +124,18 @@ namespace org\octris\core\type {
         }
         
         /**
+         * Test if stored number is decimal.
+         *
+         * @octdoc  m:number/isDecimal
+         * @return  bool                                                            Returns true, if number is a decimal.
+         */
+        public function isDecimal()
+        /**/
+        {
+            return (strpos($this->value, '.') !== false);
+        }
+
+        /**
          * Absolute value.
          *
          * @octdoc  m:number/abs
