@@ -98,7 +98,25 @@ namespace org\octris\core\db\device\mongodb {
         protected function castTo($value)
         /**/
         {
-            return $value;
+            if (is_object($value) && !($value instanceof self)) {
+                if ($value instanceof \org\octris\core\type\number) {
+                    $return = ($value->isDecimal()
+                                ? (float)(string)$value
+                                : new \MongoInt64((string)$value));
+                } elseif ($value instanceof \org\octris\core\type\money) {
+                    $return = (float)(string)$value;
+                } elseif ($value instanceof \DateTime) {
+                    $tmp = explode('.', $value->format('U.u'));
+
+                    $return = \MongoDate($tmp[0], $tmp[1]);
+                } else {
+                    $return = (string)$value;
+                }
+            } else {
+                $return = $value;
+            }
+
+            return $return;
         }
 
         /**
@@ -109,17 +127,15 @@ namespace org\octris\core\db\device\mongodb {
         public function castFrom($value)
         /**/
         {
-            if (is_object($value)) {
+            if (is_object($value) && !($value instanceof self)) {
                 if ($value instanceof \MongoDate) {
-                    $return = explode(' ', (string)$value)[0];
+                    $return = new \org\octris\core\type\datetime((float)($value->sec . '.' . $value->usec));
                 } elseif ($value instanceof \MongoId) {
                     $return = (string)$value;
                 } elseif ($value instanceof \MongoInt32) {
-                    $return = (int)(string)$value;
+                    $return = new \org\octris\core\type\number((string)$value);
                 } elseif ($value instanceof \MongoInt64) {
-                    // TODO: check if PHP is 64Bit or use bcmath instead?
-                    // http://stackoverflow.com/questions/864058/how-to-have-64-bit-integer-on-php
-                    $return = (int)(string)$value;
+                    $return = new \org\octris\core\type\number((string)$value);
                 } else {
                     $return = (string)$value;
                 }
@@ -142,7 +158,7 @@ namespace org\octris\core\db\device\mongodb {
         public function offsetGet($name)
         /**/
         {
-            return $this->data[$name];
+            return $this->castFrom($this->data[$name]);
         }
 
         /**
