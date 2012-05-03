@@ -155,7 +155,7 @@ namespace org\octris\core\db\device\mongodb {
         public function offsetSet($name, $value)
         /**/
         {
-            if (is_array($value)) {
+            if (is_array($value) && !\MongoDBRef::isRef($value)) {
                 $value = new self($value);
             }
 
