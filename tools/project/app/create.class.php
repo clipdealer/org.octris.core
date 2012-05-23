@@ -179,7 +179,6 @@ namespace org\octris\core\project\app {
             $tpl->addSearchPath(__DIR__ . '/../data/skel/web/');
             $tpl->setValues($this->data);
 
-            $box = new \org\octris\core\tpl\sandbox();
             \org\octris\core\tpl\compiler\constant::setConstant(
                 'OCTRIS_BASE', 
                 \org\octris\core\app\cli::getPath(\org\octris\core\app\cli::T_PATH_BASE, '')
