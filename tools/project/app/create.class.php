@@ -180,6 +180,10 @@ namespace org\octris\core\project\app {
             $tpl->setValues($this->data);
 
             $box = new \org\octris\core\tpl\sandbox();
+            \org\octris\core\tpl\compiler\constant::setConstant(
+                'OCTRIS_BASE', 
+                \org\octris\core\app\cli::getPath(\org\octris\core\app\cli::T_PATH_BASE, '')
+            );
 
             $src = __DIR__ . '/../data/skel/web/';
             $len = strlen($src);
