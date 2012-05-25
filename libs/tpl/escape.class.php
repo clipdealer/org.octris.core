@@ -24,16 +24,27 @@ namespace org\octris\core\tpl {
     class escape
     /**/
     {
-    	/**
-    	 * Escape content to put into HTML context to prevent XSS attacks.
-    	 *
-    	 * @octdoc  m:escape/escapeHtml
-    	 */
-    	public static function escapeHtml($str)
-    	/**/
-    	{
-    	   return $str;   
-    	}
+        /**
+         * Escape HTML tag attribute.
+         *
+         * @octdoc  m:escape/escapeAttributeValue
+         */
+        public static function escapeAttributeValue($str)
+        /**/
+        {
+            return $str;
+        }
+
+        /**
+         * Escape content to put into HTML context to prevent XSS attacks.
+         *
+         * @octdoc  m:escape/escapeHtml
+         */
+        public static function escapeHtml($str)
+        /**/
+        {
+           return $str;
+        }
 
         /**
          * Escape javascript.
