@@ -253,7 +253,7 @@ namespace org\octris\core {
                 }
             }
             
-            return $this->validated[$key];
+            return $this->validated[$key]['is_valid'];
         }
 
         /**
