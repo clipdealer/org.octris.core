@@ -33,13 +33,14 @@ namespace org\octris\core {
          * Available validation types.
          *
          * @octdoc  d:validate/T_ALPHA, T_ALPHANUM, T_BASE64, T_BOOL, T_CALLBACK, T_CHAIN, T_DIGIT,
-         *          T_PATH, T_PATTERN, T_PRINTABLE, T_PROJECT, T_UTF8, T_XDIGIT
+         *          T_FILE, T_PATH, T_PATTERN, T_PRINTABLE, T_PROJECT, T_UTF8, T_XDIGIT
          */
         const T_ALPHA     = '\org\octris\core\validate\type\alpha';
         const T_ALPHANUM  = '\org\octris\core\validate\type\alphanum';
         const T_BASE64    = '\org\octris\core\validate\type\base64';
         const T_BOOL      = '\org\octris\core\validate\type\bool';
         const T_DIGIT     = '\org\octris\core\validate\type\digit';
+        const T_FILE      = '\org\octris\core\validate\type\file';
         const T_PATH      = '\org\octris\core\validate\type\path';
         const T_PATTERN   = '\org\octris\core\validate\type\pattern';
         const T_PRINTABLE = '\org\octris\core\validate\type\printable';
