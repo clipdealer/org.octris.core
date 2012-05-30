@@ -54,7 +54,7 @@ namespace org\octris\core\tpl {
         public static function escapeJs($str)
         /**/
         {
-            
+            return $str;
         }
 
         /**
@@ -65,10 +65,12 @@ namespace org\octris\core\tpl {
         public static function escapeUri($str)
         /**/
         {
-            if (preg_match('/javascript:/i', $val)) {
+            if (preg_match('/^javascript:/i', $str)) {
                 // switch to javascript escaping instead
-                $this->escapeJs($val);
+                $str = $this->escapeJs($str);
             }
+
+            return $str;
         }
     }
 }
