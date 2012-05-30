@@ -162,7 +162,7 @@ namespace org\octris\core\tpl {
                     $compressed .= $m_block[2][0];
 
                     $tpl = substr_replace($tpl, $compressed, $m_block[0][1], strlen($m_block[0][0]));
-                    $offset += strlen($compressed);
+                    $offset = $m_block[0][1] + strlen($compressed);
                 }
             };
 
