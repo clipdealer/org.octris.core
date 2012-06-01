@@ -156,6 +156,13 @@ namespace org\octris\core {
                     $data   = $schema->validate($data);                         // returns sanitized data
                     $errors = $schema->getErrors();
 
+                    foreach ($data as $key => $value) {
+                        $this->validated[$key] = array(
+                            'value'    => $value,
+                            'is_valid' => true
+                        );
+                    }
+
                     $return = array(
                         (count($errors) == 0),
                         $data,
