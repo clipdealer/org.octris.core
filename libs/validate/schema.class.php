@@ -71,6 +71,15 @@ namespace org\octris\core\validate {
         /**/
 
         /**
+         * Whether validation succeeded.
+         *
+         * @octdoc  p:schema/$is_valid
+         * @var     bool
+         */
+        protected $is_valid = false;
+        /**/
+
+        /**
          * Available validation modes:
          *
          * - T_STRICT:  fields not in schema will raise a validation error (default)
@@ -151,6 +160,18 @@ namespace org\octris\core\validate {
             return $this->data;
         }
  
+        /**
+         * Returns whether validation succeeded.
+         *
+         * @octdoc  m:schema/isValid
+         * @return  bool                    Returns true, if validation succeeded.
+         */
+        public function isValid()
+        /**/
+        {
+            return $this->is_valid;
+        }
+
         /**
          * Schema validator.
          *
@@ -366,7 +387,8 @@ namespace org\octris\core\validate {
                 $this->schema['default']
             );
             
-            $this->data = $data;
+            $this->data     = $data;
+            $this->is_valid = $return;
             
             return ($return !== false ? $data : $return);
         }
