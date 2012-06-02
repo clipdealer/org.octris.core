@@ -480,25 +480,3 @@ namespace org\octris\core {
         }
     }
 }
-
-/*
- * put translate function into global namespace
- */
-namespace {
-    /**
-     * Global translate function.
-     *
-     * @octdoc  m:l10n/__
-     * @param   string      $msg            Message to translate.
-     * @param   mixed       $arg, ...       Optional additional arguments.
-     * @return  string                      Localized text.
-     */
-    function __($msg)
-    /**/
-    {
-        $args = func_get_args();
-        array_shift($args);
-
-        return \org\octris\core\l10n::getInstance()->translate($msg, $args);
-    }
-}
