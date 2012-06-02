@@ -452,6 +452,7 @@ namespace org\octris\core {
         /**/
         {
             $msg     = '\'' . str_replace("'", "\'", $msg) . '\'';
+            $cnt     = 0;
             $pattern = '/\[(?:(_\d+)|(?:([^,]+))(?:,(.*?))?(?<!\\\))\]/s';
 
             $msg = preg_replace_callback($pattern, function($m) {
@@ -470,7 +471,7 @@ namespace org\octris\core {
                          : '\' . ' . array_shift($par) . ' . \'');
 
                 return $code;
-            }, $msg, -1, $cnt = 0);
+            }, $msg, -1, $cnt);
 
             if ($cnt == 0) {
                 return function($obj, $args) use ($msg) { return $msg; };
