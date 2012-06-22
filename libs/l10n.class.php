@@ -452,6 +452,7 @@ namespace org\octris\core {
         /**/
         {
             $msg     = '\'' . str_replace("'", "\'", $msg) . '\'';
+            $cnt     = 0;
             $pattern = '/\[(?:(_\d+)|(?:([^,]+))(?:,(.*?))?(?<!\\\))\]/s';
 
             $msg = preg_replace_callback($pattern, function($m) {
@@ -470,7 +471,7 @@ namespace org\octris\core {
                          : '\' . ' . array_shift($par) . ' . \'');
 
                 return $code;
-            }, $msg, -1, $cnt = 0);
+            }, $msg, -1, $cnt);
 
             if ($cnt == 0) {
                 return function($obj, $args) use ($msg) { return $msg; };
@@ -478,27 +479,5 @@ namespace org\octris\core {
                 return create_function('$obj, $args', 'return ' . $msg . ';');
             }
         }
-    }
-}
-
-/*
- * put translate function into global namespace
- */
-namespace {
-    /**
-     * Global translate function.
-     *
-     * @octdoc  m:l10n/__
-     * @param   string      $msg            Message to translate.
-     * @param   mixed       $arg, ...       Optional additional arguments.
-     * @return  string                      Localized text.
-     */
-    function __($msg)
-    /**/
-    {
-        $args = func_get_args();
-        array_shift($args);
-
-        return \org\octris\core\l10n::getInstance()->translate($msg, $args);
     }
 }
