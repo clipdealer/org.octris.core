@@ -582,7 +582,21 @@ namespace org\octris\core\type {
         public static function walk(&$arg, callable $cb, $userdata = null)
         /**/
         {
-            return array_walk($arg, $cb, $userdata);
+            $data = $arg;
+
+            $is_collection = (is_object($data) && $data instanceof \org\octris\core\type\collection);
+
+            if (!is_scalar($key) || ($data = static::normalize($data, true)) === false) {
+                return false;
+            }
+
+            array_walk($data, $cb, $userdata);
+
+            if ($is_collection) {
+                $arg = new \org\octris\core\type\collection($data);
+            } else {
+                $arg = $data;
+            }
         }
     }
 }
