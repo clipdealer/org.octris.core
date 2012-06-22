@@ -1,77 +1,72 @@
 # vim:set noexpandtab:
+
+#
+# This file is part of the 'org.octris.core' package.
+#
+# (c) Harald Lapp <harald@octris.org>
+#
+# For the full copyright and license information, please view the LICENSE
+# file that was distributed with this source code.
 #
 
-#****h* Makefile
-# NAME
-#	Makefile.core
-# FUNCTION
-#	This is the makefile used to all administrative tasks regarding a project based on the OCTRiS framework
-#	including the OCTRiS framework itself. This makefile is not intended to be called directly. Instead it's 
-#	included in the project's own Makefiles. The following targets are available:
+#**
+# This is the makefile used to all administrative tasks regarding a project based on the OCTRiS framework
+# including the OCTRiS framework itself. This makefile is not intended to be called directly. Instead it's 
+# included in the project's own Makefiles.
 #
-#	*	dev-install -- install project files in development environment
-#	*	install -- install project files in production environment
-#	*	dist -- create distribution package
-#	*	deploy -- deploy project to production environment
-#	*	rollback -- rollback production environment to last
-#	*	reload -- reload configuration file
-#	*	cleanup -- cleanup cache files
-#	*	compile -- compile template files
-#	*	gettext -- create gettext dictionaries
-#	*	msgfmt -- generate localization files
-#	*	cloc -- count lines of code in a project
-# COPYRIGHT
-#	copyright (c) 2006-2010 by Harald Lapp
-# AUTHOR
-#	Harald Lapp <harald@octris.org>
-#****
+# @octdoc       h:./Makefile
+# @copyright    copyright (c) 2006-2011 by Harald Lapp
+# @author       Harald Lapp <harald@octris.org>
+#**
 
 SHELL:=$(shell which bash)
 CURSYMDIR:=$(shell pwd)
 
-#****t* Makefile/help
-# SYNOPSIS
-#	make help
-# FUNCTION 
-#	the target help displays general information and available makefile targets
-#****
+#**
+# The target help displays general information and available makefile targets.
+#
+# @octdoc       t:Makefile/help
+#**
 help::
 	@echo ""
 	@echo "OCTRiS Application Framework"
-	@echo "copyright (c) 2006-2010 by Harald Lapp"
+	@echo "copyright (c) 2006-2011 by Harald Lapp"
 	@echo ""
 	@echo "targets for project '$(project)'"
 	@echo ""
 	@echo "help             this help text"
 	@echo ""
+	@echo "check            check dependencies"
 	@if [ "$(project)" = "org.octris.core" ]; then \
-		echo "new              create new project"; \
-		echo ""; \
+		echo "create           create new project"; \
 	fi
 	@echo "install          install project"
-	@echo "clean            uninstall project"
+	@echo "uninstall        uninstall project"
 	@echo "test             run all tests of a project"
-	@echo ""
-	@echo "dist             create distribution package"
-	@echo "deploy           deploy project to production environment"
 	@echo ""
 	@echo "cleanup          cleanup cache files"
 	@echo "compile          compile template files"
-	@echo ""
-	@echo "gettext          create gettext dictionaries"
-	@echo "msgfmt           generate localization files"
-	@echo ""
-	@echo "cloc             count lines of code"
 
-#****t* Makefile/install
-# SYNOPSIS
-#	make install
-# FUNCTION
-#	This target is used for installing an application. It's depends on the Target ~createdirs~ and creates symbolic links for
-#	all required project files and directories to fit the directory structure required by the OCTRiS framework.
-# SEE ALSO
-#	createdirs
-#****
+#**
+# Check dependencies of an application based OCTRiS framework.
+#
+# @octdoc       t:Makefile/check
+#**
+check:
+	@if [ "`which php`" = "" ]; then \
+		echo "no PHP found in search path"; \
+		exit 1; \
+	fi; \
+	$(CURSYMDIR)/../../tools/project/check.php
+
+#**
+# This target is used for installing an application. It's depends on the Target ~createdirs~ and creates symbolic 
+# links for all required project files and directories to fit the directory structure required by the OCTRiS 
+# framework.
+#
+# @octdoc       t:Makefile/install
+# @see          Makefile/createdirs
+#**
 install:: createdirs
 	@ln -snf $(CURSYMDIR)/data				../../data/$(project)
 	@ln -snf $(CURSYMDIR)/etc				../../etc/$(project)
@@ -83,7 +78,7 @@ install:: createdirs
 		if [ -e $(CURSYMDIR)/host/index.php ]; then \
 			ln -snf $(CURSYMDIR)/host/index.php					../../host/$(project)/index.php; \
 		fi; \
-		if [ -d $(CURSYMDIR)/host/robots.txt ]; then \
+		if [ -e $(CURSYMDIR)/host/robots.txt ]; then \
 			ln -snf $(CURSYMDIR)/host/robots.txt				../../host/$(project)/robots.txt; \
 		fi; \
 		if [ -d $(CURSYMDIR)/host/error ]; then \
@@ -94,13 +89,12 @@ install:: createdirs
 		fi; \
 	fi; \
 
-#****t* Makefile/clean
-# SYNOPSIS
-#	make clean
-# FUNCTION
-#	cleanup installation directories - remove symlinks 
-#****
-clean: onlyroot
+#**
+# Remove installation directories -- remove symlinks.
+#
+# @octdoc       t:Makefile/uninstall
+#**
+uninstall: onlyroot
 	@rm -rf ../../cache/$(project)
 	@rm -f 	../../data/$(project)
 	@rm -rf ../../doc/$(project)
@@ -120,58 +114,37 @@ clean: onlyroot
 		rm -rf ../../host/$(project); \
 	fi; \
 
-#****t* Makefile/test
-# SYNOPSIS
-#	make test
-# FUNCTION
-# 	execute tests of a project
-#****
+#**
+# Execute tests of a project.
+#
+# @octdoc       t:Makefile/test
+#**
 test:
 	@phpunit $(CURSYMDIR)/tests/
 
-#****t* Makefile/msgfmt
-# SYNOPSIS
-#	make msgfmt
-# FUNCTION
-# 	create message objects from message files to use with gettext
-#****
-msgfmt:
-	@$(CURSYMDIR)/../../tools/gettext/msgfmt.php --project=$(project)
-
-#****t* Makefile/gettext
-# SYNOPSIS
-#	make gettext
-# FUNCTION
-# 	create gettext dictionaries
-gettext:
-	@$(CURSYMDIR)/../../tools/gettext/xgettext.php --project=$(project)
-
-#****t* Makefile/cleanup
-# SYNOPSIS
-#	make cleanup
-# FUNCTION
-#	clear template and data caches
-#****
+#**
+# Clear template and data caches of project.
+#
+# @octdoc       t:Makefile/cleanup
+#**
 cleanup:
 	@rm -rf ../../cache/$(project)/data/*
 	@rm -rf ../../cache/$(project)/templates_c/*
 
-#****t* Makefile/compile
-# SYNOPSIS
-#	make compile
-# FUNCTION
-#	clear template cache and compile all template files
-#****
+#**
+# Clear template cache and compile all template files.
+#
+# @octdoc       t:Makefile/compile
+#**
 compile:
 	@rm -rf ../../cache/$(project)/templates_c/*
 	@$(CURSYMDIR)/../../tools/misc/compile.php --project=$(project)
 
-#****t* Makefile/createdirs
-# SYNOPSIS
-#	make createdirs
-# FUNCTION
-#	create directory structure
-#****
+#**
+# Create directory structure
+#
+# @octdoc       t:Makefile/createdirs
+#**
 createdirs:
 	@if [ "$(project)" = "org.octris.core" ]; then \
 		mkdir -p ../../cache; \
@@ -197,62 +170,23 @@ createdirs:
 	mkdir -p -m 0777 ../../cache/$(project)/data; \
 	mkdir -p -m 0777 ../../cache/$(project)/templates_c; \
 
-#****t* Makefile/deploy
-# SYNOPSIS
-#	make deploy
-# FUNCTION
-#	deploy project to production environment
-#****
-deploy: onlydevelopment
-	@if [ "$(target)" = "" ]; then \
-		echo ""; \
-		echo "please specify a deploy target as commandline parameter"; \
-		echo ""; \
-		echo "eg.:"; \
-		echo "       make deploy target=example"; \
-		echo ""; \
-		exit 1; \
-	fi; \
-	$(CURSYMDIR)/../../tools/deploy/deploy.sh -p $(project) -t $(target)
-
-#****t* Makefile/onlyroot
-# SYNOPSIS
-#	make onlyroot
-# FUNCTION
-#	check's, if user is root. exits makefile, if user is not root
-#****
+#**
+# Checks if user is root. Exits makefile, if user is not root.
+#
+# @octdoc       t:Makefile/onlyroot
+#**
 onlyroot:
-	@if [ "`whoami`" != "root" ]; then \
+	@if [ "$(whoami)" != "root" ]; then \
 		echo ""; \
 		echo "This target can only be run by root user"; \
 		echo ""; \
 		exit 1; \
 	fi
 
-#****t* Makefile/onlyproduction
-# SYNOPSIS
-#	make onlyproduction
-# FUNCTION
-#	check's, if makefile is executed in production environment
-#****
-onlyproduction:
-	@if [ "$(LIMA_DEVEL)" = "1" ]; then \
-		echo ""; \
-		echo "This target can only be run in production environment"; \
-		echo ""; \
-		exit 1; \
-	fi
-
-#****t* Makefile/onlydevelopment
-# SYNOPSIS
-#	make onlydevelopment
-# FUNCTION
-#	check's, if makefile is executed in development environment
-#****
-onlydevelopment:
-	@if [ "$(LIMA_DEVEL)" != "1" ]; then \
-		echo ""; \
-		echo "This target can only be run in development environment"; \
-		echo ""; \
-		exit 1; \
-	fi
+#**
+# Execute lint tool.
+#
+# @octdoc       t:Makefile/lint
+#**
+lint:
+	@$(CURSYMDIR)/../../tools/org.octris.core/project/lint.php -p $(project)

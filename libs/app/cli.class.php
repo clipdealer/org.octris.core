@@ -1,105 +1,174 @@
 <?php
 
+/*
+ * This file is part of the 'org.octris.core' package.
+ *
+ * (c) Harald Lapp <harald@octris.org>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace org\octris\core\app {
     use \org\octris\core\validate as validate;
+    use \org\octris\core\provider as provider;
     
     require_once('org.octris.core/app.class.php');
+    require_once('org.octris.core/app/cli/autoloader.class.php');
 
-    /****c* app/cli
-     * NAME
-     *      cli
-     * FUNCTION
-     *      core class for CLI applications
-     * COPYRIGHT
-     *      copyright (c) 2010 by Harald Lapp
-     * AUTHOR
-     *      Harald Lapp <harald@octris.org>
-     ****
+    /**
+     * Core class for CLI applications.
+     *
+     * @octdoc      c:app/cli
+     * @copyright   copyright (c) 2011 by Harald Lapp
+     * @author      Harald Lapp <harald@octris.org>
      */
-
-    class cli extends \org\octris\core\app {
-        /****m* cli/process
-         * SYNOPSIS
+    class cli extends \org\octris\core\app
+    /**/
+    {
+        /**
+         * Last page
+         *
+         * @octdoc  p:cli/$last_page
+         * @var     \org\octris\core\cli\page
+         */
+        private $last_page = null;
+        /**/
+        
+        /**
+         * Mapping of an option to an application page class.
+         *
+         * @octdoc  p:cli/$option_map
+         * @var     array
+         */
+        protected $option_map = array();
+        /**/
+        
+        /**
+         * Initialization of cli application.
+         *
+         * @octdoc  m:cli/initialization
+         */
+        protected function initialize()
+        /**/
+        {
+            $this->state = new \org\octris\core\app\state();
+        }
+        
+        /**
+         * Main application processor. This is the only method that needs to be called to
+         * invoke an application. Internally this method determines the last visited page
+         * and handles everything required to determine the next page to display.
+         *
+         * The following example shows how to invoke an application, assuming that 'test'
+         * implements an application based on \org\octris\core\app.
+         *
+         * <code>
+         * $app = test::getInstance();
+         * $app->process();
+         * </code>
+         *
+         * @octdoc  m:cli/process
          */
         public function process()
-        /*
-         * FUNCTION
-         *      Main application processor. This is the only method that needs to
-         *      be called to invoke an application. Internally this method determines
-         *      the last visited page and handles everything required to determine
-         *      the next page to display.
-         * EXAMPLE
-         *      simple example to invoke an application, assuming that "test" implements
-         *      an application base on lima_apps
-         *
-         *      ..  source: php
-         *
-         *          $app = new test();
-         *          $app->process();
-         ****
-         */
+        /**/
         {
-            $last_page = $this->getLastPage();
-            $action    = $last_page->getAction();
-            $last_page->validate($this, $action);
+            // perform initialization
+            $this->initialize();
 
-            $next_page = $last_page->getNextPage($this, $this->entry_page);
+            // handle command line options
+            // foreach ($this->option_map as $option => $class) {
+            //     if ($_REQUEST[$option]->isSet) {
+            //         $instance = new $class();
+            //         
+            //         $instance->prepare();
+            //         $instance->render();
+            //     }
+            // }
 
-            $max = 3;
-
+            // handle page flow
             do {
-                $redirect_page = $next_page->prepareRender($this, $last_page, $action);
+                // determine next page to display
+                $last_page = $this->getLastPage();
+                $action    = $last_page->getAction();
 
-                if (is_object($redirect_page) && $next_page != $redirect_page) {
-                    $next_page = $redirect_page;
-                } else {
-                    break;
-                }
-            } while (--$max);
+                $last_page->validate($action);
+                $next_page = $last_page->getNextPage($action, $this->entry_page);
+                
+                // perform possible redirects
+                $max = 3;
+                
+                do {
+                    $redirect_page = $next_page->prepare($last_page, $action);
+                    
+                    if (is_object($redirect_page) && $next_page != $redirect_page) {
+                        $next_page = $redirect_page;
+                    } else {
+                        break;
+                    }
+                } while (--$max);
+                
+                // perform next page
+                $this->setLastPage($next_page);
+                
+                $next_page->showErrors();
+                $next_page->showMessages();
 
-            // process with page
-            $this->setLastPage($next_page);
+                $request = $next_page->dialog($action);
 
-            $next_page->prepareMessages($this);
-            $next_page->render($this);
+                provider::purge('request');
+                provider::set('request', (is_array($request) ? $request : array()), provider::T_READONLY);
+            } while (true);
         }
         
-        /****m* cli/hline
-         * SYNOPSIS
+        /**
+         * Try to determine the last visited page stored in the last pages stack. If the
+         * last visited page can't be determined (eg.: when entering the application),
+         * a new instance of the applications' entry page is created.
+         *
+         * @octdoc  m:cli/getLastPage
+         * @return  \org\octris\core\app\page           Returns instance of determined last visit page or instance of entry page.
          */
-        public static function hline($chr = '=')
-        /*
-         * FUNCTION
-         *      print a horizontal line, or specified characters
-         * INPUTS
-         *      * $char (string) -- (optional) character to print
-         ****
-         */
+        protected function getLastPage()
+        /**/
         {
-            $cols = (int)`tput cols`;
-            $cols = ($cols > 0 ? $cols : 80);
+            if (($last_page = $this->last_page)) {
+                $this->last_page = null;
+            } else {
+                $last_page = new $this->entry_page();
+            }
             
-            print substr(str_repeat($chr, $cols), 0, $cols) . "\n";
+            return $last_page;
         }
-        
-        /****m* cli/getOptions
-         * SYNOPSIS
+
+        /**
+         * Make a page the last visited page. This method is called internally by the 'process' method
+         * before aquiring an other application page.
+         *
+         * @octdoc  m:cli/setLastPage
+         * @param   \org\octris\core\app\page       $page           Page object to set as last visited page.
+         */
+        protected function setLastPage(\org\octris\core\app\page $page)
+        /**/
+        {
+            $this->last_page = $page;
+        }
+
+        /**
+         * Parse command line options and return Array of them. The parameters are required to have
+         * the following format:
+         *
+         * - short options: -l -a -b
+         * - short options combined: -lab
+         * - short options with value: -l val -a val -b "with whitespace"
+         * - long options: --option1 --option2
+         * - long options with value: --option=value --option value --option "with whitespace"
+         *
+         * @octdoc  m:cli/getOptions
+         * @return  array                               Parsed command line parameters.
          */
         public static function getOptions()
-        /*
-         * FUNCTION
-         *      parse command line options and return array of it. The
-         *      parameters are required to have the following format:
-         *
-         *      *   short options: -l -a -b
-         *      *   short options combined: -lab
-         *      *   short options with value: -l val -a val -b "with whitespace"
-         *      *   long options: --option1 --option2
-         *      *   long options with value: --option=value --option value --option "with whitespace"
-         * OUTPUTS
-         *      (array) -- parsed command line parameters
-         ****
-         */
+        /**/
         {
             global $argv;
             static $opts = null;
@@ -110,10 +179,11 @@ namespace org\octris\core\app {
             }
 
             $args = $argv;
-            array_shift($args);
-
             $opts = array();
             $key  = '';
+            $idx  = 1;
+
+            array_shift($args);
 
             foreach ($args as $arg) {
                 if (preg_match('/^-([a-zA-Z]+)$/', $arg, $match)) {
@@ -133,14 +203,14 @@ namespace org\octris\core\app {
                     }
 
                     $arg = substr($match[2], 1);
-                } elseif (substr($arg, 0, 1) == '-') {
+                } elseif (strlen($arg) > 1 && substr($arg, 0, 1) == '-') {
                     // invalid option format
                     throw new \Exception('invalid option format "' . $arg . '"');
                 }
 
                 if ($key == '') {
-                    // unknown option
-                    throw new \Exception('invalid option format "' . $arg . '"');
+                    // no option name, add as numeric option
+                    $opts[$idx++] = $arg;
                 } else {
                     if (!is_bool($opts[$key])) {
                         // multiple values for this option
@@ -163,15 +233,24 @@ namespace org\octris\core\app {
         // enable validation for superglobals
         define('OCTRIS_WRAPPER', true);
         
-        $_SERVER  = new validate\wrapper($_SERVER);
-        $_ENV     = new validate\wrapper($_ENV);
-        $_GET     = new validate\wrapper(cli::getOptions());
-            
-        unset($_POST);
+        $_ENV['OCTRIS_DEVEL'] = (isset($_ENV['OCTRIS_DEVEL']) && !!$_ENV['OCTRIS_DEVEL']);
+        
+        provider::set('server', $_SERVER/*,          provider::T_READONLY*/);
+        provider::set('env',    $_ENV/*,             provider::T_READONLY*/);
+        provider::set('args',   cli::getOptions()/*, provider::T_READONLY*/);
+        
+        unset($_SERVER);
+        unset($_ENV);
         unset($_REQUEST);
+        unset($_POST);
+        unset($_GET);
         unset($_COOKIE);
         unset($_SESSION);
         unset($_FILES);
+        
+        if (!provider::access('env')->isValid('OCTRIS_BASE', validate::T_PATH)) {
+            die("OCTRIS_BASE is not set\n");
+        }
     }
 }
 

@@ -1,88 +1,81 @@
 <?php
 
-namespace org\octris\core\validate {
-    /****c* validate/type
-     * NAME
-     *      type
-     * FUNCTION
-     *      base class for all validation types
-     * COPYRIGHT
-     *      copyright (c) 2010 by Harald Lapp
-     * AUTHOR
-     *      Harald Lapp <harald@octris.org>
-     ****
-     */
+/*
+ * This file is part of the 'org.octris.core' package.
+ *
+ * (c) Harald Lapp <harald@octris.org>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
-    abstract class type {
-        /****v* type/$options
-         * SYNOPSIS
+namespace org\octris\core\validate {
+    /**
+     * Superclass for validator types.
+     *
+     * @octdoc      c:validate/type
+     * @copyright   copyright (c) 2010-2011 by Harald Lapp
+     * @author      Harald Lapp <harald@octris.org>
+     */
+    abstract class type
+    /**/
+    {
+        /**
+         * Stores validation options.
+         *
+         * @octdoc  p:type/$options
+         * @var     array
          */
         protected $options = array();
-        /*
-         * FUNCTION
-         *      stores validation options
-         ****
-         */
-        
-        /****m* type/__construct
-         * SYNOPSIS
+        /**/
+
+        /**
+         * Constructor.
+         *
+         * @octdoc  m:type/__construct
+         * @param   array       $options        Optional options for validator.
          */
         public function __construct(array $options = array())
-        /*
-         * FUNCTION
-         *      constructor
-         * INPUTS
-         *      * $options (array) -- optional options
-         ****
-         */
+        /**/
         {
             $this->options = $options;
         }
-    
-        /****m* type/validate
-         * SYNOPSIS
+
+        /**
+         * Validator implementation.
+         *
+         * @octdoc  m:type/validate
+         * @param   mixed       $value          Value to validate.
+         * @return  bool                        Returns true if value is valid.
+         * @abstract
          */
         abstract public function validate($value);
-        /*
-         * FUNCTION
-         *      abstract methods must be implemented by subclasses
-         ****
-         */
-    
-        /****m* type/preFilter
-         * SYNOPSIS
+        /**/
+
+        /**
+         * Filter values for unwanted characters before validating them.
+         *
+         * @octdoc  m:type/preFilter
+         * @param   mixed       $value          Value to filter.
+         * @return  mixed                       Filtered value.
          */
         public function preFilter($value)
-        /*
-         * FUNCTION
-         *      pre filter values
-         * INPUTS
-         *      * $value (mixed) -- value to filter
-         * OUTPUTS
-         *      (mixed) -- filtered value
-         ****
-         */
+        /**/
         {
-            // strip magic quotes, if enabled
-            if (get_magic_quotes_gpc()) {
-                $value = stripslashes($value);
-            }
-
             // replace nullbytes
             $value = str_replace("\0", '', $value);
-        
+
             return $value;
         }
-    
-        /****m* type/getOptions
-         * SYNOPSIS
+
+        /**
+         * Return possible set options.
+         *
+         * @octdoc  m:type/getOptions
+         * @return  array                       Validator options.
          */
-        public function getOptions()
-        /*
-         * FUNCTION
-         *      return the options, that where provided when constructing the object
-         ****
-         */
+        protected function getOptions()
+        /**/
         {
             return $this->options;
         }

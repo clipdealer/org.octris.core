@@ -1,401 +1,140 @@
 <?php
 
-namespace org\octris\core\app\web {
-    /****c* app/page
-     * NAME
-     *      page
-     * FUNCTION
-     *      page controller of the CLI MVC framework
-     * COPYRight
-     *      copyright (c) 2006-2010 by Harald Lapp
-     * AUTHOR
-     *      Harald Lapp <harald@octris.org>
-     ****
+/*
+ * This file is part of the 'org.octris.core' package.
+ *
+ * (c) Harald Lapp <harald@octris.org>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace org\octris\core\app\cli {
+    use \org\octris\core\validate as validate;
+    use \org\octris\core\provider as provider;
+    
+    /**
+     * Page controller for cli mvc framework.
+     *
+     * @octdoc      c:cli/page
+     * @copyright   copyright (c) 2011 by Harald Lapp
+     * @author      Harald Lapp <harald@octris.org>
      */
-
-    abstract class page {
-        /****v* page/$next_pages
-         * SYNOPSIS
+    abstract class page extends \org\octris\core\app\page
+    /**/
+    {
+        /**
+         * Next valid actions.
+         *
+         * @octdoc  p:page/$next_page
+         * @var     array
          */
-        protected $next_pages = array(
-        );
-        /*
-         * FUNCTION
-         *      next valid actions -> pages for current page
-         ****
-         */
-
-        /****v* page/$errors
-         * SYNOPSIS
-         */
-        protected $errors = array();
-        /*
-         * FUNCTION
-         *      stored error messages occured during execution of the current page
-         ****
-         */
-
-        /****v* page/$messages
-         * SYNOPSIS
-         */
-        protected $messages = array();
-        /*
-         * FUNCTION
-         *      stored messages collected during execution of the current page
-         ****
-         */
-
-        /****v* page/$name
-         * SYNOPSIS
-         */
-        protected $name = '';
-        /*
-         * FUNCTION
-         *      stores name of page
-         ****
-         */
-
-        /****m* page/$secure
-         * SYNOPSIS
-         */
-        protected $secure = false;
-        /*
-         * FUNCTION
-         *      whether the page should be delivered through https or not
-         ****
-         */
-
-        /****m* page/__construct
-         * SYNOPSIS
+        protected $next_page = array();
+        /**/
+        
+        /**
+         * Constructor.
+         *
+         * @octdoc  m:page/__construct
          */
         public function __construct()
-        /*
-         * FUNCTION
-         *      constructor
-         * INPUTS
-         *      * $app (object) -- application object
-         ****
+        /**/
+        {
+            parent::__construct();
+        }
+        
+        /**
+         * Display and purge error messages.
+         *
+         * @octdoc  m:page/showErrors
          */
+        public function showErrors()
+        /**/
+        {
+            if (count($this->errors > 0)) {
+                foreach ($this->errors as $error) {
+                    printf("ERROR: %s\n", $error);
+                }
+                $this->errors = array();
+            }
+        }
+        
+        /**
+         * Display and purge notification messages.
+         *
+         * @octdoc  m:page/showMessages
+         */
+        public function showMessages()
+        /**/
+        {
+            if (count($this->messages > 0)) {
+                foreach ($this->messages as $message) {
+                    printf("NOTE: %s\n", $message);
+                }
+                $this->message = array();
+            }
+        }
+        
+        /**
+         * Abstract method definition. CLI application dialog.
+         *
+         * @octdoc  m:page/dialog
+         * @param   string          $action             Action that led to the dialog.
+         * @return  array                               Array with triggered command and command parameters.
+         * @abstract
+         */
+        abstract public function dialog($action);
+        /**/
+        
+        /**
+         * Apply validation ruleset.
+         *
+         * @octdoc  m:page/validate
+         * @param   \org\octris\core\app\cli\page   $last_page      Instance of last called page.
+         * @param   string                          $action         Action to select ruleset for.
+         * @return  \org\octris\core\app\cli\page                   Returns page to display errors for.
+         */
+        public function validate($action)
+        /**/
         {
         }
 
-        /****m* page/__toString
-         * SYNOPSIS
-         */
-        public function __toString()
-        /*
-         * FUNCTION
-         *      magic method __toString returns name of page class
-         ****
-         */
-        {
-            return get_class($this);
-        }
-
-        /****m* page/isSecure
-         * SYNOPSIS
-         */
-        public final function isSecure()
-        /*
-         * FUNCTION
-         *      return, whether page has to be secured
-         ****
-         */
-        {
-            return $this->secure;
-        }
-
-        /****m* page/render, prepareRender
-         * SYNOPSIS
-         */
-        abstract public function render(lima_app $app);
-        abstract public function prepareRender(lima_app $app, lima_page $last_page, $action);
-        /*
-         * FUNCTION
-         *      abstract methods must be defined in the application page classes
-         ****
-         */
-
-        /****m* page/validate
-         * SYNOPSIS
-         */
-        public function validate(lima_app $app, $action)
-        /*
-         * FUNCTION
-         *      apply a validation ruleset
-         * INPUTS
-         *      * $app (object) -- application object
-         *      * $action (string) -- action
-         * OUTPUTS
-         *      (bool) -- returns false, if validation failed, otherwise true
-         ****
-         */
-        {
-            return \org\octris\core\validate::getInstance()->validate($this, $action);
-        }
-
-        /****m* page/getAction
-         * SYNOPSIS
+        /**
+         * Determine the action of the request.
+         *
+         * @octdoc  m:page/getAction
+         * @return  string                                      Name of action
          */
         public function getAction()
-        /*
-         * FUNCTION
-         *      determine the action the page called with
-         * OUTPUTS
-         *      (string) -- name of action
-         ****
-         */
+        /**/
         {
-            static $action = '';
-
-            if ($action != '') {
-                return $action;
-            }
-
-            $method = strtoupper($_SERVER->import('REQUEST_METHOD', new lima_validate_alpha())->value);
-
-            if ($method == 'POST' || $method == 'GET') {
-                $method = ($method == 'POST' ? $_POST : $_GET);
-                $tmp    = $method->import('ACTION', new lima_validate_alphanum());
-                $action = ($tmp->isValid ? $tmp->value : $action);
-            }
-
-            if ($action == '') {
-                $arr = $_REQUEST->getIterator();
-
-                while ($arr->valid()) {
-                    if (preg_match('/^ACTION_([a-zA-Z]+)$/', $arr->key(), $m)) {
-                        $action = $m[1];
-
-                        return $action;
-                    }
-
-                    $arr->next();
-                }
-
-                $path_info = $_SERVER->import('PATH_INFO', new lima_validate_print());
-
-                if ($path_info->isValid) {
-                    $path = explode('/', substr($path_info->value, 1));
-
-                    if ($action = trim(array_shift($path))) {
-                        return $action;
-                    }
+            $request = provider::access('request');
+            
+            if (!($action = $request->getValue('ACTION', validate::T_ALPHANUM))) {
+                // try to determine action from a request parameter named ACTION_...
+                foreach ($request->getPrefixed('ACTION_', validate::T_ALPHANUM) as $k => $v) {
+                    $action = substr($k, 7);
+                    break;
                 }
             }
 
-            if ($action == '') {
-                $action = 'default';
+            if (!$action) {
+                $action = '';
             }
 
             return $action;
         }
 
-        /****m* page/getNextPage
-         * SYNOPSIS
+        /**
+         * Implements render page of core page class, because this method is
+         * optional for cli application pages. Instead the abstract method 
+         * 'dialog' is required to be implemented for any cli application page.
+         *
+         * @octdoc  m:page/render
          */
-        public function getNextPage(lima_app $app, $entry_page)
-        /*
-         * FUNCTION
-         *      get's next page from action and next_pages array of last page
-         * INPUTS
-         *      * $app (object) -- application object
-         *      * $entry_page (string) -- name of the entry page for possible fallback
-         * OUTPUTS
-         *      (object) -- instance of next page
-         ****
-         */
+        public function render()
+        /**/
         {
-            $next = $this;
-
-            if (count($this->errors) <= 0) {
-                $action = $this->getAction();
-
-                if (is_array($this->next_pages) && isset($this->next_pages[$action])) {
-                    // lookup next page from current page's next_page array
-                    $class = $this->next_pages[$action];
-                    $next  = new $class($app);
-                } else {
-                    // lookup next page from entry page's next_page array
-                    $entry = new $entry_page($app);
-
-                    if (is_array($entry->next_pages) && isset($entry->next_pages[$action])) {
-                        $class = $entry->next_pages[$action];
-                        $next  = new $class($app);
-                    }
-                }
-            }
-
-            return $next;
-        }
-
-        /****m* page/getValidationRuleset
-         * SYNOPSIS
-         */
-        public function getValidationRuleset($action)
-        /*
-         * FUNCTION
-         *      returns a validation ruleset for specified action
-         * INPUTS
-         *      * $action (string) -- name of action to return ruleset for
-         * OUTPUTS
-         *      (mixed) -- array of rules for specified action, returns false, if no ruleset is specified for action
-         ****
-         */
-        {
-            $return = false;
-
-            if (isset($this->validate[$action])) {
-                $return = $this->validate[$action];
-            }
-
-            return $return;
-        }
-
-        /****m* page/addError
-         * SYNOPSIS
-         */
-        public function addError($err)
-        /*
-         * FUNCTION
-         *      add error message for current page
-         * INPUTS
-         *      * $err (string) -- error message
-         ****
-         */
-        {
-            $this->errors[] = $err;
-        }
-
-        /****m* page/addMessage
-         * SYNOPSIS
-         */
-        public function addMessage($msg)
-        /*
-         * FUNCTION
-         *      add message for current page
-         * INPUTS
-         *      * $msg (string) -- message
-         ****
-         */
-        {
-            $this->messages[] = $msg;
-        }
-
-        /****m* page/countErrors
-         * SYNOPSIS
-         */
-        public function countErrors()
-        /*
-         * FUNCTION
-         *      return number of errors for current page
-         ****
-         */
-        {
-            return count($this->errors);
-        }
-
-        /****m* page/countMessages
-         * SYNOPSIS
-         */
-        public function countMessages()
-        /*
-         * FUNCTION
-         *      return number of messages for current page
-         ****
-         */
-        {
-            return count($this->messages);
-        }
-
-        /****m* page/getErrors
-         * SYNOPSIS
-         */
-        public function getErrors()
-        /*
-         * FUNCTION
-         *      return all errors
-         ****
-         */
-        {
-            return $this->errors;
-        }
-
-        /****m* page/getMessages
-         * SYNOPSIS
-         */
-        public function getMessages()
-        /*
-         * FUNCTION
-         *      return all messages
-         ****
-         */
-        {
-            return $this->messages;
-        }
-
-        /****m* page/addErrors
-         * SYNOPSIS
-         */
-        public function addErrors(array $errors)
-        /*
-         * FUNCTION
-         *      method to add multiple errors for page
-         * INPUTS
-         *      * $errors (array) -- array of error messages
-         ****
-         */
-        {
-            $this->errors = array_merge($this->errors, $errors);
-        }
-
-        /****m* page/addMessages
-         * SYNOPSIS
-         */
-        public function addMessages(array $messages)
-        /*
-         * FUNCTION
-         *      method to add multiple messages for page
-         * INPUTS
-         *      * $messages (array) -- array of messages 
-         ****
-         */
-        {
-            $this->messages = array_merge($this->messages, $messages);
-        }
-
-        /****m* page/getValidateRulesets
-         * SYNOPSIS
-         */
-        public function getValidateRulesets()
-        /*
-         * FUNCTION
-         *      return validate rulesets
-         ****
-         */
-        {
-            return lima_validate::getInstance()->export($this);
-        }
-
-        /****m* page/prepareMessages
-         * SYNOPSIS
-         */
-        public function prepareMessages(lima_app $app)
-        /*
-         * FUNCTION
-         *      prepare messages for output page (eg error- or status messages)
-         * INPUTS
-         *      * $app (object) -- application object
-         ****
-         */
-        {
-            if (count($this->errors) > 0) {
-                $app->setErrors($this->errors);
-            }
-
-            if (count($this->messages) > 0) {
-                $app->setMessages($this->messages);
-            }
         }
     }
 }

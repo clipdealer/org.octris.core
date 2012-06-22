@@ -1,107 +1,109 @@
 <?php
 
+/*
+ * This file is part of the 'org.octris.core' package.
+ *
+ * (c) Harald Lapp <harald@octris.org>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace org\octris\core {
-    use \org\octris\core\config as config;
-
-    /****c* core/l10n
-     * NAME
-     *      l10n
-     * FUNCTION
-     *      localisation
-     * COPYRIGHT
-     *      copyright (c) 2010 by Harald Lapp
-     * AUTHOR
-     *      Harald Lapp <harald@octris.org>
-     ****
+    /**
+     * Localisation library.
+     *
+     * @octdoc      c:core/l10n
+     * @copyright   copyright (c) 2010-2011 by Harald Lapp
+     * @author      Harald Lapp <harald@octris.org>
      */
+    class l10n
+    /**/
+    {
+        /**
+         * Instance of l10n class for singleton pattern.
+         *
+         * @octdoc  p:l10n/$instance
+         * @var     \org\octris\core\l10n
+         */
+        private static $instance = null;
+        /**/
 
-    class l10n {
-        /****v* l10n/$instance
-         * SYNOPSIS
-         */
-        private $instance = null;
-        /*
-         * FUNCTION
-         *      instance of l10n class
-         ****
-         */
-        
-        /****v* l10n/$lc
-         * SYNOPSIS
+        /**
+         * Locale string.
+         *
+         * @octdoc  p:l10n/$lc
+         * @var     string
          */
         protected $lc = null;
-        /*
-         * FUNCTION
-         *      locale string
-         ****
-         */
+        /**/
 
-        /****v* l10n/$lc_mem
-         * SYNOPSIS
+        /**
+         * Stores language codes for restoreLocale
+         *
+         * @octdoc  p:l10n/$lc_mem
+         * @var     array
          */
         protected $lc_mem = array();
-        /*
-         * FUNCTION
-         *      stores language codes for restoreLocale
-         ****
-         */
+        /**/
 
-        /****v* l10n/$cache
-         * SYNOPSIS
+        /**
+         * Gettext compiler cache -- an array -- is only used, if a caching backend is not set.
+         *
+         * @octdoc  p:l10n/$compiler_cache
+         * @var     array
+         * @see     l10n::setCache
          */
-        protected $cache = array();
-        /*
-         * FUNCTION
-         *      compiled function cache
-         ****
-         */
+        protected $compiler_cache = array();
+        /**/
 
-        /****v* l10n/$directory
-         * SYNOPSIS
+        /**
+         * L10n caching backend.
+         *
+         * @octdoc  p:l10n/$cache
+         * @var     \org\octris\core\cache
+         */
+        protected static $cache = null;
+        /**/
+
+        /**
+         * Directory of dictionary
+         *
+         * @octdoc  p:l10n/$directory
+         * @var     string
          */
         protected $directory = '';
-        /*
-         * FUNCTION
-         *      directory of dictionary
-         ****
-         */
+        /**/
 
-        /****m* l10n/__construct
-         * SYNOPSIS
+        /**
+         * Protected constructor and magic clone method. L10n is a singleton.
+         *
+         * @octdoc  m:l10n/__construct
          */
-        protected function __construct()
-        /*
-         * FUNCTION
-         *      constructor
-         ****
-         */
-        {
-        }
-        
-        /****m* l10n/setLocalePath
-         * SYNOPSIS
+        protected function __construct() {}
+        protected function __clone() {}
+        /**/
+
+        /**
+         * Directory to lookup dictionary in.
+         *
+         * @octdoc  m:l10n/setDirectory
+         * @param   string      $directory      Name of directory to set for looking up dictionary.
          */
         public function setDirectory($directory)
-        /*
-         * FUNCTION
-         *      directory to lookup dictionary in
-         * INPUTS
-         *      * $directory (string) -- name of directory to set
-         ****
-         */
+        /**/
         {
             $this->directory = $directory;
         }
 
-        /****m* l10n/getInstance
-         * SYNOPSIS
+        /**
+         * Return instance of localization class.
+         *
+         * @octdoc  m:l10n/getInstance
+         * @return  \org\octris\core\l10n       Instance of localization class.
          */
         public static function getInstance()
-        /*
-         * FUNCTION
-         *      create new instance of class
-         ****
-         */
+        /**/
         {
             if (is_null(self::$instance)) {
                 self::$instance = new static();
@@ -110,27 +112,51 @@ namespace org\octris\core {
             return self::$instance;
         }
 
-        /****m* l10n/setLocale
-         * SYNOPSIS
+        /**
+         * Set caching backend for l10n.
+         *
+         * @octdoc  m:l10n/setCache
+         * @param   \org\octris\core\cache      $cache          Instance of caching backend to use.
          */
-        public function setLocale($locale) 
-        /*
-         * FUNCTION
-         *      change locale setting
-         * INPUTS
-         *      * $locale (string) -- localisation string in the form of de_DE
-         * OUTPUTS
-         *      (string) -- returns old localisation setting
-         ****
-         */
+        public static function setCache(\org\octris\core\cache $cache)
+        /**/
         {
+            self::$cache = $cache;
+        }
+
+        /**
+         * Return instance of caching backend.
+         *
+         * @octdoc  m:l10n/getCache
+         * @return  \org\octris\core\cache                      Instance of caching backend l10n uses.
+         */
+        public static function getCache()
+        /**/
+        {
+            return self::$cache;
+        }
+
+        /**
+         * Change locale setting for application.
+         *
+         * @octdoc  m:l10n/setLocale
+         * @param   string      $locale         Localization string in the form of language_COUNTRY (e.g.: de_DE, en_US, ...).
+         * @return  string                      Returns old localisation setting.
+         */
+        public function setLocale($locale)
+        /**/
+        {
+            if (($pos = strpos($locale, '.')) !== false) {
+                $locale = substr($locale, 0, $pos);
+            }
+            
             $ret      = $this->lc;
             $this->lc = $locale;
 
             array_push($this->lc_mem, $ret);
 
-            putenv('LANG=' . $locale);
-            putenv('LC_MESSAGES=' . $locale);
+            // putenv('LANG=' . $locale);
+            // putenv('LC_MESSAGES=' . $locale);
             setlocale(LC_MESSAGES, $locale);
 
             $this->bindTextDomain('messages', $this->directory);
@@ -138,203 +164,168 @@ namespace org\octris\core {
             return $ret;
         }
 
-        /****m* l10n/getLocale
-         * SYNOPSIS
+        /**
+         * Get current localisation setting.
+         *
+         * @octdoc  m:l10n/getLocale
+         * @return  string                      Current localization setting in the form of language_COUNTRY (e.g.: de_DE, en_US, ...).
          */
-        public function getLocale() 
-        /*
-         * FUNCTION
-         *      get current locale setting
-         * OUTPUTS
-         *      (string) -- current localisation in the form de_DE
-         ****
-         */
+        public function getLocale()
+        /**/
         {
             return $this->lc;
         }
 
-        /****m* l10n/getLanguageCode
-         * SYNOPSIS
+        /**
+         * Return language code from current set locale or from specified locale.
+         *
+         * @octdoc  m:l10n/getLanguageCode
+         * @param   string      $code           Optional code to parse.
+         * @return  string                      Language code.
          */
         public function getLanguageCode($code = null)
-        /*
-         * FUNCTION
-         *      return language code from locale (eg: 'de' from 'de_DE')
-         * INPUTS
-         *      * $code (string) -- (optional) code to parse
-         * OUTPUTS
-         *      (string) -- current set language code
-         ****
-         */
+        /**/
         {
             $parts = explode('_', (is_null($code) ? $this->lc : $code));
 
             return strtolower($parts[0]);
         }
 
-        /****m* l10n/getCountryCode
-         * SYNOPSIS
+        /**
+         * Return country code from current set locale or form specified locale.
+         *
+         * @octdoc  m:l10n/getCountryCode
+         * @param   string      $code           Optional code to parse.
+         * @return  string                      Country code.
          */
         public function getCountryCode($code = null)
-        /*
-         * FUNCTION
-         *      return country code from locale (eg: 'DE' from 'de_DE')
-         * INPUTS
-         *      * $code (string) -- (optional) code to parse
-         * OUTPUTS
-         *      (string) -- current set country code
-         ****
-         */
+        /**/
         {
             $parts = explode('_', (is_null($code) ? $this->lc : $code));
 
             return strtoupper(array_pop($parts));
         }
 
-        /****m* l10n/restoreLocale
-         * SYNOPSIS
+        /**
+         * One level restoring locale setting, when a setting was overwritten using setLocale.
+         *
+         * @octdoc  m:l10n/restoreLocale
          */
-        public function restoreLocale() 
-        /*
-         * FUNCTION
-         *      one level restoring locale setting, when a setting was overwritten using setLocale.
-         ****
-         */
+        public function restoreLocale()
+        /**/
         {
             if (count($this->lc_mem) > 0) {
                 $this->setLocale(array_pop($this->lc_mem));
             }
         }
 
-        /****m* l10n/monf
-         * SYNOPSIS
+        /**
+         * Money formatter.
+         *
+         * @octdoc  m:l10n/monf
+         * @todo    implementation
+         * @param   mixed           $money              Float value as amount or instance of \org\octris\core\type\money
+         * @return  string                              Formatted money.
          */
-        public function monf($money, $context = 'text/html')
-        /*
-         * FUNCTION
-         *      money formatter
-         * INPUTS
-         *      * $money (mixed) -- money object or amount of money to format
-         *      * $prec (int) -- optional precision - will be overwritten if formatting pattern from CLDR exists
-         *      * $context (string) -- (optional) context for formatter
-         * OUTPUTS
-         *      (string) -- formatted money value
-         ****
-         */
+        public function monf($money)
+        /**/
         {
-            if (!($money instanceof \org\octris\core\type\money)) {
-                $money = new \org\octris\core\type\money($money);
-            }
-
-            return $money->format($context);
         }
 
-        /****m* l10n/numf
-         * SYNOPSIS
+        /**
+         * Number formatter.
+         *
+         * @octdoc  m:l10n/numf
+         * @todo    implementation
+         * @param   mixed           $number             Numerical value to format.
+         * @return  string                              Formatted number.
          */
-        public function numf($number, $prec = null, $len = null) 
-        /*
-         * FUNCTION
-         *      number formatter
-         * INPUTS
-         *      * $number (mixed) -- number object or numerical value to format
-         *      * $prec (int) -- optional precision - will be overwritten if formatting pattern from CLDR exists
-         * OUTPUTS
-         *      (string) -- formatted number
-         ****
-         */
+        public function numf($number)
+        /**/
         {
-            if (!($number instanceof \org\octris\core\number)) {
-                $number = new \org\octris\core\number($number);
-            }
-
-            if($len != null){
-                return substr($number->format(), 0, 2 + $len) ;
-            } else {
-                return $number->format();
-            }
         }
 
-
-        /****m* l10n/datef
-         * SYNOPSIS
+        /**
+         * Percentage formatter.
+         *
+         * @octdoc  m:l10n/perf
+         * @param   mixed           $number             Numerical value to format.
+         * @return  string                              Formatted number.
          */
-        public function datef($datetime, $format = 68) 
-        /*
-         * FUNCTION
-         *      date formatter
-         * INPUTS
-         *      * $data (mixed) -- date as timestamp or ISO date string
-         *      * $format (int) -- optional formatting parameter. defaults to T_DATETIME_MEDIUM == 68
-         * OUTPUTS
-         *      (string) -- formatted date
-         ****
-         */
+        public function perf($percentage)
+        /**/
         {
-            if (!($datetime instanceof \org\octris\core\datetime)) {
-                $datetime = new \org\octris\core\datetime($datetime);
-            }
-
-            return $datetime->format($format);
         }
 
-        /****m* l10n/yesno
-         * SYNOPSIS
+        /**
+         * Date formatter. Can either be an ISO date string, a timestamp or
+         * a PHP DateTime object.
+         *
+         * @octdoc  m:l10n/datef
+         * @todo    Implementation.
+         * @param   mixed           $datetime           Date.
+         * @param   int             $format             Optional formatting type.
+         * @return  string                              Formatted date.
          */
-        public function yesno($val, $first, $second = '')
-        /*
-         * FUNCTION
-         *      if $val display $fists, otherwise $second
-         ****
-         */
+        public function datef($datetime, $format)
+        /**/
         {
-            return ($val ? $first : $second);
         }
 
-        /****m* l10n/quant
-         * SYNOPSIS
+        /**
+         * If parameter 'test' ist bool true, the parameter 'first' will
+         * be returnes, otherwise the parameter 'second' will be returned.
+         *
+         * @octdoc  m:l10n/yesno
+         * @param   mixed           $test               Value to test.
+         * @param   string          $first              First possible return value.
+         * @param   string          $second             Second possible return value.
+         * @return  string                              Return value according to 'test'.
          */
-        public function quant($val, $first, $second = null, $third = null) 
-        /*
-         * FUNCTION
-         *      quantisation
-         * INPUTS
-         *      * $val (float) -- value to compare
-         *      * $first (string) -- string to return if value == 1 (or second or third not set)
-         *      * $second (string) -- optional string to return if value != 1
-         *      * $third (string) -- optional string to return if value == 0
-         * OUTPUTS
-         *      (string) -- string formatted
-         ****
+        public function yesno($test, $first, $second = '')
+        /**/
+        {
+            return (!!$test ? $first : $second);
+        }
+
+        /**
+         * Quantisation. The string parameters 'first', 'second' and 'third'
+         * may contain a %d placeholder (@see sprintf) to include the value
+         * of 'test'.
+         *
+         * @octdoc  m:l10n/quant
+         * @param   int/float       $test               Value to test.
+         * @param   string          $first              Return value if 'test' == 1 or 'second' / 'third' are not set.
+         * @param   string          $second             Optional return value if 'test' != 1.
+         * @param   string          $third              Optional return value if 'test' == 0.
+         * @return  string                              Return value according to 'test'.
          */
+        public function quant($test, $first, $second = null, $third = null)
+        /**/
         {
             $return = $first;
 
-            if ($val == 0 && !is_null($third)) {
+            if ($test == 0 && !is_null($third)) {
                 $return = $third;
             } elseif ($val != 1 && !is_null($second)) {
                 $return = $second;
             }
 
-            return sprintf($return, $val);
+            return \org\octris\core\type\string::sprintf($return, $val);
         }
 
-        /****m* l10n/comify
-         * SYNOPSIS
+        /**
+         * Writes out a list of values separated by a specified character
+         * (default: ', ') and the last one by a string (eg: 'and' or 'or').
+         *
+         * @octdoc  m:l10n/comify
+         * @param   array           $list               List of elements to concatenate.
+         * @param   string          $word               Word to concatenate last item with.
+         * @param   string          $sep                Optional separator.
+         * @return  string                              Concatenated list.
          */
         public function comify(array $list, $word, $sep = ', ')
-        /*
-         * FUNCTION
-         *      writes out a list of values seperated by ', ' and the last one
-         *      by a string eg: 'and' or 'or'.
-         * INPUTS
-         *      * $list (array) -- array elements to concatenate
-         *      * $word (string) -- word to concatenate last item with
-         *      * $sep (string) -- (optional) string to use to concatenate all list items but the last
-         * NOTE
-         *      inspired by: http://snippets.dzone.com/posts/show/4661
-         ****
-         */
+        /**/
         {
             $return = '';
 
@@ -347,26 +338,20 @@ namespace org\octris\core {
             return $return;
         }
 
-        /****m* l10n/gender
-         * SYNOPSIS
+        /**
+         * Returns text according to specified gender.
+         *
+         * @octdoc  m:l10n/gender
+         * @param   int/string      $gender             Gender (one of: mM1fFwW2nN0)
+         * @param   string          $undefined          String to return if gender is not specified ('gender' one of 'n', 'N' or '0').
+         * @param   string          $male               String to return if gender is male ('gender' one of 'm', 'M' or '1').
+         * @param   string          $female             String to return if gender is female ('gender' one of 'f', 'F' or '2').
+         * @return  string                              String according to specified gender.
          */
-        public function gender($val, $undefined, $male, $female) 
-        /*
-         * FUNCTION
-         *      returns text according to specified gender
-         * INPUTS
-         *      * $val (mixed) -- gender [mM1fFwW2nN0]
-         *      * $undefined (string) -- string to return if gender not specified (gender == n, N or 0)
-         *      * $male (string) -- string to return if gender is male (gender == m, M or 1)
-         *      * $female (string) -- string to return if gender is female (gender == f, F, w, W or 2)
-         * OUTPUTS
-         *      (string) -- string according to specified gender
-         ****
-         */
+        public function gender($gender, $undefined, $male, $female)
+        /**/
         {
-            $val = strtoupper($val);
-
-            switch ($val) {
+            switch (strtoupper($gender)) {
             case 'M':
             case '1':
                 $return = $male;
@@ -386,118 +371,91 @@ namespace org\octris\core {
             return $return;
         }
 
-        /****m* l10n/bindTextDomain
-         * SYNOPSIS
+        /**
+         * Bind gettext text domain, the package and directory of locale texts).
+         *
+         * @octdoc  m:l10n/bindTextDomain
+         * @param   string          $pkg                Name of package
+         * @param   string          $dir                Base directory for localized text packages.
+         * @param   string          $codeset            Optional codeset of text domain.
+         * @return  string                              Text domain.
          */
-        protected function bindTextDomain($pkg, $localedir, $codeset = 'ISO-8859-15') 
-        /*
-         * FUNCTION
-         *      bind localisation to a specified domain (package and directory with locale texts)
-         * INPUTS
-         *      * $pkg (string) -- name of package (normally application name)
-         *      * $localedir (string) -- base directory for localized text packages
-         *      * $codeset (string) -- (optional) codeset of text domain
-         * OUTPUTS
-         *      (string) -- current set directory
-         ****
-         */
+        protected function bindTextDomain($pkg, $dir, $codeset = 'UTF-8')
+        /**/
         {
             bind_textdomain_codeset($pkg, $codeset);
-            $domain = bindtextdomain($pkg, $localedir);
+            $domain = bindtextdomain($pkg, $dir);
 
             textdomain($pkg);
 
             return $domain;
         }
 
-        /****m* l10n/gettext
-         * SYNOPSIS
+        /**
+         * Translate message with currently set dictionary.
+         *
+         * @octdoc  m:l10n/translate
+         * @param   string          $msg                Message to translate.
+         * @param   array           $args               Optional parameters for inline functions.
+         * @return  string                              Translated text or text from 'msg' parameter, if no translation was found.
          */
-        public function gettext() 
-        /*
-         * FUNCTION
-         *      lookup a message for current locale dictionary - alias for _
-         * INPUTS
-         *      * $txt (string) -- text to lookup in dictionary
-         *      * ... (mixed) -- additional optional parameters for embedded functions
-         * OUTPUTS
-         *      (string) -- text from dictionary or txt, if text was not found in dictionary
-         ****
-         */
+        public function translate($msg, array $args = array())
+        /**/
         {
-            $this->_(func_get_args());
-        }
-
-        /****m* l10n/_
-         * SYNOPSIS
-         */
-        public function _() 
-        /*
-         * FUNCTION
-         *      lookup a message for current locale dictionary
-         * INPUTS
-         *      * $txt (string) -- text to lookup in dictionary
-         *      * ... (mixed) -- additional optional parameters for embedded functions
-         * OUTPUTS
-         *      (string) -- text from dictionary or txt, if text was not found in dictionary
-         ****
-         */
-        {
-            $args = func_get_args();
-
-            if (is_array($args[0])) $args = $args[0];
-
-            $txt = (string)array_shift($args);
-
             // get localized text from dictionary
-            if ($txt !== '') {
-                $txt = $this->lookup($txt);
+            if ($msg !== '') {
+                $msg = $this->lookup($msg);
             }
 
             // compile included function calls if not in cache
-            if (!isset($this->cache[$txt])) {
-                $this->cache[$txt] = $this->compile($txt);
+            if (!is_null(self::$cache)) {
+                $cache = self::$cache;
+            } else {
+                $cache =& $this->compiler_cache;
+            }
+            
+            $key = $this->lc . '.' . $msg;
+            
+            if (!isset($cache[$key])) {
+                $cache[$key] = $this->compile($msg);
             }
 
-            return $this->cache[$txt]($this, $args);
+            return $cache[$key]($this, $args);
         }
 
-        /****m* l10n/lookup
-         * SYNOPSIS
+        /**
+         * Lookup a message in the dictionary and return it's translation.
+         * This method differs from '__' and 'translate' in that it won't 
+         * compile any inline functions.
+         *
+         * @octdoc  m:l10n/lookup
+         * @param   string          $msg                Message to lookup
+         * @return  string                              Translated message.
          */
-        function lookup($txt)
-        /*
-         * FUNCTION
-         *      lookup a message and return translation. this method differs from _ and gettext 
-         *      in that it won't compile any inline functions.
-         * INPUTS
-         *      * $txt (string) -- text to lookup
-         * OUTPUTS
-         *      (string) -- translation for the specified string
-         ****
-         */
+        public function lookup($msg)
+        /**/
         {
-            return ($txt !== '' && (($out = gettext($txt)) !== '') ? $out : $txt);
+            return ($msg !== '' && (($out = gettext($msg)) !== '') 
+                    ? $out 
+                    : $msg);
         }
 
-        /****m* l10n/compile
-         * SYNOPSIS
+        /**
+         * Gettext message compiler. It's purpose is to transform embedded
+         * functions into PHP code.
+         *
+         * @octdoc  m:l10n/compile
+         * @param   string          $msg                Message to compile.
+         * @return  callback                            Created callback.
          */
-        protected function compile($txt)
-        /*
-         * FUNCTION
-         *      gettext message compiler
-         * INPUTS
-         *      * $txt (string) -- text to compile
-         * OUTPUTS
-         *      (callback) -- compiled code for gettext
-         ****
-         */
+        protected function compile($msg)
+        /**/
         {
-            $txt     = '\'' . str_replace("'", "\'", $txt) . '\'';
+            $msg     = '\'' . str_replace("'", "\'", $msg) . '\'';
+            $cnt     = 0;
             $pattern = '/\[(?:(_\d+)|(?:([^,]+))(?:,(.*?))?(?<!\\\))\]/s';
 
-            $txt = preg_replace_callback($pattern, function($m) {
+            $msg = preg_replace_callback($pattern, function($m) {
                 $cmd = (isset($m[2]) ? $m[2] : '');
                 $tmp = preg_split('/(?<!\\\),/', array_pop($m));
                 $par = array();
@@ -513,36 +471,13 @@ namespace org\octris\core {
                          : '\' . ' . array_shift($par) . ' . \'');
 
                 return $code;
-            }, $txt, -1, $cnt = 0);
+            }, $msg, -1, $cnt);
 
             if ($cnt == 0) {
-                return function($obj, $args) use ($txt) { return $txt; };
+                return function($obj, $args) use ($msg) { return $msg; };
             } else {
-                return create_function('$obj, $args', 'return ' . $txt . ';');
+                return create_function('$obj, $args', 'return ' . $msg . ';');
             }
         }
-    }
-}
-
-/*
- * put translate function into global namespace
- */
-namespace {
-    /****f* l10n/translate
-     * SYNOPSIS
-     */
-    function translate()
-    /*
-     * FUNCTION
-     *      global translate function
-     * INPUTS
-     *      * $txt (string) -- text to lookup in dictionary
-     *      * ... (mixed) -- additional optional parameters for embedded functions
-     * OUTPUTS
-     *      (string) -- text from dictionary or txt, if text was not found in dictionary
-     ****
-     */
-    {
-        return \org\octris\core\l10n::getInstance()->gettext(func_get_args());
     }
 }

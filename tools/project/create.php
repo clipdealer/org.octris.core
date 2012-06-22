@@ -1,43 +1,36 @@
 #!/usr/bin/env php
 <?php
 
-/****h* project/create
- * NAME
- *      create.php
- * FUNCTION
- *      creates a new project from project skeleton
- * COPYRIGHT
- *      copyright (c) 2010 by Harald Lapp
- * AUTHOR
- *      Harald Lapp <harald@octris.org>
- ****
+/*
+ * This file is part of the 'org.octris.core' package.
+ *
+ * (c) Harald Lapp <harald@octris.org>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
-require_once(__DIR__ . '/../../libs/app/cli.class.php');
+namespace org\octris\core\project {
+    /**
+     * Tool for creating a new web application project based on a skeleton.
+     *
+     * @octdoc      h:project/create
+     * @copyright   copyright (c) 2011 by Harald Lapp
+     * @author      Harald Lapp <harald@octris.org>
+     */
+    /**/
 
-\org\octris\core\config::load('org.octris.core');
+    $_ENV['OCTRIS_APP'] = 'org.octris.core';
 
-use \org\octris\core\app\cli as cli;
+    // include core cli application library
+    require_once('org.octris.core/app/cli.class.php');
+    
+    // load application configuration
+    $registry = \org\octris\core\registry::getInstance();
+    $registry->set('config', function() {
+        return new \org\octris\core\config('org.octris.core');
+    }, \org\octris\core\registry::T_SHARED | \org\octris\core\registry::T_READONLY);
 
-$data = array(
-    'company' => '',
-    'author'  => '',
-    'email'   => '',
-    'domain'  => ''
-);
-
-print "octris -- create new project\n";
-cli::hline(); 
-
-$prompt = new cli\readline();
-
-foreach ($data as $k => $v) {
-    $input = $prompt->get(sprintf("%s [%s]: ", $k, $v));
+    // run application
+    app\main::getInstance()->invoke(new app\create());
 }
-
-$data = array_merge($data, array(
-    'module'    => '',
-    'namespace' => '\\' . implode('\\', array_reverse(explode('.', $data['domain'])))
-));
-
-print_r($data);

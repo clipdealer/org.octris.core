@@ -1,50 +1,51 @@
 <?php
 
-namespace org\octris\core\validate\type {
-    /****c* type/url
-     * NAME
-     *      url
-     * FUNCTION
-     *      validate URLs
-     * COPYRIGHT
-     *      copyright 2010 by Harald Lapp
-     * AUTHOR
-     *      Harald Lapp <harald@octris.org>
-     ****
-     */
+/*
+ * This file is part of the 'org.octris.core' package.
+ *
+ * (c) Harald Lapp <harald@octris.org>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
-    class url extends \org\octris\core\validate\type {
-        /****v* url/$pattern
-         * SYNOPSIS
+namespace org\octris\core\validate\type {
+    /**
+     * Validator for testing if a string is a valid URL.
+     *
+     * @octdoc      c:type/url
+     * @copyright   copyright (c) 2010-2011 by Harald Lapp
+     * @author      Harald Lapp <harald@octris.org>
+     */
+    class url extends \org\octris\core\validate\type 
+    /**/
+    {
+        /**
+         * Validation pattern.
+         *
+         * @octdoc  p:url/$pattern
+         * @var     string
          */
         protected $pattern = "/^%s:\/\/(([a-z0-9\$\-\_\.\+\!\*'\(\)\,\;\?\&\=]|(\%[0-9a-f]{2}))+(\:([a-z0-9\$\-\_\.\+\!\*'\(\)\,\;\?\&\=]|(\%[0-9a-f]{2}))+)?\@)?((([a-z0-9]|([a-z0-9]([a-z0-9\-])*[a-z0-9]))\.)*([a-z]|([a-z][a-z0-9\-]*[a-z0-9]))|[0-9]{1,3}(\.[0-9]{1,3}){3})(\:[0-9]+)?(\/([a-z0-9\$\-\_\.\+\!\*'\(\)\,\;\:\@\&\=]|(\%[0-9a-f]{2}))*(\/([a-z0-9\$\-\_\.\+\!\*'\(\)\,\;\:\@\&\=]|(\%[0-9a-f]{2}))*)*(\?([a-z0-9\$\-\_\.\+\!\*'\(\)\,\;\:\@\&\=]|(\%[0-9a-f]{2}))*)?)?$/i";
-        /*
-         * FUNCTION
-         *      validation pattern
-         ****
-         */
-        
-        /****v* url/$default_scheme
-         * SYNOPSIS
+        /**/
+
+        /**
+         * Default scheme to use, if no scheme is provided.
+         *
+         * @octdoc  p:url/$default_scheme
+         * @var     string
          */
         protected $default_scheme = 'http://';
-        /*
-         * FUNCTION
-         *      default scheme to use, if no one is provided
-         ****
-         */
+        /**/
 
-        /****m* url/__construct
-         * SYNOPSIS
+        /**
+         * Constructor.
+         *
+         * @octdoc  m:url/__construct
+         * @param   array       $options        Optional options for validator.
          */
         public function __construct(array $options = array())
-        /*
-         * FUNCTION
-         *      constructor
-         * INPUTS
-         *      * $options (array) -- optional options
-         ****
-         */
+        /**/
         {
             if (!isset($options['schemes']) || !is_array($options['schemes'])) {
                 $options['schemes'] = array('http', 'https');
@@ -57,15 +58,14 @@ namespace org\octris\core\validate\type {
             parent::__construct($options);
         }
 
-        /****m* url/preFilter
-         * SYNOPSIS
+        /**
+         * Overwrite preFilter of superclass to add a default scheme, if no scheme is specified.
+         *
+         * @octdoc  m:url/preFilter
+         * @param   string      $value      The provided URL.
          */
         public function preFilter($value)
-        /*
-         * FUNCTION
-         *      overwrite preFilter of super class to add a default scheme, if no scheme is specified
-         ****
-         */
+        /**/
         {
             $value = parent::preFilter($value);
 
@@ -76,19 +76,15 @@ namespace org\octris\core\validate\type {
             return $value;
         }
 
-        /****m* url/validate
-         * SYNOPSIS
+        /**
+         * Validator implementation.
+         *
+         * @octdoc  m:url/validate
+         * @param   mixed       $value          Value to validate.
+         * @return  bool                        Returns true if value is valid.
          */
         public function validate($value)
-        /*
-         * FUNCTION
-         *      validate an URL
-         * INPUTS
-         *      * $value (mixed) -- value to validate
-         * OUTPUTS
-         *      (bool) -- returns true, if value is valid
-         ****
-         */
+        /**/
         {
             $pattern = sprintf(
                 $this->pattern,

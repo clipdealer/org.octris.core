@@ -1,0 +1,16 @@
+<?php
+ return array (
+  'ar' => 'arabcha',
+  'de' => 'olmoncha',
+  'en' => 'inglizcha',
+  'es' => 'ispancha',
+  'fr' => 'fransuzcha',
+  'hi' => 'hindcha',
+  'it' => 'italyancha',
+  'ja' => 'yaponcha',
+  'pt' => 'portugalcha',
+  'ru' => 'ruscha',
+  'uz' => 'o\'zbekcha',
+  'zh' => 'xitoycha',
+)
+?>

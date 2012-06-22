@@ -1,361 +1,246 @@
 <?php
 
+/*
+ * This file is part of the 'org.octris.core' package.
+ *
+ * (c) Harald Lapp <harald@octris.org>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace org\octris\core\type {
-    /****c* type/money
-     * NAME
-     *      money
-     * FUNCTION
-     *      money type
-     * COPYRIGHT
-     *      copyright (c) 2010 by Harald Lapp
-     * AUTHOR
-     *      Harald Lapp <harald@octris.org>
-     ****
+    /**
+     * Money type.
+     *
+     * @octdoc      c:type/money
+     * @copyright   copyright (c) 2010-2012 by Harald Lapp
+     * @author      Harald Lapp <harald@octris.org>
      */
+    class money extends \org\octris\core\type\number
+    /**/
+    {
+        /**
+         * Currency of money object (ISO 4217)
+         *
+         * @octdoc  p:money/$currency
+         * @var     string
+         */
+        protected $currency = 'EUR';
+        /**/
 
-    class money extends \org\octris\core\type\number {
-        /****v* money/$currency
-         * SYNOPSIS
+        /**
+         * Stores instance of money exchange class.
+         *
+         * @octdoc  p:money/$xchg_service
+         * @var     \org\octris\core\type\money\exchange_if
          */
-        protected $currency;
-        /*
-         * FUNCTION
-         *      currency of money object (ISO 4217)
-         ****
-         */
+        protected static $xchg_service = null;
+        /**/
 
-        /****m* money/__construct
-         * SYNOPSIS
+        /**
+         * Stores money precision.
+         *
+         * @octdoc  p:money/$precision
+         * @var     int
          */
-        public function __construct($value = 0, $currency = NULL, $lc = NULL)
-        /*
-         * FUNCTION
-         *      constructor. note, that a money object can have a currency, which is not associated to a local.
-         * INPUTS
-         *      * $value (float) -- (optional) float value for money object without locale specific characters
-         *      * $currency (string) -- (optional) currency (ISO 4217) to set for object. if no currency 
-         *        is specified, the currency of current set locale will be used
-         *      * $lc (string) -- (optional) locale setting
-         * SEE ALSO
-         *      money/prepare
-         ****
+        protected $precision;
+        /**/
+
+        /**
+         * Constructor. Note that a money object can have a currency, which is not bound to the 
+         * currently set locale. If a precision is specifed, the precision will only be used for 
+         * returning the money amount. For internal calculations the default precision will be
+         * used.
+         *
+         * @octdoc  m:money/__construct
+         * @param   float       $value      Optional value for money object without locale specific characters.
+         * @param   string      $currency   Optional curreny (ISO 4217) to set.
+         * @param   int         $precision  Optional precision to use.
          */
+        public function __construct($value = 0, $currency = null, $precision = 2)
+        /**/
         {
-            if (is_null($currency)) {
-                // TODO: need to detect currency of currently set locale
-                $this->currency = 'EUR';
+            if (!is_null($currency)) {
+                $this->currency = $currency;
             }
 
-            $value = $this->prepare($value);
+            $this->precision = $precision;
 
-            parent::__construct($value, $lc);
+            parent::__construct($value);
+        }
 
-            $this->loadCLDRData(
-                array(
-                    'currency_sign', 'currency_format'
-                ),
-                $this->lc
-            );
-
-            if (strpos($this->currency_format['default'], ';') !== false) {
-                $tmp = explode(';', $this->currency_format['default']);
-
-                $this->currency_format['pos'] = $tmp[0];
-                $this->currency_format['neg'] = $tmp[1];
-            } else {
-                $this->currency_format['pos'] = $this->currency_format['default'];
-                $this->currency_format['neg'] = $this->currency_format['default'];
+        /**
+         * Magic setter.
+         *
+         * @octdoc  m:money/__set
+         * @param   string          $name           Name of property to set.
+         * @param   mixed           $value          Value to set for property.
+         */
+        public function __set($name, $value)
+        /**/
+        {
+            switch ($name) {
+            case 'value':
+                $this->value = (string)$value;
+                break;
+            case 'currency':
+                throw new \Exception('The currency is read-only');
+                break;
             }
         }
 
-        /****m* datetime/getInstance
-         * SYNOPSIS
+        /**
+         * Magic getter.
+         *
+         * @octdoc  m:money/__get
+         * @param   string          $name           Name of property to get.
          */
-        public static function getInstance($value = 0, $currency = NULL, $lc = NULL)
-        /*
-         * FUNCTION
-         *      to provide more convenient way to acces eg. formatting methods
-         * INPUTS
-         *      * $value (float) -- (optional) float value for money object without locale specific characters
-         *      * $currency (string) -- (optional) currency (ISO 4217) to set for object. if no currency 
-         *        is specified, the currency of current set locale will be used
-         *      * $lc (string) -- (optional) locale setting
-         ****
-         */
+        public function __get($name)
+        /**/
         {
-            return new static($value, $currency, $lc);
+            switch ($name) {
+            case 'value':
+                $return = $this->get();
+                break;
+            case 'currency':
+                $return = $this->currency;
+                break;
+            }
+
+            return $return;
         }
 
-        /****m* number/__tostring
-         * SYNOPSIS
+        /**
+         * Set an object instance, that handles money exchange between currencies.
+         *
+         * @octdoc  m:money/setExchangeService
+         * @param   \org\octris\core\type\money\exchange_if     $service    Instance of a money exchange service.
          */
-        public function __toString() 
-        /*
-         * FUNCTION
-         *      method is called, when number object is casted to a string.
-         * OUTPUTS
-         *      (string) -- formatted output of number object
-         ****
-         */
+        public static function setExchangeService(\org\octris\core\type\money\exchange_if $service)
+        /**/
         {
-            return $this->format();
+            self::$xchg_service = $service;
         }
 
-        /****m* money/prepare
-         * SYNOPSIS
+        /**
+         * Allocate the amount of money between multiple targets.
+         *
+         * @octdoc  m:money/allocate
+         * @param   array               $ratios         Ratios to allocate.
+         * @return  array                               Array of objects of type \org\octris\core\type\money.
          */
-        private function prepare($money) 
-        /*
-         * FUNCTION
-         *      prepare money amount or object
-         * INPUTS
-         *      * $money (mixed) -- an numeric money value or an money object
-         * OUTPUTS
-         *      (float) -- returns amount of money
-         ****
-         */
+        public function allocate(array $ratios)
+        /**/
         {
-            if (is_object($money) && $money instanceof lima_type_money) {
-                // parameter is a money object
-                if ($this->currency != $money->getCurrency()) {
-                    throw new Exception('different currencies!');
-                } else {
-                    $ret = $money->getValue();
+            $total  = (new \org\octris\core\type\number())->add($ratios);
+            $remain = new \org\octris\core\type\number($this->value);
+            $return = array();
+
+            for ($i = 0, $cnt = count($ratios); $i < $cnt; ++$i) {
+                $return[$i] = clone $this;
+                $return[$i]->mul($ratios[$i])->div($total)->round($this->precision);
+
+                $remain->sub($return[$i]);
+            }
+
+            $unit = (new \org\octris\core\type\number(10))->pow(-$this->precision);
+            $i    = 0;
+
+            while ($remain->get() > 0) {
+                $return[($i % $cnt)]->add($unit);
+                $remain->sub($unit);
+
+                ++$i;
+            }
+
+            return $return;
+        }
+
+        /**
+         * Compare money with another one and return true, if both money objects are equal. Comparing includes currency. Only money
+         * objects with the same currency can ever by equal.
+         *
+         * @octdoc  m:money/equals
+         * @param   mixed               $num    Number to compare with.
+         * @return  bool                        Returns true, if money objects are equal.
+         */
+        public function equals($num)
+        /**/
+        {
+            if (($return = (is_object($num) && $num instanceof \org\octris\core\type\money))) {
+                $return = ($this->currency === $num->currency && parent::equals($num));
+            }
+
+            return $return;
+        }
+
+        /**
+         * Convert money object to an other currency using specified exchange rate.
+         *
+         * @octdoc  m:money/exchange
+         * @param   string      $currency           Currency to convert to.
+         * @param   float       $rate               Optional exchange rate. The exchange rate -- if specified -- will
+         *                                          prevent the call of any set exchange service callback.
+         * @param   string      $old_currency       Optional parameter which get's filled from the method with the original currency of the money object.
+         * @return  \org\octris\core\type\money     Instance of current money object.
+         */
+        public function exchange($currency, $rate = null, &$old_currency = null)
+        /**/
+        {
+            if (is_null($rate)) {
+                if (is_null(self::$xchg_service)) {
+                    throw new \Exception('No money exchange service has been configured');
+                } elseif (($rate = self::$xchg_service->getExchangeRate($this->currency, $currency)) === false) {
+                    throw new \Exception(sprintf(
+                        'Unable to determine exchange rate for "%s/%s"',
+                        $this->currency,
+                        $currency
+                    ));
                 }
-            } elseif (is_numeric($money)) {
-                // parameter is a valid numeric value
-                $ret = $money;
-            } else {
-                $ret = 0;
             }
 
-            return $ret;
+            $this->mul($rate);
+
+            $old_currency = $this->currency;
+            $this->currency = $currency;
+            
+            return $this;
         }
-
-        /****m* money/exchange
-         * SYNOPSIS
+        
+        /**
+         * Add VAT to amount of money. The new value is stored in the money object.
+         *
+         * @octdoc  m:money/addVat
+         * @param   float       $vat                Amount of VAT to add.
+         * @return  \org\octris\core\type\money     Instance of current money object.
+         *
+         * @todo    Think about whether it might be useful to store VAT amount in money object and
+         *          whether it would be nice to have methods like "getBtto", "getNet", etc.
          */
-        public function exchange($currency, $rate = 1)
-        /*
-         * FUNCTION
-         *      convert money object currency to an other currency
-         * INPUTS
-         *      * $currency (string) -- currency to convert money object to
-         *      * $rate (float) -- exchange rate
-         * OUTPUTS
-         *      (object) -- returns a new money object 
-         * TODO
-         *      * implementing a datasource to fetch valid exchange rates
-         ****
-         */
-        {
-            return new lima_money_object($this->value * $rate, $currency, $this->lc);
-        }
-
-        /****m* money/convert
-         * SYNOPSIS
-         */
-        public function convert($currency, $rate = 1)
-        /*
-         * FUNCTION
-         *      convert money object currency to an other currency -- alias for exchange
-         * INPUTS
-         *      * $currency (string) -- currency to convert money object to
-         *      * $rate (float) -- exchange rate
-         * OUTPUTS
-         *      (object) -- returns a new money object 
-         ****
-         */
-        {
-            return $this->exchange($currency, $rate);
-        }
-
-        /****m* money/format
-         * SYNOPSIS
-         */
-        public function format($context = 'text/html')
-        /*
-         * FUNCTION
-         *      return locale / currency formatted object value
-         * INPUTS
-         *      * $context (string) -- context to format money for
-         * OUTPUTS
-         *      (string) -- formatted string
-         ****
-         */
-        {
-            $pattern = ($this->value >= 0 ? $this->currency_format['pos'] : $this->currency_format['neg']);
-
-            $txt = parent::format(NULL, $pattern);
-
-            switch ($context) {
-            case 'text/html':
-                $txt = utf8_decode($txt);
-                break;
-            case 'text/plain':
-                $txt = preg_replace('/[^0-9,.#+-]/', '', $txt);
-                break;
-            }
-
-            return $txt;
-        }
-
-        /****m* money/addVat
-         * SYNOPSIS
-         */
-        public function addVat($vat) 
-        /*
-         * FUNCTION
-         *      add VAT to amount of money. the new value is stored in the money object.
-         * INPUTS
-         *      * $vat (float) -- vat to add
-         ****
-         */
+        public function addVat($vat)
+        /**/
         {
             $this->mul(1 + $vat / 100);
+
+            return $this;
         }
 
-        /****m* money/subDiscount
-         * SYNOPSIS
+        /**
+         * Substract discount from amount of money. The new value is stored in the money object.
+         *
+         * @octdoc  f:money/subDiscount
+         * @param   float       $discount           Discount to substract from amount.
+         * @return  \org\octris\core\type\money     Instance of current money object.
          */
-        public function subDiscount($discount) 
-        /*
-         * FUNCTION
-         *      subtract discount from amount of money. the new value is stored in the money object. 
-         * INPUTS
-         *      * $discount (float) -- discount to substract from amount
-         ****
-         */
+        public function subDiscount($discount)
+        /**/
         {
             $this->mul(1 - $discount / 100);
-        }
 
-        /****m* money/get
-         * SYNOPSIS
-         */
-        public function get() 
-        /*
-         * FUNCTION
-         *      return amount of money
-         ****
-         */
-        {
-            return $this->value;
-        }
-
-        /****m* money/set
-         * SYNOPSIS
-         */
-        function set($value) 
-        /*
-         * FUNCTION
-         *      set amount of money
-         ****
-         */
-        {
-            $this->value = $value;
-        }
-
-        /****m* money/add
-         * SYNOPSIS
-         */
-        public function add($amount) 
-        /*
-         * FUNCTION
-         *      add money
-         * INPUTS
-         *      * $amount (mixed) -- a numeric amount or an other money object to add
-         ****
-         */
-        {
-            $amount = $this->prepare($amount);
-
-            $this->value += $amount;
-        }
-
-        /****m* money/sub
-         * SYNOPSIS
-         */
-        public function sub($amount) 
-        /*
-         * FUNCTION
-         *      substract money
-         * INPUTS
-         *      * $amount (mixed) -- a numeric amount or an other money object to substract
-         ****
-         */
-        {
-            $amount = $this->prepare($amount);
-
-            $this->value -= $amount;
-        }
-
-        /****m* money/mul
-         * SYNOPSIS
-         */
-        public function mul($amount) 
-        /*
-         * FUNCTION
-         *      multiplicate money
-         * INPUTS
-         *      * $amount (mixed) -- a numeric amount or an other money object to multiplicate
-         ****
-         */
-        {
-            $amount = $this->prepare($amount);
-
-            $this->value = $this->value * $amount;
-        }
-
-        /****m* money/div
-         * SYNOPSIS
-         */
-        public function div($amount) 
-        /*
-         * FUNCTION
-         *      divide money
-         * INPUTS
-         *      * $amount (mixed) -- a numeric amount or an other money object to divide
-         ****
-         */
-        {
-            $amount = $this->prepare($amount);
-
-            if ($amount == 0) {
-                throw new Exception('division by zero!');
-            } else {
-                $this->value /= $amount;
-            }
-        }
-
-        /****m* money/mod
-         * SYNOPSIS
-         */
-        public function mod($amount) 
-        /*
-         * FUNCTION
-         *      modulo
-         * INPUTS
-         *      * $amount (mixed) -- a numeric amount or an other money object to modulate
-         ****
-         */
-        {
-            $amount = $this->prepare($amount);
-
-            $this->value %= $amount;
-        }
-
-        /****m* money/getCurrency
-         * SYNOPSIS
-         */
-        public function getCurrency()
-        /*
-         * FUNCTION
-         *      return currency of money object
-         ****
-         */
-        {
-            return $this->currency;
+            return $this;
         }
     }
 }
+
+   

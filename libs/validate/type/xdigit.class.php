@@ -1,32 +1,34 @@
 <?php
 
-namespace org\octris\core\validate\type {
-    /****c* type/xdigit
-     * NAME
-     *      xdigit
-     * FUNCTION
-     *      validate for hexadezimal values
-     * COPYRIGHT
-     *      copyright 2010 by Harald Lapp
-     * AUTHOR
-     *      Harald Lapp <harald.lapp@gmail.com>
-     ****
-     */
+/*
+ * This file is part of the 'org.octris.core' package.
+ *
+ * (c) Harald Lapp <harald@octris.org>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
-    class xdigit extends \org\octris\core\validate\type {
-        /****m* xdigit/validate
-         * SYNOPSIS
+namespace org\octris\core\validate\type {
+    /**
+     * Validator for testing if a string contains only hexadecimal digits.
+     *
+     * @octdoc      c:type/xdigit
+     * @copyright   copyright (c) 2010-2011 by Harald Lapp
+     * @author      Harald Lapp <harald@octris.org>
+     */
+    class xdigit extends \org\octris\core\validate\type
+    /**/
+    {
+        /**
+         * Validator implementation.
+         *
+         * @octdoc  m:xdigit/validate
+         * @param   mixed       $value          Value to validate.
+         * @return  bool                        Returns true if value is valid.
          */
         public function validate($value)
-        /*
-         * FUNCTION
-         *      validate an xdigit value
-         * INPUTS
-         *      * $value (mixed) -- value to validate
-         * OUTPUTS
-         *      (bool) -- returns true, if value is valid
-         ****
-         */
+        /**/
         {
             if (($return = ctype_xdigit($value)) && isset($this->options['length'])) {
                 $return = (strlen($value) == $this->options['length']);

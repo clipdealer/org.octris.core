@@ -1,182 +1,85 @@
 <?php
 
-namespace org\octris\core {
-    /****c* core/validate
-     * NAME
-     *      validate
-     * FUNCTION
-     *      validation base class
-     * COPYRIGHT
-     *      copyright (c) 2010 by Harald Lapp
-     * AUTHOR
-     *      Harald Lapp <harald@octris.org>
-     ****
-     */
+/*
+ * This file is part of the 'org.octris.core' package.
+ *
+ * (c) Harald Lapp <harald@octris.org>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
-    class validate {
-        /****v* validate/$instance
-         * SYNOPSIS
-         */
-        private $instance = null;
-        /*
-         * FUNCTION
-         *      instance of validator
-         ****
-         */
-        
-        /****d* validate/T_OBJECT, T_ARRAY
-         * SYNOPSIS
+namespace org\octris\core {
+    /**
+     * Validation base class.
+     *
+     * octdoc       c:core/validate
+     * @copyright   copyright (c) 2010-2011 by Harald Lapp
+     * @author      Harald Lapp <harald.lapp@gmail.com>
+     */
+    class validate
+    /**/
+    {
+        /**
+         * Schema structure types.
+         *
+         * @octdoc  d:validate/T_OBJECT, T_ARRAY
          */
         const T_OBJECT = 1;
         const T_ARRAY  = 2;
-        /*
-         * FUNCTION
-         *      schema structure types
-         ****
+        /**/
+
+        /**
+         * Available validation types.
+         *
+         * @octdoc  d:validate/T_ALPHA, T_ALPHANUM, T_BASE64, T_BOOL, T_CALLBACK, T_CHAIN, T_DIGIT,
+         *          T_FILE, T_PATH, T_PATTERN, T_PRINTABLE, T_PROJECT, T_UTF8, T_XDIGIT
          */
-         
-        /****d* validate/T_ALPHA, T_ALPHANUM, T_BOOL, T_CALLBACK, T_PATH, T_PRINT, T_XDIGIT
-         * SYNOPSIS
-         */
-        const T_ALPHA    = '\org\octris\core\validate\type\alpha';
-        const T_ALPHANUM = '\org\octris\core\validate\type\alphanum';
-        const T_BOOL     = '\org\octris\core\validate\type\bool';
-        const T_CALLBACK = '\org\octris\core\validate\type\callback';
-        const T_CHAIN    = '\org\octris\core\validate\type\chain';
-        const T_PATH     = '\org\octris\core\validate\type\path';
-        const T_PATTERN  = '\org\octris\core\validate\type\pattern';
-        const T_PRINT    = '\org\octris\core\validate\type\print';
-        const T_XDIGIT   = '\org\octris\core\validate\type\xdigit';
-        const T_URL      = '\org\octris\core\validate\type\url';
-        /*
-         * FUNCTION
-         *      available validation types
-         ****
-         */
-        
-        /****m* validate/__construct, __clone
-         * SYNOPSIS
+        const T_ALPHA     = '\org\octris\core\validate\type\alpha';
+        const T_ALPHANUM  = '\org\octris\core\validate\type\alphanum';
+        const T_BASE64    = '\org\octris\core\validate\type\base64';
+        const T_BOOL      = '\org\octris\core\validate\type\bool';
+        const T_DIGIT     = '\org\octris\core\validate\type\digit';
+        const T_FILE      = '\org\octris\core\validate\type\file';
+        const T_PATH      = '\org\octris\core\validate\type\path';
+        const T_PATTERN   = '\org\octris\core\validate\type\pattern';
+        const T_PRINTABLE = '\org\octris\core\validate\type\printable';
+        const T_PROJECT   = '\org\octris\core\validate\type\project';
+        const T_URL       = '\org\octris\core\validate\type\url';
+        const T_XDIGIT    = '\org\octris\core\validate\type\xdigit';
+
+        // validation types, that are directly implemented in schema validator
+        const T_CALLBACK  = 1;
+        const T_CHAIN     = 2;
+        /**/
+
+        /**
+         * Protected constructor and magic clone method to prevent existance of multiple instances.
+         *
+         * @octdoc  m:validate/__construct, __clone
          */
         protected function __construct() {}
         protected function __clone() {}
-        /*
-         * FUNCTION
-         *      prevent constructing multiple instances and cloning
-         ****
+        /**/
+
+        /**
+         * Test a value if it validates to the specified schema.
+         *
+         * @octdoc  m:validate/test
+         * @param   mixed           $value              Value to test.
+         * @param   array           $schema             Validation schema.
+         * @param   int             $mode               Optional validation mode.
+         * @return  mixed                               Returns true, if valid otherwise an array with error messages.
          */
-         
-        /****m* validate/getInstance
-         * SYNOPSIS
-         */
-        final public function getInstance()
-        /*
-         * FUNCTION
-         *      return instance of validator
-         * OUTPUTS
-         *      (validate) -- instance of validation class
-         ****
-         */
+        public static function validate($value, array $schema, $mode = \org\octris\core\validate\schema::T_STRICT)
+        /**/
         {
-            if (is_null(self::$instance)) {
-                self::$instance = new static();
-            }
-            
-            return self::$instance;
-        }
-        
-        /****m* validate/getKey
-         * SYNOPSIS
-         */
-        public function getKey(\org\octris\core\page $page, $action)
-        /*
-         * FUNCTION
-         *      calculate a key based on a page object and an action
-         * INPUTS
-         *      * $page (object) -- page object
-         *      * $action (string) -- name of action
-         ****
-         */
-        {
-            return get_class($page) . '.' . $action;
-        }
+            $instance = new \org\octris\core\validate\schema($schema, $mode);
+            $is_valid = $instance->validate($value);
 
-        /****m* validate/getRuleset
-         * SYNOPSIS
-         */
-        public function getRuleset(\org\octris\core\page $page, $action)
-        /*
-         * FUNCTION
-         *      return a registered validation ruleset
-         * INPUTS
-         *      * $page (page) -- page ruleset was registered for
-         *      * $action (string) -- action ruleset was registered for
-         * OUTPUTS
-         *      (array) -- ruleset, array is empty, if no ruleset for specified properties was registered
-         ****
-         */
-        {
-            $key    = $this->getKey($page, $action);
-            $return = array();
-
-            if (isset($this->rulesets[$key])) {
-                $return = $this->rulesets[$key]['ruleset'];
-            }
-
-            return $return;
-        }
-
-        /****m* validate/registerRuleset
-         * SYNOPSIS
-         */
-        public function registerRuleset(\org\octris\core\page $page, $action, \org\octris\core\wrapper $wrapper, array $ruleset)
-        /*
-         * FUNCTION
-         *      register validation ruleset
-         * INPUTS
-         *      * $page (page) -- page ruleset applies to
-         *      * $wrapper (wrapper) -- wrapped parameters to validate
-         *      * $ruleset (array) -- validation ruleset
-         ****
-         */
-        {
-            $key = $this->getKey($page, $action);
-
-            $this->rulesets[$key] = array(
-                'wrapper' => $wrapper,
-                'ruleset' => $ruleset
-            );
-        }
-        
-        /****m* validate/validate
-         * SYNOPSIS
-         */
-        public function validate(\org\octris\core\page $page, $action)
-        /*
-         * FUNCTION
-         *      apply registered validation ruleset
-         * INPUTS
-         *      * $page (page) -- page object of registered ruleset
-         *      * $action (string) -- action of registered ruleset
-         * OUTPUTS
-         *      (bool) -- returns true, if all rules validated or if no rules are defined for case
-         ****
-         */
-        {
-            $key = $this->getKey($page, $action);
-            $ret = true;
-
-            if (isset($this->rulesets[$key])) {
-                $ruleset = $this->ruleset[$key]['ruleset'];
-                
-                $v = new validate\schema(
-                    $ruleset['schema'],
-                    $ruleset['type'],
-                    $ruleset['mode']
-                );
-                $ret = $v->validate($this->ruleset[$key]['wrapper']);
-            }
-
-            return $ret;
+            return ($is_valid === true
+                    ? $is_valid
+                    : $instance->getErrors());
         }
     }
 }
