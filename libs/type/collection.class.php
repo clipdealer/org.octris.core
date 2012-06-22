@@ -598,6 +598,38 @@ namespace org\octris\core\type {
                 $arg = $data;
             }
         }
+
+        /**
+         * Extract part of a nested array specified with key.
+         *
+         * @octdoc  m:collection/pluck
+         * @param   mixed       $data               The input array, ArrayObject or collection.
+         * @param   mixed       $key                The key -- integer or string.
+         * @return  bool|mixed                      False in case of an error, otherwise and array or collection object.
+         */
+        public static function pluck(array $data, $key)
+        /**/
+        {
+            $is_collection = (is_object($data) && $data instanceof \org\octris\core\type\collection);
+
+            if (!is_scalar($key) || ($data = static::normalize($data, true)) === false) {
+                return false;
+            }
+
+            $return = array();
+
+            foreach ($data as $v) {
+                if (is_array($v) && array_key_exists($key, $v)) {
+                    $return[] = $v[$key];
+                }
+            }
+
+            if ($is_collection) {
+                $return = new \org\octris\core\type\collection($return);
+            }
+
+            return $return;
+        }
     }
 }
 
