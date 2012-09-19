@@ -73,14 +73,14 @@ if (php_sapi_name() == 'cli') {
     }
     if (isset($options['project'])) {
         $project = $options['project'];
-        $docroot = 
+        $docroot = $_ENV['OCTRIS_BASE'] . '/host/' . $project;
         $router  = __FILE__;
     } else {
         printf("Usage: %s [OPTIONS] --project ...\n", $argv[0]);
         die(255);
     }
 
-    if (!is_dir($_ENV['OCTRIS_BASE'] . '/www/host/' . $project)) {
+    if (!is_dir($docroot)) {
         printf(
             "Unknown project or project not installed '%s'.\n",
             $project
@@ -112,7 +112,7 @@ if (php_sapi_name() == 'cli') {
         '((OCTRIS_APP=%s OCTRIS_DEVEL=1 %s -d output_buffering=on -t %s -S %s:%s %s 1>/dev/null 2>&1 & echo $!) &)',
         $project,
         PHP_BINARY,
-        $_ENV['OCTRIS_BASE'] . '/www/host/' . $project . '/',
+        $docroot,
         $bind_ip,
         $bind_port,
         $router
@@ -158,7 +158,9 @@ ob_end_clean();
 $ext = pathinfo($_SERVER['REQUEST_URI'], PATHINFO_EXTENSION);
 
 if ($ext == '' || $ext == 'php') {
-    require_once($_ENV['OCTRIS_BASE'] . '/www/host/' . $_ENV['OCTRIS_APP'] . '/index.php');
+    $docroot = $_ENV['OCTRIS_BASE'] . '/host/' . $_ENV['OCTRIS_APP'];
+
+    require_once($docroot . '/index.php');
 } else {
     return false;
 }
