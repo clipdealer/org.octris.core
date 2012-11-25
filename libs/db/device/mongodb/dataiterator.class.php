@@ -20,59 +20,59 @@ namespace org\octris\core\db\device\mongodb {
     class dataiterator implements \Iterator
     /**/
     {
-    	/**
-    	 * The dataobject to iterate.
-    	 *
-    	 * @octdoc  p:dataiterator/$data
-    	 * @var     \org\octris\core\db\device\mongodb\subobject
-    	 */
-    	protected $data;
-    	/**/
+        /**
+         * The dataobject to iterate.
+         *
+         * @octdoc  p:dataiterator/$data
+         * @var     \org\octris\core\db\device\mongodb\subobject
+         */
+        protected $data;
+        /**/
 
-    	/**
-    	 * Keys stored in dataobject.
-    	 *
-    	 * @octdoc  p:dataiterator/$keys
-    	 * @var     array
-    	 */
-    	protected $keys;
-    	/**/
+        /**
+         * Keys stored in dataobject.
+         *
+         * @octdoc  p:dataiterator/$keys
+         * @var     array
+         */
+        protected $keys;
+        /**/
 
-    	/**
-    	 * Internal pointer position.
-    	 *
-    	 * @octdoc  p:dataiterator/$position
-    	 * @var     int
-    	 */
-    	protected $position = 0;
-    	/**/
+        /**
+         * Internal pointer position.
+         *
+         * @octdoc  p:dataiterator/$position
+         * @var     int
+         */
+        protected $position = 0;
+        /**/
 
-    	/**
-    	 * Constructor.
-    	 *
-    	 * @octdoc  m:dataiterator/__construct
-    	 * @parem 	\org\octris\core\db\device\mongodb\subobject 	$dataobject 		The dataobject to iterate.
-    	 */
-    	public function __construct(\org\octris\core\db\device\mongodb\subobject $dataobject)
-    	/**/
-    	{
-			$this->data = $dataobject;    	    
-			$this->keys = $dataobject->getKeys();
-    	}
+        /**
+         * Constructor.
+         *
+         * @octdoc  m:dataiterator/__construct
+         * @parem   \org\octris\core\db\device\mongodb\subobject    $dataobject         The dataobject to iterate.
+         */
+        public function __construct(\org\octris\core\db\device\mongodb\subobject $dataobject)
+        /**/
+        {
+            $this->data = $dataobject;          
+            $this->keys = $dataobject->getKeys();
+        }
 
-    	/** Iterator **/
+        /** Iterator **/
 
-    	/**
-    	 * Get value of item.
-    	 *
-    	 * @octdoc  m:dataiterator/current
+        /**
+         * Get value of item.
+         *
+         * @octdoc  m:dataiterator/current
          * @return  mixed                                                               Value stored at current position.
-    	 */
-    	public function current()
-    	/**/
-    	{
+         */
+        public function current()
+        /**/
+        {
             return $this->data[$this->keys[$this->position]];
-    	}
+        }
 
         /**
          * Get key of current item.
@@ -117,7 +117,7 @@ namespace org\octris\core\db\device\mongodb {
         public function valid()
         /**/
         {
-	        return isset($this->keys[$this->position]);
-	    }
+            return isset($this->keys[$this->position]);
+        }
     }
 }
