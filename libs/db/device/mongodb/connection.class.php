@@ -11,7 +11,7 @@
 
 namespace org\octris\core\db\device\mongodb {
     /**
-     * MongoDB database device.
+     * MongoDB database connection.
      *
      * @octdoc      c:mongodb/connection
      * @copyright   copyright (c) 2012 by Harald Lapp
