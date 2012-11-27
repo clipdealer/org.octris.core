@@ -88,7 +88,7 @@ namespace org\octris\core {
         public function addClient(\org\octris\core\net\client $client)
         /**/
         {
-            if (!is_null($this->mh)) {
+            if (is_null($this->mh)) {
                 $this->clients[] = $client;
             } else {
                 // push directly into queue
