@@ -32,10 +32,10 @@ namespace org\octris\core {
         /**
          * Max. concurrent sessions.
          *
-         * @octdoc  p:net/$sessions
+         * @octdoc  p:net/$concurrency
          * @var     int
          */
-        protected $sessions;
+        protected $concurrency = 10;
         /**/
 
         /**
@@ -60,12 +60,22 @@ namespace org\octris\core {
          * Constructor.
          *
          * @octdoc  m:net/__construct
-         * @param   int             $sessions                       Maximum concurrent sessions.
          */
-        public function __construct($sessions = 10)
+        public function __construct()
         /**/
         {
-            $this->sessions = $sessions;
+        }
+
+        /**
+         * Set number of concurrent threads.
+         *
+         * @octdoc  m:net/setConcurrency
+         * @param   int             $concurrency                       Maximum concurrent sessions.
+         */
+        public function setConcurrency($concurrency)
+        /**/
+        {
+            $this->concurrency = $concurrency;
         }
 
         /**
