@@ -80,6 +80,17 @@ namespace org\octris\core\cache\storage {
         }
 
         /**
+         * Return metadata from cache for a specified key.
+         *
+         * @octdoc  m:mongodb/getMetaData
+         * @param   string          $key                    The key of the value that should be removed.
+         */
+        public function getMetaData($key)
+        /**/
+        {
+        }
+
+        /**
          * Compare and update a value. The value get's only updated, if the current value matches.
          *
          * @octdoc  m:mongodb/cas

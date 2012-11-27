@@ -147,7 +147,7 @@ namespace org\octris\core\cache\storage {
          * @octdoc  m:storage/getMetaData
          * @param   string          $key                    The key of the value that should be removed.
          */
-        public function getMetaData()
+        public function getMetaData($key)
         /**/
         {
         }
