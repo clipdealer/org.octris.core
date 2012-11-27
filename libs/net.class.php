@@ -121,7 +121,7 @@ namespace org\octris\core {
                 $ch = curl_init();
                 curl_setopt_array($ch, $client->getOptions());
 
-                curl_multi_add_handle($ch);
+                curl_multi_add_handle($this->mh, $ch);
             }
 
             do {
