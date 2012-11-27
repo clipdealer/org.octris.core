@@ -115,7 +115,7 @@ namespace org\octris\core {
 
             $this->mh = curl_multi_init();
 
-            for ($i = 0; $i < $this->sessions; ++$i) {
+            for ($i = 0; $i < $this->concurrency; ++$i) {
                 if (!($client = array_unshift($this->clients))) break;
 
                 $ch = curl_init();
