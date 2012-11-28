@@ -27,5 +27,13 @@ namespace org\octris\core\db\device {
          */
         public function release();
         /**/
+        
+        /**
+         * Check availability of a connection.
+         *
+         * @octdoc  m:connection_if/isAlive
+         */
+        public function isAlive();
+        /**/
     }
 }
