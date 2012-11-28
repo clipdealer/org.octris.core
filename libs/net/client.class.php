@@ -49,6 +49,15 @@ namespace org\octris\core\net {
         /**/
 
         /**
+         * Information of the last request performed.
+         *
+         * @octdoc  p:client/$info
+         * @var     array
+         */
+        protected $info = array();
+        /**/
+
+        /**
          * Session assigned to the client.
          *
          * @octdoc  p:client/$session
@@ -240,6 +249,8 @@ namespace org\octris\core\net {
             curl_setopt_array($ch, $this->getOptions());
 
             $return = curl_exec($ch);
+
+            $this->info = curl_getinfo($ch);
 
             curl_close($ch);
 
