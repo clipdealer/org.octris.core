@@ -117,7 +117,7 @@ namespace org\octris\core\type {
         {
             if ($name == 'query') {
                 throw new \Exception('Overwriting of "query" is not allowed');
-            } elseif (!array_key_exists($this->components[$name]))  {
+            } elseif (!array_key_exists($name, $this->components))  {
                 throw new \Exception(sprintf('Unknown URI component "%s"', $name));
             } else {
                 // TODO: validate value regarding to component type?
