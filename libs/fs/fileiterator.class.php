@@ -75,7 +75,7 @@ namespace org\octris\core\fs {
         public function __construct($uri, $flags = 0)
         /**/
         {
-            if (!($this->fh = @fopen($file, 'r'))) {
+            if (!($this->fh = @fopen($uri, 'r'))) {
                 $info = error_get_last();
 
                 throw new \Exception($info['message'], $info['type']);
