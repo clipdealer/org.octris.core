@@ -120,7 +120,11 @@ uninstall: onlyroot
 # @octdoc       t:Makefile/test
 #**
 test:
-	@phpunit $(CURSYMDIR)/tests/
+	@if [ "$(filter)" != "" ]; then \
+		phpunit --filter $(filter) $(CURSYMDIR)/tests/; \
+	else \
+		phpunit $(CURSYMDIR)/tests/; \
+	fi; \
 
 #**
 # Clear template and data caches of project.
