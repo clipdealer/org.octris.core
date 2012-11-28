@@ -14,7 +14,7 @@ require_once('org.octris.core/app/test.class.php');
 use \org\octris\core\app\test as test;
 
 class sandboxTest extends PHPUnit_Framework_TestCase {
-	protected $sandbox;
+    protected $sandbox;
     
     public function setUp() {
         $this->sandbox = new \org\octris\core\tpl\sandbox();
