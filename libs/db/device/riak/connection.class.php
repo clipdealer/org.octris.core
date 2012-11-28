@@ -30,15 +30,6 @@ namespace org\octris\core\db\device\riak {
         /**/
 
         /**
-         * Instance of http request class.
-         *
-         * @octdoc  p:connection/$request
-         * @var     \riak
-         */
-        protected $request;
-        /**/
-
-        /**
          * URI instance.
          *
          * @octdoc  p:connection/$uri
@@ -51,7 +42,7 @@ namespace org\octris\core\db\device\riak {
          * Constructor.
          *
          * @octdoc  m:connection/__construct
-         * @param   \org\octris\core\db\device\riak  $device     Device the connection belongs to.
+         * @param   \org\octris\core\db\device\riak     $device             Device the connection belongs to.
          * @param   array                               $options            Connection options.
          */
         public function __construct(\org\octris\core\db\device\riak $device, array $options)
@@ -118,16 +109,16 @@ namespace org\octris\core\db\device\riak {
         }
 
         /**
-         * Create an empty object for storing data into specified collection.
+         * Create an empty object for storing data into specified bucket.
          *
          * @octdoc  m:connection/create
-         * @param   string          $collection                         Name of collection to create object for.
-         * @return  \org\octris\core\db\device\riak\dataobject       Data object.
+         * @param   string          $bucket                             Name of bucket to create object for.
+         * @return  \org\octris\core\db\device\riak\dataobject          Data object.
          */
-        public function create($collection)
+        public function create($bucket)
         /**/
         {
-            return new \org\octris\core\db\device\riak\dataobject($this->device, $collection);
+            return new \org\octris\core\db\device\riak\dataobject($this->device, $bucket);
         }
 
         /**
