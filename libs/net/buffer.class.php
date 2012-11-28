@@ -9,15 +9,15 @@
  * file that was distributed with this source code.
  */
 
-namespace org\octris\core\db\device\riak {
+namespace org\octris\core\net {
     /**
      * Helper class for temporarly storing request output data.
      *
-     * @octdoc      c:riak/buffer
+     * @octdoc      c:net/buffer
      * @copyright   copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    class buffer
+    class buffer implements \Iterator
     /**/
     {
         /**
