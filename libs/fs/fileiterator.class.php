@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace org\octris\core\type\fs {
+namespace org\octris\core\fs {
     /**
      * Implements an iterator for a file.
      *
