@@ -342,6 +342,8 @@ namespace org\octris\core\fs {
          * Write to file.
          *
          * @octdoc  m:file/write
+         * @param   string              $str                    String to write to file.
+         * @param   int                 $len                    Optional maximum length of string to write.
          */
         public function write($str, $len = null)
         /**/
@@ -350,9 +352,10 @@ namespace org\octris\core\fs {
         }
 
         /**
-         * 
+         * Test if end of file is reached.
          *
          * @octdoc  m:file/eof
+         * @return  bool                                        Returns true, if end of file is reached.
          */
         public function eof()
         /**/
@@ -372,9 +375,10 @@ namespace org\octris\core\fs {
         }
 
         /**
-         * 
+         * Perform file locking operation.
          *
          * @octdoc  m:file/lock
+         * @param   int                     $operation          Operation to perform.
          */
         public function lock($operation)
         /**/
@@ -385,7 +389,7 @@ namespace org\octris\core\fs {
         }
 
         /**
-         * 
+         * Pass all file content to stdout.
          *
          * @octdoc  m:file/passthru
          */
@@ -396,9 +400,10 @@ namespace org\octris\core\fs {
         }
 
         /**
-         * 
+         * Return information about a file.
          *
          * @octdoc  m:file/stat
+         * @return  array                                               File information.
          */
         public function stat()
         /**/
@@ -407,9 +412,10 @@ namespace org\octris\core\fs {
         }
 
         /**
-         * 
+         * Return position within a file.
          *
          * @octdoc  m:file/tell
+         * @return  int                                                 Position.
          */
         public function tell()
         /**/
@@ -418,9 +424,10 @@ namespace org\octris\core\fs {
         }
 
         /**
-         * 
+         * Cut file after the specified number of bytes.
          *
          * @octdoc  m:file/truncate
+         * @param   int                         $size                   Number of bytes to cut file after.
          */
         public function truncate($size)
         /**/
