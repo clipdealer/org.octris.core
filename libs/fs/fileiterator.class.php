@@ -17,7 +17,7 @@ namespace org\octris\core\type\fs {
      * @copyright   copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    class iterator implements \Iterator, \SeekableIterator
+    class fileiterator implements \Iterator, \SeekableIterator
     /**/
     {
         /**
