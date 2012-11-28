@@ -427,5 +427,20 @@ namespace org\octris\core\fs {
         {
             ftruncate($this->fh, $size);
         }
+        
+        /**
+         * Return all content of the file as one string. Note that calling this method will reset the file
+         * pointer.
+         *
+         * @octdoc  m:file/getContent
+         * @return  string                                              Content of the file.
+         */
+        public function getContent()
+        /**/
+        {
+            rewind($this->fh);
+            
+            return stream_get_contents($this->fh);
+        }
     }
 }
