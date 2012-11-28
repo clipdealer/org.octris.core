@@ -15,22 +15,32 @@ use \org\octris\core\app\test as test;
 
 class httpTest extends PHPUnit_Framework_TestCase {
     public function testFetch() {
-        $curl = new \org\octris\core\net\client\http(new \org\octris\core\type\uri('http://www.example.org/'));
+        $curl = new \org\octris\core\net\client\http(new \org\octris\core\type\uri('http://www.octris.org/ok.txt'));
         $result = $curl->execute();
 
-        // print_r($result);
-        // die;
+        $this->assertEquals('ok', trim($result));
     }
 
     public function testMultiFetch() {
-        $net = new \org\octris\core\net(2);
+        $max = 10;
+        $cnt = 0;
+        
+        $net = new \org\octris\core\net();
+        $net->setConcurrency(3);
 
-        for ($i = 0; $i < 10; ++$i) {
-            $net->addClient(new \org\octris\core\net\client\http(new \org\octris\core\type\uri('http://www.example.org/')));
+        for ($i = 0; $i < $max; ++$i) {
+            $client = new \org\octris\core\net\client\http(new \org\octris\core\type\uri('http://www.octris.org/ok.php?id=' . ($i + 1)));
+            $client->setListener(function($result) use (&$cnt) {
+                ++$cnt;
+
+                $this->assertEquals('ok:' . $cnt, trim($result));                
+            });
+            
+            $net->addClient($client);
         }
 
         $net->execute();
 
-        die;
+        $this->assertEquals($max, $cnt);
     }
 }
