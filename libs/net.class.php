@@ -91,7 +91,11 @@ namespace org\octris\core {
             if (is_null($this->mh)) {
                 $this->clients[] = $client;
             } else {
-                // push directly into queue
+                // add new client directly to the queue when clients get already executed
+                $ch = curl_init();
+                curl_setopt_array($ch, $client->getOptions());
+
+                curl_multi_add_handle($this->mh, $ch);
             }
 
             return $client;
@@ -111,18 +115,28 @@ namespace org\octris\core {
 
             $this->queue = $this->clients;
 
-            $active = null;
+            $active  = null;
+            $clients = array();
 
             $this->mh = curl_multi_init();
 
-            for ($i = 0; $i < $this->concurrency; ++$i) {
-                if (!($client = array_unshift($this->clients))) break;
+            $push_clients = function($init = 0) use (&$clients) {
+                for ($i = $init, $cnt = 0; $i < $this->concurrency; ++$i) {
+                    if (!($client = array_shift($this->queue))) break;
 
-                $ch = curl_init();
-                curl_setopt_array($ch, $client->getOptions());
+                    $ch = curl_init();
+                    curl_setopt_array($ch, $client->getOptions());
 
-                curl_multi_add_handle($this->mh, $ch);
-            }
+                    curl_multi_add_handle($this->mh, $ch);
+
+                    $clients[(string)$ch] = $client;
+                    
+                    ++$cnt;
+                }
+                
+                return $cnt;
+            };
+            $push_clients();
 
             do {
                 curl_multi_select($this->mh);
@@ -131,15 +145,24 @@ namespace org\octris\core {
 
                 if ($result != CURLM_OK) break;
 
-                while (($done = curl_multi_info_read($this->mh))) {
-                    // code that parses, adds or removes links to mcurl
-                    print "ADD\n";
-                    print_r($done);
-                }
+                while (($done = curl_multi_info_read($this->mh, $remain))) {
+                    // handle result of requests
+                    $key = (string)$done['handle'];
+                    
+                    if ($done['msg']  == CURLMSG_DONE) {
+                        $listener = $clients[$key]->getListener();
+                        
+                        if (!is_null($listener)) {
+                            $listener(curl_multi_getcontent($done['handle']));
+                        }
+                    }
 
-                print "loop\n";
-                die;
-            } while(true);
+                    unset($clients[$key]);
+                }
+                    
+                // add remaining clients
+                $pushed = $push_clients($active);
+            } while($active > 0 || count($this->queue) > 0 || $pushed > 0);
 
             curl_multi_close($this->mh);
             $this->mh = null;
