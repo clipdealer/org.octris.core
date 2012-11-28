@@ -51,10 +51,10 @@ namespace org\octris\core\net {
         /**
          * Information of the last request performed.
          *
-         * @octdoc  p:client/$info
+         * @octdoc  p:client/$request_info
          * @var     array
          */
-        protected $info = array();
+        protected $request_info = array();
         /**/
 
         /**
@@ -250,7 +250,7 @@ namespace org\octris\core\net {
 
             $return = curl_exec($ch);
 
-            $this->info = curl_getinfo($ch);
+            $this->request_info = curl_getinfo($ch);
 
             curl_close($ch);
 
