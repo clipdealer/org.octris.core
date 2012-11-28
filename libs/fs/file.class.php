@@ -344,11 +344,19 @@ namespace org\octris\core\fs {
          * @octdoc  m:file/write
          * @param   string              $str                    String to write to file.
          * @param   int                 $len                    Optional maximum length of string to write.
+         * @return  int|bool                                    Returns number of bytes written or 'false' if writing
+         *                                                      was not possible.
          */
         public function write($str, $len = null)
         /**/
         {
-            fwrite($this->fh, $str, $len);
+            if (is_null($len)) {
+                $return = fwrite($this->fh, $str);
+            } else {
+                $return = fwrite($this->fh, $str, $len);
+            }
+            
+            return $return;
         }
 
         /**
