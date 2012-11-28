@@ -126,6 +126,18 @@ namespace org\octris\core\type {
         }
 
         /**
+         * Create a new URI instance by specifying various relevant parameters
+         *
+         * @octdoc  m:uri/create
+         * @return  \org\octris\core\type\uri
+         */
+        public static function create($host, $port, $scheme = 'http', $path = '/')
+        /**/
+        {
+            return new static($scheme . '://' . $host . ':' . $port . $path);
+        }
+
+        /**
          * This method is called when the object is casted to a string.
          *
          * @octdoc  m:uri/buildUri
