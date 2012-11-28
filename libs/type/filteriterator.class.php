@@ -20,42 +20,42 @@ namespace org\octris\core\type {
     class filteriterator extends \FilterIterator
     /**/
     {
-    	/**
-    	 * The filter to apply.
-    	 *
-    	 * @octdoc  p:filteriterator/$filter
-    	 * @var     callable
-    	 */
-    	protected $filter;
-    	/**/
+        /**
+         * The filter to apply.
+         *
+         * @octdoc  p:filteriterator/$filter
+         * @var     callable
+         */
+        protected $filter;
+        /**/
 
-    	/**
-    	 * Constructor.
-    	 *
-    	 * @octdoc  m:filteriterator/__construct
-    	 * @param 	\Iterator 					$iterator 						The iterator to filter.
-    	 * @param 	callable 					$filter 						The closure that implements the filter.
-    	 */
-    	public function __construct(\Iterator $iterator, callable $filter)
-    	/**/
-    	{
-    		parent::__construct($iterator);
+        /**
+         * Constructor.
+         *
+         * @octdoc  m:filteriterator/__construct
+         * @param   \Iterator                   $iterator                       The iterator to filter.
+         * @param   callable                    $filter                         The closure that implements the filter.
+         */
+        public function __construct(\Iterator $iterator, callable $filter)
+        /**/
+        {
+            parent::__construct($iterator);
 
-    		$this->filter = $filter;
-    	}
+            $this->filter = $filter;
+        }
 
-    	/**
-    	 * Returns false, if item should be filtered from output.
-    	 *
-    	 * @octdoc  m:filteriterator/accept
-    	 * @return 	bool 														Whether the item should be output or not.
-    	 */
-    	public function accept()
-    	/**/
-    	{
-    		$cb = $this->filter;
+        /**
+         * Returns false, if item should be filtered from output.
+         *
+         * @octdoc  m:filteriterator/accept
+         * @return  bool                                                        Whether the item should be output or not.
+         */
+        public function accept()
+        /**/
+        {
+            $cb = $this->filter;
 
-    		return $cb($this->current(), $this->key());
-    	}
+            return $cb($this->current(), $this->key());
+        }
     }
 }

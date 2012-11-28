@@ -20,53 +20,53 @@ namespace org\octris\core\type {
     class domiterator implements \RecursiveIterator, \SeekableIterator, \Countable
     /**/
     {
-    	/**
-    	 * List of nodes to iterate.
-    	 *
-    	 * @octdoc  p:domiterator/$nodes
-    	 * @var     \DOMNodeList
-    	 */
-    	protected $nodes;
-    	/**/
+        /**
+         * List of nodes to iterate.
+         *
+         * @octdoc  p:domiterator/$nodes
+         * @var     \DOMNodeList
+         */
+        protected $nodes;
+        /**/
 
-    	/**
-    	 * Iterator position.
-    	 *
-    	 * @octdoc  p:domiterator/$position
-    	 * @var     int
-    	 */
-    	protected $position = 0;
-    	/**/
+        /**
+         * Iterator position.
+         *
+         * @octdoc  p:domiterator/$position
+         * @var     int
+         */
+        protected $position = 0;
+        /**/
 
-    	/**
-    	 * Constructor.
-    	 *
-    	 * @octdoc  m:domiterator/__construct
-    	 * @param 	DOMNodeList 					$nodes 					Nodes to iterate.
-    	 */
-    	public function __construct(DOMNodeList $nodes)
-    	/**/
-    	{
-    	    $this->nodes = $nodes;
-    	}
+        /**
+         * Constructor.
+         *
+         * @octdoc  m:domiterator/__construct
+         * @param   DOMNodeList                     $nodes                  Nodes to iterate.
+         */
+        public function __construct(DOMNodeList $nodes)
+        /**/
+        {
+            $this->nodes = $nodes;
+        }
 
         /**
          * Return item from collection the iterator is pointing to.
          *
          * @octdoc  m:domiterator/current
-         * @return  DOMNode 												Current item.
+         * @return  DOMNode                                                 Current item.
          */
         public function current()
         /**/
         {
-	        return $this->nodes->item($this->position);
+            return $this->nodes->item($this->position);
         }
 
         /**
          * Return iterator position.
          *
          * @octdoc  m:domiterator/key
-         * @return  int 													Iterator position.
+         * @return  int                                                     Iterator position.
          */
         public function key()
         /**/
@@ -112,7 +112,7 @@ namespace org\octris\core\type {
          * Move iterator position to specified position.
          *
          * @octdoc  m:domiterator/seek
-         * @param   int         					$position          		Position to move iterator to.
+         * @param   int                             $position               Position to move iterator to.
          */
         public function seek($position)
         /**/
@@ -133,27 +133,27 @@ namespace org\octris\core\type {
         }
 
         /**
-	     * Returns a new iterator instance for the current node.
+         * Returns a new iterator instance for the current node.
          *
          * @octdoc  m:domiterator/getChildren
-		 * @return 	\org\octris\core\type\domiterator 						Instance domiterator.
+         * @return  \org\octris\core\type\domiterator                       Instance domiterator.
          */
         public function getChildren()
         /**/
         {
-			return new static($this->current()->nodeList);
+            return new static($this->current()->nodeList);
         }
 
         /**
          * Checks whether the current node has children.
          *
          * @octdoc  m:domiterator/hasChildren
-         * @param 	bool 													Returns true, if the current node has children.
+         * @param   bool                                                    Returns true, if the current node has children.
          */
         public function hasChildren()
         /**/
         {
-	        return $this->current()->hasChildNodes();
-	    }
-	}
+            return $this->current()->hasChildNodes();
+        }
+    }
 }
