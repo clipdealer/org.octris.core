@@ -15,7 +15,7 @@
 # included in the project's own Makefiles.
 #
 # @octdoc       h:./Makefile
-# @copyright    copyright (c) 2006-2011 by Harald Lapp
+# @copyright    copyright (c) 2006-2012 by Harald Lapp
 # @author       Harald Lapp <harald@octris.org>
 #**
 
@@ -30,7 +30,7 @@ CURSYMDIR:=$(shell pwd)
 help::
 	@echo ""
 	@echo "OCTRiS Application Framework"
-	@echo "copyright (c) 2006-2011 by Harald Lapp"
+	@echo "copyright (c) 2006-2012 by Harald Lapp"
 	@echo ""
 	@echo "targets for project '$(project)'"
 	@echo ""
