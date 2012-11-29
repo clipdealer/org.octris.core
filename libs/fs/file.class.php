@@ -28,8 +28,10 @@ namespace org\octris\core\fs {
          * 
          * @octdoc  d:file/T_READ_TRIM_NEWLINE
          */
-        const T_READ_TRIM_NEWLINE = 1;
-        const T_DELETE_ON_CLOSE   = 2;
+        const T_READ_TRIM_NEWLINE =  1;
+        const T_DELETE_ON_CLOSE   =  2;
+        const T_FILE_ITERATOR     =  4;
+        const T_STREAM_ITERATOR   = 12;
         /**/
 
         /**
@@ -196,7 +198,13 @@ namespace org\octris\core\fs {
         public function getIterator()
         /**/
         {
-            return new \org\octris\core\fs\fileiterator($this->meta['uri'], $this->flags);
+            if (($this->flags & self::T_STREAM_ITERATOR) == self::T_STREAM_ITERATOR) {
+                $file = $this->fh;
+            } else {
+                $file = $this->meta['uri'];
+            }
+            
+            return new \org\octris\core\fs\fileiterator($file, $this->flags);
         }
 
         /**
