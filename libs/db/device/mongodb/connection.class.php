@@ -248,7 +248,7 @@ namespace org\octris\core\db\device\mongodb {
         public function update($collection, array $criteria, array $object, array $options = null)
         /**/
         {
-            $cl = $this->link->selectCollection($collection);
+            $cl = $this->db->selectCollection($collection);
             
             return $cl->update($criteria, $object, $options);
         }
@@ -264,7 +264,7 @@ namespace org\octris\core\db\device\mongodb {
         public function remove($collection, array $criteria, array $options = array())
         /**/
         {
-            $cl = $this->link->selectCollection($collection);
+            $cl = $this->db->selectCollection($collection);
             
             $cl->remove($criteria, $options);
         }
