@@ -213,6 +213,7 @@ namespace org\octris\core\net {
          * Execute client.
          *
          * @octdoc  m:client/execute
+         * @return  string                                  Response.
          */
         public function execute()
         /**/

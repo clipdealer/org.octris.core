@@ -198,9 +198,10 @@ namespace org\octris\core\net\client {
         }
 
         /**
-         * Execute client.
+         * Execute http client.
          *
          * @octdoc  m:http/execute
+         * @return  string                                  Response.
          */
         public function execute()
         /**/
