@@ -134,6 +134,18 @@ namespace org\octris\core\net\client {
         }
 
         /**
+         * Set a function for handling response body.
+         *
+         * @octdoc  m:http/setBodyCallback
+         * @param   callable                        $callback       Callback to call for response body.
+         */
+        public function setBodyCallback(callable $callback)
+        /**/
+        {
+            $this->options[CURLOPT_WRITEFUNCTION] = $callback;
+        }
+
+        /**
          * Set maximum redirects for following HTTP location header redirects.
          *
          * @octdoc  m:http/setMaxRedirects
@@ -193,7 +205,7 @@ namespace org\octris\core\net\client {
         public function execute()
         /**/
         {
-            // setup buffers for storing response data
+            // setup buffer for storing response headers
             $buf_headers = new \org\octris\core\net\buffer();
             $this->options[CURLOPT_HEADERFUNCTION] = function($ch, $data) use ($buf_headers) {
                 $data = preg_replace('/\x0D\x0A[\x09\x20]+/', ' ', $data);
@@ -204,7 +216,7 @@ namespace org\octris\core\net\client {
             // execute request
             $return = parent::execute();
             
-            // process data stored in buffers
+            // process response headers
             $this->response_headers = static::parseResponseHeaders($buf_headers);
             
             unset($buf_headers);

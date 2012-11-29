@@ -210,18 +210,6 @@ namespace org\octris\core\net {
         }
 
         /**
-         * Set a function for handling response body.
-         *
-         * @octdoc  m:client/setBodyCallback
-         * @param   callable            $callback           Callback to call for response body.
-         */
-        public function setBodyCallback(callable $callback)
-        /**/
-        {
-            $this->options[CURLOPT_WRITEFUNCTION] = $callback;
-        }
-
-        /**
          * Execute client.
          *
          * @octdoc  m:client/execute
