@@ -220,6 +220,8 @@ namespace org\octris\core\net\client {
             $this->response_headers = static::parseResponseHeaders($buf_headers);
             
             unset($buf_headers);
+            
+            return $return;
         }
         
         /**
