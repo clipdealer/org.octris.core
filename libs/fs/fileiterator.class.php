@@ -96,7 +96,7 @@ namespace org\octris\core\fs {
         public function current()
         /**/
         {
-            $this->current;
+            return $this->current;
         }
 
         /**
