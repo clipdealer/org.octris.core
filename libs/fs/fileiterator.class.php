@@ -69,13 +69,20 @@ namespace org\octris\core\fs {
          * Constructor.
          *
          * @octdoc  p:fileiterator/__construct
-         * @param   string                      $uri                        URI to open.
+         * @param   string|resource             $file                       Stream resource or filename.
          * @param   int                         $flags                      Optional flags.
          */
-        public function __construct($uri, $flags = 0)
+        public function __construct($file, $flags = 0)
         /**/
         {
-            if (!($this->fh = @fopen($uri, 'r'))) {
+            if (is_resource($file)) {
+                $meta = stream_get_meta_data($file);
+
+                $this->fh = $file;
+
+                $this->is_seekable = $meta['seekable'];
+                $this->flags       = $flags;
+            } elseif (!($this->fh = @fopen($uri, 'r'))) {
                 $info = error_get_last();
 
                 throw new \Exception($info['message'], $info['type']);
