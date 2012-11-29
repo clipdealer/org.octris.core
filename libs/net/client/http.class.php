@@ -205,7 +205,7 @@ namespace org\octris\core\net\client {
             $return = parent::execute();
             
             // process data stored in buffers
-            $this->response_headers = $this->parseResponseHeaders($buf_headers);
+            $this->response_headers = static::parseResponseHeaders($buf_headers);
             
             unset($buf_headers);
         }
