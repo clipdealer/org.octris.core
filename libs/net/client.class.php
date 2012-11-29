@@ -210,18 +210,6 @@ namespace org\octris\core\net {
         }
 
         /**
-         * Set a function for handling response headers.
-         *
-         * @octdoc  m:client/setHeaderCallback
-         * @param   callable            $callback           Callback to call for response headers.
-         */
-        public function setHeaderCallback(callable $callback)
-        /**/
-        {
-            $this->options[CURLOPT_HEADERFUNCTION] = $callback;
-        }
-        
-        /**
          * Set a function for handling response body.
          *
          * @octdoc  m:client/setBodyCallback
