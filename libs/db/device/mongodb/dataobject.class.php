@@ -43,7 +43,7 @@ namespace org\octris\core\db\device\mongodb {
          *
          * @octdoc  m:dataobject/__construct
          * @param   \org\octris\core\db\device\mongodb      $device         Device the connection belongs to.
-         * @param   string                                  $collection     Name of collection to dataobject belongs to.
+         * @param   string                                  $collection     Name of collection the dataobject belongs to.
          * @param   array                                   $data           Data to initialize dataobject with,
          */
         public function __construct(\org\octris\core\db\device\mongodb $device, $collection, array $data = array())
@@ -86,12 +86,13 @@ namespace org\octris\core\db\device\mongodb {
         /**/
         {
             $cn = $this->device->getConnection(\org\octris\core\db::T_DB_MASTER);
+            $cl = $cn->getCollection($this->collection);
 
             $tmp = $this->data;         // workaround strance reference issue with pecl_mongo
 
             if (!isset($tmp['_id'])) {
                 // insert new object
-                $cn->insert($tmp);
+                $cl->insert($tmp);
 
                 if (isset($tmp['_id'])) {
                     $this->data['_id'] = $tmp['_id'];
@@ -101,7 +102,7 @@ namespace org\octris\core\db\device\mongodb {
                 $_id = $tmp['_id'];
                 unset($tmp['_id']);
 
-                $cn->update(
+                $cl->update(
                     array('_id'  => $_id),
                     array('$set' => $tmp)
                 );
