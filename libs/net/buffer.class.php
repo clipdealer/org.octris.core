@@ -17,18 +17,9 @@ namespace org\octris\core\net {
      * @copyright   copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    class buffer implements \Iterator
+    class buffer extends \org\octris\core\fs\file
     /**/
     {
-        /**
-         * File handle for managing string stored in memory.
-         *
-         * @octdoc  p:buffer/$fh
-         * @var     resource
-         */
-        protected $fh;
-        /**/
-        
         /**
          * Constructor.
          *
@@ -37,47 +28,11 @@ namespace org\octris\core\net {
         public function __construct()
         /**/
         {
-            if (!($this->fh = fopen('php://memory', 'w'))) {
-                throw new \Exception("unable to create io storage");
-            }
-        }
-        
-        /**
-         * Destructor.
-         *
-         * @octdoc  m:buffer/__destruct
-         */
-        public function __destruct()
-        /**/
-        {
-            fclose($this->fh);
-        }
-        
-        /**
-         * Store data.
-         *
-         * @octdoc  m:buffer/write
-         * @param   resource            $ch             Curl resource handle.
-         * @param   string              $data           Data to store.
-         */
-        public function write($ch, $data)
-        /**/
-        {
-            fputs($this->fh, $data);
-        }
-        
-        /**
-         * Return stored data.
-         *
-         * @octdoc  m:buffer/getContent
-         * @return  string                              Stored data.
-         */
-        public function getContent()
-        /**/
-        {
-            rewind($this->fh);
-            
-            return stream_get_contents($fh);
+            parent::__construct(
+                'php://memory', 
+                'w', 
+                parent::T_READ_TRIM_NEWLINE | parent::T_STREAM_ITERATOR
+            );
         }
     }
 }
