@@ -121,9 +121,9 @@ uninstall: onlyroot
 #**
 test:
 	@if [ "$(filter)" != "" ]; then \
-		phpunit --filter $(filter) $(CURSYMDIR)/tests/; \
+		phpunit --tap --filter $(filter) $(CURSYMDIR)/tests/; \
 	else \
-		phpunit $(CURSYMDIR)/tests/; \
+		phpunit --tap $(CURSYMDIR)/tests/; \
 	fi; \
 
 #**
