@@ -37,7 +37,7 @@ namespace org\octris\core\db\device\mongodb {
          */
         protected $collection;
         /**/
-        
+
         /**
          * Constructor.
          *
@@ -53,6 +53,18 @@ namespace org\octris\core\db\device\mongodb {
         }
 
         /**
+         * Return name of collection.
+         *
+         * @octdoc  m:collection/getName
+         * @return  string                                              Name of collection.
+         */
+        public function getName()
+        /**/
+        {
+            return $this->collection->getName();
+        }
+
+        /**
          * Create an empty object for storing data into specified collection.
          *
          * @octdoc  m:collection/create
@@ -61,7 +73,7 @@ namespace org\octris\core\db\device\mongodb {
         public function create()
         /**/
         {
-            return new \org\octris\core\db\device\mongodb\dataobject($this->device, $this->collection->getName());
+            return new \org\octris\core\db\device\mongodb\dataobject($this->device, $this->getName());
         }
 
         /**
@@ -140,8 +152,8 @@ namespace org\octris\core\db\device\mongodb {
             }
 
             return new \org\octris\core\db\device\mongodb\result(
-                $this->device, 
-                $this->collection->getName(), 
+                $this->device,
+                $this->getName(),
                 $cursor
             );
         }
