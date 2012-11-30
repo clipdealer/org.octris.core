@@ -64,7 +64,7 @@ namespace org\octris\core\db\device\mongodb {
         }
 
         /**
-         * Make sure that object Id get's reset, when object is cloned, because no duplicate Ids 
+         * Make sure that object Id get's reset, when object is cloned, because no duplicate Ids
          * are allowed for objects in a collection.
          *
          * @octdoc  m:dataobject/__clone
@@ -88,7 +88,9 @@ namespace org\octris\core\db\device\mongodb {
             $cn = $this->device->getConnection(\org\octris\core\db::T_DB_MASTER);
             $cl = $cn->getCollection($this->collection);
 
-            $tmp = $this->data;         // workaround strance reference issue with pecl_mongo
+            $tmp = $this->data;         /*  workaround of a strange reference issue with pecl_mongo:
+                                         *  https://jira.mongodb.org/browse/PHP-122
+                                         */
 
             if (!isset($tmp['_id'])) {
                 // insert new object
