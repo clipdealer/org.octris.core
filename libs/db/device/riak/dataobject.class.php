@@ -30,12 +30,30 @@ namespace org\octris\core\db\device\riak {
         /**/
 
         /**
-         * Name of bucket the dataobject has access to.
+         * Name of collection the dataobject has access to.
          *
-         * @octdoc  p:dataobject/$bucket
+         * @octdoc  p:dataobject/$collection
          * @var     string
          */
-        protected $bucket;
+        protected $collection;
+        /**/
+
+        /**
+         * Headers stored with object.
+         *
+         * @octdoc  m:dataobject/$headers
+         * @var     array
+         */
+        protected $headers;
+        /**/
+
+        /**
+         * Content type of stored data.
+         *
+         * @octdoc  p:dataobject/$content_type
+         * @var     string
+         */
+        protected $content_type = 'application/json';
         /**/
 
         /**
@@ -43,14 +61,14 @@ namespace org\octris\core\db\device\riak {
          *
          * @octdoc  m:dataobject/__construct
          * @param   \org\octris\core\db\device\riak         $device         Device the connection belongs to.
-         * @param   string                                  $bucket         Name of bucket to dataobject belongs to.
+         * @param   string                                  $collection     Name of collection the dataobject belongs to.
          * @param   array                                   $data           Data to initialize dataobject with,
          */
-        public function __construct(\org\octris\core\db\device\riak $device, $bucket, array $data = array())
+        public function __construct(\org\octris\core\db\device\riak $device, $collection, array $data = array())
         /**/
         {
-            $this->device = $device;
-            $this->bucket = $bucket;
+            $this->device     = $device;
+            $this->collection = $collection;
 
             if (isset($data['_id'])) {
                 $this->data['_id'] = (is_object($data['_id']) && $data['_id'] instanceof \MongoId
@@ -64,7 +82,7 @@ namespace org\octris\core\db\device\riak {
         }
 
         /**
-         * Make sure that object Id get's reset, when object is cloned, because no duplicate Ids 
+         * Make sure that object Id get's reset, when object is cloned, because no duplicate Ids
          * are allowed for objects in a bucket.
          *
          * @octdoc  m:dataobject/__clone
@@ -78,6 +96,45 @@ namespace org\octris\core\db\device\riak {
         }
 
         /**
+         * Set type of content of data stored in the object.
+         *
+         * @octdoc  m:dataobject/setContentType
+         * @param   string                  $content_type               Content type to set.
+         */
+        public function setContentType($content_type)
+        /**/
+        {
+            $this->content_type = $content_type;
+        }
+
+        /**
+         * Return content type of data stored in the object.
+         *
+         * @octdoc  m:dataobject/getContentType
+         * @return  string                                              Content type to return.
+         */
+        public function getContentType()
+        /**/
+        {
+            return $this->content_type;
+        }
+
+        /**
+         * Get datetime of last modification of the object. The method returns 'null' if the
+         * last modified datetime is not set.
+         *
+         * @octdoc  m:dataobject/getLastModified
+         * @return  \DateTime|null                                      Last modified datetime.
+         */
+        public function getLastModified()
+        /**/
+        {
+            return (isset($this->headers['last-modified'])
+                    ? new DateTime($this->headers['last-modified'])
+                    : null);
+        }
+
+        /**
          * Save dataobject to bucket.
          *
          * @octdoc  m:dataobject/save
@@ -86,8 +143,7 @@ namespace org\octris\core\db\device\riak {
         /**/
         {
             $cn = $this->device->getConnection(\org\octris\core\db::T_DB_MASTER);
-
-            $tmp = $this->data;         // workaround strance reference issue with pecl_mongo
+            $cl = $cn->getCollection($this->collection);
 
             if (!isset($tmp['_id'])) {
                 // insert new object
