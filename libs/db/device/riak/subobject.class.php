@@ -17,7 +17,7 @@ namespace org\octris\core\db\device\riak {
      * @copyright   copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    class subobject implements \ArrayAccess, \Countable, \IteratorAggregate
+    class subobject implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSerializable
     /**/
     {
         /**
@@ -39,7 +39,7 @@ namespace org\octris\core\db\device\riak {
         /**/
         {
             foreach ($data as $key => $value) {
-                $this[$key] = $value; 
+                $this[$key] = $value;
             }
         }
 
@@ -56,6 +56,18 @@ namespace org\octris\core\db\device\riak {
                     $this[$key] = clone($value);
                 }
             }
+        }
+
+        /**
+         * Magic method gets called, when 'json_encode' is used on the object instance.
+         *
+         * @octdoc  m:subobject/jsonSerialize
+         * @return  array                                   Array representation of object.
+         */
+        public function jsonSerialize()
+        /**/
+        {
+            return $this->getArrayCopy();
         }
 
         /**
