@@ -31,38 +31,57 @@ namespace org\octris\core\db\device\riak {
         /**/
 
         /**
-         * Instance of collection.
+         * Name of collection.
          *
-         * @octdoc  p:collection/$collection
+         * @octdoc  p:collection/$name
          * @var     string
          */
-        protected $collection;
+        protected $name;
         /**/
-        
+
         /**
          * Constructor.
          *
          * @octdoc  m:collection/__construct
-         * @param   \org\octris\core\db\device\riak  $device             Device the connection belongs to.
-         * @param   \MongoCollection                    $collection         Instance of collection to handle.
+         * @param   \org\octris\core\db\device\riak     $device             Device the connection belongs to.
+         * @param   string                              $name               Name of collection.
          */
-        public function __construct(\org\octris\core\db\device\riak $device, \MongoCollection $collection)
+        public function __construct(\org\octris\core\db\device\riak $device, $name)
         /**/
         {
-            $this->device     = $device;
-            $this->collection = $collection;
+            $this->device = $device;
+            $this->name   = $name;
+        }
+
+        /**
+         * Return name of collection.
+         *
+         * @octdoc  m:collection/getName
+         * @return  string                                          Name of collection.
+         */
+        public function getName()
+        /**/
+        {
+            return $this->name;
         }
 
         /**
          * Create an empty object for storing data into specified collection.
          *
          * @octdoc  m:collection/create
-         * @return  \org\octris\core\db\device\riak\dataobject       Data object.
+         * @return  \org\octris\core\db\device\riak\dataobject      Data object.
          */
         public function create()
         /**/
         {
-            return new \org\octris\core\db\device\riak\dataobject($this->device, $this->collection->getName());
+            $object = new \org\octris\core\db\device\riak\dataobject(
+                $this->device,
+                $this->getName()
+            );
+
+            $object->setContentType('application/json');
+
+            return $object;
         }
 
         /**
@@ -141,8 +160,8 @@ namespace org\octris\core\db\device\riak {
             }
 
             return new \org\octris\core\db\device\riak\result(
-                $this->device, 
-                $this->collection->getName(), 
+                $this->device,
+                $this->collection->getName(),
                 $cursor
             );
         }
