@@ -17,11 +17,9 @@ namespace org\octris\core\db\device\sqlite {
      * @copyright   copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    class connection extends \SQLite3 implements \org\octris\core\db\device\connection_if, \org\octris\core\db\pool_if
+    class connection extends \SQLite3 implements \org\octris\core\db\device\connection_if
     /**/
     {
-        use \org\octris\core\db\pool_tr;
-
         /**
          * Constructor.
          *
