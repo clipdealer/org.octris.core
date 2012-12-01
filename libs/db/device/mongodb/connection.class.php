@@ -57,8 +57,12 @@ namespace org\octris\core\db\device\mongodb {
         public function __construct(\org\octris\core\db\device\mongodb $device, array $options)
         /**/
         {
+            $class = (class_exists('\MongoClient')
+                        ? '\MongoClient'
+                        : '\Mongo');
+
             $this->device = $device;
-            $this->mongo  = new \Mongo(
+            $this->mongo  = new $class(
                 'mongodb://' . $options['host'] . ':' . $options['port'],
                 array(
                     // 'username' => $options['username'],
@@ -131,7 +135,7 @@ namespace org\octris\core\db\device\mongodb {
         /**/
         {
             return new \org\octris\core\db\device\mongodb\collection(
-                $this->device, 
+                $this->device,
                 $this->db->selectCollection($name)
             );
         }
