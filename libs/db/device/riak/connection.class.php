@@ -69,6 +69,24 @@ namespace org\octris\core\db\device\riak {
         }
 
         /**
+         * Return instance of request class.
+         *
+         * @octdoc  m:connection/getRequest
+         * @param   string                  $path                   Path of request to return.
+         * @param   array                   $args                   Optional request parameters.
+         * @return  \org\octris\core\db\riak\request                Request object.
+         */
+        public function getRequest($method, $path = '/', array $args = null)
+        /**/
+        {
+            $uri = clone($this->uri);
+            $uri->path  = '/' . ltrim($path, '/');
+            // $uri->query = $args;
+            
+            return new \org\octris\core\db\device\riak\request($uri, $method);
+        }
+
+        /**
          * Check connection.
          *
          * @octdoc  m:connection/isAlive
