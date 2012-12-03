@@ -143,6 +143,23 @@ namespace org\octris\core\net\client {
         }
         
         /**
+         * Get a specified response header.
+         *
+         * @octdoc  m:getResponseHeader
+         * @param   string                  $name                       Name of header to return value of.
+         * @return  string|bool                                         Returns header value or false if header is not set.
+         */
+        public function getResponseHeader($name)
+        /**/
+        {
+            if (($return = $this->response_headers[$name])) {
+                $return = $this->response_headers[$name];
+            }
+            
+            return $return;
+        }
+        
+        /**
          * Get status code of last request.
          *
          * @octdoc  m:http/getStatus
@@ -295,6 +312,7 @@ namespace org\octris\core\net\client {
             };
 
             // execute request
+            var_dump($this->options);
             $return = parent::execute();
             
             // process response headers
