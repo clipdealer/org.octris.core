@@ -132,8 +132,8 @@ namespace org\octris\core\db\device\riak {
         {
             return new \org\octris\core\db\device\riak\collection(
                 $this->device,
-                $name,
-                $this
+                $this,
+                $name
             );
         }
     }
