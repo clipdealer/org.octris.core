@@ -95,12 +95,10 @@ namespace org\octris\core\db\device\riak {
         public function isAlive()
         /**/
         {
-            $uri = clone($this->uri);
-            $uri->path = '/ping';
+            $result = $this->getRequest(http::T_GET, '/ping')->execute();
             
-            $result = (new \org\octris\core\net\client\http($uri))->execute();
+            return ($result == 'OK');
             
-            return (trim($result) == 'OK');
         }
 
         /**
