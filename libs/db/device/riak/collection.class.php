@@ -135,7 +135,7 @@ namespace org\octris\core\db\device\riak {
         /**/
         {
             $request = $this->connection->getRequest(
-                http::T_GET, 
+                http::T_PUT, 
                 '/buckets/' . $this->name . '/keys/' . $key
             );
             $request->addHeader('Content-Type', 'application/json');
