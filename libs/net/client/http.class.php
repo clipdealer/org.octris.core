@@ -69,10 +69,10 @@ namespace org\octris\core\net\client {
          * @param   \org\octris\core\type\uri       $url            Valid http(s) URL.
          * @param   string                          $method         Optional HTTP Method to use, default is GET.
          */
-        public function __construct(\org\octris\core\type\uri $url, $methods = self::T_GET)
+        public function __construct(\org\octris\core\type\uri $url, $method = self::T_GET)
         /**/
         {
-            switch ($methods = strtoupper($methods)) {
+            switch ($method = strtoupper($method)) {
             case self::T_GET:
                 $this->options[CURLOPT_HTTPGET] = true;
                 break;
@@ -87,10 +87,10 @@ namespace org\octris\core\net\client {
             case self::T_HEAD:
             case self::T_OPTIONS:
             case self::T_TRACE:
-                $this->options[CURLOPT_CUSTOMREQUEST] = $methods;
+                $this->options[CURLOPT_CUSTOMREQUEST] = $method;
                 break;
             default:
-                throw new \Exception(sprintf('Unknown request method "%s"', $methods));
+                throw new \Exception(sprintf('Unknown request method "%s"', $method));
                 break;
             }
             
