@@ -126,6 +126,18 @@ namespace org\octris\core\net {
         }
 
         /**
+         * Enable/disable verbose output.
+         *
+         * @octdoc  m:setVerbose
+         * @param   bool                    $verbose                Whether to do verbose output or not.
+         */
+        public function setVerbose($verbose)
+        /**/
+        {
+            $this->options[CURLOPT_VERBOSE] = !!$verbose;
+        }
+
+        /**
          * Set timeout in seconds or microseconds (as float).
          *
          * @octdoc  m:net/setTimeout
@@ -227,6 +239,10 @@ namespace org\octris\core\net {
 
             $return = curl_exec($ch);
 
+            if (curl_errno($ch) && isset($this->options[CURLOPT_VERBOSE]) && $this->options[CURLOPT_VERBOSE]) {
+                printf("curl-error #%d: %s\n", curl_errno($ch), curl_error($ch));
+            }
+            
             $this->request_info = curl_getinfo($ch);
 
             curl_close($ch);
