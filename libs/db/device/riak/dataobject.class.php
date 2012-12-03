@@ -147,7 +147,7 @@ namespace org\octris\core\db\device\riak {
 
             if (!isset($tmp['_id'])) {
                 // insert new object
-                $cn->insert($tmp);
+                $cl->insert($tmp);
 
                 if (isset($tmp['_id'])) {
                     $this->data['_id'] = $tmp['_id'];
@@ -157,7 +157,7 @@ namespace org\octris\core\db\device\riak {
                 $_id = $tmp['_id'];
                 unset($tmp['_id']);
 
-                $cn->update(
+                $cl->update(
                     array('_id'  => $_id),
                     array('$set' => $tmp)
                 );
