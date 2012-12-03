@@ -45,13 +45,14 @@ namespace org\octris\core\db\device\riak {
          * Execute request.
          *
          * @octdoc  m:requext/execute
-         * @return  mixed                                               Returns response body or false if
-         *                                                              request failed.
+         * @param   string|array|resource   $body           Optional body to set for POST or PUT request.
+         * @param   bool                    $binary         Optional binary transfer mode for POST or PUT request.
+         * @return  mixed                                   Returns response body or false if request failed.
          */
-        public function execute()
+        public function execute($body = null, $binary = false)
         /**/
         {
-            $result = parent::execute();
+            $result = parent::execute($body, $binary);
 
             if (($this->getStatus()) == 200) {
                 switch ($this->getContentType()) {
