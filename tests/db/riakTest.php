@@ -25,4 +25,8 @@ class riakTest extends PHPUnit_Framework_TestCase {
     public function testIsAlive() {
         $this->assertTrue($this->cn->isAlive());
     }
+
+    public function testGetCollections() {
+        $this->cn->getCollections();
+    }
 }
