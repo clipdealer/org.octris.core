@@ -232,6 +232,18 @@ namespace org\octris\core\fs {
         }
 
         /**
+         * Return file handle of resource.
+         *
+         * @octdoc  m:file/getHandle
+         * @return  resource                                    Handle of resource.
+         */
+        public function getHandle()
+        /**/
+        {
+            return $this->fh;
+        }
+
+        /**
          * Returns whether it is possible to read from the file.
          *
          * @octdoc  m:file/canRead
