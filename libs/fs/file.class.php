@@ -340,6 +340,39 @@ namespace org\octris\core\fs {
         }
 
         /**
+         * Seek in a file if possible.
+         *
+         * @octdoc  m:file/seek
+         * @param   int                 $pos                    Position to seek to.
+         * @return  bool                                        Returns true if seek was possible otherwise false.
+         */
+        public function seek($pos)
+        /**/
+        {
+            if (($return = $this->isSeekable())) {
+                $return = (fseek($this->fh, $pos) === 0);
+            }
+            
+            return $return;
+        }
+        
+        /**
+         * Rewind file pointer if possible.
+         *
+         * @octdoc  m:file/rewind
+         * @return  bool                                        Returns true if rewind was possible otherwise false.
+         */
+        public function rewind()
+        /**/
+        {
+            if (($return = $this->isSeekable())) {
+                $return = rewind($this->fh);
+            }
+
+            return $return;
+        }
+
+        /**
          * Read from file.
          *
          * @octdoc  m:file/read
