@@ -138,32 +138,36 @@ namespace org\octris\core\db\device\riak {
          * Save dataobject to bucket.
          *
          * @octdoc  m:dataobject/save
+         * @return  bool                                                Returns true on success otherwise false.
          */
         public function save()
         /**/
         {
+            $return = true;
+            
             $cn = $this->device->getConnection(\org\octris\core\db::T_DB_MASTER);
             $cl = $cn->getCollection($this->collection);
 
-            if (!isset($tmp['_id'])) {
+            if (!isset($this->data['_id'])) {
                 // insert new object
-                $cl->insert($tmp);
+                $key = $cl->insert($this->data);
 
-                if (isset($tmp['_id'])) {
-                    $this->data['_id'] = $tmp['_id'];
+                if (($return = ($key !== false))) {
+                    $this->data['_id'] = $key;
                 }
             } else {
                 // update object
-                $_id = $tmp['_id'];
+                $tmp = $this->data;
+                
+                $key = $tmp['_id'];
                 unset($tmp['_id']);
 
-                $cl->update(
-                    array('_id'  => $_id),
-                    array('$set' => $tmp)
-                );
+                $return = $cl->update($key, $tmp);
             }
 
             $cn->release();
+            
+            return $return;
         }
 
         /** ArrayAccess **/
