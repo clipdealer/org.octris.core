@@ -115,7 +115,7 @@ namespace org\octris\core\type {
         public function __set($name, $value)
         /**/
         {
-            if ($name == 'query') {
+            if ($name == 'query' && !is_array($value)) {
                 throw new \Exception('Overwriting of "query" is not allowed');
             } elseif (!array_key_exists($name, $this->components))  {
                 throw new \Exception(sprintf('Unknown URI component "%s"', $name));
