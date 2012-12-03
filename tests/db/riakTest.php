@@ -29,4 +29,18 @@ class riakTest extends PHPUnit_Framework_TestCase {
     public function testGetCollections() {
         $this->cn->getCollections();
     }
+    
+    public function testInsert() {
+        $cl = $this->cn->getCollection('test');
+        $key = $cl->insert(array('foo' => 'bar'));
+        
+        $this->assertTrue(($key !== false));
+    }
+    
+    public function testUpdate() {
+        // ob_end_flush();
+        // 
+        // $cl = $this->cn->getCollection('test');
+        // $cl->insert(array('foo' => 'bar'));
+    }
 }
