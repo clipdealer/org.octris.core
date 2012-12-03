@@ -81,7 +81,10 @@ namespace org\octris\core\db\device\riak {
         {
             $uri = clone($this->uri);
             $uri->path  = '/' . ltrim($path, '/');
-            // $uri->query = $args;
+            
+            if (is_array($args)) {
+                $uri->query = $args;                
+            }
             
             return new \org\octris\core\db\device\riak\request($uri, $method);
         }
