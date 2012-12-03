@@ -132,6 +132,34 @@ namespace org\octris\core\net\client {
         {
             return $this->response_headers;
         }
+        
+        /**
+         * Get status code of last request.
+         *
+         * @octdoc  m:http/getStatus
+         * @return  int                                                 HTTP status code.
+         */
+        public function getStatus()
+        /**/
+        {
+            return (isset($this->request_info['http_code'])
+                    ? $this->request_info['http_code']
+                    : null);
+        }
+
+        /**
+         * Return content type of last request.
+         *
+         * @octdoc  m:http/getContentType
+         * @return  string                                              Content type.
+         */
+        public function getContentType()
+        /**/
+        {
+            return (isset($this->request_info['content_type'])
+                    ? $this->request_info['content_type']
+                    : null);
+        }
 
         /**
          * Set a function for handling response body.
