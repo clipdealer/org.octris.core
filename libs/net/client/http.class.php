@@ -63,6 +63,15 @@ namespace org\octris\core\net\client {
         /**/
 
         /**
+         * Store request headers.
+         *
+         * @octdoc  p:http/$request_headers
+         * @var     array
+         */
+        protected $request_headers = array();
+        /**/
+
+        /**
          * Constructor.
          *
          * @octdoc  m:http/__construct
@@ -116,7 +125,7 @@ namespace org\octris\core\net\client {
                 $this->setReferer($content);
                 break;
             default:
-                $this->options[CURLOPT_HTTPHEADER][$name] = $content;
+                $this->request_headers[$name] = $content;
                 break;
             }
         }
