@@ -10,6 +10,8 @@
  */
 
 namespace org\octris\core\db\device\riak {
+    use \org\octris\core\net\client\http as http;
+    
     /**
      * Riak database connection.
      *
