@@ -98,7 +98,23 @@ namespace org\octris\core\db\device\riak {
             $result = $this->getRequest(http::T_GET, '/ping')->execute();
             
             return ($result == 'OK');
+        }
+
+        /**
+         * Return list of collections.
+         *
+         * @octdoc  m:connection/getCollections
+         * @return  array|bool                                      Array of names of collections or false in case
+         *                                                          of an error.
+         */
+        public function getCollections()
+        /**/
+        {
+            $result = $this->getRequest(http::T_GET, '/buckets?buckets=true')->execute();
             
+            return ($result !== false
+                    ? $result['buckets']
+                    : $result);
         }
 
         /**
