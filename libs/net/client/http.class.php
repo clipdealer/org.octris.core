@@ -45,12 +45,12 @@ namespace org\octris\core\net\client {
         /**/
 
         /**
-         * Post body/arguments
+         * Request method.
          *
-         * @octdoc  p:http/$post
-         * @var     null
+         * @octdoc  p:http/$body
+         * @var     string
          */
-        protected $post;
+        protected $method;
         /**/
 
         /**
@@ -72,7 +72,7 @@ namespace org\octris\core\net\client {
         public function __construct(\org\octris\core\type\uri $url, $method = self::T_GET)
         /**/
         {
-            switch ($method = strtoupper($method)) {
+            switch ($this->method = strtoupper($method)) {
             case self::T_GET:
                 $this->options[CURLOPT_HTTPGET] = true;
                 break;
@@ -87,10 +87,10 @@ namespace org\octris\core\net\client {
             case self::T_HEAD:
             case self::T_OPTIONS:
             case self::T_TRACE:
-                $this->options[CURLOPT_CUSTOMREQUEST] = $method;
+                $this->options[CURLOPT_CUSTOMREQUEST] = $this->method;
                 break;
             default:
-                throw new \Exception(sprintf('Unknown request method "%s"', $method));
+                throw new \Exception(sprintf('Unknown request method "%s"', $this->method));
                 break;
             }
             
