@@ -10,6 +10,8 @@
  */
 
 namespace org\octris\core\db\device\riak {
+    use \org\octris\core\net\client\http as http;
+
     /**
      * Riak database collection. Note, that a collection in Riak is called "Bucket" and so this
      * class operates on riak buckets.
@@ -31,6 +33,15 @@ namespace org\octris\core\db\device\riak {
         /**/
 
         /**
+         * Instance of connection class the collection is access by.
+         *
+         * @octdoc  p:collection/$connection
+         * @var     \org\octris\core\db\device\riak\connection
+         */
+        protected $connection;
+        /**/
+
+        /**
          * Name of collection.
          *
          * @octdoc  p:collection/$name
@@ -43,14 +54,16 @@ namespace org\octris\core\db\device\riak {
          * Constructor.
          *
          * @octdoc  m:collection/__construct
-         * @param   \org\octris\core\db\device\riak     $device             Device the connection belongs to.
-         * @param   string                              $name               Name of collection.
+         * @param   \org\octris\core\db\device\riak             $device         Device the connection belongs to.
+         * @param   \org\octris\core\db\device\riak\connection  $connection     Connection instance.
+         * @param   string                                      $name           Name of collection.
          */
-        public function __construct(\org\octris\core\db\device\riak $device, $name)
+        public function __construct(\org\octris\core\db\device\riak $device, \org\octris\core\db\device\riak\connection $connection, $name)
         /**/
         {
-            $this->device = $device;
-            $this->name   = $name;
+            $this->device     = $device;
+            $this->connection = $connection;
+            $this->name       = $name;
         }
 
         /**
@@ -85,124 +98,50 @@ namespace org\octris\core\db\device\riak {
         }
 
         /**
-         * Query the database and count the results.
-         *
-         * @octdoc  m:collection/count
-         * @param   array           $query                      Query conditions.
-         * @param   int             $offset                     Optional offset to start query result from.
-         * @param   int             $limit                      Optional limit of result items.
-         * @return  int                                         Number of items found.
-         */
-        public function count(array $query, $offset = 0, $limit = null)
-        /**/
-        {
-            return $this->collection->count($query, $offset, $limit);
-        }
-
-        /**
-         * Create an index in database.
-         *
-         * @octdoc  m:collection/ensureIndex
-         * @param   array           $keys                       Key(s) to create index for.
-         * @param   array           $options                    Optional options for index.
-         */
-        public function ensureIndex(array $keys, array $options = array())
-        /**/
-        {
-            $this->collection->ensureIndex($keys, $options);
-        }
-
-        /**
-         * Query a riak collection and return the first found item.
-         *
-         * @octdoc  m:collection/first
-         * @param   array           $query                              Query conditions.
-         * @param   array           $sort                               Optional sorting parameters.
-         * @param   array           $fields                             Optional fields to return.
-         * @param   array           $hint                               Optional query hint.
-         * @return  \org\octris\core\db\device\riak\dataobject|bool  Either a data object containing the found item or false if no item was found.
-         */
-        public function first(array $query, array $sort = null, array $fields = array(), array $hint = null)
-        /**/
-        {
-            $cursor = $this->query($query, 0, 1, $sort, $fields, $hint);
-
-            return ($cursor->next() ? $cursor->current : false);
-        }
-
-        /**
-         * Query a riak collection.
-         *
-         * @octdoc  m:collection/query
-         * @param   array           $query                      Query conditions.
-         * @param   int             $offset                     Optional offset to start query result from.
-         * @param   int             $limit                      Optional limit of result items.
-         * @param   array           $sort                       Optional sorting parameters.
-         * @param   array           $fields                     Optional fields to return.
-         * @param   array           $hint                       Optional query hint.
-         * @return  \org\octris\core\db\device\riak\result   Result object.
-         */
-        public function query(array $query, $offset = 0, $limit = null, array $sort = null, array $fields = array(), array $hint = null)
-        /**/
-        {
-            if (($cursor = $this->collection->find($query, $fields)) === false) {
-                throw new \Exception('unable to query database');
-            } else {
-                if (!is_null($sort)) {
-                    $cursor->sort($sort);
-                }
-                if ($offset > 0) {
-                    $cursor->skip($offset);
-                }
-                if (!is_null($limit)) {
-                    $cursor->limit($limit);
-                }
-            }
-
-            return new \org\octris\core\db\device\riak\result(
-                $this->device,
-                $this->collection->getName(),
-                $cursor
-            );
-        }
-
-        /**
          * Insert an object into a database collection.
          *
          * @octdoc  m:collection/insert
          * @param   array           $object                     Data to insert into collection.
+         * @return  string|bool                                 Returns the inserted key if insert succeeded or false.
          */
         public function insert(array $object)
         /**/
         {
-            return $this->collection->insert($object);
+            $request = $this->connection->getRequest(
+                http::T_POST, 
+                '/buckets/' . $this->name . '/keys'
+            );
+            $request->addHeader('Content-Type', 'application/json');
+            $request->execute(json_encode($object));
+            
+            if (($return = $request->getStatus()) == 201) {
+                $loc = $request->getResponseHeader('location');
+                
+                $return = substr($loc, strrpos($loc, '/') + 1);
+            }
+                
+            return $return;
         }
 
         /**
          * Update data in database collection.
          *
          * @octdoc  m:collection/update
-         * @param   array           $criteria                   Search criteria for object(s) to update.
+         * @param   string          $key                        Key to update.
          * @param   array           $object                     Data to update collection with.
-         * @param   array           $options                    Optional options.
+         * @return  bool                                        Returns true if update succeeded otherwise false.
          */
-        public function update(array $criteria, array $object, array $options = null)
+        public function update($key, array $object)
         /**/
         {
-            return $this->collection->update($criteria, $object, $options);
-        }
+            $request = $this->connection->getRequest(
+                http::T_GET, 
+                '/buckets/' . $this->name . '/keys/' . $key
+            );
+            $request->addHeader('Content-Type', 'application/json');
+            $request->execute(json_encode($object));
 
-        /**
-         * Remove data from database.
-         *
-         * @octdoc  m:collection/remove
-         * @param   array           $criteria                   Search criteria for object(s) to remove.
-         * @param   array           $options                    Optional options.
-         */
-        public function remove(array $criteria, array $options = array())
-        /**/
-        {
-            $this->collection->remove($criteria, $options);
+            return ($request->getStatus() == 200);
         }
     }
 }
