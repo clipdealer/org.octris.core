@@ -37,6 +37,17 @@ class riakTest extends PHPUnit_Framework_TestCase {
         $this->assertTrue(($key !== false));
     }
     
+    public function testFetch() {
+        $data = array('foo' => 'bar');
+        
+        $cl = $this->cn->getCollection('test');
+        $key = $cl->insert($data);
+
+        $result = $cl->fetch($key);
+        
+        $this->assertEquals($data, $result);
+    }
+    
     public function testUpdate() {
         // ob_end_flush();
         // 
