@@ -98,6 +98,31 @@ namespace org\octris\core\db\device\riak {
         }
 
         /**
+         * Fetch the stored item of a specified key.
+         *
+         * @octdoc  m:collection/fetch
+         * @param   string          $key                                Key of item to fetch.
+         * @return  \org\octris\core\db\device\riak\dataobject|bool     Either a data object containing the found item or false if no item was found.
+         */
+        public function fetch($key)
+        /**/
+        {
+            $request = $this->connection->getRequest(
+                http::T_GET,
+                '/buckets/' . $this->name . '/keys/' . $key
+            );
+            $return = $request->execute();
+            $status = $request->getStatus();
+            
+            if ($status == 404) {
+                // object not found
+                $return = false;
+            }
+            
+            return $return;
+        }
+
+        /**
          * Insert an object into a database collection.
          *
          * @octdoc  m:collection/insert
