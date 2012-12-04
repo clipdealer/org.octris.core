@@ -105,6 +105,21 @@ namespace org\octris\core\db\device\mongodb {
         }
 
         /**
+         * Fetch the stored item of a specified key.
+         *
+         * @octdoc  m:collection/fetch
+         * @param   string          $key                                Key (_id) of item to fetch.
+         * @return  \org\octris\core\db\device\mongodb\dataobject|bool  Either a data object containing the found item or false if no item was found.
+         */
+        public function fetch($key)
+        /**/
+        {
+            $cursor = $this->query(array('_id' => $key));
+
+            return ($cursor->next() ? $cursor->current : false);
+        }
+
+        /**
          * Query a MongoDB collection and return the first found item.
          *
          * @octdoc  m:collection/first
