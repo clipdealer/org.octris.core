@@ -312,7 +312,6 @@ namespace org\octris\core\net\client {
             };
 
             // execute request
-            var_dump($this->options);
             $return = parent::execute();
             
             // process response headers
