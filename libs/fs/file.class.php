@@ -506,8 +506,6 @@ namespace org\octris\core\fs {
         public function getContent()
         /**/
         {
-            rewind($this->fh);
-            
             return stream_get_contents($this->fh);
         }
     }
