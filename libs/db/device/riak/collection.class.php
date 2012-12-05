@@ -111,12 +111,18 @@ namespace org\octris\core\db\device\riak {
                 http::T_GET,
                 '/buckets/' . $this->name . '/keys/' . $key
             );
-            $return = $request->execute();
+            $result = $request->execute();
             $status = $request->getStatus();
             
             if ($status == 404) {
                 // object not found
                 $return = false;
+            } else {
+                $return = new \org\octris\core\db\device\riak\dataobject(
+                    $this->device,
+                    $this,
+                    $result
+                );
             }
             
             return $return;
