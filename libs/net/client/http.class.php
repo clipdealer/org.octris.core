@@ -272,35 +272,29 @@ namespace org\octris\core\net\client {
             // handle POST or PUT body
             $buf_body = false;
             
-            if ($this->method == self::T_POST || $this->method == self::T_PUT) {
-                if ($binary) {
-                    throw new \Exception('binary not implemented, yet');
-                //     // binary transfer mode
-                //     if (is_array($body)) {
-                //         $body = http_build_query($body);
-                //     }
-                // 
-                //     if ($body instanceof \org\octris\core\fs\file) {
-                //         $body = $body->getHandle();
-                //     } elseif (!is_resource($body)) {
-                //         $buf_body = new \org\octris\core\net\buffer();
-                //         $size = $buf_body->write($body);
-                //         $buf_body->rewind();
-                //         
-                //         $body = $buf_body->getHandle();
-                //     }
-                //   
-                //     $this->options[CURLOPT_BINARYTRANSFER] = true;
-                //     $this->options[CURLOPT_INFILE]         = $body;
-                //     $this->options[CURLOPT_INFILESIZE]     = $size;
-                //     $this->options[CURLOPT_HTTPHEADER][]   = 'Expect:';
-                } else {
-                    // text transfer mode
-                    $key = 'CURLOPT_' . $this->method;
-
-                    $this->options[constant($key)]            = count($body);
-                    $this->options[constant($key . 'FIELDS')] = $body;
+            if ($this->method == self::T_PUT) {
+                if (is_array($body)) {
+                    $body = http_build_query($body);
                 }
+            
+                if ($body instanceof \org\octris\core\fs\file) {
+                    $body = $body->getHandle();
+                } elseif (!is_resource($body)) {
+                    $buf_body = new \org\octris\core\net\buffer();
+                    $size = $buf_body->write($body);
+                    $buf_body->rewind();
+                    
+                    $body = $buf_body->getHandle();
+                }
+                  
+                $this->options[CURLOPT_BINARYTRANSFER] = true;
+                $this->options[CURLOPT_INFILE]         = $body;
+                $this->options[CURLOPT_INFILESIZE]     = $size;
+            } elseif ($this->method == self::T_POST)  {
+                $key = 'CURLOPT_' . $this->method;
+            
+                $this->options[constant($key)]       = count($body);
+                $this->options[CURLOPT_POSTFIELDS]   = $body;
             }
 
             // setup buffer for storing response headers
