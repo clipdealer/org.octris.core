@@ -40,7 +40,7 @@ class riakTest extends PHPUnit_Framework_TestCase {
     public function testFetch() {
         $data = array('foo' => 'bar');
         
-        $cl = $this->cn->getCollection('test');
+        $cl  = $this->cn->getCollection('test');
         $key = $cl->insert($data);
 
         $result = $cl->fetch($key);
@@ -49,9 +49,15 @@ class riakTest extends PHPUnit_Framework_TestCase {
     }
     
     public function testUpdate() {
-        // ob_end_flush();
-        // 
-        // $cl = $this->cn->getCollection('test');
-        // $cl->insert(array('foo' => 'bar'));
+        $data = array('bar' => 'buzz');
+
+        $cl  = $this->cn->getCollection('test');
+        $key = $cl->insert(array('foo' => 'bar'));
+        
+        $cl->update($key, $data);
+
+        $result = $cl->fetch($key);
+        
+        $this->assertEquals($data, $result);
     }
 }
