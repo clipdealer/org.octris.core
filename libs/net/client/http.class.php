@@ -68,7 +68,7 @@ namespace org\octris\core\net\client {
          * @octdoc  p:http/$request_headers
          * @var     array
          */
-        protected $request_headers = array();
+        protected $request_headers = array('expect' => '');
         /**/
 
         /**
