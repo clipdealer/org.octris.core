@@ -129,6 +129,54 @@ namespace org\octris\core\db\device\riak {
         }
 
         /**
+         * Query a Riak collection using Riak search interface.
+         *
+         * @octdoc  m:collection/query
+         * @param   array           $query                      Query conditions.
+         * @param   int             $offset                     Optional offset to start query result from.
+         * @param   int             $limit                      Optional limit of result items.
+         * @param   array           $sort                       Optional sorting parameters.
+         * @param   array           $fields                     Optional fields to return.
+         * @param   array           $hint                       Optional query hint.
+         * @return  \org\octris\core\db\device\riak\result      Result object.
+         *
+         * @ref     http://docs.basho.com/riak/latest/cookbooks/Riak-Search---Indexing-and-Querying-Riak-KV-Data/
+         */
+        public function query(array $query, $offset = 0, $limit = 20)
+        /**/
+        {
+            if (count($query) == 0) {
+                // TODO: list total bucket contents
+                return false;
+            }
+            
+            $q = array();
+            foreach ($query as $k => $v) {
+                $q[] = $k . ':' . $v;
+            }
+            
+            $request = $this->connection->getRequest(
+                http::T_GET,
+                '/solr/' . $this->name . '/select',
+                array(
+                    'q'     => implode(' AND ', $q),
+                    'start' => $offset,
+                    'rows'  => $limit,
+                    'wt'    => 'json'
+                )
+            );
+
+            $result = $request->execute();
+            $status = $request->getStatus();
+
+            return new \org\octris\core\db\device\riak\result(
+                $this->device,
+                $this->getName(),
+                $result
+            );
+        }
+
+        /**
          * Insert an object into a database collection.
          *
          * @octdoc  m:collection/insert
