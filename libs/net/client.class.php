@@ -126,6 +126,18 @@ namespace org\octris\core\net {
         }
 
         /**
+         * Return URL of client when class instance is casted to a string.
+         *
+         * @octdoc  m:client/__toString
+         * @return  string
+         */
+        public function __toString()
+        /**/
+        {
+            return (string)$this->uri;
+        }
+
+        /**
          * Enable/disable verbose output.
          *
          * @octdoc  m:setVerbose
