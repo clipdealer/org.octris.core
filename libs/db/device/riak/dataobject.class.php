@@ -71,9 +71,7 @@ namespace org\octris\core\db\device\riak {
             $this->collection = $collection;
 
             if (isset($data['_id'])) {
-                $this->data['_id'] = (is_object($data['_id']) && $data['_id'] instanceof \MongoId
-                                        ? $data['_id']
-                                        : new \MongoId($data['_id']));
+                $this->data['_id'] = (string)$data['_id'];
 
                 unset($data['_id']);
             }
