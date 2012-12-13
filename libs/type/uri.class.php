@@ -67,6 +67,7 @@ namespace org\octris\core\type {
                 $this->query = new \ArrayObject($args);
             } else {
                 $this->query = new \ArrayObject();
+                $this->components['query'] = true;
             }
 
             // TODO: parse host to subdomain(s) + 2nd level domain + tld and store it in components
@@ -119,6 +120,8 @@ namespace org\octris\core\type {
                 throw new \Exception('Overwriting of "query" is not allowed');
             } elseif (!array_key_exists($name, $this->components))  {
                 throw new \Exception(sprintf('Unknown URI component "%s"', $name));
+            } elseif ($name == 'query') {
+                $this->query = $value;
             } else {
                 // TODO: validate value regarding to component type?
                 $this->components[$name] = $value;
