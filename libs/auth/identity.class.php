@@ -14,7 +14,7 @@ namespace org\octris\core\auth {
      * Class for storing authenticated identity.
      *
      * @octdoc      c:auth/identity
-     * @copyright   copyright (c) 2011 by Harald Lapp
+     * @copyright   copyright (c) 2011-2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
     class identity
