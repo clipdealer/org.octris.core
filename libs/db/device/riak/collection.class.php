@@ -180,17 +180,20 @@ namespace org\octris\core\db\device\riak {
          * Insert an object into a database collection.
          *
          * @octdoc  m:collection/insert
-         * @param   array           $object                     Data to insert into collection.
-         * @return  string|bool                                 Returns the inserted key if insert succeeded or false.
+         * @param   \org\octris\core\db\device\riak\dataobject  $object     Data to insert into collection.
+         * @return  string|bool                                             Returns the inserted key if insert succeeded or false.
          */
-        public function insert(array $object)
+        public function insert(\org\octris\core\db\device\riak\dataobject $object)
         /**/
         {
             $request = $this->connection->getRequest(
                 http::T_POST, 
                 '/buckets/' . $this->name . '/keys'
             );
-            $request->addHeader('Content-Type', 'application/json');
+            $request->addHeader('Content-Type', $object->getContentType());
+
+            // TODO: recursive walk to collect bucket references (first.second. == TAG, key, bucket)            $object->getReferences();
+
             $request->execute(json_encode($object));
             
             if (($return = $request->getStatus()) == 201) {
@@ -206,9 +209,9 @@ namespace org\octris\core\db\device\riak {
          * Update data in database collection.
          *
          * @octdoc  m:collection/update
-         * @param   string          $key                        Key to update.
-         * @param   array           $object                     Data to update collection with.
-         * @return  bool                                        Returns true if update succeeded otherwise false.
+         * @param   string                                      $key        Key to update.
+         * @param   \org\octris\core\db\device\riak\dataobject  $object     Data to insert into collection.
+         * @return  bool                                                    Returns true if update succeeded otherwise false.
          */
         public function update($key, array $object)
         /**/
@@ -217,7 +220,10 @@ namespace org\octris\core\db\device\riak {
                 http::T_PUT, 
                 '/buckets/' . $this->name . '/keys/' . $key
             );
-            $request->addHeader('Content-Type', 'application/json');
+            $request->addHeader('Content-Type', $object->getContentType());
+            
+// TODO: recursive walk to collect bucket references (first.second. == TAG, key, bucket)            $object->getReferences();
+            
             $request->execute(json_encode($object));
 
             return ($request->getStatus() == 200);
