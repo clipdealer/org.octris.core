@@ -177,6 +177,24 @@ namespace org\octris\core\db\device\riak {
         }
 
         /**
+         * Add a link reference header to a request.
+         *
+         * @octdoc  m:collection/addReferences
+         * @param   \org\octris\core\db\riak\request            $request    Request object.
+         * @param   \org\octris\core\db\device\riak\dataobject  $object     Data object to collect references from.
+         */
+        protected function addReferences(\org\octris\core\db\riak\request $request, \org\octris\core\db\device\riak\dataobject $object)
+        /**/
+        {
+            // TODO: recursive walk to collect bucket references (first.second. == TAG, key, bucket)            $object->getReferences();
+            $iterator = new \RecursiveIteratorIterator($object);
+
+            foreach ($iterator as $a => $b) {
+                var_dump(array($a, $b));
+            }
+        }
+
+        /**
          * Insert an object into a database collection.
          *
          * @octdoc  m:collection/insert
@@ -192,7 +210,7 @@ namespace org\octris\core\db\device\riak {
             );
             $request->addHeader('Content-Type', $object->getContentType());
 
-            // TODO: recursive walk to collect bucket references (first.second. == TAG, key, bucket)            $object->getReferences();
+            $this->addReferences($request, $object);
 
             $request->execute(json_encode($object));
             
@@ -222,8 +240,8 @@ namespace org\octris\core\db\device\riak {
             );
             $request->addHeader('Content-Type', $object->getContentType());
             
-// TODO: recursive walk to collect bucket references (first.second. == TAG, key, bucket)            $object->getReferences();
-            
+            $this->addReferences($request, $object);
+
             $request->execute(json_encode($object));
 
             return ($request->getStatus() == 200);
