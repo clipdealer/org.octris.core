@@ -61,7 +61,7 @@ namespace org\octris\core\auth\storage {
         public function setIdentity(\org\octris\core\auth\identity $identity)
         /**/
         {
-            $this->session->setValue('identity', serialize($identity), __CLASS__);
+            $this->session->setValue('identity', base64_encode(serialize($identity)), __CLASS__);
         }
 
         /**
@@ -73,7 +73,7 @@ namespace org\octris\core\auth\storage {
         public function getIdentity()
         /**/
         {
-            return unserialize($this->session->getValue('identity', __CLASS__));
+            return unserialize(base64_decode($this->session->getValue('identity', __CLASS__)));
         }
 
         /**
