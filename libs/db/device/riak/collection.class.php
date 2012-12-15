@@ -253,7 +253,7 @@ namespace org\octris\core\db\device\riak {
         {
             $request = $this->connection->getRequest(
                 http::T_PUT, 
-                '/buckets/' . $this->name . '/keys/' . $key
+                '/buckets/' . $this->name . '/' . $key
             );
             $request->setVerbose(true);
             $request->addHeader('Content-Type', $object->getContentType());
