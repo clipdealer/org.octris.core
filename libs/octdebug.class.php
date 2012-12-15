@@ -29,8 +29,10 @@ class octdebug
     public static function dump($data)
     /**/
     {
+        static $last_key = '';
+        
         if (php_sapi_name() != 'cli') {
-            print "<hr/><pre>";
+            print "<pre>";
 
             $prepare = function($str) {
                 return htmlspecialchars($str);
@@ -42,9 +44,12 @@ class octdebug
         }
         
         $trace = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 1)[0];
+        $key   = $trace['file'] . ':' . $trace['line'];
         
-        printf("file: %s\n", $trace['file']);
-        printf("line: %s\n\n", $trace['line']);
+        if ($last_key != $key) {
+            printf("file: %s\n", $trace['file']);
+            printf("line: %s\n\n", $trace['line']);
+        }
         
         for ($i = 0, $cnt = func_num_args(); $i < $cnt; ++$i) {
             ob_start($prepare);
@@ -53,7 +58,7 @@ class octdebug
         }
 
         if (php_sapi_name() != 'cli') {
-            print "</pre><hr/>";
+            print "</pre>";
         }
     }
 }
