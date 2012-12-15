@@ -37,6 +37,8 @@ namespace org\octris\core\db\device\riak {
                     $return = (float)(string)$value;
                 } elseif ($value instanceof \DateTime) {
                     $return = explode('.', $value->format('Y.m.d H:M:S'));
+                } elseif ($value instanceof \org\octris\core\db\device\riak\ref) {
+                    $return = $value;
                 } else {
                     $return = (string)$value;
                 }
