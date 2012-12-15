@@ -188,6 +188,20 @@ namespace org\octris\core\net\client {
         }
 
         /**
+         * Enable/disable verbose output.
+         *
+         * @octdoc  m:http:/setVerbose
+         * @param   bool                    $verbose                Whether to do verbose output or not.
+         */
+        public function setVerbose($verbose)
+        /**/
+        {
+            $this->options[CURLINFO_HEADER_OUT] = !!$verbose;
+
+            parent::setVerbose($verbose);
+        }
+
+        /**
          * Set a function for handling response body.
          *
          * @octdoc  m:http/setBodyCallback
