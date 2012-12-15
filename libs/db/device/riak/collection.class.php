@@ -122,7 +122,7 @@ namespace org\octris\core\db\device\riak {
             } else {
                 $return = new \org\octris\core\db\device\riak\dataobject(
                     $this->device,
-                    $this,
+                    $this->getName(),
                     $result
                 );
             }
