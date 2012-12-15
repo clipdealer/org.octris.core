@@ -122,6 +122,28 @@ namespace org\octris\core\db\device\riak {
             } else {
                 $result['_id'] = $key;
                 
+                // parse link references and populate data with references
+                if (($links = $request->getResponseHeader('link')) !== false) {
+                    $count = 0;
+                    
+                    do {
+                        $links = preg_replace_callback(
+                            '|</buckets/(?P<bucket>[^/]+)/keys/(?P<key>[^/>]+)>; *riaktag="(?P<tag>[^"]+)"|',
+                            function($match) use (&$result) {
+                                $result[$match['tag']] = new \org\octris\core\db\device\riak\ref(
+                                    $match['bucket'], $match['key']
+                                );
+                            
+                                return '';
+                            },
+                            $links,
+                            -1,
+                            $count
+                        );
+                    } while ($count > 0);
+                }
+                
+                // create dataobject
                 $return = new \org\octris\core\db\device\riak\dataobject(
                     $this->device,
                     $this->getName(),
