@@ -234,6 +234,18 @@ namespace org\octris\core\net {
         }
 
         /**
+         * Get request information of the last executed request.
+         *
+         * @octdoc  m:client/getRequestInfo
+         * @return  array                                   Request info.
+         */
+        public function getRequestInfo()
+        /**/
+        {
+            return $this->request_info;
+        }
+
+        /**
          * Execute client.
          *
          * @octdoc  m:client/execute
