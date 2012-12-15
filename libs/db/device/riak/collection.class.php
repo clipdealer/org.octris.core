@@ -198,9 +198,9 @@ namespace org\octris\core\db\device\riak {
                         'Link', 
                         sprintf(
                             '</riak/%s/%s>; riaktag="%s"',
-                            $value->bucket,
-                            $value->key,
-                            $name
+                            urlencode($value->bucket),
+                            urlencode($value->key),
+                            urlencode($name)
                         )
                     );
                 }
