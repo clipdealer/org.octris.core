@@ -53,5 +53,19 @@ namespace org\octris\core\db\device\riak {
             $this->bucket = $bucket;
             $this->key    = $key;
         }
+        
+        /**
+         * Return reference property.
+         *
+         * @octdoc  m:ref/__get
+         * @param   string          $name               Name of property to return value of.
+         */
+        public function __get($name)
+        /**/
+        {
+            return (isset($this->{$name})
+                    ? $this->{$name}
+                    : null);
+        }
     }
 }
