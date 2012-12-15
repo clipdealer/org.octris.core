@@ -1,4 +1,5 @@
 [ ] net/client -- create a response object for request result
-[ ] make the common stuff of db/dataobject a trait
+[ ] make the common stuff of db/dataobject an abstract object, move casting stuff to device class so subobjects can be common.
+[ ] dataobject: type casting when object is serialized / unserialized instead of when a value is set/get.
 [ ] consider cross-database references (riak -> link) for db/ref
 [ ] port changes in riak stuff back to mongodb
