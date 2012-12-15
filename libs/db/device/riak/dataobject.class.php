@@ -89,6 +89,23 @@ namespace org\octris\core\db\device\riak {
         }
 
         /**
+         * Merge specified data into dataobject. Note, that the method will throw an exception, if the data to
+         * merge contains a new object ID.
+         *
+         * @octdoc  m:dataobject/merge
+         * @param   array                                   $data           Data to merge.
+         */
+        public function merge(array $data)
+        /**/
+        {
+            if (array_key_exists('_id', $data)) {
+                throw new \Exception('Property "_id" is read-only');
+            } else {
+                parent::__construct($data);
+            }
+        }
+
+        /**
          * Make sure that object Id get's reset, when object is cloned, because no duplicate Ids
          * are allowed for objects in a bucket.
          *
