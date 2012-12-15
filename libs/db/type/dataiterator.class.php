@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace org\octris\core\db\device\riak {
+namespace org\octris\core\db\type {
     /**
-     * Riak data object
+     * Iterator for recursive iterating data objects of query results
      *
-     * @octdoc      c:riak/dataobject
+     * @octdoc      c:db/dataobject
      * @copyright   copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
@@ -24,7 +24,7 @@ namespace org\octris\core\db\device\riak {
          * The dataobject to iterate.
          *
          * @octdoc  p:dataiterator/$data
-         * @var     \org\octris\core\db\device\riak\subobject
+         * @var     \org\octris\core\db\type\subobject
          */
         protected $data;
         /**/
@@ -51,9 +51,9 @@ namespace org\octris\core\db\device\riak {
          * Constructor.
          *
          * @octdoc  m:dataiterator/__construct
-         * @parem   \org\octris\core\db\device\riak\subobject    $dataobject         The dataobject to iterate.
+         * @parem   \org\octris\core\db\type\subobject    $dataobject         The dataobject to iterate.
          */
-        public function __construct(\org\octris\core\db\device\riak\subobject $dataobject)
+        public function __construct(\org\octris\core\db\type\subobject $dataobject)
         /**/
         {
             $this->data = $dataobject;          
