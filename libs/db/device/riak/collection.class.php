@@ -222,8 +222,9 @@ namespace org\octris\core\db\device\riak {
         {
             $request = $this->connection->getRequest(
                 http::T_POST, 
-                '/buckets/' . $this->name . (!is_null($key) ? '/keys/' . $key : '')
+                '/buckets/' . $this->name . '/keys' . (is_null($key) ? '' : '/' . $key)
             );
+            
             $request->setVerbose(true);
             $request->addHeader('Content-Type', $object->getContentType());
 
