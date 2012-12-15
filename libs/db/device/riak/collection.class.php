@@ -225,7 +225,6 @@ namespace org\octris\core\db\device\riak {
                 '/buckets/' . $this->name . '/keys' . (is_null($key) ? '' : '/' . $key)
             );
             
-            $request->setVerbose(true);
             $request->addHeader('Content-Type', $object->getContentType());
 
             $this->addReferences($request, $object);
@@ -238,8 +237,6 @@ namespace org\octris\core\db\device\riak {
                 $return = substr($loc, strrpos($loc, '/') + 1);
             }
 
-            \octdebug::dump($request->getRequestInfo());
-         
             return $return;
         }
 
@@ -258,15 +255,12 @@ namespace org\octris\core\db\device\riak {
                 http::T_PUT, 
                 '/buckets/' . $this->name . '/keys/' . $key
             );
-            $request->setVerbose(true);
             $request->addHeader('Content-Type', $object->getContentType());
-            
+
             $this->addReferences($request, $object);
-
+            
             $request->execute(json_encode($object));
-
-            \octdebug::dump($request->getRequestInfo());
-         
+            
             return ($request->getStatus() == 200);
         }
     }
