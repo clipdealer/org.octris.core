@@ -16,6 +16,8 @@ namespace org\octris\core\db\device\riak {
      * @octdoc      c:riak/ref
      * @copyright   copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
+     *
+     * @todo        Allow cross-device links (riak -> mysql, etc.)?
      */
     class ref
     /**/
