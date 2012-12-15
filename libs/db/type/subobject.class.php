@@ -99,8 +99,6 @@ namespace org\octris\core\db\type {
         public function getKeys()
         /**/
         {
-            var_dump($this);
-            
             return array_keys($this->data);
         }
 
