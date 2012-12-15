@@ -130,6 +130,10 @@ namespace org\octris\core\db\device\riak {
         public function getCollection($name)
         /**/
         {
+            if (!is_string($name)) {
+                throw new \Exception('name must be of type string');
+            }
+            
             return new \org\octris\core\db\device\riak\collection(
                 $this->device,
                 $this,
