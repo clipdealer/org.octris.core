@@ -1,0 +1,4 @@
+[ ] net/client -- create a response object for request result
+[ ] make the common stuff of db/dataobject a trait
+[ ] consider cross-database references (riak -> link) for db/ref
+[ ] port changes in riak stuff back to mongodb
