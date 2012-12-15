@@ -162,9 +162,11 @@ namespace org\octris\core\db\device\riak {
          * Save dataobject to bucket.
          *
          * @octdoc  m:dataobject/save
-         * @return  bool                                                Returns true on success otherwise false.
+         * @param   string              $new_key        Force inserting with the specified key. The method will fall back to an update,
+         *                                              if the specified key and the object internal key are identically.
+         * @return  bool                                Returns true on success otherwise false.
          */
-        public function save()
+        public function save($new_key = null)
         /**/
         {
             $return = true;
@@ -172,16 +174,14 @@ namespace org\octris\core\db\device\riak {
             $cn = $this->device->getConnection(\org\octris\core\db::T_DB_MASTER);
             $cl = $cn->getCollection($this->collection);
 
-            if (!isset($this->data['_id'])) {
+            if (is_null($this->_id) || (!is_null($new_key) && $this->_id !== $new_key)) {
                 // insert new object
-                $key = $cl->insert($this);
-
-                if (($return = ($key !== false))) {
-                    $this->data['_id'] = $key;
+                if (($return = !!($new_key = $cl->insert($this, $new_key)))) {
+                    $this->_id = $new_key;
                 }
             } else {
                 // update object
-                $return = $cl->update($key, $this);
+                $return = $cl->update($this, $this->_id);
             }
 
             $cn->release();
