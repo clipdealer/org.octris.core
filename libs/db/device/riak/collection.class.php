@@ -199,7 +199,7 @@ namespace org\octris\core\db\device\riak {
                     $request->addHeader(
                         'Link', 
                         sprintf(
-                            '</riak/%s/%s>; riaktag="%s"',
+                            '</buckets/%s/keys/%s>; riaktag="%s"',
                             urlencode($value->bucket),
                             urlencode($value->key),
                             urlencode($name)
