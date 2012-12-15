@@ -82,14 +82,16 @@ namespace org\octris\core\db\device\riak {
          * Create an empty object for storing data into specified collection.
          *
          * @octdoc  m:collection/create
-         * @return  \org\octris\core\db\device\riak\dataobject      Data object.
+         * @param   array                                           $data       Optional data to store in data object.
+         * @return  \org\octris\core\db\device\riak\dataobject                  Data object.
          */
-        public function create()
+        public function create(array $data = array())
         /**/
         {
             $object = new \org\octris\core\db\device\riak\dataobject(
                 $this->device,
-                $this->getName()
+                $this->getName(),
+                $data
             );
 
             $object->setContentType('application/json');
