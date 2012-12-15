@@ -57,6 +57,15 @@ namespace org\octris\core\db\device\riak {
         /**/
 
         /**
+         * Object ID -- uniq key that is used for storing the object in the database.
+         *
+         * @octdoc  p:dataobject/$_id
+         * @var     string
+         */
+        protected $_id = null;
+        /**/
+
+        /**
          * Constructor.
          *
          * @octdoc  m:dataobject/__construct
@@ -71,7 +80,7 @@ namespace org\octris\core\db\device\riak {
             $this->collection = $collection;
 
             if (isset($data['_id'])) {
-                $this->data['_id'] = (string)$data['_id'];
+                $this->_id = (string)$data['_id'];
 
                 unset($data['_id']);
             }
@@ -148,19 +157,14 @@ namespace org\octris\core\db\device\riak {
 
             if (!isset($this->data['_id'])) {
                 // insert new object
-                $key = $cl->insert($this->data);
+                $key = $cl->insert($this);
 
                 if (($return = ($key !== false))) {
                     $this->data['_id'] = $key;
                 }
             } else {
                 // update object
-                $tmp = $this->data;
-                
-                $key = $tmp['_id'];
-                unset($tmp['_id']);
-
-                $return = $cl->update($key, $tmp);
+                $return = $cl->update($key, $this);
             }
 
             $cn->release();
@@ -169,6 +173,21 @@ namespace org\octris\core\db\device\riak {
         }
 
         /** ArrayAccess **/
+
+        /**
+         * Get object property.
+         *
+         * @octdoc  m:dataobject/offsetGet
+         * @param   string          $name                   Name of property to get.
+         * @return  mixed                                   Data stored in property.
+         */
+        public function offsetGet($name)
+        /**/
+        {
+            return ($name == '_id'
+                    ? $this->_id
+                    : parent::offsetGet($name));
+        }
 
         /**
          * Set object property.
