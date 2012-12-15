@@ -140,7 +140,7 @@ namespace org\octris\core\net {
         /**
          * Enable/disable verbose output.
          *
-         * @octdoc  m:setVerbose
+         * @octdoc  m:client/setVerbose
          * @param   bool                    $verbose                Whether to do verbose output or not.
          */
         public function setVerbose($verbose)
@@ -152,7 +152,7 @@ namespace org\octris\core\net {
         /**
          * Set timeout in seconds or microseconds (as float).
          *
-         * @octdoc  m:net/setTimeout
+         * @octdoc  m:client/setTimeout
          * @param   $timout             $timeout            The timeout to set.
          */
         public function setTimeout($timeout)
@@ -170,7 +170,7 @@ namespace org\octris\core\net {
         /**
          * Return options set for client.
          *
-         * @octdoc  m:net/getOptions
+         * @octdoc  m:client/getOptions
          * @return  array                                   Curl options.
          */
         public function getOptions()
