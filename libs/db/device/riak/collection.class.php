@@ -120,6 +120,8 @@ namespace org\octris\core\db\device\riak {
                 // object not found
                 $return = false;
             } else {
+                $result['_id'] = $key;
+                
                 $return = new \org\octris\core\db\device\riak\dataobject(
                     $this->device,
                     $this->getName(),
