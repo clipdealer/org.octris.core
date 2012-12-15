@@ -244,11 +244,11 @@ namespace org\octris\core\db\device\riak {
          * Update data in database collection.
          *
          * @octdoc  m:collection/update
-         * @param   string                                      $key        Key to update.
          * @param   \org\octris\core\db\device\riak\dataobject  $object     Data to insert into collection.
+         * @param   string                                      $key        Key to update.
          * @return  bool                                                    Returns true if update succeeded otherwise false.
          */
-        public function update($key, \org\octris\core\db\device\riak\dataobject $object)
+        public function update(\org\octris\core\db\device\riak\dataobject $object, $key)
         /**/
         {
             $request = $this->connection->getRequest(
