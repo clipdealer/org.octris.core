@@ -149,6 +149,12 @@ namespace org\octris\core\type {
         protected function buildUri()
         /**/
         {
+            $http_build_query = function($query) {
+                $return =  http_build_query((array)$query);
+                
+                return ($return != '' ? '?' . $return : '');
+            };
+            
             $this->uri = 
                 (isset($this->components['scheme'])
                     ? $this->components['scheme'] . '://'
@@ -173,7 +179,7 @@ namespace org\octris\core\type {
                     : '') .
                 
                 (isset($this->components['query'])
-                    ? '?' . http_build_query((array)$this->query)
+                    ? $http_build_query($this->query)
                     : '') . 
                     
                 (isset($this->components['fragment'])
