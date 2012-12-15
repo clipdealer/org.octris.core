@@ -185,7 +185,7 @@ namespace org\octris\core\db\device\riak {
          * @param   \org\octris\core\db\riak\request            $request    Request object.
          * @param   \org\octris\core\db\device\riak\dataobject  $object     Data object to collect references from.
          */
-        protected function addReferences(\org\octris\core\db\riak\request $request, \org\octris\core\db\device\riak\dataobject $object)
+        protected function addReferences(\org\octris\core\db\device\riak\request $request, \org\octris\core\db\device\riak\dataobject $object)
         /**/
         {
             // TODO: recursive walk to collect bucket references (first.second. == TAG, key, bucket)            $object->getReferences();
