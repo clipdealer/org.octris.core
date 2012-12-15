@@ -17,36 +17,9 @@ namespace org\octris\core\db\type {
      * @copyright   copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    class recursivedataiterator implements \RecursiveIterator
+    class recursivedataiterator extends \org\octris\core\db\type\dataiterator implements \RecursiveIterator
     /**/
     {
-        /**
-         * The dataobject to iterate.
-         *
-         * @octdoc  p:recursivedataiterator/$data
-         * @var     \org\octris\core\db\type\subobject
-         */
-        protected $data;
-        /**/
-
-        /**
-         * Keys stored in dataobject.
-         *
-         * @octdoc  p:recursivedataiterator/$keys
-         * @var     array
-         */
-        protected $keys;
-        /**/
-
-        /**
-         * Internal pointer position.
-         *
-         * @octdoc  p:recursivedataiterator/$position
-         * @var     int
-         */
-        protected $position = 0;
-        /**/
-
         /**
          * Constructor.
          *
@@ -56,11 +29,10 @@ namespace org\octris\core\db\type {
         public function __construct(\org\octris\core\db\type\subobject $dataobject)
         /**/
         {
-            $this->data = $dataobject;          
-            $this->keys = $dataobject->getKeys();
+            parent::__construct($dataobject);
         }
 
-        /** Iterator **/
+        /** RecursiveIterator **/
 
         /**
          * Returns an iterator for the current item.
@@ -87,64 +59,6 @@ namespace org\octris\core\db\type {
             $item = $this->data[$this->keys[$this->position]];
             
             return (is_object($item) && $item instanceof \org\octris\core\db\type\subobject);
-        }
-
-        /**
-         * Get value of item.
-         *
-         * @octdoc  m:recursivedataiterator/current
-         * @return  mixed                                                               Value stored at current position.
-         */
-        public function current()
-        /**/
-        {
-            return $this->data[$this->keys[$this->position]];
-        }
-
-        /**
-         * Get key of current item.
-         *
-         * @octdoc  m:recursivedataiterator/key
-         * @return  scalar                                                              Key of current position.
-         */
-        public function key()
-        /**/
-        {
-            return $this->keys[$this->position];
-        }
-
-        /**
-         * Advance pointer.
-         *
-         * @octdoc  m:recursivedataiterator/next
-         */
-        public function next()
-        /**/
-        {
-            ++$this->position;
-        }
-
-        /**
-         * Reset pointer.
-         *
-         * @octdoc  m:recursivedataiterator/rewind
-         */
-        public function rewind()
-        /**/
-        {
-            $this->position = 0;
-        }
-
-        /**
-         * Test if current pointer position is valid.
-         *
-         * @octdoc  m:recursivedataiterator/valid
-         * @return  bool                                                                True, if position is valid.
-         */
-        public function valid()
-        /**/
-        {
-            return isset($this->keys[$this->position]);
         }
     }
 }
