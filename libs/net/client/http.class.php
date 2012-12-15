@@ -152,11 +152,9 @@ namespace org\octris\core\net\client {
         public function getResponseHeader($name)
         /**/
         {
-            if (($return = $this->response_headers[$name])) {
-                $return = $this->response_headers[$name];
-            }
-            
-            return $return;
+            return (array_key_exists($name, $this->response_headers)
+                    ? $this->response_headers[$name]
+                    : false);
         }
         
         /**
