@@ -212,14 +212,15 @@ namespace org\octris\core\db\device\riak {
          *
          * @octdoc  m:collection/insert
          * @param   \org\octris\core\db\device\riak\dataobject  $object     Data to insert into collection.
+         * @param   string                                      $key        Optional key to insert.
          * @return  string|bool                                             Returns the inserted key if insert succeeded or false.
          */
-        public function insert(\org\octris\core\db\device\riak\dataobject $object)
+        public function insert(\org\octris\core\db\device\riak\dataobject $object, $key = null)
         /**/
         {
             $request = $this->connection->getRequest(
-                http::T_PUT, 
-                '/buckets/' . $this->name . '/keys'
+                http::T_POST, 
+                '/buckets/' . $this->name . (!is_null($key) ? '/keys/' . $key : '')
             );
             $request->setVerbose(true);
             $request->addHeader('Content-Type', $object->getContentType());
