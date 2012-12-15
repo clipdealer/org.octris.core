@@ -233,7 +233,7 @@ namespace org\octris\core\db\device\riak {
          * @param   \org\octris\core\db\device\riak\dataobject  $object     Data to insert into collection.
          * @return  bool                                                    Returns true if update succeeded otherwise false.
          */
-        public function update($key, array $object)
+        public function update($key, \org\octris\core\db\device\riak\dataobject $object)
         /**/
         {
             $request = $this->connection->getRequest(
