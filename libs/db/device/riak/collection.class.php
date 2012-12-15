@@ -228,7 +228,7 @@ namespace org\octris\core\db\device\riak {
 
             $request->execute(json_encode($object));
             
-            if (($return = $request->getStatus()) == 201) {
+            if (($return = ($request->getStatus() == 201))) {
                 $loc = $request->getResponseHeader('location');
                 
                 $return = substr($loc, strrpos($loc, '/') + 1);
