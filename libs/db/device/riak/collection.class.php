@@ -216,8 +216,6 @@ namespace org\octris\core\db\device\riak {
 
             foreach ($iterator as $name => $value) {
                 if ($value instanceof \org\octris\core\db\device\riak\ref) {
-                    var_dump($value);
-                    
                     $request->addHeader(
                         'Link', 
                         sprintf(
