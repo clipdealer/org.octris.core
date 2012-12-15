@@ -188,11 +188,22 @@ namespace org\octris\core\db\device\riak {
         protected function addReferences(\org\octris\core\db\device\riak\request $request, \org\octris\core\db\device\riak\dataobject $object)
         /**/
         {
-            // TODO: recursive walk to collect bucket references (first.second. == TAG, key, bucket)            $object->getReferences();
-            $iterator = new \RecursiveIteratorIterator($object);
+            $iterator = new \RecursiveIteratorIterator(new \org\octris\core\db\type\recursivedataiterator($object));
 
-            foreach ($iterator as $a => $b) {
-                var_dump(array($a, $b));
+            foreach ($iterator as $name => $value) {
+                if ($value instanceof \org\octris\core\db\device\riak\ref) {
+                    var_dump($value);
+                    
+                    $request->addHeader(
+                        'Link', 
+                        sprintf(
+                            '</riak/%s/%s>; riaktag="%s"',
+                            $value->bucket,
+                            $value->key,
+                            $name
+                        )
+                    );
+                }
             }
         }
 
@@ -207,9 +218,10 @@ namespace org\octris\core\db\device\riak {
         /**/
         {
             $request = $this->connection->getRequest(
-                http::T_POST, 
+                http::T_PUT, 
                 '/buckets/' . $this->name . '/keys'
             );
+            $request->setVerbose(true);
             $request->addHeader('Content-Type', $object->getContentType());
 
             $this->addReferences($request, $object);
@@ -221,7 +233,9 @@ namespace org\octris\core\db\device\riak {
                 
                 $return = substr($loc, strrpos($loc, '/') + 1);
             }
-                
+
+            \octdebug::dump($request->getRequestInfo());
+         
             return $return;
         }
 
@@ -240,12 +254,15 @@ namespace org\octris\core\db\device\riak {
                 http::T_PUT, 
                 '/buckets/' . $this->name . '/keys/' . $key
             );
+            $request->setVerbose(true);
             $request->addHeader('Content-Type', $object->getContentType());
             
             $this->addReferences($request, $object);
 
             $request->execute(json_encode($object));
 
+            \octdebug::dump($request->getRequestInfo());
+         
             return ($request->getStatus() == 200);
         }
     }
