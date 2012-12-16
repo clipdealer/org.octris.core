@@ -71,6 +71,21 @@ namespace org\octris\core\db\type {
         }
 
         /**
+         * Merge specified data into dataobject. Note, that the method will throw an exception, if the data to
+         * merge contains a new object ID.
+         *
+         * @octdoc  m:subobject/merge
+         * @param   array                                   $data           Data to merge.
+         */
+        public function merge(array $data)
+        /**/
+        {
+            foreach ($data as $key => $value) {
+                $this[$key] = $value;
+            }
+        }
+
+        /**
          * Convert to array.
          *
          * @octdoc  m:subobject/getArrayCopy
