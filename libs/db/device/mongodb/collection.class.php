@@ -68,12 +68,13 @@ namespace org\octris\core\db\device\mongodb {
          * Create an empty object for storing data into specified collection.
          *
          * @octdoc  m:collection/create
-         * @return  \org\octris\core\db\device\mongodb\dataobject       Data object.
+         * @param   array                                           $data       Optional data to store in data object.
+         * @return  \org\octris\core\db\device\mongodb\dataobject               Data object.
          */
-        public function create()
+        public function create(array $data = array())
         /**/
         {
-            return new \org\octris\core\db\device\mongodb\dataobject($this->device, $this->getName());
+            return new \org\octris\core\db\device\mongodb\dataobject($this->device, $this->getName(), $data);
         }
 
         /**
