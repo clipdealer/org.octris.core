@@ -101,7 +101,9 @@ namespace org\octris\core\db\type {
             if (array_key_exists('_id', $data)) {
                 throw new \Exception('Property "_id" is read-only');
             } else {
-                parent::__construct($data, $this->dataobject);
+                $this->import($data);
+                
+                parent::merge($data);
             }
         }
 
