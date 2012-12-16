@@ -114,7 +114,7 @@ namespace org\octris\core\db\type {
         public function offsetGet($name)
         /**/
         {
-            return $this->castFrom($this->data[$name]);
+            return $this->data[$name];
         }
 
         /**
@@ -132,9 +132,9 @@ namespace org\octris\core\db\type {
             }
 
             if ($name === null) {
-                $this->data[] = $this->castTo($value);
+                $this->data[] = $value;
             } else {
-                $this->data[$name] = $this->castTo($value);
+                $this->data[$name] = $value;
             }
         }
 
