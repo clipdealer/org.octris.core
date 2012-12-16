@@ -76,7 +76,7 @@ namespace org\octris\core\db\type {
 
         /**
          * Make sure that object Id get's reset, when object is cloned, because no duplicate Ids
-         * are allowed for objects in a bucket.
+         * are allowed for objects in a collection.
          *
          * @octdoc  m:dataobject/__clone
          */

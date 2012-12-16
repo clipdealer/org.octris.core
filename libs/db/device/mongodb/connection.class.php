@@ -137,7 +137,7 @@ namespace org\octris\core\db\device\mongodb {
          *
          * @octdoc  m:connection/getCollection
          * @param   string          $name                               Name of collection to return instance of.
-         * @return  \org\octris\core\db\device\mongodb\collection
+         * @return  \org\octris\core\db\device\mongodb\collection       Instance of a mongodb collection.
          */
         public function getCollection($name)
         /**/
