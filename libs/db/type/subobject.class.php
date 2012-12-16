@@ -102,16 +102,6 @@ namespace org\octris\core\db\type {
             return array_keys($this->data);
         }
 
-        /**
-         * Create a new instance of subobject.
-         *
-         * @octdoc  a:subject/createSubObject
-         * @param   array           $data                   Data to create subobject from.
-         * @return  \org\octris\core\db\type\subobject      Created subobject.
-         */
-        abstract public function createSubObject(array $data);
-        /**/
-
         /** ArrayAccess **/
 
         /**
