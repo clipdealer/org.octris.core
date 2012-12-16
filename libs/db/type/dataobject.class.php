@@ -218,7 +218,7 @@ namespace org\octris\core\db\type {
         /**/
         {
             $data = $this->getArrayCopy();
-            $data = array_walk_recursive($data, function($value) {
+            array_walk_recursive($data, function($value) {
                 return $this->castPhpToDb($value);
             });
             
