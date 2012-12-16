@@ -35,5 +35,25 @@ namespace org\octris\core\db\device {
          */
         public function isAlive();
         /**/
+
+        /**
+         * Resolve a database reference.
+         *
+         * @octdoc  m:connection_if/resolve
+         * @param   \org\octris\core\db\type\dbref                          $dbref      Database reference to resolve.
+         * @return  \org\octris\core\db\device\...\dataobject|bool                      Data object or false if reference could not he resolved.
+         */
+        public function resolve(\org\octris\core\db\type\dbref $dbref);
+        /**/
+
+        /**
+         * Return instance of collection object.
+         *
+         * @octdoc  m:connection/getCollection
+         * @param   string          $name                               Name of collection to return instance of.
+         * @return  \org\octris\core\db\device\...\collection           Instance of database collection.
+         */
+        public function getCollection($name);
+        /**/
     }
 }
