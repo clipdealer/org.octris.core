@@ -104,6 +104,21 @@ namespace org\octris\core\db\device\riak {
         }
 
         /**
+         * Resolve a database reference.
+         *
+         * @octdoc  m:connection_if/resolve
+         * @param   \org\octris\core\db\type\dbref                          $dbref      Database reference to resolve.
+         * @return  \org\octris\core\db\device\riak\dataobject|bool                     Data object or false if reference could not he resolved.
+         *
+         * @todo
+         */
+        public function resolve(\org\octris\core\db\type\dbref $dbref)
+        /**/
+        {
+            return false;
+        }
+
+        /**
          * Return list of collections.
          *
          * @octdoc  m:connection/getCollections
