@@ -17,7 +17,7 @@ namespace org\octris\core\db\type {
      * @copyright   copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    abstract class subobject implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSerializable
+    class subobject implements \ArrayAccess, \Countable, \IteratorAggregate
     /**/
     {
         /**
