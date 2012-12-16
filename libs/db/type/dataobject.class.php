@@ -61,12 +61,10 @@ namespace org\octris\core\db\type {
             $this->device     = $device;
             $this->collection = $collection;
 
-            array_walk_recursive($data, function($value, $name) {
-                return $this->castDbToPhp($value, $name);
-            });
             
             if (isset($data['_id'])) {
                 $this->_id = (string)$data['_id'];
+            $this->import($data);
 
                 unset($data['_id']);
             }
@@ -212,6 +210,34 @@ namespace org\octris\core\db\type {
         abstract protected function castDbToPhp($value, $name);
         /**/
 
+        /**
+         * Recursive data iteration and casting for preparing data for export to database.
+         *
+         * @octdoc  m:dataobject/export
+         * @param   array               $data               Data to process.
+         */
+        protected function export(array &$data)
+        /**/
+        {
+            array_walk_recursive($data, function(&$value, $name) {
+                $value = $this->castPhpToDb($value, $name);
+            });
+        }
+
+        /**
+         * Recursive data iteration and casting for preparing data for import into dataobject.
+         *
+         * @octdoc  m:dataobject/import
+         * @param   array               $data               Data to process.
+         */
+        protected function import(array &$data)
+        /**/
+        {
+            array_walk_recursive($data, function(&$value, $name) {
+                $value = $this->castDbToPhp($value, $name);
+            });
+        }
+
         /** Helper methods for serialization **/
         
         /**
@@ -224,9 +250,8 @@ namespace org\octris\core\db\type {
         /**/
         {
             $data = $this->getArrayCopy();
-            array_walk_recursive($data, function($value, $name) {
-                return $this->castPhpToDb($value, $name);
-            });
+
+            $this->export($data);
             
             return $data;
         }
