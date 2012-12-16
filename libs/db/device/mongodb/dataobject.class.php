@@ -87,22 +87,22 @@ namespace org\octris\core\db\device\mongodb {
         /**/
         {
             if (is_object($value)) {
-               if ($value instanceof \MongoDate) {
-                   $return = new \org\octris\core\type\datetime((float)($value->sec . '.' . $value->usec));
-               } elseif ($value instanceof \MongoId) {
-                   $return = (string)$value;
-               } elseif ($value instanceof \MongoInt32) {
-                   $return = new \org\octris\core\type\number((string)$value);
-               } elseif ($value instanceof \MongoInt64) {
-                   $return = new \org\octris\core\type\number((string)$value);
-               } else {
-                   $return = $value;
-               }
-           } else {
-               $return = $value;
-           }
+                if ($value instanceof \MongoDate) {
+                    $return = new \org\octris\core\type\datetime((float)($value->sec . '.' . $value->usec));
+                } elseif ($value instanceof \MongoId) {
+                    $return = (string)$value;
+                } elseif ($value instanceof \MongoInt32) {
+                    $return = new \org\octris\core\type\number((string)$value);
+                } elseif ($value instanceof \MongoInt64) {
+                    $return = new \org\octris\core\type\number((string)$value);
+                } else {
+                    $return = $value;
+                }
+            } else {
+                $return = $value;
+            }
 
-           return $return;
+            return $return;
         }
     }
 }
