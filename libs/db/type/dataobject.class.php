@@ -191,9 +191,10 @@ namespace org\octris\core\db\type {
          *
          * @octdoc  m:dataobject/castPhpToDb
          * @param   mixed               $value              Value to cast.
+         * @param   string              $name               Name of the value in the data structure.
          * @return  mixed                                   Casted value.
          */
-        abstract public function castPhpToDb($value);
+        abstract public function castPhpToDb($value, $name);
         /**/
         
         /**
@@ -201,9 +202,10 @@ namespace org\octris\core\db\type {
          *
          * @octdoc  m:dataobject/castDbToPhp
          * @param   mixed               $value              Value to cast.
+         * @param   string              $name               Name of the value in the data structure.
          * @return  mixed                                   Casted value.
          */
-        abstract public function castDbToPhp($value);
+        abstract public function castDbToPhp($value, $name);
         /**/
 
         /** Helper methods for serialization **/
@@ -218,8 +220,8 @@ namespace org\octris\core\db\type {
         /**/
         {
             $data = $this->getArrayCopy();
-            array_walk_recursive($data, function($value) {
-                return $this->castPhpToDb($value);
+            array_walk_recursive($data, function($value, $name) {
+                return $this->castPhpToDb($value, $name);
             });
             
             return $data;
