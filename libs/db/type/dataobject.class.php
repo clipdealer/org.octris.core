@@ -61,6 +61,10 @@ namespace org\octris\core\db\type {
             $this->device     = $device;
             $this->collection = $collection;
 
+            array_walk_recursive($data, function($value, $name) {
+                return $this->castDbToPhp($value, $name);
+            });
+            
             if (isset($data['_id'])) {
                 $this->_id = (string)$data['_id'];
 
