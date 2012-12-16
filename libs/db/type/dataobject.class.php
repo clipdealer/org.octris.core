@@ -62,9 +62,12 @@ namespace org\octris\core\db\type {
             $this->collection = $collection;
 
             
-            if (isset($data['_id'])) {
-                $this->_id = (string)$data['_id'];
             $this->import($data);
+
+            if (array_key_exists('_id', $data)) {
+                $this->_id = (empty($data['_id'])
+                                ? null
+                                : (string)$data['_id']);
 
                 unset($data['_id']);
             }
