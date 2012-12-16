@@ -198,7 +198,7 @@ namespace org\octris\core\db\type {
          * @param   string              $name               Name of the value in the data structure.
          * @return  mixed                                   Casted value.
          */
-        abstract public function castPhpToDb($value, $name);
+        abstract protected function castPhpToDb($value, $name);
         /**/
         
         /**
@@ -209,7 +209,7 @@ namespace org\octris\core\db\type {
          * @param   string              $name               Name of the value in the data structure.
          * @return  mixed                                   Casted value.
          */
-        abstract public function castDbToPhp($value, $name);
+        abstract protected function castDbToPhp($value, $name);
         /**/
 
         /** Helper methods for serialization **/

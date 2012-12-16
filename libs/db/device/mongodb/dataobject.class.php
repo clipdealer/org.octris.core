@@ -44,7 +44,7 @@ namespace org\octris\core\db\device\mongodb {
          * @param   string              $name               Name of the value in the data structure.
          * @return  mixed                                   Casted value.
          */
-        public function castPhpToDb($value, $name)
+        protected function castPhpToDb($value, $name)
         /**/
         {
             if ($name == '_id') {
@@ -83,7 +83,7 @@ namespace org\octris\core\db\device\mongodb {
          * @param   string              $name               Name of the value in the data structure.
          * @return  mixed                                   Casted value.
          */
-        public function castDbToPhp($value, $name)
+        protected function castDbToPhp($value, $name)
         /**/
         {
             if (is_object($value)) {
