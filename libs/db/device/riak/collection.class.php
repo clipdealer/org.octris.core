@@ -130,7 +130,7 @@ namespace org\octris\core\db\device\riak {
                         $links = preg_replace_callback(
                             '|</buckets/(?P<bucket>[^/]+)/keys/(?P<key>[^/>]+)>; *riaktag="(?P<tag>[^"]+)"|',
                             function($match) use (&$result) {
-                                $result[$match['tag']] = new \org\octris\core\db\device\riak\ref(
+                                $result[$match['tag']] = new \org\octris\core\db\type\dbref(
                                     $match['bucket'], $match['key']
                                 );
                             
@@ -215,12 +215,12 @@ namespace org\octris\core\db\device\riak {
             $iterator = new \RecursiveIteratorIterator(new \org\octris\core\db\type\recursivedataiterator($object));
 
             foreach ($iterator as $name => $value) {
-                if ($value instanceof \org\octris\core\db\device\riak\ref) {
+                if ($value instanceof \org\octris\core\db\type\dbref) {
                     $request->addHeader(
                         'Link', 
                         sprintf(
                             '</buckets/%s/keys/%s>; riaktag="%s"',
-                            urlencode($value->bucket),
+                            urlencode($value->collection),
                             urlencode($value->key),
                             urlencode($name)
                         )

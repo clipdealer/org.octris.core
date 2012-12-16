@@ -115,7 +115,7 @@ namespace org\octris\core\db\device\riak {
                 } elseif ($value instanceof \DateTime) {
                     // datetime -> string
                     $return = $value->format('Y-m-d H:M:S');
-                } elseif ($value instanceof \org\octris\core\db\device\riak\ref) {
+                } elseif ($value instanceof \org\octris\core\db\type\dbref) {
                     $return = $value;
                 } else {
                     $return = (string)$value;
