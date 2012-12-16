@@ -9,32 +9,32 @@
  * file that was distributed with this source code.
  */
 
-namespace org\octris\core\db\device\riak {
+namespace org\octris\core\db\type {
     /**
-     * Bucket / link reference.
+     * Link reference.
      *
-     * @octdoc      c:riak/ref
+     * @octdoc      c:type/dbref
      * @copyright   copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      *
      * @todo        Allow cross-device links (riak -> mysql, etc.)?
      */
-    class ref
+    class dbref
     /**/
     {
         /**
-         * Name of bucket to reference to.
+         * Name of collection to reference to.
          *
-         * @octdoc  p:ref/$bucket
+         * @octdoc  p:dbref/$collection
          * @var     string
          */
-        protected $bucket;
+        protected $collection;
         /**/
         
         /**
          * Key to reference to.
          *
-         * @octdoc  p:ref/$key
+         * @octdoc  p:dbref/$key
          * @var     string
          */
         protected $key;
@@ -43,21 +43,21 @@ namespace org\octris\core\db\device\riak {
         /**
          * Constructor.
          *
-         * @octdoc  m:ref/__construct
-         * @param   string          $bucket             Name of bucket to link to.
+         * @octdoc  m:dbref/__construct
+         * @param   string          $collection         Name of collection to link to.
          * @param   string          $key                Key in bucket to link to.
          */
-        public function __construct($bucket, $key)
+        public function __construct($collection, $key)
         /**/
         {
-            $this->bucket = $bucket;
-            $this->key    = $key;
+            $this->collection = $collection;
+            $this->key        = $key;
         }
         
         /**
          * Return reference property.
          *
-         * @octdoc  m:ref/__get
+         * @octdoc  m:dbref/__get
          * @param   string          $name               Name of property to return value of.
          */
         public function __get($name)
