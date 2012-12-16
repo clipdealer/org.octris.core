@@ -106,7 +106,9 @@ namespace org\octris\core {
             if (($return = (!$this->storage->isEmpty()))) {
                 $identity = $this->storage->getIdentity();
 
-                $return = $identity->isValid();
+                $return = (is_object($identity) && 
+                            $identity instanceof \org\octris\core\auth\identity &&
+                            $identity->isValid());
             }
 
             return $return;
