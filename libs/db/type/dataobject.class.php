@@ -83,7 +83,7 @@ namespace org\octris\core\db\type {
         public function __clone()
         /**/
         {
-            unset($this->data['_id']);
+            $this->_id = null;
 
             parent::__clone();
         }
