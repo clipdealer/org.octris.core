@@ -71,18 +71,6 @@ namespace org\octris\core\db\type {
         }
 
         /**
-         * Magic method gets called, when 'json_encode' is used on the object instance.
-         *
-         * @octdoc  m:subobject/jsonSerialize
-         * @return  array                                   Array representation of object.
-         */
-        public function jsonSerialize()
-        /**/
-        {
-            return $this->getArrayCopy();
-        }
-
-        /**
          * Convert to array.
          *
          * @octdoc  m:subobject/getArrayCopy
@@ -113,22 +101,6 @@ namespace org\octris\core\db\type {
         {
             return array_keys($this->data);
         }
-
-        /**
-         * Cast values to database specific types.
-         *
-         * @octdoc  a:subject/castTo
-         */
-        abstract protected function castTo($value);
-        /**/
-
-        /**
-         * Cast values from database specific to PHP types.
-         *
-         * @octdoc  a:subject/castFrom
-         */
-        abstract public function castFrom($value);
-        /**/
 
         /**
          * Create a new instance of subobject.
