@@ -17,31 +17,13 @@ namespace org\octris\core\db\device\riak {
      * @copyright   copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    class dataobject extends \org\octris\core\db\device\riak\subobject
+    class dataobject extends \org\octris\core\db\type\dataobject
     /**/
     {
         /**
-         * Instance of mongodb device responsable for connections.
-         *
-         * @octdoc  p:dataobject/$device
-         * @var     \org\octris\core\db\device\mongodb
-         */
-        protected $device;
-        /**/
-
-        /**
-         * Name of collection the dataobject has access to.
-         *
-         * @octdoc  p:dataobject/$collection
-         * @var     string
-         */
-        protected $collection;
-        /**/
-
-        /**
          * Headers stored with object.
          *
-         * @octdoc  m:dataobject/$headers
+         * @octdoc  p:dataobject/$headers
          * @var     array
          */
         protected $headers;
@@ -57,15 +39,6 @@ namespace org\octris\core\db\device\riak {
         /**/
 
         /**
-         * Object ID -- uniq key that is used for storing the object in the database.
-         *
-         * @octdoc  p:dataobject/$_id
-         * @var     string
-         */
-        protected $_id = null;
-        /**/
-
-        /**
          * Constructor.
          *
          * @octdoc  m:dataobject/__construct
@@ -76,47 +49,7 @@ namespace org\octris\core\db\device\riak {
         public function __construct(\org\octris\core\db\device\riak $device, $collection, array $data = array())
         /**/
         {
-            $this->device     = $device;
-            $this->collection = $collection;
-
-            if (isset($data['_id'])) {
-                $this->_id = (string)$data['_id'];
-
-                unset($data['_id']);
-            }
-
-            parent::__construct($data);
-        }
-
-        /**
-         * Merge specified data into dataobject. Note, that the method will throw an exception, if the data to
-         * merge contains a new object ID.
-         *
-         * @octdoc  m:dataobject/merge
-         * @param   array                                   $data           Data to merge.
-         */
-        public function merge(array $data)
-        /**/
-        {
-            if (array_key_exists('_id', $data)) {
-                throw new \Exception('Property "_id" is read-only');
-            } else {
-                parent::__construct($data);
-            }
-        }
-
-        /**
-         * Make sure that object Id get's reset, when object is cloned, because no duplicate Ids
-         * are allowed for objects in a bucket.
-         *
-         * @octdoc  m:dataobject/__clone
-         */
-        public function __clone()
-        /**/
-        {
-            unset($this->data['_id']);
-
-            parent::__clone();
+            parent::__construct($device, $collection, $data);
         }
 
         /**
@@ -158,87 +91,51 @@ namespace org\octris\core\db\device\riak {
                     : null);
         }
 
+        /** Type casting **/
+        
         /**
-         * Save dataobject to bucket.
+         * Cast a PHP type to DB internal type.
          *
-         * @octdoc  m:dataobject/save
-         * @param   string              $new_key        Force inserting with the specified key. The method will fall back to an update,
-         *                                              if the specified key and the object internal key are identically.
-         * @return  bool                                Returns true on success otherwise false.
+         * @octdoc  m:dataobject/castPhpToDb
+         * @param   mixed               $value              Value to cast.
+         * @return  mixed                                   Casted value.
          */
-        public function save($new_key = null)
+        public function castPhpToDb($value)
         /**/
         {
-            $return = true;
-            
-            $cn = $this->device->getConnection(\org\octris\core\db::T_DB_MASTER);
-            $cl = $cn->getCollection($this->collection);
-
-            if (is_null($this->_id) || (!is_null($new_key) && $this->_id !== $new_key)) {
-                // insert new object
-                if (($return = !!($new_key = $cl->insert($this, $new_key)))) {
-                    $this->_id = $new_key;
+            if (is_object($value) && !($value instanceof \org\octris\core\db\type\subobject)) {
+                if ($value instanceof \org\octris\core\type\number) {
+                    // number -> float -or- int
+                    $return = ($value->isDecimal()
+                                ? (float)(string)$value
+                                : (int)(string)$value);
+                } elseif ($value instanceof \org\octris\core\type\money) {
+                    // money -> float
+                    $return = (float)(string)$value;
+                } elseif ($value instanceof \DateTime) {
+                    // datetime -> string
+                    $return = $value->format('Y-m-d H:M:S');
+                } elseif ($value instanceof \org\octris\core\db\device\riak\ref) {
+                    $return = $value;
+                } else {
+                    $return = (string)$value;
                 }
             } else {
-                // update object
-                $return = $cl->update($this, $this->_id);
-            }
-
-            $cn->release();
-            
-            return $return;
-        }
-
-        /** ArrayAccess **/
-
-        /**
-         * Get object property.
-         *
-         * @octdoc  m:dataobject/offsetGet
-         * @param   string          $name                   Name of property to get.
-         * @return  mixed                                   Data stored in property.
-         */
-        public function offsetGet($name)
-        /**/
-        {
-            return ($name == '_id'
-                    ? $this->_id
-                    : parent::offsetGet($name));
-        }
-
-        /**
-         * Set object property.
-         *
-         * @octdoc  m:dataobject/offsetSet
-         * @param   string          $name                   Name of property to set.
-         * @param   mixed           $value                  Value to set for property.
-         */
-        public function offsetSet($name, $value)
-        /**/
-        {
-            if ($name == '_id') {
-                throw new \Exception('Property "_id" is read-only');
-            } elseif ($name === null) {
-                throw new \Exception('Property name cannot be null');
-            } else {
-                parent::offsetSet($name, $value);
+                $return = $value;
             }
         }
-
+        
         /**
-         * Unset an object property.
+         * Cast a DB internal type to PHP type.
          *
-         * @octdoc  m:dataobject/offsetUnset
-         * @param   string          $name                   Name of property to unset.
+         * @octdoc  m:dataobject/castDbToPhp
+         * @param   mixed               $value              Value to cast.
+         * @return  mixed                                   Casted value.
          */
-        public function offsetUnset($name)
+        public function castDbToPhp($value)
         /**/
         {
-            if ($name == '_id') {
-                throw new \Exception('property "_id" is read-only');
-            } else {
-                parent::offsetUnset($name);
-            }
+            return $value;
         }
     }
 }
