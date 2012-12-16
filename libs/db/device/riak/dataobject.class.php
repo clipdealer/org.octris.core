@@ -104,7 +104,7 @@ namespace org\octris\core\db\device\riak {
         public function castPhpToDb($value, $name)
         /**/
         {
-            if (is_object($value) && !($value instanceof \org\octris\core\db\type\subobject)) {
+            if (is_object($value)) {
                 if ($value instanceof \org\octris\core\type\number) {
                     // number -> float -or- int
                     $return = ($value->isDecimal()
