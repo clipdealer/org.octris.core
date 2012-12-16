@@ -101,23 +101,19 @@ namespace org\octris\core\db\device\mongodb {
          * Resolve a database reference.
          *
          * @octdoc  m:connection/resolve
-         * @param   array           $ref                                Database reference to resolve.
-         * @param   \org\octris\core\db\device\mongodb\dataobject       Data object.
+         * @param   \org\octris\core\db\type\dbref                          $dbref      Database reference to resolve.
+         * @return  \org\octris\core\db\device\mongodb\dataobject|bool                  Data object or false if reference could not he resolved.
          */
-        public function resolve(array $ref)
+        public function resolve(\org\octris\core\db\type\dbref $dbref)
         /**/
         {
-            $return = false;
+            $cl = $this->db->selectCollection($collection);
 
-            if (!\MongoDBRef::isRef($ref)) {
-                throw new \Exception('no database reference provided');
-            } else {
-                $cl = $this->db->selectCollection($collection);
+            $data = $cl->getDBRef(\MongoDBRef::create(
+                $dbref->collection, $dbref->key
+            );
 
-                $data = $cl->getDBRef($ref);
-
-                $return = new \org\octris\core\db\device\mongodb\dataobject($this->device, $collection, $data);
-            }
+            $return = new \org\octris\core\db\device\mongodb\dataobject($this->device, $collection, $data);
 
             return $return;
         }
