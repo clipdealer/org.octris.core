@@ -61,7 +61,6 @@ namespace org\octris\core\db\type {
             $this->device     = $device;
             $this->collection = $collection;
 
-            
             $this->import($data);
 
             if (array_key_exists('_id', $data)) {
