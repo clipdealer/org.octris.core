@@ -86,6 +86,18 @@ namespace org\octris\core\db\device\mongodb {
         }
 
         /**
+         * Check connection.
+         *
+         * @octdoc  m:connection/isAlive
+         * @return  bool                                            Returns true if the connection is alive.
+         */
+        public function isAlive()
+        /**/
+        {
+            return true;
+        }
+
+        /**
          * Resolve a database reference.
          *
          * @octdoc  m:connection/resolve
