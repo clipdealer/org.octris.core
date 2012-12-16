@@ -104,5 +104,31 @@ namespace org\octris\core\db\device\mongodb {
 
             return $return;
         }
+        
+        /**
+         * Recursive data iteration and casting for preparing data for import into dataobject.
+         *
+         * @octdoc  m:dataobject/import
+         * @param   array               $data               Data to process.
+         */
+        protected function import(array &$data)
+        /**/
+        {
+            $process = function(&$data) use (&$process) {
+                array_walk($data, function(&$value, $name) {
+                    if (is_array($value)) {
+                        if (\MongoDBRef::isRef($value)) {
+                            $value = new \org\octris\core\db\type\dbref(
+                                $value['$ref'], $value['$id']
+                            );
+                        } else {
+                            $process($a);
+                        }
+                    } else {
+                        $value = $this->castDbToPhp($value, $name);
+                    }
+                });
+            };
+        }
     }
 }
