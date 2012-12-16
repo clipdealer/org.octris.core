@@ -17,27 +17,9 @@ namespace org\octris\core\db\device\mongodb {
      * @copyright   copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    class dataobject extends \org\octris\core\db\device\mongodb\subobject
+    class dataobject extends \org\octris\core\db\type\dataobject
     /**/
     {
-        /**
-         * Instance of mongodb device responsable for connections.
-         *
-         * @octdoc  p:dataobject/$device
-         * @var     \org\octris\core\db\device\mongodb
-         */
-        protected $device;
-        /**/
-
-        /**
-         * Name of collection the dataobject has access to.
-         *
-         * @octdoc  p:dataobject/$collection
-         * @var     string
-         */
-        protected $collection;
-        /**/
-
         /**
          * Constructor.
          *
@@ -49,105 +31,78 @@ namespace org\octris\core\db\device\mongodb {
         public function __construct(\org\octris\core\db\device\mongodb $device, $collection, array $data = array())
         /**/
         {
-            $this->device     = $device;
-            $this->collection = $collection;
-
-            if (isset($data['_id'])) {
-                $this->data['_id'] = (is_object($data['_id']) && $data['_id'] instanceof \MongoId
-                                        ? $data['_id']
-                                        : new \MongoId($data['_id']));
-
-                unset($data['_id']);
-            }
-
-            parent::__construct($data);
+            parent::__construct($device, $collection, $data);
         }
 
+        /** Type casting **/
+        
         /**
-         * Make sure that object Id get's reset, when object is cloned, because no duplicate Ids
-         * are allowed for objects in a collection.
+         * Cast a PHP type to DB internal type.
          *
-         * @octdoc  m:dataobject/__clone
+         * @octdoc  m:dataobject/castPhpToDb
+         * @param   mixed               $value              Value to cast.
+         * @param   string              $name               Name of the value in the data structure.
+         * @return  mixed                                   Casted value.
          */
-        public function __clone()
+        public function castPhpToDb($value, $name)
         /**/
         {
-            unset($this->data['_id']);
+            if ($name == '_id') {
+                // _id -> MongoId
+                $return = new \MongoId($value);
+            } elseif (is_object($value)) {
+                if ($value instanceof \org\octris\core\type\number) {
+                    // number -> float -or- MongoInt64
+                    $return = ($value->isDecimal()
+                                ? (float)(string)$value
+                                : new \MongoInt64((string)$value));
+                } elseif ($value instanceof \org\octris\core\type\money) {
+                    // money -> float
+                   $return = (float)(string)$value;
+                } elseif ($value instanceof \DateTime) {
+                    // datetime -> MongoDate
+                    $tmp = explode('.', $value->format('U.u'));
 
-            parent::__clone();
-        }
-
-        /**
-         * Save dataobject to collection.
-         *
-         * @octdoc  m:dataobject/save
-         */
-        public function save()
-        /**/
-        {
-            $cn = $this->device->getConnection(\org\octris\core\db::T_DB_MASTER);
-            $cl = $cn->getCollection($this->collection);
-
-            $tmp = $this->data;         /*  workaround of a strange reference issue with pecl_mongo:
-                                         *  https://jira.mongodb.org/browse/PHP-122
-                                         */
-
-            if (!isset($tmp['_id'])) {
-                // insert new object
-                $cl->insert($tmp);
-
-                if (isset($tmp['_id'])) {
-                    $this->data['_id'] = $tmp['_id'];
+                    $return = new \MongoDate($tmp[0], $tmp[1]);
+                } elseif ($value instanceof \org\octris\core\db\type\dbref) {
+                    // dbref -> \MongoDBRef
+                    $return = \MongoDBRef::create($value->collection, $value->key);
+                } else {
+                    $return = (string)$value;
                 }
             } else {
-                // update object
-                $_id = $tmp['_id'];
-                unset($tmp['_id']);
-
-                $cl->update(
-                    array('_id'  => $_id),
-                    array('$set' => $tmp)
-                );
-            }
-
-            $cn->release();
-        }
-
-        /** ArrayAccess **/
-
-        /**
-         * Set object property.
-         *
-         * @octdoc  m:dataobject/offsetSet
-         * @param   string          $name                   Name of property to set.
-         * @param   mixed           $value                  Value to set for property.
-         */
-        public function offsetSet($name, $value)
-        /**/
-        {
-            if ($name == '_id') {
-                throw new \Exception('Property "_id" is read-only');
-            } elseif ($name === null) {
-                throw new \Exception('Property name cannot be null');
-            } else {
-                parent::offsetSet($name, $value);
+                $return = $value;
             }
         }
-
+        
         /**
-         * Unset an object property.
+         * Cast a DB internal type to PHP type.
          *
-         * @octdoc  m:dataobject/offsetUnset
-         * @param   string          $name                   Name of property to unset.
+         * @octdoc  m:dataobject/castDbToPhp
+         * @param   mixed               $value              Value to cast.
+         * @param   string              $name               Name of the value in the data structure.
+         * @return  mixed                                   Casted value.
          */
-        public function offsetUnset($name)
+        public function castDbToPhp($value, $name)
         /**/
         {
-            if ($name == '_id') {
-                throw new \Exception('property "_id" is read-only');
-            } else {
-                parent::offsetUnset($name);
-            }
+            if (is_object($value)) {
+               if ($value instanceof \MongoDate) {
+                   $return = new \org\octris\core\type\datetime((float)($value->sec . '.' . $value->usec));
+               } elseif ($value instanceof \MongoId) {
+                   $return = (string)$value;
+               } elseif ($value instanceof \MongoInt32) {
+                   $return = new \org\octris\core\type\number((string)$value);
+               } elseif ($value instanceof \MongoInt64) {
+                   $return = new \org\octris\core\type\number((string)$value);
+               } else {
+                   $return = $value;
+               }
+           } else {
+               $return = $value;
+           }
+
+           return $return;
         }
     }
 }
