@@ -115,7 +115,7 @@ namespace org\octris\core\db\device\mongodb {
         public function fetch($key)
         /**/
         {
-            $cursor = $this->query(array('_id' => $key));
+            $cursor = $this->query(array('_id' => new \MongoId($key)));
 
             return ($cursor->next() ? $cursor->current : false);
         }
