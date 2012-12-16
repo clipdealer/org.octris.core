@@ -30,14 +30,26 @@ namespace org\octris\core\db\type {
         /**/
 
         /**
+         * Reference to dataobject the subobject belongs to.
+         * 
+         * @octdoc  p:subobject/$dataobject
+         * @var     \org\octris\core\db\type\dataobject
+         */
+        protected $dataobject;
+        /**/
+
+        /**
          * Constructor.
          *
          * @octdoc  m:subobject/__construct
-         * @param   array           $data           Data to initialize object with,
+         * @param   array                                   $data           Data to initialize object with.
+         * @param   \org\octris\core\db\type\dataobject     $dataobject     Dataobject the subobject is part of.
          */
-        public function __construct(array $data = array())
+        public function __construct(array $data = array(), \org\octris\core\db\type\dataobject $dataobject)
         /**/
         {
+            $this->dataobject = $dataobject;
+            
             foreach ($data as $key => $value) {
                 $this[$key] = $value;
             }
@@ -154,7 +166,7 @@ namespace org\octris\core\db\type {
         /**/
         {
             if (is_array($value)) {
-                $value = $this->createSubObject($value);
+                $value = new self($value, $this->dataobject);
             }
 
             if ($name === null) {
