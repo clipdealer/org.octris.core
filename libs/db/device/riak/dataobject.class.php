@@ -124,6 +124,8 @@ namespace org\octris\core\db\device\riak {
             } else {
                 $return = $value;
             }
+            
+            return $return;
         }
         
         /**

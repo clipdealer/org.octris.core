@@ -73,6 +73,8 @@ namespace org\octris\core\db\device\mongodb {
             } else {
                 $return = $value;
             }
+            
+            return $return;
         }
         
         /**
