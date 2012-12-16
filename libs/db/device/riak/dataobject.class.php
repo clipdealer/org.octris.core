@@ -98,9 +98,10 @@ namespace org\octris\core\db\device\riak {
          *
          * @octdoc  m:dataobject/castPhpToDb
          * @param   mixed               $value              Value to cast.
+         * @param   string              $name               Name of the value in the data structure.
          * @return  mixed                                   Casted value.
          */
-        public function castPhpToDb($value)
+        public function castPhpToDb($value, $name)
         /**/
         {
             if (is_object($value) && !($value instanceof \org\octris\core\db\type\subobject)) {
@@ -130,9 +131,10 @@ namespace org\octris\core\db\device\riak {
          *
          * @octdoc  m:dataobject/castDbToPhp
          * @param   mixed               $value              Value to cast.
+         * @param   string              $name               Name of the value in the data structure.
          * @return  mixed                                   Casted value.
          */
-        public function castDbToPhp($value)
+        public function castDbToPhp($value, $name)
         /**/
         {
             return $value;
