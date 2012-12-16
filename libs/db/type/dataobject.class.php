@@ -193,7 +193,7 @@ namespace org\octris\core\db\type {
         /**
          * Cast a PHP type to DB internal type.
          *
-         * @octdoc  m:dataobject/castPhpToDb
+         * @octdoc  a:dataobject/castPhpToDb
          * @param   mixed               $value              Value to cast.
          * @param   string              $name               Name of the value in the data structure.
          * @return  mixed                                   Casted value.
@@ -204,7 +204,7 @@ namespace org\octris\core\db\type {
         /**
          * Cast a DB internal type to PHP type.
          *
-         * @octdoc  m:dataobject/castDbToPhp
+         * @octdoc  a:dataobject/castDbToPhp
          * @param   mixed               $value              Value to cast.
          * @param   string              $name               Name of the value in the data structure.
          * @return  mixed                                   Casted value.
