@@ -25,11 +25,39 @@ namespace org\octris\core\tpl {
     /**/
     {
         /**
+         * Escape attribute name within a tag.
+         *
+         * @octdoc  m:escape/escapeAttribute
+         * @param   string              $str                String to escape.
+         * @return  string                                  Escaped string.
+         */
+        public static function escapeAttribute($str)
+        /**/
+        {
+            return $str;
+        }
+        
+        /**
          * Escape HTML tag attribute.
          *
          * @octdoc  m:escape/escapeAttributeValue
+         * @param   string              $str                String to escape.
+         * @return  string                                  Escaped string.
          */
         public static function escapeAttributeValue($str)
+        /**/
+        {
+            return $str;
+        }
+
+        /**
+         * Escape content to put into CSS context.
+         *
+         * @octdoc  m:escape/escapeCss
+         * @param   string              $str                String to escape.
+         * @return  string                                  Escaped string.
+         */
+        public static function escapeCss($str)
         /**/
         {
             return $str;
@@ -39,6 +67,8 @@ namespace org\octris\core\tpl {
          * Escape content to put into HTML context to prevent XSS attacks.
          *
          * @octdoc  m:escape/escapeHtml
+         * @param   string              $str                String to escape.
+         * @return  string                                  Escaped string.
          */
         public static function escapeHtml($str)
         /**/
@@ -50,8 +80,10 @@ namespace org\octris\core\tpl {
          * Escape javascript.
          *
          * @octdoc  m:escape/escapeJs
+         * @param   string              $str                String to escape.
+         * @return  string                                  Escaped string.
          */
-        public static function escapeJs($str)
+        public static function escapeJavascript($str)
         /**/
         {
             return $str;
@@ -61,13 +93,15 @@ namespace org\octris\core\tpl {
          * Escape URI attribute value.
          *
          * @octdoc  m:escape/escapeUri
+         * @param   string              $str                String to escape.
+         * @return  string                                  Escaped string.
          */
         public static function escapeUri($str)
         /**/
         {
             if (preg_match('/^javascript:/i', $str)) {
                 // switch to javascript escaping instead
-                $str = $this->escapeJs($str);
+                $str = $this->escapeJavascript($str);
             }
 
             return $str;
