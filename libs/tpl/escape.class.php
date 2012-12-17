@@ -13,13 +13,12 @@ namespace org\octris\core\tpl {
     /**
      * Implements static methods for auto-escaping functionality.
      *
-     * Related articles:
-     *
-     * * https://www.owasp.org/index.php/XSS_(Cross_Site_Scripting)_Prevention_Cheat_Sheet
-     *
      * @octdoc      c:tpl/escape
      * @copyright   copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
+     *
+     * @ref https://www.owasp.org/index.php/XSS_(Cross_Site_Scripting)_Prevention_Cheat_Sheet
+     * @ref https://wiki.php.net/rfc/escaper
      */
     class escape
     /**/
