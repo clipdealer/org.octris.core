@@ -96,13 +96,13 @@ namespace org\octris\core\app\cli {
          * history path is provided.
          *
          * @octdoc  m:readline/getInstance
-         * @param   string          $history                Optional path to a history file.
+         * @param   string          $history_file           Optional path to a history file.
          * @return  \org\octris\core\app\cli\readline       Instance of readline.
          */
-        public final static function getInstance($history = '')
+        public final static function getInstance($history_file = '')
         /**/
         {
-            if (!isset(self::$instances[$history])) {
+            if (!isset(self::$instances[$history_file])) {
                 if (is_null(self::$class)) {
                     // detect and decide wich readline driver to use
                     foreach (self::$drivers as $driver) {
@@ -113,10 +113,10 @@ namespace org\octris\core\app\cli {
                     }
                 }
 
-                self::$instances[$history] = new self::$class((self::$history && !!$history ? $history : ''));
+                self::$instances[$history_file] = new self::$class((self::$history && !!$history_file ? $history_file : ''));
             }
 
-            return self::$instances[$history];
+            return self::$instances[$history_file];
         }
 
         /**
@@ -124,9 +124,13 @@ namespace org\octris\core\app\cli {
          * creation.
          *
          * @octdoc  m:readline/__construct
-         * @param   string          $history                History file to use for this readline instance.
+         * @param   string          $history_file           History file to use for this readline instance.
          */
-        protected function __construct($history = '')
+        protected function __construct($history_file = '')
+        /**/
+        {
+            $this->history_file = $history_file;
+        }
         /**/
         {
             $this->history_file = $history;
