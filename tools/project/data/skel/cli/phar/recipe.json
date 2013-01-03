@@ -1,0 +1,8 @@
+{
+	"meta": {
+		"application": "{{$directory}}",
+		"author": 	   "{{$author}}",
+		"email":  	   "{{$email}}",
+		"description": "Build recipe for '{{$directory}}'"
+	}
+}
