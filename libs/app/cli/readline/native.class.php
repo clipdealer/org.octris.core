@@ -21,6 +21,24 @@ namespace org\octris\core\app\cli\readline {
     /**/
     {
         /**
+         * Instance counter.
+         *
+         * @octdoc  p:native/$instances
+         * @var     int
+         */
+        private static $instances = 0;
+        /**/
+        
+        /**
+         * Instance number.
+         *
+         * @octdoc  p:native/$instance
+         * @var     int
+         */
+        private $instance = 0;
+        /**/
+        
+        /**
          * Name of history file that was used for previous call to readline.
          *
          * @octdoc  p:native/$last_history
@@ -29,6 +47,40 @@ namespace org\octris\core\app\cli\readline {
         private static $last_history = '';
         /**/
         
+        /**
+         * Last used instance.
+         *
+         * @octdoc  p:native/$last_instance
+         * @var     int
+         */
+        private static $last_instance = 0;
+        /**/
+        
+        /**
+         * Completion function.
+         *
+         * @octdoc  p:native/$completion_callback
+         * @var     null|callable
+         */
+        protected $completion_callback = null;
+        /**/
+        
+        /**
+         * Constructor.
+         *
+         * @octdoc  m:native/__construct
+         * @param   string          $history                History file to use for this readline instance.
+         */
+        protected function __construct($history = '')
+        /**/
+        {
+            $this->instance = ++self::$instances;
+            
+            parent::__construct($history);
+            
+            self::$
+        }
+
         /**
          * Detect native readline support.
          *
@@ -63,21 +115,48 @@ namespace org\octris\core\app\cli\readline {
         }
         
         /**
-         * Change history.
+         * Register a completion function.
          *
-         * @octdoc  m:native/switchHistory
+         * @octdoc  m:native/setCompletion
+         * @param   callable        $callback               Callback to call for completion.
          */
-        private function switchHistory()
+        public function setCompletion(\callable $callback)
         /**/
         {
-            if ($this->history_file != self::$last_history) {
-                if ($this->history_file == '') {
-                    readline_clear_history();
+            $this->completion_callback = $callback;
+        }
+
+        /**
+         * Switch readline instance settings. Changes history if there are multiple 
+         * readline instances with different history files and changes completion callback for 
+         * different readline instances.
+         *
+         * @octdoc  m:native/switchSettings
+         */
+        protected function switchSettings()
+        /**/
+        {
+            if ($this->instance_id != self::$last_instance) {
+                // switch instance settings
+                if (is_null($this->completion_callback)) {
+                    readline_completion_function(function($input, $index) {});
                 } else {
-                    readline_read_history($this->history_file);
+                    readline_completion_function(function($input, $index) {
+                        return $this->complete($input, $index, $this->completion_callback);
+                    });
                 }
                 
-                self::$last_history = $this->history_file;
+                if ($this->history_file != self::$last_history) {
+                    // change history
+                    readline_write_history(self::$last_file);
+                    readline_clear_history();
+                
+                    if ($this->history_file != '') {
+                        readline_read_history($this->history_file);
+                    }
+                
+                    self::$last_history = $this->history_file;
+                }
             }
         }
         
@@ -87,12 +166,34 @@ namespace org\octris\core\app\cli\readline {
          * @octdoc  m:native/addHistory
          * @param   string      $line       Line to add to the history file.
          */
-        public function addHistory($line)
+        protected function addHistory($line)
         /**/
         {
             if ($this->history_file) {
                 readline_add_history($line);
             }
+        }
+        
+        /**
+         * Completion main function.
+         *
+         * @octdoc  m:native/complete
+         * @param   string      $input      Input from readline.
+         * @param   string      $index      Position in line where completion was initiated.
+         * @param   callable    $callback   A callback to call for processing completion.
+         * @return  array                   Matches.
+         */
+        public function complete($input, $index, \callable $callback)
+        /**/
+        {
+            $info = readline_info();
+            $line = substr($info['line_buffer'], 0, $info['end']);
+
+            foreach ($callback($input, $line) as $match) {
+                $matches[] = substr($match, $index);
+            }
+            
+            return $matches;
         }
         
         /**
@@ -105,7 +206,7 @@ namespace org\octris\core\app\cli\readline {
         public function readline($prompt = '')
         /**/
         {
-            $this->switchHistory();
+            $this->switchSettings();
             
             $return = ltrim(\readline($prompt));
             
