@@ -97,7 +97,7 @@ namespace org\octris\core\app\cli {
          *
          * @octdoc  m:readline/getInstance
          * @param   string          $history                Optional path to a history file.
-         * @return  \org\octris\core\app\cli\readlin        Instance of readline.
+         * @return  \org\octris\core\app\cli\readline       Instance of readline.
          */
         public final static function getInstance($history = '')
         /**/
