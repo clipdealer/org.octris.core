@@ -131,9 +131,17 @@ namespace org\octris\core\app\cli {
         {
             $this->history_file = $history_file;
         }
+        
+        /**
+         * Register a completion function. Note, that completion functions are not supported for all readline
+         * drivers. Therefore this is a dummy method to be implemented by the drivers, that support completion.
+         *
+         * @octdoc  m:readline/setCompletion
+         * @param   callable        $callback               Callback to call for completion.
+         */
+        public function setCompletion(\callable $callback)
         /**/
         {
-            $this->history_file = $history;
         }
     }
 }
