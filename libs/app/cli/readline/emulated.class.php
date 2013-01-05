@@ -16,29 +16,51 @@ namespace org\octris\core\app\cli\readline {
      * emulated readline support does not support a history file.
      *
      * @octdoc      c:readline/emulated
-     * @copyright   copyright (c) 2011 by Harald Lapp
+     * @copyright   copyright (c) 2011-2013 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    class emulated extends \org\octris\core\app\cli\readline
+    class emulated implements \org\octris\core\app\cli\readline_if
     /**/
     {
+        /**
+         * Constructor.
+         *
+         * @octdoc  m:emulated/__construct
+         * @param   string          $history_file               History file to use for this readline instance.
+         */
+        public function __construct($history_file = '')
+        /**/
+        {
+        }
+
         /**
          * Detect emulated readline support. This is only a dummy, because emulated readline is
          * always available.
          *
-         * @octdoc  m:native/detect
-         * @return  array                   Returns an array with two boolean values.
+         * @octdoc  m:emulated/detect
+         * @return  bool                    Returns always true.
          */
         public static function detect()
         /**/
         {
-            return array(true, false);
+            return true;
         }
         
         /**
+         * Register a completion function.
+         *
+         * @octdoc  m:emulated/setCompletion
+         * @param   callable        $callback               Callback to call for completion.
+         */
+        public function setCompletion(callable $callback)
+        /**/
+        {
+        }
+
+        /**
          * Get user input from STDIN.
          *
-         * @octdoc  m:native/readline
+         * @octdoc  m:emulated/readline
          * @param   string      $prompt     Optional prompt to print.
          * @return  string                  User input.
          */

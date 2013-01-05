@@ -14,10 +14,10 @@ namespace org\octris\core\app\cli\readline {
      * Wrapper for native (built-in) readline functionality.
      *
      * @octdoc      c:readline/native
-     * @copyright   copyright (c) 2011 by Harald Lapp
+     * @copyright   copyright (c) 2011-2013 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    class native extends \org\octris\core\app\cli\readline
+    class native implements \org\octris\core\app\cli\readline_if
     /**/
     {
         /**
@@ -32,12 +32,21 @@ namespace org\octris\core\app\cli\readline {
         /**
          * Instance number.
          *
-         * @octdoc  p:native/$instance
+         * @octdoc  p:native/$instance_id
          * @var     int
          */
-        private $instance = 0;
+        private $instance_id = 0;
         /**/
         
+        /**
+         * Whether the readline implementation supports an input history.
+         *
+         * @octdoc  p:native/$has_history
+         * @var     bool
+         */
+        protected static $has_history = false;
+        /**/
+
         /**
          * Name of history file that was used for previous call to readline.
          *
@@ -66,28 +75,32 @@ namespace org\octris\core\app\cli\readline {
         /**/
         
         /**
+         * History file bound to instance of readline. If no file is specified, the history will not be used.
+         *
+         * @octdoc  p:native/$history_file
+         * @var     string
+         */
+        protected $history_file = '';
+        /**/
+
+        /**
          * Constructor.
          *
          * @octdoc  m:native/__construct
-         * @param   string          $history                History file to use for this readline instance.
+         * @param   string          $history_file               History file to use for this readline instance.
          */
-        protected function __construct($history = '')
+        public function __construct($history_file = '')
         /**/
         {
-            $this->instance = ++self::$instances;
-            
-            parent::__construct($history);
-            
-            self::$
+            $this->history_file = (self::$has_history ? $history_file : '');
+            $this->instance_id  = ++self::$instances;
         }
 
         /**
          * Detect native readline support.
          *
          * @octdoc  m:native/detect
-         * @return  mixed                   Returns either bool false, if native readline support is available or an array with
-         *                                  two boolean values. First one is true, second one is set to true only, if history is
-         *                                  supported by readline driver.
+         * @return  bool                    Whether native readline is supported.
          */
         public static function detect()
         /**/
@@ -95,10 +108,10 @@ namespace org\octris\core\app\cli\readline {
             $history = false;
             
             if (($detected = function_exists('readline'))) {
-                $history = function_exists('readline_read_history');
+                self::$has_history = function_exists('readline_read_history');
             }
             
-            return ($detected ? array(true, $history) : false);
+            return $detected;
         }
         
         /**
@@ -120,7 +133,7 @@ namespace org\octris\core\app\cli\readline {
          * @octdoc  m:native/setCompletion
          * @param   callable        $callback               Callback to call for completion.
          */
-        public function setCompletion(\callable $callback)
+        public function setCompletion(callable $callback)
         /**/
         {
             $this->completion_callback = $callback;
@@ -157,6 +170,8 @@ namespace org\octris\core\app\cli\readline {
                 
                     self::$last_history = $this->history_file;
                 }
+
+                self::$last_instance = $this->instance_id;
             }
         }
         
@@ -183,7 +198,7 @@ namespace org\octris\core\app\cli\readline {
          * @param   callable    $callback   A callback to call for processing completion.
          * @return  array                   Matches.
          */
-        public function complete($input, $index, \callable $callback)
+        public function complete($input, $index, callable $callback)
         /**/
         {
             $info = readline_info();
