@@ -50,14 +50,23 @@ namespace {{$namespace}}\libs {
         public static function autoload($classpath)
         /**/
         {
-			$deps = ((self::$is_phar && strpos($class, '{{$namespace}}') !== 0)
-					 ? __DIR__ . '../deps/'
-					 : '');
-	
-            $pkg = preg_replace('|\\\\|', '/', preg_replace('|\\\\|', '.', ltrim($classpath, '\\\\'), 2)) . '.class.php';
+            $classpath = ltrim($classpath, '\\\\');
+
+            if (strpos($classpath, __NAMESPACE__) === 0) {
+                // application library
+                $pkg = __DIR__ . str_replace('\\', '/', substr($classpath, strlen(__NAMESPACE__)));
+            } else {
+                // dependency
+                $pkg = str_replace('\\', '/', preg_replace('|\\\\|', '.', $classpath, 2));
+
+                if (self::$is_phar) {
+                    // from within a phar
+                    $pkg = __DIR__ . '/../deps/' . $pkg;
+                }
+            }
 
             try {
-                include_once($deps . $pkg);
+                include_once($pkg);
             } catch(\Exception $e) {
             }
         }
