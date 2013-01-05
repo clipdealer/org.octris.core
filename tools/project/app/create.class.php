@@ -208,12 +208,13 @@ namespace org\octris\core\project\app {
             );
 
             foreach ($iterator as $filename => $cur) {
-                $rel  = substr($filename, $len);
-                $dst  = $dir . '/' . $rel;
-                $path = dirname($dst);
-                $base = basename($filename);
-                $ext  = preg_replace('/^\.?[^\.]+?(\..+|)$/', '\1', $base);
-                $base = basename($filename, $ext);
+                $rel   = substr($filename, $len);
+                $dst   = $dir . '/' . $rel;
+                $path  = dirname($dst);
+                $base  = basename($filename);
+                $ext   = preg_replace('/^\.?[^\.]+?(\..+|)$/', '\1', $base);
+                $base  = basename($filename, $ext);
+                $perms = $cur->getPerms();
 
                 if (substr($base, 0, 1) == '$' && isset($this->data[$base = ltrim($base, '$')])) {
                     // resolve variable in filename
@@ -222,7 +223,7 @@ namespace org\octris\core\project\app {
 
                 if (!is_dir($path)) {
                     // create destination directory
-                    mkdir($path, 0755, true);
+                    mkdir($path, $cur->getPathInfo()->getPerms(), true);
                 }
 
                 if (!$this->isBinary($filename)) {
@@ -232,6 +233,8 @@ namespace org\octris\core\project\app {
                 } else {
                     copy($filename, $dst);
                 }
+
+                chmod($dst, $perms);
             }
 
             print "done.\n";
