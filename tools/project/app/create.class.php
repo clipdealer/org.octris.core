@@ -204,7 +204,7 @@ namespace org\octris\core\project\app {
 
             $directories = array();
             $iterator    = new \RecursiveIteratorIterator(
-                new \RecursiveDirectoryIterator($src)
+                new \RecursiveDirectoryIterator($src, \FilesystemIterator::SKIP_DOTS)
             );
 
             foreach ($iterator as $filename => $cur) {
