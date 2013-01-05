@@ -11,9 +11,9 @@
  */
 
 /**
- * {{$description}}
+ * Application launcher.
  *
- * @octdoc      h:{{$module}}/run.php
+ * @octdoc      h:{{$module}}/{{$module}}.php
  * @copyright   copyright (c) {{$year}} by {{$company}}
  * @author      {{$author}} <{{$email}}>
  */
