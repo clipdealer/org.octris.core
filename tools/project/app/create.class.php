@@ -111,7 +111,7 @@ namespace org\octris\core\project\app {
                 $prj[$k] = stdio::getPrompt(sprintf("%s [%%s]: ", $k), $v);
             }
 
-            // $prj->save();
+            $prj->save();
 
             print "\n";
 
