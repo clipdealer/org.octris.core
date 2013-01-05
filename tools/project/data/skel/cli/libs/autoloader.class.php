@@ -63,5 +63,5 @@ namespace {{$namespace}}\libs {
         }
     }
 
-    spl_autoload_register(array('{{$namespace}}\autoloader', 'autoload'));
+    spl_autoload_register(array('{{$namespace}}\libs\autoloader', 'autoload'));
 }
