@@ -35,6 +35,15 @@ namespace org\octris\core\project\app {
         /**/
 
         /**
+         * Type of application to create.
+         *
+         * @octdoc  p:create/$type
+         * @var     string
+         */
+        protected $type;
+        /**/
+
+        /**
          * Helper method to test whether a file is binary or text file.
          *
          * @octdoc  m:create/isBinary
@@ -106,6 +115,9 @@ namespace org\octris\core\project\app {
 
             print "\n";
 
+            $this->type = stdio::getPrompt('application type (w)eb / (c)li: ', 'w', true);
+            print "\n";
+
             $module = stdio::getPrompt('module [%s]: ', $module, true);
             $year   = stdio::getPrompt('year [%s]: ', date('Y'), true);
 
@@ -168,7 +180,8 @@ namespace org\octris\core\project\app {
                 die("unable to resolve work directory\n");
             }
 
-            $dir = substr($dir, 0, strrpos($dir, '/')) . '/' . $this->data['directory'];
+            $type = ($this->type == 'w' ? 'web' : 'cli');
+            $dir  = substr($dir, 0, strrpos($dir, '/')) . '/' . $this->data['directory'];
 
             if (is_dir($dir)) {
                 die(sprintf("there seems to be already a project at '%s'\n", $dir));
@@ -176,7 +189,7 @@ namespace org\octris\core\project\app {
 
             // process skeleton and write project files
             $tpl = new \org\octris\core\tpl();
-            $tpl->addSearchPath(__DIR__ . '/../data/skel/web/');
+            $tpl->addSearchPath(__DIR__ . '/../data/skel/' . $type . '/');
             $tpl->setValues($this->data);
 
             \org\octris\core\tpl\compiler\constant::setConstant(
@@ -184,7 +197,7 @@ namespace org\octris\core\project\app {
                 \org\octris\core\app\cli::getPath(\org\octris\core\app\cli::T_PATH_BASE, '')
             );
 
-            $src = __DIR__ . '/../data/skel/web/';
+            $src = __DIR__ . '/../data/skel/' . $type . '/';
             $len = strlen($src);
 
             mkdir($dir, 0755);
