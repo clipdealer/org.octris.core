@@ -66,7 +66,7 @@ namespace {{$namespace}}\libs {
             }
 
             try {
-                include_once($pkg);
+                include_once($pkg . '.class.php');
             } catch(\Exception $e) {
             }
         }
