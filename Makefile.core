@@ -14,8 +14,8 @@
 # including the OCTRiS framework itself. This makefile is not intended to be called directly. Instead it's 
 # included in the project's own Makefiles.
 #
-# @octdoc       h:./Makefile
-# @copyright    copyright (c) 2006-2012 by Harald Lapp
+# @octdoc       h:./Makefile.core
+# @copyright    copyright (c) 2006-2013 by Harald Lapp
 # @author       Harald Lapp <harald@octris.org>
 #**
 
@@ -43,6 +43,7 @@ help::
 	@echo "install          install project"
 	@echo "uninstall        uninstall project"
 	@echo "test             run all tests of a project"
+	@echo "lint             execute lint tool"
 	@echo ""
 	@echo "cleanup          cleanup cache files"
 	@echo "compile          compile template files"
