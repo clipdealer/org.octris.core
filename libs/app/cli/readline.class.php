@@ -18,6 +18,11 @@ namespace org\octris\core\app\cli {
      * @octdoc      c:cli/readline
      * @copyright   copyright (c) 2011 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
+     *
+     * @depends     \org\octris\core\app\cli\readline\bash
+     * @depends     \org\octris\core\app\cli\readline\emulated
+     * @depends     \org\octris\core\app\cli\readline\native
+     * @depends     \org\octris\core\app\cli\readline_if
      */
     class readline
     /**/

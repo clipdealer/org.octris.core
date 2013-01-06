@@ -18,6 +18,9 @@ namespace org\octris\core\app\cli\readline {
      * @octdoc      c:readline/emulated
      * @copyright   copyright (c) 2011-2013 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
+     *
+     * @depends     \org\octris\core\app\cli\readline
+     * @depends     \org\octris\core\app\cli\readline_if
      */
     class emulated implements \org\octris\core\app\cli\readline_if
     /**/

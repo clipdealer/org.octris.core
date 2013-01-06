@@ -14,8 +14,10 @@ namespace org\octris\core\app\cli {
      * Input/output functionality for cli applications.
      *
      * @octdoc      c:cli/stdio
-     * @copyright   copyright (c) 2011 by Harald Lapp
+     * @copyright   copyright (c) 2011-2013 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
+     *
+     * @depends     \org\octris\core\app\cli\readline
      */
     class stdio
     /**/
