@@ -1,0 +1,63 @@
+# vim:set noexpandtab:
+
+#
+# This file is part of the 'org.octris.core' package.
+#
+# (c) Harald Lapp <harald@octris.org>
+#
+# For the full copyright and license information, please view the LICENSE
+# file that was distributed with this source code.
+#
+
+#**
+# This is the makefile used to build cli applications.
+#
+# @octdoc       h:./Makefile.cli
+# @copyright    copyright (c) 2013 by Harald Lapp
+# @author       Harald Lapp <harald@octris.org>
+#**
+
+SHELL:=$(shell which bash)
+CURSYMDIR:=$(shell pwd)
+
+#**
+# The target help displays general information and available makefile targets.
+#
+# @octdoc       t:Makefile/help
+#**
+help::
+	@echo ""
+	@echo "OCTRiS Application Framework"
+	@echo "copyright (c) 2013 by Harald Lapp"
+	@echo ""
+	@echo "targets for project '$(project)'"
+	@echo ""
+	@echo "help             this help text"
+	@echo ""
+	@echo "build            create self-contained executable from project"
+	@echo "getdeps          executes project launcher to collect php related dependencies"
+	@echo "lint             execute lint tool"
+
+#**
+# Target for executing build-tool.
+#
+# @octdoc       t:Makefile/build
+#**
+build:
+	@$(CURSYMDIR)/../../tools/org.octris.core/project/build.php -p $(project)
+
+#**
+# Target for executing dependency collector.
+#
+# @octdoc 		t:Makefile/getdeps
+#**
+getdeps:
+	@$(CURSYMDIR)/../../tools/org.octris.core/project/getdeps.php -p $(project)
+
+#**
+# Execute lint tool.
+#
+# @octdoc       t:Makefile/lint
+#**
+lint:
+	@$(CURSYMDIR)/../../tools/org.octris.core/project/lint.php -p $(project)
