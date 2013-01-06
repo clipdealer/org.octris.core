@@ -42,12 +42,12 @@ namespace {{$namespace}}\libs {
 		}
 	
         /**
-         * Class Autoloader.
+         * Resolve path of a class for inclusion using the autoloader.
          *
-         * @octdoc  m:autoloader/autoload
+         * @octdoc  m:autoloader/resolve
          * @param   string      $classpath      Path of class to load.
          */
-        public static function autoload($classpath)
+        public static function resolve($classpath)
         /**/
         {
             $classpath = ltrim($classpath, '\\\\');
@@ -65,8 +65,22 @@ namespace {{$namespace}}\libs {
                 }
             }
 
+            return $pkg . '.class.php';
+        }
+
+        /**
+         * Class Autoloader.
+         *
+         * @octdoc  m:autoloader/autoload
+         * @param   string      $classpath      Path of class to load.
+         */
+        public static function autoload($classpath)
+        /**/
+        {
+            $pkg = self::resolve($classpath);
+
             try {
-                include_once($pkg . '.class.php');
+                include_once($pkg);
             } catch(\Exception $e) {
             }
         }
