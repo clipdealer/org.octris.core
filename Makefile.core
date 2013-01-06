@@ -181,7 +181,7 @@ createdirs:
 # @octdoc       t:Makefile/onlyroot
 #**
 onlyroot:
-	@if [ "$(whoami)" != "root" ]; then \
+	@if [ "$(shell whoami)" != "root" ]; then \
 		echo ""; \
 		echo "This target can only be run by root user"; \
 		echo ""; \
