@@ -192,7 +192,9 @@ namespace org\octris\core\project\app {
             } else {
                 printf("found %d dependenc%s:\n\n", $cnt, ($cnt == 1 ? 'y' : 'ies'));
 
-                print implode("\n", $deps) . "\n\n";
+                print '- ' . implode("\n- ", $deps) . "\n\n";
+
+                print "copy the list above and paste it in your recipe.yml at the appropriate positition.\n";
             }
         }
     }
