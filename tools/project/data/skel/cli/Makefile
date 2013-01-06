@@ -20,3 +20,4 @@
 include ../org.octris.core/Makefile.cli
 
 project = "{{$directory}}"
+appname = "{{$module}}"
