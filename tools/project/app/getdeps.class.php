@@ -136,7 +136,7 @@ namespace org\octris\core\project\app {
                             if (preg_match_all('/^\s*\*\s+@depends\s+([^\s]+)\s*$/m', $comment, $match)) {
                                 foreach ($match[1] as $dependency) {
                                     $filename = stream_resolve_include_path(
-                                        $autoloader::resolve($dependency)
+                                        $dependency = $autoloader::resolve($dependency)
                                     );
 
                                     if (!in_array($filename, $resolved) && !in_array($filename, $resolve)) {
