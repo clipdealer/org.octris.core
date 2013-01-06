@@ -16,7 +16,7 @@ namespace org\octris\core\project\app {
     use \org\octris\core\validate as validate;
 
     /**
-     *  a project.
+     * Determine dependencies of a project.
      *
      * @octdoc      c:app/getdeps
      * @copyright   copyright (c) 2013 by Harald Lapp
