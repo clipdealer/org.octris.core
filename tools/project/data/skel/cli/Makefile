@@ -17,22 +17,6 @@
 # @author       {{$author}} <{{$email}}>
 #**
 
-CURSYMDIR:=$(shell pwd)
+include ../org.octris.core/Makefile.cli
 
 project = "{{$directory}}"
-
-#**
-# The target help displays general information and available makefile targets.
-#
-# @octdoc       t:Makefile/help
-#**
-help::
-	@echo "usage: make build"
-
-#**
-# Target for executing build-tool.
-#
-# @octdoc       t:Makefile/build
-#**
-build:
-	@$(CURSYMDIR)/../../tools/org.octris.core/project/build.php -p $(project)
