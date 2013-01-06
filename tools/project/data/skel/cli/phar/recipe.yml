@@ -24,7 +24,9 @@ meta:
     application:    "{{$directory}}"
     author:         "{{$author}}"
     email:          "{{$email}}"
-    description:    "Build recipe for '{{$directory}}'"
+    copyright:      "copyright (c) {{$year}} by {{$company}}"
+    license:        "For the full copyright and license information, please view the LICENSE that was distributed with this file"
+    description:    ""
 
 #**
 # Application dependencies.
@@ -34,8 +36,11 @@ meta:
 dependencies:
     #**
     # To build applications that do not depend on external php libraries
-    # this section should be filled with names of all classes to be 
-    # bundled with the phar package.
+    # this section should be filled with pathes to all classes to be 
+    # bundled with the phar package. The pathes can be relative and 
+    # absolute. Relative pathes need to be resolvable by the autoloader
+    # of the application.
+    #
     #
     # @octdoc       h:dependencies/php
     #**
