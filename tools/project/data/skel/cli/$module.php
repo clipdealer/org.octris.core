@@ -10,6 +10,12 @@
  * file that was distributed with this source code.
  */
 
+/*
+ * WARNING!!!
+ *
+ * MODIFICATION OF THIS FILE MAY LEAD TO UNEXPECTED BEHAVIOUR!
+ */
+
 /**
  * Application launcher.
  *
