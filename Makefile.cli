@@ -39,7 +39,7 @@ help::
 	@echo ""
 	@echo "getdeps          executes project launcher to collect php related dependencies"
 	@echo "build            create self-contained executable from project"
-	@echo "install          build project and install application"
+	@echo "install          Install application in '$(DESTDIR)'"
 
 #**
 # Target for executing build-tool.
@@ -66,11 +66,11 @@ lint:
 	@$(CURSYMDIR)/../../tools/org.octris.core/project/lint.php -p $(project)
 
 #**
-# Build project and install application.
+# Install application.
 #
 # @octdoc       t:Makefile/install
 #**
-install: onlyroot build
+install: onlyroot
 	@echo "installing '$(appname)' in '$(DESTDIR)'"
 	@if [ ! -d `dirname $(DESTDIR)` ]; then \
 		mkdir -p $(DESTDIR); \
