@@ -19,6 +19,7 @@
 
 SHELL:=$(shell which bash)
 CURSYMDIR:=$(shell pwd)
+DESTDIR:=$(shell if [[ "$(DESTDIR)" == "" ]]; then echo "/usr/local/bin"; else echo $(DESTDIR); fi)
 
 #**
 # The target help displays general information and available makefile targets.
@@ -34,9 +35,11 @@ help::
 	@echo ""
 	@echo "help             this help text"
 	@echo ""
-	@echo "build            create self-contained executable from project"
-	@echo "getdeps          executes project launcher to collect php related dependencies"
 	@echo "lint             execute lint tool"
+	@echo ""
+	@echo "getdeps          executes project launcher to collect php related dependencies"
+	@echo "build            create self-contained executable from project"
+	@echo "install          build project and install application"
 
 #**
 # Target for executing build-tool.
@@ -61,3 +64,28 @@ getdeps:
 #**
 lint:
 	@$(CURSYMDIR)/../../tools/org.octris.core/project/lint.php -p $(project)
+
+#**
+# Build project and install application.
+#
+# @octdoc       t:Makefile/install
+#**
+install: onlyroot build
+	@echo "installing '$(appname)' in '$(DESTDIR)'"
+	@if [ ! -d `dirname $(DESTDIR)` ]; then \
+		mkdir -p $(DESTDIR); \
+	fi
+	@cp $(CURSYMDIR)/build/$(appname) $(DESTDIR)/$(appname)
+
+#**
+# Checks if user is root. Exits makefile, if user is not root.
+#
+# @octdoc       t:Makefile/onlyroot
+#**
+onlyroot:
+	@if [ "$(shell whoami)" != "root" ]; then \
+		echo ""; \
+		echo "This target can only be run by root user"; \
+		echo ""; \
+		exit 1; \
+	fi
