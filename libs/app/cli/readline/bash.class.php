@@ -40,7 +40,7 @@ namespace org\octris\core\app\cli\readline {
          */
         protected static $cmd = '';
         /**/
-        
+
         /**
          * History file bound to instance of readline. If no file is specified, the history will not be used.
          *
@@ -60,7 +60,6 @@ namespace org\octris\core\app\cli\readline {
         /**/
         {
             $this->history_file = (self::$has_history ? $history_file : '');
-            $this->instance     = ++self::$instances;
         }
 
         /**
@@ -73,17 +72,17 @@ namespace org\octris\core\app\cli\readline {
         /**/
         {
             if (($detected = !!($cmd = exec('which bash')))) {
-                if (($detected = (preg_match('/builtin/', exec($cmd . ' -c "type type"')) && 
+                if (($detected = (preg_match('/builtin/', exec($cmd . ' -c "type type"')) &&
                                   preg_match('/builtin/', exec($cmd . ' -c "type read"'))))) {
                     self::$has_history = preg_match('/builtin/', exec($cmd . ' -c "type history"'));
 
                     self::$cmd = $cmd;
                 }
             }
-            
+
             return $detected;
         }
-        
+
         /**
          * Register a completion function.
          *
@@ -124,7 +123,7 @@ namespace org\octris\core\app\cli\readline {
             }
 
             $return = exec($cmd);
-            
+
             return $return;
         }
     }
