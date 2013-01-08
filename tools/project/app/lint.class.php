@@ -122,14 +122,12 @@ namespace org\octris\core\project\app {
             $iterator = $this->getIterator($work_dir, '/\.php$/', '/(\/data\/cldr\/|\/tools\/project\/data\/skel\/)/');
 
             foreach ($iterator as $filename => $cur) {
-                // system('/usr/bin/env php -l ' . escapeshellarg($filename));
+                system('/usr/bin/env php -l ' . escapeshellarg($filename));
             }
 
             // lint templates
-            // if (($tpl_dir = \org\octris\core\app\cli::getPath(\org\octris\core\app\cli::T_PATH_WORK_TPL, $this->project)) !== false) {
-            //     $iterator = $this->getIterator($tpl_dir, '/\.html$/');
-            if (($tpl_dir = \org\octris\core\app\cli::getPath(\org\octris\core\app\cli::T_PATH_WORK, $this->project)) !== false) {
-                $iterator = $this->getIterator($tpl_dir . '/tools/project/data/skel/', '/\.php$/');
+            if (($tpl_dir = \org\octris\core\app\cli::getPath(\org\octris\core\app\cli::T_PATH_WORK_TPL, $this->project)) !== false) {
+                $iterator = $this->getIterator($tpl_dir, '/\.html$/');
 
                 $tpl = new \org\octris\core\tpl\lint();
 
@@ -143,7 +141,22 @@ namespace org\octris\core\project\app {
                 }
             }
 
+            // lint skeleton in core framework
+            if ($this->project == 'org.octris.core' &&
+                ($tpl_dir = \org\octris\core\app\cli::getPath(\org\octris\core\app\cli::T_PATH_WORK, $this->project, 'tools/project/data/skel/')) !== false) {
+                $iterator = $this->getIterator($tpl_dir, '/\.php$/');
 
+                $tpl = new \org\octris\core\tpl\lint();
+
+                foreach ($iterator as $filename => $cur) {
+                    print $filename . "\n";
+
+                    try {
+                        $tpl->process($filename);
+                    } catch(\Exception $e) {
+                    }
+                }
+            }
 
             print "done.\n";
         }

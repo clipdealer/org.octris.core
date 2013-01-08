@@ -10,10 +10,16 @@
  * file that was distributed with this source code.
  */
 
-/**
- * {{$description}}
+/*
+ * WARNING!!!
  *
- * @octdoc      h:{{$module}}/run.php
+ * MODIFICATION OF THIS FILE MAY LEAD TO UNEXPECTED BEHAVIOUR!
+ */
+
+/**
+ * Application launcher.
+ *
+ * @octdoc      h:{{$module}}/{{$module}}.php
  * @copyright   copyright (c) {{$year}} by {{$company}}
  * @author      {{$author}} <{{$email}}>
  */

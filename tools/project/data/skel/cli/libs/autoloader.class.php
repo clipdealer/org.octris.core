@@ -42,6 +42,33 @@ namespace {{$namespace}}\libs {
 		}
 	
         /**
+         * Resolve path of a class for inclusion using the autoloader.
+         *
+         * @octdoc  m:autoloader/resolve
+         * @param   string      $classpath      Path of class to load.
+         */
+        public static function resolve($classpath)
+        /**/
+        {
+            $classpath = ltrim($classpath, '\\\\');
+
+            if (strpos($classpath, __NAMESPACE__) === 0) {
+                // application library
+                $pkg = __DIR__ . str_replace('\\', '/', substr($classpath, strlen(__NAMESPACE__)));
+            } else {
+                // dependency
+                $pkg = str_replace('\\', '/', preg_replace('|\\\\|', '.', $classpath, 2));
+
+                if (self::$is_phar) {
+                    // from within a phar
+                    $pkg = __DIR__ . '/../deps/' . $pkg;
+                }
+            }
+
+            return $pkg . '.class.php';
+        }
+
+        /**
          * Class Autoloader.
          *
          * @octdoc  m:autoloader/autoload
@@ -50,18 +77,14 @@ namespace {{$namespace}}\libs {
         public static function autoload($classpath)
         /**/
         {
-			$deps = ((self::$is_phar && strpos($class, '{{$namespace}}') !== 0)
-					 ? __DIR__ . '../deps/'
-					 : '');
-	
-            $pkg = preg_replace('|\\\\|', '/', preg_replace('|\\\\|', '.', ltrim($classpath, '\\\\'), 2)) . '.class.php';
+            $pkg = self::resolve($classpath);
 
             try {
-                include_once($deps . $pkg);
+                include_once($pkg);
             } catch(\Exception $e) {
             }
         }
     }
 
-    spl_autoload_register(array('{{$namespace}}\autoloader', 'autoload'));
+    spl_autoload_register(array('{{$namespace}}\libs\autoloader', 'autoload'));
 }

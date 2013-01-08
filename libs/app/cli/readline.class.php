@@ -18,78 +18,62 @@ namespace org\octris\core\app\cli {
      * @octdoc      c:cli/readline
      * @copyright   copyright (c) 2011 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
+     *
+     * @depends     \org\octris\core\app\cli\readline\bash
+     * @depends     \org\octris\core\app\cli\readline\emulated
+     * @depends     \org\octris\core\app\cli\readline\native
+     * @depends     \org\octris\core\app\cli\readline_if
      */
-    abstract class readline
+    class readline
     /**/
     {
+        /**
+         * Size of history, maximum entries.
+         *
+         * @octdoc  d:readline/T_HISTORY_SIZE
+         */
+        const T_HISTORY_SIZE = 100;
+        /**/
+
         /**
          * Class to use for new instance.
          *
          * @octdoc  p:readline/$class
          * @var     \org\octris\core\app\cli\readline
          */
-        private static $class = null;
+        protected static $class = null;
         /**/
 
         /**
-         * Instances of readline. Each history-file has it's own instance.
+         * Instances of readline. Same history files share the sime readline instance.
          *
          * @octdoc  p:readline/$instances
          * @var     array
          */
-        private static $instances = array();
+        protected static $instances = array();
         /**/
 
         /**
-         * Whether readline history is supported.
+         * Registered readline devices.
          *
-         * @octdoc  p:readline/$history
-         * @var     bool
-         */
-        private static $history = false;
-        /**/
-
-        /**
-         * Available readline drivers.
-         *
-         * @octdoc  p:readline/$drivers
+         * @octdoc  p:readline/$devices
          * @var     array
          */
-        private static $drivers = array(
-            '\org\octris\core\app\cli\readline\native',
-            '\org\octris\core\app\cli\readline\bash',
-            '\org\octris\core\app\cli\readline\emulated',
-        );
+        protected static $devices = array();
         /**/
 
         /**
-         * Number of commands allowed in history file. This is globally the same value for all readline drivers and all
-         * readline instances.
+         * Register a readline device.
          *
-         * @octdoc  p:readline/$history_size
-         * @var     int
+         * @octdoc  m:readline/registerDevice
+         * @param   string          $class                  Full qualified classname of the device.
+         * @param   int             $priority               (Optional) priority for device.
          */
-        protected static $history_size = 30;
+        public static function registerDevice($class, $priority = 0)
         /**/
-
-        /**
-         * History file bound to instance of readline. If no file is specified, the history will not be used.
-         *
-         * @octdoc  p:readline/$history_file
-         * @var     string
-         */
-        protected $history_file = '';
-        /**/
-
-        /**
-         * Abstract methods
-         *
-         * @octdoc  m:readline/get, detect
-         * @abstract
-         */
-        abstract public static function detect();
-        abstract public function readline($prompt = '');
-        /**/
+        {
+            self::$devices[$class] = $priority;
+        }
 
         /**
          * Returns a new instance of readline. Note that no history functionality is available, if no
@@ -99,49 +83,36 @@ namespace org\octris\core\app\cli {
          * @param   string          $history_file           Optional path to a history file.
          * @return  \org\octris\core\app\cli\readline       Instance of readline.
          */
-        public final static function getInstance($history_file = '')
+        public static function getInstance($history_file = '')
         /**/
         {
             if (!isset(self::$instances[$history_file])) {
                 if (is_null(self::$class)) {
-                    // detect and decide wich readline driver to use
-                    foreach (self::$drivers as $driver) {
-                        if (list(, self::$history) = $driver::detect()) {
-                            self::$class = $driver;
+                    // detect and decide wich readline device to use
+                    arsort(self::$devices);
+
+                    foreach (self::$devices as $device => $priority) {
+                        if (in_array('org\octris\core\app\cli\readline_if', class_implements($device)) 
+                            && $device::detect()) {
+                            self::$class = $device;
                             break;
                         }
                     }
                 }
 
-                self::$instances[$history_file] = new self::$class((self::$history && !!$history_file ? $history_file : ''));
+                self::$instances[$history_file] = new self::$class($history_file);
             }
 
             return self::$instances[$history_file];
         }
 
-        /**
-         * Default constructor. This method is protected to force using readline::getInstance for instance
-         * creation.
-         *
-         * @octdoc  m:readline/__construct
-         * @param   string          $history_file           History file to use for this readline instance.
-         */
-        protected function __construct($history_file = '')
+        /** no need to ever create an instance of this class **/
+        protected function __construct() {}
+        protected function __clone() {}
         /**/
-        {
-            $this->history_file = $history_file;
-        }
-        
-        /**
-         * Register a completion function. Note, that completion functions are not supported for all readline
-         * drivers. Therefore this is a dummy method to be implemented by the drivers, that support completion.
-         *
-         * @octdoc  m:readline/setCompletion
-         * @param   callable        $callback               Callback to call for completion.
-         */
-        public function setCompletion(callable $callback)
-        /**/
-        {
-        }
     }
+
+    readline::registerDevice('\org\octris\core\app\cli\readline\native', -1);
+    readline::registerDevice('\org\octris\core\app\cli\readline\bash', -2);
+    readline::registerDevice('\org\octris\core\app\cli\readline\emulated', -3);
 }

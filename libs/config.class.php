@@ -119,7 +119,7 @@ namespace org\octris\core {
                 }
             }
 
-            return file_put_contents($file, yaml_emit((array)\org\octris\core\type\collection\deflatten($this)));
+            return file_put_contents($file, yaml_emit((array)\org\octris\core\type\collection::deflatten($this)));
         }
 
         /**
