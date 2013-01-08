@@ -139,7 +139,7 @@ namespace org\octris\core\app\cli {
          * @octdoc  m:readline/setCompletion
          * @param   callable        $callback               Callback to call for completion.
          */
-        public function setCompletion(\callable $callback)
+        public function setCompletion(callable $callback)
         /**/
         {
         }
