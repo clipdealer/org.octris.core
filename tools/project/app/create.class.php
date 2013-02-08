@@ -44,6 +44,19 @@ namespace org\octris\core\project\app {
         /**/
 
         /**
+         * Application types.
+         *
+         * @octdoc  p:create/$types
+         * @var     array
+         */
+        protected static $types = array(
+            'w' => 'web',
+            'c' => 'cli',
+            'l' => 'lib'
+        );
+        /**/
+
+        /**
          * Helper method to test whether a file is binary or text file.
          *
          * @octdoc  m:create/isBinary
@@ -115,7 +128,12 @@ namespace org\octris\core\project\app {
 
             print "\n";
 
-            $this->type = stdio::getPrompt('application type (w)eb / (c)li: ', 'w', true);
+            $types = array();
+            array_walk(self::$types, function(&$v, $k) use (&$types) {
+                $types[] = preg_replace('/(' . $k . ')/', '(\1)', $v, 1);
+            });
+
+            $this->type = stdio::getPrompt('application type ' . implode(' / ', $types) . ': ', 'w', true);
             print "\n";
 
             $module = stdio::getPrompt('module [%s]: ', $module, true);
@@ -180,16 +198,23 @@ namespace org\octris\core\project\app {
                 die("unable to resolve work directory\n");
             }
 
-            $type = ($this->type == 'w' ? 'web' : 'cli');
-            $dir  = substr($dir, 0, strrpos($dir, '/')) . '/' . $this->data['directory'];
+            if (!isset(self::$types[$this->type])) {
+                die(sprintf("unknown application type '%s'\n", $this->type));
+            }
 
+            $src = __DIR__ . '/../data/skel/' . self::$types[$this->type] . '/';
+            if (!is_dir($src)) {
+                die(sprintf("unable to locate template directory '%s'\n", $src));
+            }
+
+            $dir  = substr($dir, 0, strrpos($dir, '/')) . '/' . $this->data['directory'];
             if (is_dir($dir)) {
                 die(sprintf("there seems to be already a project at '%s'\n", $dir));
             }
 
             // process skeleton and write project files
             $tpl = new \org\octris\core\tpl();
-            $tpl->addSearchPath(__DIR__ . '/../data/skel/' . $type . '/');
+            $tpl->addSearchPath($src);
             $tpl->setValues($this->data);
 
             \org\octris\core\tpl\compiler\constant::setConstant(
@@ -197,7 +222,6 @@ namespace org\octris\core\project\app {
                 \org\octris\core\app\cli::getPath(\org\octris\core\app\cli::T_PATH_BASE, '')
             );
 
-            $src = __DIR__ . '/../data/skel/' . $type . '/';
             $len = strlen($src);
 
             mkdir($dir, 0755);
