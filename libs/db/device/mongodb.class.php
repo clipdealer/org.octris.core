@@ -54,10 +54,10 @@ namespace org\octris\core\db\device {
          * @param   string          $host               Host of database server.
          * @param   int             $port               Port of database server.
          * @param   string          $database           Name of database.
-         * @param   string          $username           Username to use for connection.
+         * @param   string          $username           Optional username to use for connection.
          * @param   string          $password           Optional password to use for connection.
          */
-        public function __construct($host, $port, $database, $username, $password = '')
+        public function __construct($host, $port, $database, $username = '', $password = '')
         /**/
         {
             parent::__construct();
