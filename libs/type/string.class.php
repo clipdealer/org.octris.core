@@ -942,7 +942,7 @@ namespace org\octris\core\type {
          * @param   mixed       $args           Optional parameters for pattern replacing in first parameter.
          * @return  string                      Returns a string produced according to the formatting string format.
          */
-        public static function vsprintf($format, $args)
+        public static function vsprintf($format, array $args = array())
         /**/
         {
             $idx = 0;
