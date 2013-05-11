@@ -13,7 +13,7 @@
  * Class with helper methods for debugging.
  * 
  * @octdoc      c:core/octdebug
- * @copyright   Copyright (c) 2012 by Harald Lapp
+ * @copyright   Copyright (c) 2012-2013 by Harald Lapp
  * @author      Harald Lapp <harald@octris.org>
  */
 class octdebug
@@ -24,7 +24,7 @@ class octdebug
      *
      * @octdoc  m:debug/dump
      * @param   mixed       $data               Data to dump.
-     * @param   ...
+     * @param   ...         ...                 Additional optional parameters to dump.
      */
     public static function dump($data)
     /**/

@@ -14,7 +14,7 @@ namespace org\octris\core\auth {
      * Class for storing authenticated identity.
      *
      * @octdoc      c:auth/identity
-     * @copyright   copyright (c) 2011-2012 by Harald Lapp
+     * @copyright   copyright (c) 2011-2013 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
     class identity
@@ -138,7 +138,7 @@ namespace org\octris\core\auth {
          * Return roles, the identity is member of.
          *
          * @octdoc  m:identity/getRoles
-         * @param   array                                   Roles.
+         * @return  array                                   Roles.
          */
         public function getRoles()
         /**/
