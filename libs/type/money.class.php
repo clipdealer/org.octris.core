@@ -14,7 +14,7 @@ namespace org\octris\core\type {
      * Money type.
      *
      * @octdoc      c:type/money
-     * @copyright   copyright (c) 2010-2012 by Harald Lapp
+     * @copyright   copyright (c) 2010-2013 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
     class money extends \org\octris\core\type\number
@@ -229,7 +229,7 @@ namespace org\octris\core\type {
         /**
          * Substract discount from amount of money. The new value is stored in the money object.
          *
-         * @octdoc  f:money/subDiscount
+         * @octdoc  m:money/subDiscount
          * @param   float       $discount           Discount to substract from amount.
          * @return  \org\octris\core\type\money     Instance of current money object.
          */

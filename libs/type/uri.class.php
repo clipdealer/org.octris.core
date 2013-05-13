@@ -132,7 +132,7 @@ namespace org\octris\core\type {
          * Create a new URI instance by specifying various relevant parameters
          *
          * @octdoc  m:uri/create
-         * @return  \org\octris\core\type\uri
+         * @return  \org\octris\core\type\uri           Instance of URI class.
          */
         public static function create($host, $port, $scheme = 'http', $path = '/')
         /**/

@@ -14,7 +14,7 @@ namespace org\octris\core\net {
      * Generic cURL class.
      * 
      * @octdoc      c:net/client
-     * @copyright   Copyright (c) 2012 by Harald Lapp
+     * @copyright   Copyright (c) 2012-2013 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
     abstract class client
@@ -129,7 +129,7 @@ namespace org\octris\core\net {
          * Return URL of client when class instance is casted to a string.
          *
          * @octdoc  m:client/__toString
-         * @return  string
+         * @return  string                                          The URL of the client.
          */
         public function __toString()
         /**/
