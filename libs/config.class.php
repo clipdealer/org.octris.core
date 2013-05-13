@@ -123,14 +123,14 @@ namespace org\octris\core {
         }
 
         /**
-         * Load configuration file. the loader looks in the following places,
-         * loads the configuration file and merges them in specified lookup order:
+         * Load configuration file. The loader looks in the following places,
+         * loads the configuration file and merges them in the specified lookup order:
          *
          * - T_PATH_ETC/config.yml
          * - T_PATH_ETC/config_local.yml
          * - ~/.octris/config.yml
          *
-         * whereat the confíguration file name -- in this example 'config' -- may be overwritten by the first parameter.
+         * whereat the configuration file name -- in this example 'config' -- may be overwritten by the first parameter.
          * The constant T_ETC_PATH is resolved by the value of the second parameter. By default T_ETC_PATH is resolved to
          * the 'etc' path of the current running application.
          *
