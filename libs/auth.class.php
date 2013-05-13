@@ -97,7 +97,7 @@ namespace org\octris\core {
         /**
          * Test whether there is already an identity authenticated.
          *
-         * @octdoc  m:authenticate/isAuthenticated
+         * @octdoc  m:auth/isAuthenticated
          * @return  bool                                            Returns true, if an identity is authenticated.
          */
         public function isAuthenticated()

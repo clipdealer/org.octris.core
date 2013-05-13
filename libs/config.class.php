@@ -134,7 +134,7 @@ namespace org\octris\core {
          * The constant T_ETC_PATH is resolved by the value of the second parameter. By default T_ETC_PATH is resolved to
          * the 'etc' path of the current running application.
          *
-         * @octdoc  m:config/_load
+         * @octdoc  m:config/load
          * @param   string                              $name       Optional name of configuration file to load.
          * @param   string                              $module     Optional name of module to laod.
          * @return  \org\octris\core\type\collection                Contents of the configuration file.
