@@ -168,9 +168,7 @@ namespace org\octris\core\db\device\riak {
             $data = $filter($data);
 
             // cast
-            array_walk_recursive($data, function(&$value, $name) {
-                $value = $this->castPhpToDb($value, $name);
-            });
+            parent::export($data);
         }
     }
 }
