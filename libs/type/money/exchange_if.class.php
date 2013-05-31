@@ -13,7 +13,7 @@ namespace org\octris\core\type\money {
     /**
      * Interface for classes implementing a money exchange service.
      *
-     * @octdoc      i:cache/storage_if
+     * @octdoc      i:cache/exchange_if
      * @copyright   copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
@@ -23,7 +23,7 @@ namespace org\octris\core\type\money {
         /**
          * Return exchange rate between a source and a target currency.
          *
-         * @octdoc  m:openexchangerates/getExchangeRate
+         * @octdoc  m:exchange_if/getExchangeRate
          * @param   string              $cur_source             Source currency (ISO 4217).
          * @param   string              $cur_target             Target currency (ISO 4217).
          * @return  float                                       Exchange rate.
