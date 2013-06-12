@@ -123,6 +123,44 @@ namespace org\octris\core {
         }
 
         /**
+         * Test whether a configuration file exists.
+         *
+         * @octdoc  m:config/exists
+         * @param   string                              $name       Optional name of configuration file to look for.
+         * @param   string                              $module     Optional name of module to laod.
+         * @return  bool                                            Returns true if the configuration file exists.
+         */
+        public static function exists($name = 'config', $module = '')
+        /**/
+        {
+            // initialization
+            $module = ($module == ''
+                        ? provider::access('env')->getValue('OCTRIS_APP', validate::T_PROJECT)
+                        : $module);
+
+            $return = false;
+
+            // tests
+            do {
+                $path = app::getPath(app::T_PATH_ETC, $module);
+                $file = $path . '/' . $name . '.yml';
+
+                if (($return = (is_file($file) && is_readable($file)))) break;
+
+                $file = $path . '/' . $name . '_local.yml';
+
+                if (($return = (is_file($file) && is_readable($file)))) break;
+
+                $info = posix_getpwuid(posix_getuid());
+                $file = $info['dir'] . '/.octris/' . $module . '/' . $name . '.yml';
+
+                if (($return = (is_file($file) && is_readable($file)))) break;
+            } while(false);
+
+            return $return;
+        }
+
+        /**
          * Load configuration file. the loader looks in the following places,
          * loads the configuration file and merges them in specified lookup order:
          *
