@@ -161,6 +161,42 @@ namespace org\octris\core {
         }
 
         /**
+         * Create a configuration from a specified file. The configuration file will be stored in 
+         * ~/.octris/<module>/<name>.yml. If the name
+         *
+         * @octdoc  m:config/create
+         * @param   string                              $file       File to load and create configuration object from.
+         * @param   string                              $name       Optional name of configuration file to create.
+         * @param   string                              $module     Optional name of module the configuration file belongs to.
+         * @return  \org\octris\core\config|bool                    Returns an instance of the config class if the configuration file
+         *                                                          was created successful, otherwise 'false' is returned.
+         * @todo    error handling
+         */
+        public static function create($file, $name = 'config', $module = '')
+        /**/
+        {
+            $return = false;
+
+            if (is_file($file) && (yaml_parse_file($file) !== false)) {
+                $module = ($module == ''
+                            ? provider::access('env')->getValue('OCTRIS_APP', validate::T_PROJECT)
+                            : $module);
+
+                $path = $info['dir'] . '/.octris/' . $module;
+
+                if (!is_dir($path)) {
+                    mkdir($path, 0777, true);
+                }
+
+                copy($file, $path . '/' . $name . '.yml');
+
+                $return = new static($module, $name);
+            }
+
+            return $return;
+        }
+
+        /**
          * Load configuration file. the loader looks in the following places,
          * loads the configuration file and merges them in specified lookup order:
          *
