@@ -128,7 +128,7 @@ namespace org\octris\core {
          *
          * - T_PATH_ETC/config.yml
          * - T_PATH_ETC/config_local.yml
-         * - ~/.octris/config.yml
+         * - ~/.octris/<module>/config.yml
          *
          * whereat the confíguration file name -- in this example 'config' -- may be overwritten by the first parameter.
          * The constant T_ETC_PATH is resolved by the value of the second parameter. By default T_ETC_PATH is resolved to
