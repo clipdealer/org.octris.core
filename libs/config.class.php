@@ -151,8 +151,8 @@ namespace org\octris\core {
 
                 if (($return = (is_file($file) && is_readable($file)))) break;
 
-                $info = posix_getpwuid(posix_getuid());
-                $file = $info['dir'] . '/.octris/' . $module . '/' . $name . '.yml';
+                $path = app::getPath(app::T_PATH_HOME_ETC, $module);
+                $file = $path . '/' . $name . '.yml';
 
                 if (($return = (is_file($file) && is_readable($file)))) break;
             } while(false);
@@ -238,8 +238,8 @@ namespace org\octris\core {
             }
 
             // load global framework configuration
-            $info = posix_getpwuid(posix_getuid());
-            $file = $info['dir'] . '/.octris/' . $module . '/' . $name . '.yml';
+            $path = app::getPath(app::T_PATH_HOME_ETC, $module);
+            $file = $path . '/' . $name . '.yml';
 
             if (is_readable($file) && ($tmp = yaml_parse_file($file)) && !is_null($tmp)) {
                 $cfg = array_merge($cfg, \org\octris\core\type\collection::flatten($tmp));
