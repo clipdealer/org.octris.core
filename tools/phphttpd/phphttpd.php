@@ -15,7 +15,7 @@
  * this tool in production environment.
  *
  * @octdoc      h:project/check
- * @copyright   copyright (c) 2012 by Harald Lapp
+ * @copyright   copyright (c) 2012-2013 by Harald Lapp
  * @author      Harald Lapp <harald@octris.org>
  */
 /**/
@@ -32,6 +32,7 @@ if (php_sapi_name() == 'cli') {
     $bind_port = '8888';
     $router    = null;
     $pid_file  = null;
+    $env       = array();
 
     // php version check
     if (version_compare(PHP_VERSION, $version) < 0) {
@@ -45,15 +46,18 @@ if (php_sapi_name() == 'cli') {
     // process command-line arguments
     $options = getopt(
         'b:p:h',
-        array('bind-ip:', 'port:', 'project:', 'pid-file:', 'help')
+        array('bind-ip:', 'port:', 'project:', 'pid-file:', 'help', 'env:')
     );
-
+    
     if (isset($options['h']) || isset($options['help'])) {
         printf("Usage: %s [OPTIONS] --project ...\n", $argv[0]);
         print "  -b, --bind-ip    A single IP that the webserver will be listening on.\n";
         printf("                   (defaults to %s)\n", $bind_ip);
         print "  -p, --port       A port number the webserver will be listening on.\n";
         printf("                   (defaults to %d)\n", $bind_port);
+        print "  --env            Additional environment variable(s) to set. This option\n";
+        print "                   can be specified multiple times and the option value has\n";
+        print "                   to be in the form 'name=value'.\n";
         print "  --project        The name of a project to use with this webserver instance.\n";
         print "  --pid-file       A file to write the pid to. the file will be overwritten.\n";
         print "                   (default does not write a PID file)\n";
@@ -107,10 +111,28 @@ if (php_sapi_name() == 'cli') {
         die(255);
     }
 
+    if (isset($options['env'])) {
+        $tmp = (is_array($options['env'])
+                ? $options['env']
+                : (array)$options['env']);
+
+        foreach ($tmp as $_tmp) {
+            if (!preg_match('/^([a-z_]+[a-z0-9_]*)=(.*)$/i', $_tmp, $match)) {
+                printf(
+                    "WARNING: skipping invalid environment variable '%s'.\n",
+                    $_tmp
+                );
+            } else {
+                $env[] = $match[1] . '=' . escapeshellarg($match[2]);
+            }
+        }
+    }
+
     // start php's builtin webserver
     $pid = exec(sprintf(
-        '((OCTRIS_APP=%s OCTRIS_DEVEL=1 %s -d output_buffering=on -t %s -S %s:%s %s 1>/dev/null 2>&1 & echo $!) &)',
+        '((OCTRIS_APP=%s OCTRIS_DEVEL=1 %s %s -d output_buffering=on -t %s -S %s:%s %s 1>/dev/null 2>&1 & echo $!) &)',
         $project,
+        implode(' ', $env),
         PHP_BINARY,
         $docroot,
         $bind_ip,
