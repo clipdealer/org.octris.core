@@ -132,7 +132,7 @@ test:
 #
 # @octdoc       t:Makefile/cleanup
 #**
-cleanup:
+cleanup::
 	@rm -rf ../../cache/$(project)/data/*
 	@rm -rf ../../cache/$(project)/templates_c/*
 
