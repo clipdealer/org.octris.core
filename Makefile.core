@@ -30,7 +30,7 @@ CURSYMDIR:=$(shell pwd)
 help::
 	@echo ""
 	@echo "OCTRiS Application Framework"
-	@echo "copyright (c) 2006-2012 by Harald Lapp"
+	@echo "copyright (c) 2006-2013 by Harald Lapp <harald@octris.org>"
 	@echo ""
 	@echo "targets for project '$(project)'"
 	@echo ""
