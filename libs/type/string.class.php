@@ -793,7 +793,7 @@ namespace org\octris\core\type {
          * @octdoc  m:string/html_entity_decode
          * @param   string      $string         The input string.
          * @param   int         $quote_style    Optional parameter to define what will be done with 'single' and "double" quotes.
-         * @return  string
+         * @return  string                      Converted string.
          */
         public static function html_entity_decode($string, $quote_style = ENT_COMPAT)
         /**/
@@ -922,8 +922,7 @@ namespace org\octris\core\type {
          *
          * @octdoc  m:string/sprintf
          * @param   string      $format         Formatting pattern.
-         * @param   mixed       $args           Arguments for formatting.
-         * @param   mixed       ...             
+         * @param   mixed       ...             Additional optional parameters for pattern replacing in first parameter.
          * @return  string                      Returns a string produced according to the formatting string format.
          */
         public static function sprintf($format)
@@ -940,11 +939,10 @@ namespace org\octris\core\type {
          *
          * @octdoc  m:string/vsprintf
          * @param   string      $format         Formatting pattern.
-         * @param   mixed       $args           Arguments for formatting.
-         * @param   mixed       ...             
+         * @param   mixed       $args           Optional parameters for pattern replacing in first parameter.
          * @return  string                      Returns a string produced according to the formatting string format.
          */
-        public static function vsprintf($format, $args)
+        public static function vsprintf($format, array $args = array())
         /**/
         {
             $idx = 0;

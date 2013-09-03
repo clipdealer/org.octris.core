@@ -14,7 +14,7 @@ namespace org\octris\core {
      * Authentication library.
      *
      * @octdoc      c:core/auth
-     * @copyright   copyright (c) 2011 by Harald Lapp
+     * @copyright   copyright (c) 2011-2013 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
     class auth
@@ -70,7 +70,7 @@ namespace org\octris\core {
          * Return instance of auth class, implemented as singleton-pattern.
          *
          * @octdoc  m:auth/getInstance
-         * @return  \org\octris\core\auth
+         * @return  \org\octris\core\auth                           Authorization class instance.
          */
         public static function getInstance()
         /**/
@@ -97,7 +97,7 @@ namespace org\octris\core {
         /**
          * Test whether there is already an identity authenticated.
          *
-         * @octdoc  m:authenticate/isAuthenticated
+         * @octdoc  m:auth/isAuthenticated
          * @return  bool                                            Returns true, if an identity is authenticated.
          */
         public function isAuthenticated()

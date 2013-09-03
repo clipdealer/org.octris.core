@@ -10,21 +10,22 @@
  * file that was distributed with this source code.
  */
 
-namespace {{$namespace}}\{{$module}} {
-    /**
-     * {{$description}}
-     *
-     * @octdoc      h:tools/{{$module}}
-     * @copyright   copyright (c) {{$year}} by {{$company}}
-     * @author      {{$author}} <{{$email}}>
-     */
-    /**/
+/*
+ * WARNING!!!
+ *
+ * MODIFICATION OF THIS FILE MAY LEAD TO UNEXPECTED BEHAVIOUR!
+ */
 
-    $_ENV['OCTRIS_APP'] = '{{$namespace}}';
+/**
+ * Application launcher.
+ *
+ * @octdoc      h:{{$module}}/{{$module}}.php
+ * @copyright   copyright (c) {{$year}} by {{$company}}
+ * @author      {{$author}} <{{$email}}>
+ */
+/**/
 
-    // include core cli application library
-    require_once('org.octris.core/app/cli.class.php');
-    
-    // run application
-    app\main::getInstance()->process();
-}
+require_once(__DIR__ . '/libs/autoloader.class.php');
+
+$main = new {{$namespace}}\libs\main();
+$main->run();

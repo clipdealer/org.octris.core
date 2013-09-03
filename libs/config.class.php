@@ -119,22 +119,96 @@ namespace org\octris\core {
                 }
             }
 
-            return file_put_contents($file, yaml_emit((array)\org\octris\core\type\collection\deflatten($this)));
+            return file_put_contents($file, yaml_emit((array)\org\octris\core\type\collection::deflatten($this)));
         }
 
         /**
-         * Load configuration file. the loader looks in the following places,
-         * loads the configuration file and merges them in specified lookup order:
+         * Test whether a configuration file exists.
+         *
+         * @octdoc  m:config/exists
+         * @param   string                              $name       Optional name of configuration file to look for.
+         * @param   string                              $module     Optional name of module to laod.
+         * @return  bool                                            Returns true if the configuration file exists.
+         */
+        public static function exists($name = 'config', $module = '')
+        /**/
+        {
+            // initialization
+            $module = ($module == ''
+                        ? provider::access('env')->getValue('OCTRIS_APP', validate::T_PROJECT)
+                        : $module);
+
+            $return = false;
+
+            // tests
+            do {
+                $path = app::getPath(app::T_PATH_ETC, $module);
+                $file = $path . '/' . $name . '.yml';
+
+                if (($return = (is_file($file) && is_readable($file)))) break;
+
+                $file = $path . '/' . $name . '_local.yml';
+
+                if (($return = (is_file($file) && is_readable($file)))) break;
+
+                $path = app::getPath(app::T_PATH_HOME_ETC, $module);
+                $file = $path . '/' . $name . '.yml';
+
+                if (($return = (is_file($file) && is_readable($file)))) break;
+            } while(false);
+
+            return $return;
+        }
+
+        /**
+         * Create a configuration from a specified file. The configuration file will be stored in 
+         * ~/.octris/<module>/<name>.yml. If the name
+         *
+         * @octdoc  m:config/create
+         * @param   string                              $file       File to load and create configuration object from.
+         * @param   string                              $name       Optional name of configuration file to create.
+         * @param   string                              $module     Optional name of module the configuration file belongs to.
+         * @return  \org\octris\core\config|bool                    Returns an instance of the config class if the configuration file
+         *                                                          was created successful, otherwise 'false' is returned.
+         * @todo    error handling
+         */
+        public static function create($file, $name = 'config', $module = '')
+        /**/
+        {
+            $return = false;
+
+            if (is_file($file) && (yaml_parse_file($file) !== false)) {
+                $module = ($module == ''
+                            ? provider::access('env')->getValue('OCTRIS_APP', validate::T_PROJECT)
+                            : $module);
+
+                $path = $info['dir'] . '/.octris/' . $module;
+
+                if (!is_dir($path)) {
+                    mkdir($path, 0777, true);
+                }
+
+                copy($file, $path . '/' . $name . '.yml');
+
+                $return = new static($module, $name);
+            }
+
+            return $return;
+        }
+
+        /**
+         * Load configuration file. The loader looks in the following places,
+         * loads the configuration file and merges them in the specified lookup order:
          *
          * - T_PATH_ETC/config.yml
          * - T_PATH_ETC/config_local.yml
-         * - ~/.octris/config.yml
+         * - ~/.octris/<module>/config.yml
          *
-         * whereat the confíguration file name -- in this example 'config' -- may be overwritten by the first parameter.
+         * whereat the configuration file name -- in this example 'config' -- may be overwritten by the first parameter.
          * The constant T_ETC_PATH is resolved by the value of the second parameter. By default T_ETC_PATH is resolved to
          * the 'etc' path of the current running application.
          *
-         * @octdoc  m:config/_load
+         * @octdoc  m:config/load
          * @param   string                              $name       Optional name of configuration file to load.
          * @param   string                              $module     Optional name of module to laod.
          * @return  \org\octris\core\type\collection                Contents of the configuration file.
@@ -164,8 +238,8 @@ namespace org\octris\core {
             }
 
             // load global framework configuration
-            $info = posix_getpwuid(posix_getuid());
-            $file = $info['dir'] . '/.octris/' . $module . '/' . $name . '.yml';
+            $path = app::getPath(app::T_PATH_HOME_ETC, $module);
+            $file = $path . '/' . $name . '.yml';
 
             if (is_readable($file) && ($tmp = yaml_parse_file($file)) && !is_null($tmp)) {
                 $cfg = array_merge($cfg, \org\octris\core\type\collection::flatten($tmp));

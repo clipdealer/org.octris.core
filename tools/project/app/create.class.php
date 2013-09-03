@@ -28,10 +28,32 @@ namespace org\octris\core\project\app {
         /**
          * Application data.
          *
-         * @octdoc  v:create/$data
+         * @octdoc  p:create/$data
          * @var     array
          */
         protected $data = array();
+        /**/
+
+        /**
+         * Type of application to create.
+         *
+         * @octdoc  p:create/$type
+         * @var     string
+         */
+        protected $type;
+        /**/
+
+        /**
+         * Application types.
+         *
+         * @octdoc  p:create/$types
+         * @var     array
+         */
+        protected static $types = array(
+            'w' => 'web',
+            'c' => 'cli',
+            'l' => 'lib'
+        );
         /**/
 
         /**
@@ -102,8 +124,16 @@ namespace org\octris\core\project\app {
                 $prj[$k] = stdio::getPrompt(sprintf("%s [%%s]: ", $k), $v);
             }
 
-            // $prj->save();
+            $prj->save();
 
+            print "\n";
+
+            $types = array();
+            array_walk(self::$types, function(&$v, $k) use (&$types) {
+                $types[] = preg_replace('/(' . $k . ')/', '(\1)', $v, 1);
+            });
+
+            $this->type = stdio::getPrompt('application type ' . implode(' / ', $types) . ': ', 'w', true);
             print "\n";
 
             $module = stdio::getPrompt('module [%s]: ', $module, true);
@@ -168,15 +198,23 @@ namespace org\octris\core\project\app {
                 die("unable to resolve work directory\n");
             }
 
-            $dir = substr($dir, 0, strrpos($dir, '/')) . '/' . $this->data['directory'];
+            if (!isset(self::$types[$this->type])) {
+                die(sprintf("unknown application type '%s'\n", $this->type));
+            }
 
+            $src = __DIR__ . '/../data/skel/' . self::$types[$this->type] . '/';
+            if (!is_dir($src)) {
+                die(sprintf("unable to locate template directory '%s'\n", $src));
+            }
+
+            $dir  = substr($dir, 0, strrpos($dir, '/')) . '/' . $this->data['directory'];
             if (is_dir($dir)) {
                 die(sprintf("there seems to be already a project at '%s'\n", $dir));
             }
 
             // process skeleton and write project files
             $tpl = new \org\octris\core\tpl();
-            $tpl->addSearchPath(__DIR__ . '/../data/skel/web/');
+            $tpl->addSearchPath($src);
             $tpl->setValues($this->data);
 
             \org\octris\core\tpl\compiler\constant::setConstant(
@@ -184,23 +222,23 @@ namespace org\octris\core\project\app {
                 \org\octris\core\app\cli::getPath(\org\octris\core\app\cli::T_PATH_BASE, '')
             );
 
-            $src = __DIR__ . '/../data/skel/web/';
             $len = strlen($src);
 
             mkdir($dir, 0755);
 
             $directories = array();
             $iterator    = new \RecursiveIteratorIterator(
-                new \RecursiveDirectoryIterator($src)
+                new \RecursiveDirectoryIterator($src, \FilesystemIterator::SKIP_DOTS)
             );
 
             foreach ($iterator as $filename => $cur) {
-                $rel  = substr($filename, $len);
-                $dst  = $dir . '/' . $rel;
-                $path = dirname($dst);
-                $base = basename($filename);
-                $ext  = preg_replace('/^\.?[^\.]+?(\..+|)$/', '\1', $base);
-                $base = basename($filename, $ext);
+                $rel   = substr($filename, $len);
+                $dst   = $dir . '/' . $rel;
+                $path  = dirname($dst);
+                $base  = basename($filename);
+                $ext   = preg_replace('/^\.?[^\.]+?(\..+|)$/', '\1', $base);
+                $base  = basename($filename, $ext);
+                $perms = $cur->getPerms();
 
                 if (substr($base, 0, 1) == '$' && isset($this->data[$base = ltrim($base, '$')])) {
                     // resolve variable in filename
@@ -209,7 +247,7 @@ namespace org\octris\core\project\app {
 
                 if (!is_dir($path)) {
                     // create destination directory
-                    mkdir($path, 0755, true);
+                    mkdir($path, $cur->getPathInfo()->getPerms(), true);
                 }
 
                 if (!$this->isBinary($filename)) {
@@ -219,6 +257,8 @@ namespace org\octris\core\project\app {
                 } else {
                     copy($filename, $dst);
                 }
+
+                chmod($dst, $perms);
             }
 
             print "done.\n";

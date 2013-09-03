@@ -141,5 +141,34 @@ namespace org\octris\core\db\device\riak {
         {
             return $value;
         }
+
+        /**
+         * Recursive data iteration and casting for preparing data for export to database. This method 
+         * overwrites the default export function to filter all database references from the data.
+         *
+         * @octdoc  m:dataobject/export
+         * @param   array               $data               Data to process.
+         */
+        protected function export(array &$data)
+        /**/
+        {
+            // filter
+            $filter = function($data) use (&$filter) {
+                foreach ($data as $key => $value) {
+                    if (is_array($value)) {
+                        $data[$key] = $filter($value);
+                    } elseif (is_object($value) && $value instanceof \org\octris\core\db\type\dbref) {
+                        unset($data[$key]);
+                    }
+                }
+
+                return $data;
+            };
+
+            $data = $filter($data);
+
+            // cast
+            parent::export($data);
+        }
     }
 }
