@@ -21,9 +21,9 @@ namespace org\octris\core\db\device\mongodb {
     /**/
     {
         /**
-         * Device the connection belongs to.
+         * Device the result belongs to.
          *
-         * @octdoc  p:connection/$device
+         * @octdoc  p:result/$device
          * @var     \org\octris\core\db\device\mongodb
          */
         protected $device;
