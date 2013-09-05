@@ -93,10 +93,10 @@ namespace org\octris\core\db {
          * Return a database connection of specified type.
          *
          * @octdoc  m:device/getConnection
-         * @param   string                      $type           Type of connection.
+         * @param   string                      $type           Optional type of connection.
          * @return  \org\octris\core\db\device\onnection_if     Connection to a database.
          */
-        public function getConnection($type)
+        public function getConnection($type = \org\octris\core\db::T_DB_MASTER)
         /**/
         {
             if ($type != \org\octris\core\db::T_DB_MASTER && $type != \org\octris\core\db::T_DB_SLAVE) {
