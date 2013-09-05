@@ -46,7 +46,7 @@ if (php_sapi_name() == 'cli') {
     // process command-line arguments
     $options = getopt(
         'b:p:h',
-        array('bind-ip:', 'port:', 'project:', 'pid-file:', 'help', 'env:')
+        array('bind-ip:', 'port:', 'project:', 'pid-file:', 'help', 'env:', 'doc-root:')
     );
     
     if (isset($options['h']) || isset($options['help'])) {
@@ -55,6 +55,7 @@ if (php_sapi_name() == 'cli') {
         printf("                   (defaults to %s)\n", $bind_ip);
         print "  -p, --port       A port number the webserver will be listening on.\n";
         printf("                   (defaults to %d)\n", $bind_port);
+        print "  --doc-root       Alternative document-root directory\n";
         print "  --env            Additional environment variable(s) to set. This option\n";
         print "                   can be specified multiple times and the option value has\n";
         print "                   to be in the form 'name=value'.\n";
@@ -87,24 +88,36 @@ if (php_sapi_name() == 'cli') {
             $tmp    = array_pop($trace);
             $router = $tmp['file'];
         }
+        
+        if (!is_dir($docroot)) {
+            printf(
+                "Unknown project or project not installed '%s'.\n",
+                $project
+            );
+            die(255);
+        }
+        if (!is_file($router)) {
+            printf(
+                "Request routing script not found '%s'.\n",
+                $router
+            );
+            die(255);
+        }
     } else {
         printf("Usage: %s [OPTIONS] --project ...\n", $argv[0]);
         die(255);
     }
 
-    if (!is_dir($docroot)) {
-        printf(
-            "Unknown project or project not installed '%s'.\n",
-            $project
-        );
-        die(255);
-    }
-    if (!is_file($router)) {
-        printf(
-            "Request routing script not found '%s'.\n",
-            $router
-        );
-        die(255);
+    if (isset($options['doc-root'])) {
+        $docroot = $options['doc-root'];
+        
+        if (!is_dir($docroot)) {
+            printf(
+                "Document-root is no directory '%s'.\n",
+                $docroot
+            );
+            die(255);
+        }
     }
 
     if (isset($options['pid-file'])) {
@@ -194,4 +207,3 @@ if ($ext == '' || $ext == 'php') {
 } else {
     return false;
 }
-
