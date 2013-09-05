@@ -51,7 +51,7 @@ namespace org\octris\core\db\device\riak {
          * Current position in array.
          *
          * @octdoc  p:result/$position
-         * @var     array
+         * @var     int
          */
         protected $position = 0;
         /**/
