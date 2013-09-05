@@ -73,14 +73,24 @@ namespace org\octris\core\db\device\sqlite {
          * Return list of collections.
          *
          * @octdoc  m:connection/getCollections
-         * @todo    Implementation
          * @return  array|bool                                      Array of names of collections or false in case
          *                                                          of an error.
          */
         public function getCollections()
         /**/
         {
-            return array();
+            $sql = 'SELECT  * 
+                    FROM    sqlite_master 
+                    WHERE   type="table"';
+            
+            $result = $this->query($sql);
+            $return = array();
+            
+            foreach ($result as $row) {
+                $return[] = $row['name'];
+            }
+            
+            return $return;
         }
 
         /**
