@@ -78,7 +78,15 @@ if (php_sapi_name() == 'cli') {
     if (isset($options['project'])) {
         $project = $options['project'];
         $docroot = $_ENV['OCTRIS_BASE'] . '/host/' . $project;
-        $router  = __FILE__;
+
+        if (!($trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS))) {
+            // called directly
+            $router  = __FILE__;
+        } else {
+            // included in some other PHP script
+            $tmp    = array_pop($trace);
+            $router = $tmp['file'];
+        }
     } else {
         printf("Usage: %s [OPTIONS] --project ...\n", $argv[0]);
         die(255);
