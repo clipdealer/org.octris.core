@@ -14,7 +14,7 @@ namespace org\octris\core\db\device {
      * SQLite database device. 
      * 
      * @octdoc      c:device/sqlite
-     * @copyright   copyright (c) 2012 by Harald Lapp
+     * @copyright   copyright (c) 2012-2013 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      * 
      * @todo        Support encryption Libraries:
@@ -37,34 +37,6 @@ namespace org\octris\core\db\device {
         /**/
 
         /**
-         * Path to the SQLite database, or :memory: to use in-memory database.
-         *
-         * @octdoc  p:sqlite/$file
-         * @var     string
-         */
-        protected $file;
-        /**/
-        
-        /**
-         * flags of how to open SQLite database.
-         *
-         * @octdoc  p:sqlite/$flags
-         * @var     int
-         */
-        protected $flags;
-        /**/
-
-        /**
-         * Key to use for encrypted databases. Note, that database encryption is only supported, when
-         * 
-         *
-         * @octdoc  p:sqlite/$key
-         * @var     string
-         */
-        protected $key;
-        /**/
-
-        /**
          * Constructor.
          *
          * @octdoc  m:sqlite/__construct
@@ -75,27 +47,28 @@ namespace org\octris\core\db\device {
         public __construct($file, $flags = null, $key = null)
         /**/
         {
-            $this->file  = $file;
-            $this->flags = self::T_READWRITE | self::T_CREATE;
-            $this->key   = $key;
+            parent::__construct();
+
+            $this->addHost(\org\octris\core\db::T_DB_MASTER, array(
+                'file'  => $host,
+                'flags' => (is_null($flags)
+                            ? self::T_READWRITE | self::T_CREATE
+                            : $flags),
+                'key'   => $key
+            ));
         }
 
         /**
          * Create database connection.
          *
          * @octdoc  m:sqlite/getConnection
-         * @return  \org\octris\core\db\device\sqlite\connection            Connection to a sqlite database.
+         * @param   array                       $options        Host configuration options.
+         * @return  \org\octris\core\db\device\onnection_if     Connection to a database.
          */
-        public getConnection()
+        protected function createConnection(array $options)
         /**/
         {
-            $cn = new \org\octris\core\db\device\sqlite\connection(
-                array(
-                    'file'  => $this->host,
-                    'flags' => $this->port,
-                    'key'   => $this->database
-                )
-            );
+            $cn = new \org\octris\core\db\device\sqlite\connection($this, $options);
 
             return $cn;
         }
