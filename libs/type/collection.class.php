@@ -14,7 +14,7 @@ namespace org\octris\core\type {
      * Collection type. Implements special access on array objects.
      *
      * @octdoc      c:type/collection
-     * @copyright   copyright (c) 2010-2012 by Harald Lapp
+     * @copyright   copyright (c) 2010-2013 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
     class collection extends \ArrayObject
@@ -420,36 +420,24 @@ namespace org\octris\core\type {
                 return false;
             }
 
-            $tmp = array();
+            $array  = new \RecursiveIteratorIterator(new \RecursiveArrayIterator($p));
+            $result = array();
 
-            $array = new \RecursiveIteratorIterator(new \RecursiveArrayIterator($p), \RecursiveIteratorIterator::SELF_FIRST);
-            $d = 0;
-
-            $property = array();
-
-            foreach ($array as $k => $v) {
-                if (!is_int($k)) {
-                    if ($d > $array->getDepth()) {
-                        array_splice($property, $array->getDepth());
-                    }
-
-                    $property[$array->getDepth()] = $k;
-
-                    $d = $array->getDepth();
+            foreach ($array as $value) {
+                $keys = array();
+                
+                foreach (range(0, $array->getDepth()) as $depth) {
+                    $keys[] = $array->getSubIterator($depth)->key();
                 }
 
-                if (is_int($k)) {
-                    $tmp[implode($sep, $property)][] = $v;
-                } elseif (!is_array($v)) {
-                    $tmp[implode($sep, $property)] = $v;
-                }
+                $result[implode('.', $keys)] = $value;
             }
 
             if ($is_collection) {
-                $p = new \org\octris\core\type\collection($p);
+                $result = new \org\octris\core\type\collection($result);
             }
 
-            return $tmp;
+            return $result;
         }
 
         /**
