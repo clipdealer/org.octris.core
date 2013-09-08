@@ -132,7 +132,7 @@ namespace org\octris\core\db\device\sqlite {
         public function prepare($sql)
         /**/
         {
-            return new \org\octris\core\db\sqlite\statement($this, $sql);
+            return new \org\octris\core\db\device\sqlite\statement($this, $sql);
         }
         
         /**
@@ -147,7 +147,7 @@ namespace org\octris\core\db\device\sqlite {
         {
             $result = parent::query($sql);
             
-            return new \org\octris\core\db\sqlite\result($this, $result);
+            return new \org\octris\core\db\device\sqlite\result($this->device, $result);
         }
     }
 }
