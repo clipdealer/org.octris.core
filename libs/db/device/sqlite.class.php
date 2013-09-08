@@ -50,7 +50,7 @@ namespace org\octris\core\db\device {
             parent::__construct();
 
             $this->addHost(\org\octris\core\db::T_DB_MASTER, array(
-                'file'  => $host,
+                'file'  => $file,
                 'flags' => (is_null($flags)
                             ? self::T_READWRITE | self::T_CREATE
                             : $flags),
