@@ -44,7 +44,7 @@ namespace org\octris\core\db\device {
          * @param   int             $flags              Optional flags of how to open SQLite database.
          * @param   string          $key                Optional key when database encryption is used.
          */
-        public __construct($file, $flags = null, $key = null)
+        public function __construct($file, $flags = null, $key = null)
         /**/
         {
             parent::__construct();
