@@ -21,14 +21,26 @@ namespace org\octris\core\db\device\sqlite {
     /**/
     {
         /**
+         * Device the connection belongs to.
+         *
+         * @octdoc  p:connection/$device
+         * @var     \org\octris\core\db\device\sqlite
+         */
+        protected $device;
+        /**/
+
+        /**
          * Constructor.
          *
          * @octdoc  m:connection/__construct
-         * @param   array                       $options            Connection options.
+         * @param   \org\octris\core\db\device\sqlite   $device             Device the connection belongs to.
+         * @param   array                               $options            Connection options.
          */
-        public function __construct(array $options)
+        public function __construct(\org\octris\core\db\device\sqlite $device, array $options)
         /**/
         {
+            $this->device = $device;
+            
             parent::__construct($options['file'], $options['flags'], $options['key']);
         }
 
