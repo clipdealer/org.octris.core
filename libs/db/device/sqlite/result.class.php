@@ -150,7 +150,7 @@ namespace org\octris\core\db\device\sqlite {
         public function valid()
         /**/
         {
-            if (($result = $this->result->fetchArray(SQLITE3_ASSOC)) {
+            if (($result = $this->result->fetchArray(SQLITE3_ASSOC))) {
                 $this->row = $result;
             } else {
                 $this->row = array();
