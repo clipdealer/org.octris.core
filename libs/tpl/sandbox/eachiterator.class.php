@@ -48,6 +48,15 @@ namespace org\octris\core\tpl\sandbox {
         /**/
 
         /**
+         * Whether the object to iterate is a generator.
+         *
+         * @octdoc  p:eachiterator/$is_generator
+         * @var     bool
+         */
+        protected $is_generator = false;
+        /**/
+
+        /**
          * Constructor.
          *
          * @octdoc  m:eachiterator/__construct
@@ -59,6 +68,8 @@ namespace org\octris\core\tpl\sandbox {
             $this->iterator = ($object instanceof \IteratorAggregate
             					? $object->getIterator()
             					: $object);
+            
+            $this->is_generator = ($object instanceof \Generator);
 
            	if ($object instanceof \Countable) {
            		$this->items = count($object);
@@ -119,12 +130,19 @@ namespace org\octris\core\tpl\sandbox {
          * Rewind iterator to beginning.
          *
          * @octdoc  m:eachiterator/rewind
+         * @todo    write a notice to some log-file, if a generator throws an exception
          */
         public function rewind()
         /**/
         {
-        	$this->iterator->rewind();
-            $this->position = 0;
+            try {
+            	$this->iterator->rewind();
+                $this->position = 0;
+            } catch(\Exception $e) {
+                if (!$this->is_generator) {
+                    throw $e;
+                }
+            }
         }
 
         /**
