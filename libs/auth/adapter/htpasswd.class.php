@@ -11,10 +11,12 @@
 
 namespace org\octris\core\auth\adapter {
     /**
-     * Allows authentication against a htpasswd file.
+     * Allows authentication against a htpasswd file. The encryptions supported
+     * are SHA1 and crypt. This class (currently) does not(!) support
+     * plain-text passwords. 
      *
      * @octdoc      c:adapter/htpasswd
-     * @copyright   copyright (c) 2011 by Harald Lapp
+     * @copyright   copyright (c) 2011-2013 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
     class htpasswd implements \org\octris\core\auth\adapter_if
@@ -116,11 +118,15 @@ namespace org\octris\core\auth\adapter {
                             $result = \org\octris\core\auth::T_IDENTITY_AMBIGUOUS;
                             break;
                         } else {
-                            $cc = crypt($this->credential, substr($password, 0, 3));
-
-                            if ($cc == $password) {
+                            if (preg_match('/^\{SHA\}(.+)$/', $password, $match)) {
+                                $test     = base64_encode(sha1($this->credential, true));
+                                $password = $match[1];
+                            } else {
+                                $test = crypt($this->credential, substr($password, 0, 3));
+                            }
+                            
+                            if ($test === $password) {
                                 $result = \org\octris\core\auth::T_AUTH_SUCCESS;
-                                break;
                             } else {
                                 $result = \org\octris\core\auth::T_CREDENTIAL_INVALID;
                             }
