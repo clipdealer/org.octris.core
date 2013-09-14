@@ -143,7 +143,7 @@ cleanup::
 #**
 compile:
 	@rm -rf ../../cache/$(project)/templates_c/*
-	@$(CURSYMDIR)/../../tools/misc/compile.php --project=$(project)
+	@$(CURSYMDIR)/../../tools/org.octris.core/project/compile.php -p $(project)
 
 #**
 # Create directory structure
