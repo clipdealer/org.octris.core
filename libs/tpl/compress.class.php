@@ -22,84 +22,33 @@ namespace org\octris\core\tpl {
     /**/
     {
         /**
-         * Default options for yuicompressor.
+         * Compressor to use.
          *
-         * @octdoc  p:compress/$defaults
-         * @var     array
+         * @octdoc  p:compress/$compressor
+         * @var     \org\octris\core\tpl\compress_if
          */
-        protected static $defaults = array('js' => array(), 'css' => array());
+        protected static $compressor;
         /**/
 
-        /**
-         * Enable / disable YUI compressor.
-         *
-         * @octdoc  p:compress/$enabled
-         * @var     bool
+        /*
+         * Class with only static methods.
          */
-        protected static $enabled = false;
-        /**/
+        protected function __construct() {}
+        protected function __clone() {}
 
         /**
-         * Constructor.
+         * Instance of a compressor class to use for combining and
+         * compressing source files.
          *
-         * @octdoc  m:compress/__construct
+         * @octdoc  m:compress/setCompressor
+         * @param   \org\octris\core\tpl\compress_if    $compressor         Instance of compressor class.
          */
-        public function __construct()
+        public static function setCompressor(\org\octris\core\tpl\compress_if $compressor)
         /**/
         {
+            self::$compressor = $compressor;
         }
 
-        /**
-         * Execute yuicompressor.
-         *
-         * @octdoc  m:compress/exec
-         * @param   array       $files      Files to compress.
-         * @param   string      $out        Name of path to store file in.
-         * @param   string      $inp        Name of base-path to lookup source file in.
-         * @param   string      $type       Type of files to compress.
-         * @param   array       $options    Optional additional options for yuicompressor.
-         * @return  string                  Name of created file.
-         */
-        protected static function exec($files, $out, $inp, $type, array $options = array())
-        /**/
-        {
-            array_walk($files, function(&$file) use ($inp) {
-                $file = escapeshellarg($inp . '/' . $file);
-            });
-
-            $tmp = tempnam('/tmp', 'oct');
-            
-            if (self::$enabled) {
-                $options = array_merge(self::$defaults[$type], $options, array('type' => $type));
-                $options = array_map(function($k, $v) {
-                    return "--$k " . escapeshellarg($v);
-                }, array_keys($options), array_values($options));
-
-
-                $cmd = sprintf(
-                    'cat %s | java -jar /opt/yuicompressor/yuicompressor.jar %s -o %s 2>&1',
-                    implode(' ', $files),
-                    implode(' ', $options),
-                    $tmp
-                );
-            } else {
-                $cmd = sprintf(
-                    'cat %s > %s 2>&1',
-                    implode(' ', $files),
-                    $tmp
-                );
-            }
-
-            $ret = array(); $ret_val = 0;
-            exec($cmd, $ret, $ret_val);
-
-            $md5  = md5_file($tmp);
-            $name = $md5 . '.' . $type;
-            rename($tmp, $out . '/' . $name);
-            
-            return $name;
-        }
-        
         /**
          * Compress external CSS files.
          *
@@ -112,7 +61,7 @@ namespace org\octris\core\tpl {
         public static function compressCSS(array $files, $out, $inp)
         /**/
         {
-            return self::exec($files, $out, $inp, 'css');
+            return self::$compressor->exec($files, $out, $inp, 'css');
         }
 
         /**
@@ -127,7 +76,7 @@ namespace org\octris\core\tpl {
         public static function compressJS(array $files, $out, $inp)
         /**/
         {
-            return self::exec($files, $out, $inp, 'js');
+            return self::$compressor->exec($files, $out, $inp, 'js');
         }
 
         /**
@@ -139,7 +88,7 @@ namespace org\octris\core\tpl {
          * @param   string      $inp        Array of input pathes.
          * @return  string                  Processed template.
          */
-        public function process($tpl, array $out, array $inp)
+        public static function process($tpl, array $out, array $inp)
         /**/
         {
             // methods purpose is to collection script/style blocks and extract all included external files. the function
@@ -193,4 +142,7 @@ namespace org\octris\core\tpl {
             return $tpl;
         }
     }
+    
+    // set default compressor
+    compress::setCompressor(new compress\combine());
 }
