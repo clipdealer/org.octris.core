@@ -76,6 +76,15 @@ namespace org\octris\core {
         /**/
 
         /**
+         * Bound gettext domains.
+         *
+         * @octdoc  p:l10n/$domains
+         * @var     array
+         */
+        protected $domains = array();
+        /**/
+
+        /**
          * Protected constructor and magic clone method. L10n is a singleton.
          *
          * @octdoc  m:l10n/__construct
@@ -159,7 +168,7 @@ namespace org\octris\core {
             // putenv('LC_MESSAGES=' . $locale);
             setlocale(LC_MESSAGES, $locale);
 
-            $this->bindTextDomain('messages', $this->directory);
+            $this->addTextDomain('messages', $this->directory);
 
             return $ret;
         }
@@ -372,39 +381,72 @@ namespace org\octris\core {
         }
 
         /**
-         * Bind gettext text domain, the package and directory of locale texts).
+         * Add a gettext domain. Note that the first domain added will be set as
+         * default domain. This can be changed by setting a domain using the 
+         * 'setDefaultDomain' method.
          *
-         * @octdoc  m:l10n/bindTextDomain
-         * @param   string          $pkg                Name of package
-         * @param   string          $dir                Base directory for localized text packages.
+         * @octdoc  m:l10n/addTextDomain
+         * @see     setDefaultDomain
+         * @param   string          $domain             Name of domain.
+         * @param   string          $directory          Base directory for localized text packages.
          * @param   string          $codeset            Optional codeset of text domain.
-         * @return  string                              Text domain.
          */
-        protected function bindTextDomain($pkg, $dir, $codeset = 'UTF-8')
+        public function addTextDomain($domain, $directory, $codeset = 'UTF-8')
         /**/
         {
-            bind_textdomain_codeset($pkg, $codeset);
-            $domain = bindtextdomain($pkg, $dir);
+            bind_textdomain_codeset($domain, $codeset);
+            bindtextdomain($domain, $directory);
 
-            textdomain($pkg);
-
-            return $domain;
+            if (count($this->domains) == 0) {
+                textdomain($domain);
+            }
+            
+            $this->domains[] = $domain;
         }
 
+        /**
+         * Set the default gettext domain. Note, that a domain must have been 
+         * already added using the 'addTextDomain' method.
+         *
+         * @octdoc  m:l10n/setDefaultDomain
+         * @see     addTextDomain
+         * @param   string          $domain             Name of domain.
+         * @return  string                              The domain that was set before.
+         */
+        public function setDefaultDomain($domain)
+        /**/
+        {
+            return textdomain($domain);
+        }
+        
+        /**
+         * Return the current set default text domain. Note, that a domain must have been 
+         * already added using the 'addTextDomain' method.
+         *
+         * @octdoc  m:l10n/getDefaultDomain
+         * @see     addTextDomain
+         */
+        public function getDefaultDomain()
+        /**/
+        {
+            return textdomain(null);
+        }
+        
         /**
          * Translate message with currently set dictionary.
          *
          * @octdoc  m:l10n/translate
          * @param   string          $msg                Message to translate.
          * @param   array           $args               Optional parameters for inline functions.
+         * @param   string          $domain             Optional text domain to use.
          * @return  string                              Translated text or text from 'msg' parameter, if no translation was found.
          */
-        public function translate($msg, array $args = array())
+        public function translate($msg, array $args = array(), $domain = null)
         /**/
         {
             // get localized text from dictionary
             if ($msg !== '') {
-                $msg = $this->lookup($msg);
+                $msg = $this->lookup($msg, $domain);
             }
 
             // compile included function calls if not in cache
@@ -430,14 +472,25 @@ namespace org\octris\core {
          *
          * @octdoc  m:l10n/lookup
          * @param   string          $msg                Message to lookup
+         * @param   string          $domain             Optional text domain to use.
          * @return  string                              Translated message.
          */
-        public function lookup($msg)
+        public function lookup($msg, $domain = null)
         /**/
         {
-            return ($msg !== '' && (($out = gettext($msg)) !== '') 
-                    ? $out 
-                    : $msg);
+            $out = '';
+            
+            if ($msg !== '') {
+                $out = (is_null($domain)
+                        ? gettext($msg)
+                        : dgettext($domain, $msg));
+            }
+            
+            if ($out === '') {
+                $out = $msg;
+            }
+            
+            return $out;
         }
 
         /**
