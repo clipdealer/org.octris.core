@@ -9,48 +9,21 @@
  * file that was distributed with this source code.
  */
 
-namespace org\octris\core {
+namespace org\octris\core\l10n\backend {
     /**
-     * Localisation library.
+     * Gettext based localisation backend.
      *
-     * @octdoc      c:core/l10n
-     * @copyright   copyright (c) 2010-2013 by Harald Lapp
+     * @octdoc      c:backend/gettext
+     * @copyright   copyright (c) 2013 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    class l10n
+    class gettext
     /**/
     {
         /**
-         * Instance of l10n class for singleton pattern.
-         *
-         * @octdoc  p:l10n/$instance
-         * @var     \org\octris\core\l10n
-         */
-        private static $instance = null;
-        /**/
-
-        /**
-         * Locale string.
-         *
-         * @octdoc  p:l10n/$lc
-         * @var     string
-         */
-        protected $lc = null;
-        /**/
-
-        /**
-         * Stores language codes for restoreLocale
-         *
-         * @octdoc  p:l10n/$lc_mem
-         * @var     array
-         */
-        protected $lc_mem = array();
-        /**/
-
-        /**
          * Gettext compiler cache -- an array -- is only used, if a caching backend is not set.
          *
-         * @octdoc  p:l10n/$compiler_cache
+         * @octdoc  p:gettext/$compiler_cache
          * @var     array
          * @see     l10n::setCache
          */
@@ -58,9 +31,18 @@ namespace org\octris\core {
         /**/
 
         /**
+         * L10n caching backend.
+         *
+         * @octdoc  p:gettext/$cache
+         * @var     \org\octris\core\cache
+         */
+        protected static $cache = null;
+        /**/
+
+        /**
          * Directory of dictionary
          *
-         * @octdoc  p:l10n/$directory
+         * @octdoc  p:gettext/$directory
          * @var     string
          */
         protected $directory = '';
@@ -69,34 +51,38 @@ namespace org\octris\core {
         /**
          * Bound gettext domains.
          *
-         * @octdoc  p:l10n/$domains
+         * @octdoc  p:gettext/$domains
          * @var     array
          */
         protected $domains = array();
         /**/
 
         /**
-         * Configured localization backend.
+         * Constructor. 
          *
-         * @octdoc  p:l10n/$backend
-         * @var     \org\octris\core\l10n\backend_if|null
+         * @octdoc  m:gettext/__construct
          */
-        protected $backend = null;
+        public function __construct()
         /**/
+        {
+        }
 
         /**
-         * Protected constructor and magic clone method. L10n is a singleton.
+         * Directory to lookup dictionary in.
          *
-         * @octdoc  m:l10n/__construct
+         * @octdoc  m:gettext/setDirectory
+         * @param   string      $directory      Name of directory to set for looking up dictionary.
          */
-        protected function __construct() {}
-        protected function __clone() {}
+        public function setDirectory($directory)
         /**/
+        {
+            $this->directory = $directory;
+        }
 
         /**
          * Return instance of localization class.
          *
-         * @octdoc  m:l10n/getInstance
+         * @octdoc  m:gettext/getInstance
          * @return  \org\octris\core\l10n       Instance of localization class.
          */
         public static function getInstance()
@@ -110,21 +96,33 @@ namespace org\octris\core {
         }
 
         /**
-         * Set localization backend.
+         * Set caching backend for l10n.
          *
-         * @octdoc  m:l10n/setBackend
-         * @param   \org\octris\core\l10n\backend_if    $backend        Instance of localization backend to set.
+         * @octdoc  m:gettext/setCache
+         * @param   \org\octris\core\cache      $cache          Instance of caching backend to use.
          */
-        public function setBackend(\org\octris\core\l10n\backend_if $backend)
+        public static function setCache(\org\octris\core\cache $cache)
         /**/
         {
-            $this->backend = $backend;
+            self::$cache = $cache;
+        }
+
+        /**
+         * Return instance of caching backend.
+         *
+         * @octdoc  m:gettext/getCache
+         * @return  \org\octris\core\cache                      Instance of caching backend l10n uses.
+         */
+        public static function getCache()
+        /**/
+        {
+            return self::$cache;
         }
 
         /**
          * Change locale setting for application.
          *
-         * @octdoc  m:l10n/setLocale
+         * @octdoc  m:gettext/setLocale
          * @param   string      $locale         Localization string in the form of language_COUNTRY (e.g.: de_DE, en_US, ...).
          * @return  string                      Returns old localisation setting.
          */
@@ -152,7 +150,7 @@ namespace org\octris\core {
         /**
          * Get current localisation setting.
          *
-         * @octdoc  m:l10n/getLocale
+         * @octdoc  m:gettext/getLocale
          * @return  string                      Current localization setting in the form of language_COUNTRY (e.g.: de_DE, en_US, ...).
          */
         public function getLocale()
@@ -164,7 +162,7 @@ namespace org\octris\core {
         /**
          * Return language code from current set locale or from specified locale.
          *
-         * @octdoc  m:l10n/getLanguageCode
+         * @octdoc  m:gettext/getLanguageCode
          * @param   string      $code           Optional code to parse.
          * @return  string                      Language code.
          */
@@ -179,7 +177,7 @@ namespace org\octris\core {
         /**
          * Return country code from current set locale or form specified locale.
          *
-         * @octdoc  m:l10n/getCountryCode
+         * @octdoc  m:gettext/getCountryCode
          * @param   string      $code           Optional code to parse.
          * @return  string                      Country code.
          */
@@ -194,7 +192,7 @@ namespace org\octris\core {
         /**
          * One level restoring locale setting, when a setting was overwritten using setLocale.
          *
-         * @octdoc  m:l10n/restoreLocale
+         * @octdoc  m:gettext/restoreLocale
          */
         public function restoreLocale()
         /**/
@@ -207,7 +205,7 @@ namespace org\octris\core {
         /**
          * Money formatter.
          *
-         * @octdoc  m:l10n/monf
+         * @octdoc  m:gettext/monf
          * @todo    implementation
          * @param   mixed           $money              Float value as amount or instance of \org\octris\core\type\money
          * @return  string                              Formatted money.
@@ -220,7 +218,7 @@ namespace org\octris\core {
         /**
          * Number formatter.
          *
-         * @octdoc  m:l10n/numf
+         * @octdoc  m:gettext/numf
          * @todo    implementation
          * @param   mixed           $number             Numerical value to format.
          * @return  string                              Formatted number.
@@ -233,7 +231,7 @@ namespace org\octris\core {
         /**
          * Percentage formatter.
          *
-         * @octdoc  m:l10n/perf
+         * @octdoc  m:gettext/perf
          * @param   mixed           $number             Numerical value to format.
          * @return  string                              Formatted number.
          */
@@ -246,7 +244,7 @@ namespace org\octris\core {
          * Date formatter. Can either be an ISO date string, a timestamp or
          * a PHP DateTime object.
          *
-         * @octdoc  m:l10n/datef
+         * @octdoc  m:gettext/datef
          * @todo    Implementation.
          * @param   mixed           $datetime           Date.
          * @param   int             $format             Optional formatting type.
@@ -261,7 +259,7 @@ namespace org\octris\core {
          * If parameter 'test' ist bool true, the parameter 'first' will
          * be returnes, otherwise the parameter 'second' will be returned.
          *
-         * @octdoc  m:l10n/yesno
+         * @octdoc  m:gettext/yesno
          * @param   mixed           $test               Value to test.
          * @param   string          $first              First possible return value.
          * @param   string          $second             Second possible return value.
@@ -278,7 +276,7 @@ namespace org\octris\core {
          * may contain a %d placeholder (@see sprintf) to include the value
          * of 'test'.
          *
-         * @octdoc  m:l10n/quant
+         * @octdoc  m:gettext/quant
          * @param   int/float       $test               Value to test.
          * @param   string          $first              Return value if 'test' == 1 or 'second' / 'third' are not set.
          * @param   string          $second             Optional return value if 'test' != 1.
@@ -303,7 +301,7 @@ namespace org\octris\core {
          * Writes out a list of values separated by a specified character
          * (default: ', ') and the last one by a string (eg: 'and' or 'or').
          *
-         * @octdoc  m:l10n/comify
+         * @octdoc  m:gettext/comify
          * @param   array           $list               List of elements to concatenate.
          * @param   string          $word               Word to concatenate last item with.
          * @param   string          $sep                Optional separator.
@@ -326,7 +324,7 @@ namespace org\octris\core {
         /**
          * Returns text according to specified gender.
          *
-         * @octdoc  m:l10n/gender
+         * @octdoc  m:gettext/gender
          * @param   int/string      $gender             Gender (one of: mM1fFwW2nN0)
          * @param   string          $undefined          String to return if gender is not specified ('gender' one of 'n', 'N' or '0').
          * @param   string          $male               String to return if gender is male ('gender' one of 'm', 'M' or '1').
@@ -361,7 +359,7 @@ namespace org\octris\core {
          * default domain. This can be changed by setting a domain using the 
          * 'setDefaultDomain' method.
          *
-         * @octdoc  m:l10n/addTextDomain
+         * @octdoc  m:gettext/addTextDomain
          * @see     setDefaultDomain
          * @param   string          $domain             Name of domain.
          * @param   string          $directory          Base directory for localized text packages.
@@ -384,7 +382,7 @@ namespace org\octris\core {
          * Set the default gettext domain. Note, that a domain must have been 
          * already added using the 'addTextDomain' method.
          *
-         * @octdoc  m:l10n/setDefaultDomain
+         * @octdoc  m:gettext/setDefaultDomain
          * @see     addTextDomain
          * @param   string          $domain             Name of domain.
          * @return  string                              The domain that was set before.
@@ -399,7 +397,7 @@ namespace org\octris\core {
          * Return the current set default text domain. Note, that a domain must have been 
          * already added using the 'addTextDomain' method.
          *
-         * @octdoc  m:l10n/getDefaultDomain
+         * @octdoc  m:gettext/getDefaultDomain
          * @see     addTextDomain
          */
         public function getDefaultDomain()
@@ -411,7 +409,7 @@ namespace org\octris\core {
         /**
          * Translate message with currently set dictionary.
          *
-         * @octdoc  m:l10n/translate
+         * @octdoc  m:gettext/translate
          * @param   string          $msg                Message to translate.
          * @param   array           $args               Optional parameters for inline functions.
          * @param   string          $domain             Optional text domain to use.
@@ -446,7 +444,7 @@ namespace org\octris\core {
          * This method differs from '__' and 'translate' in that it won't 
          * compile any inline functions.
          *
-         * @octdoc  m:l10n/lookup
+         * @octdoc  m:gettext/lookup
          * @param   string          $msg                Message to lookup
          * @param   string          $domain             Optional text domain to use.
          * @return  string                              Translated message.
@@ -454,7 +452,6 @@ namespace org\octris\core {
         public function lookup($msg, $domain = null)
         /**/
         {
-            $this->backend->lookup($msg, $domain);
             $out = '';
             
             if ($msg !== '') {
@@ -468,6 +465,46 @@ namespace org\octris\core {
             }
             
             return $out;
+        }
+
+        /**
+         * Gettext message compiler. It's purpose is to transform embedded
+         * functions into PHP code.
+         *
+         * @octdoc  m:gettext/compile
+         * @param   string          $msg                Message to compile.
+         * @return  callback                            Created callback.
+         */
+        protected function compile($msg)
+        /**/
+        {
+            $msg     = '\'' . str_replace("'", "\'", $msg) . '\'';
+            $cnt     = 0;
+            $pattern = '/\[(?:(_\d+)|(?:([^,]+))(?:,(.*?))?(?<!\\\))\]/s';
+
+            $msg = preg_replace_callback($pattern, function($m) {
+                $cmd = (isset($m[2]) ? $m[2] : '');
+                $tmp = preg_split('/(?<!\\\),/', array_pop($m));
+                $par = array();
+
+                foreach ($tmp as $t) {
+                    $par[] = (($t = trim($t)) && preg_match('/^_(\d+)$/', $t, $m)
+                                ? '$args[' . ($m[1] - 1) . ']'
+                                : '\'' . $t . '\'');
+                }
+
+                $code = ($cmd != '' 
+                         ? '\' . $obj->' . $cmd . '(' . implode(',', $par) . ') . \''
+                         : '\' . ' . array_shift($par) . ' . \'');
+
+                return $code;
+            }, $msg, -1, $cnt);
+
+            if ($cnt == 0) {
+                return function($obj, $args) use ($msg) { return $msg; };
+            } else {
+                return create_function('$obj, $args', 'return ' . $msg . ';');
+            }
         }
     }
 }
