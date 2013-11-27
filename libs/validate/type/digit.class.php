@@ -23,7 +23,7 @@ namespace org\octris\core\validate\type {
         /**
          * Validator implementation.
          *
-         * @octdoc  m:alpha/validate
+         * @octdoc  m:digit/validate
          * @param   mixed       $value          Value to validate.
          * @return  bool                        Returns true if value is valid.
          */
