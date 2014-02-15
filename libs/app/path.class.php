@@ -24,7 +24,7 @@ namespace org\octris\core\app {
          * Unnormalized path.
          *
          * @octdoc 	m:path/$path
-         * @var 	string
+         * @type	string
          */
         protected $path = '';
         /**/

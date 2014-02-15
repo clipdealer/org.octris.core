@@ -24,7 +24,7 @@ namespace org\octris\core\db\type {
          * Instance of database device responsable for connections.
          *
          * @octdoc  p:dataobject/$device
-         * @var     \org\octris\core\db\device
+         * @type    \org\octris\core\db\device
          */
         protected $device;
         /**/
@@ -33,7 +33,7 @@ namespace org\octris\core\db\type {
          * Name of collection the dataobject has access to.
          *
          * @octdoc  p:dataobject/$collection
-         * @var     string
+         * @type    string
          */
         protected $collection;
         /**/
@@ -42,7 +42,7 @@ namespace org\octris\core\db\type {
          * Object ID -- uniq key that is used for storing the object in the database.
          *
          * @octdoc  p:dataobject/$_id
-         * @var     string
+         * @type    string
          */
         protected $_id = null;
         /**/

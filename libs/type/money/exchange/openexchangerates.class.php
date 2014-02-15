@@ -24,7 +24,7 @@ namespace org\octris\core\type\money {
          * Exchange rates.
          *
          * @octdoc  p:openexchangerates/$rates
-         * @var     array|null
+         * @type    array|null
          */
         protected static $rates = null;
         /**/

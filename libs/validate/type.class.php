@@ -24,7 +24,7 @@ namespace org\octris\core\validate {
          * Stores validation options.
          *
          * @octdoc  p:type/$options
-         * @var     array
+         * @type    array
          */
         protected $options = array();
         /**/

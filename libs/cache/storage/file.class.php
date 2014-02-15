@@ -24,7 +24,7 @@ namespace org\octris\core\cache\storage {
          * Namespace separator.
          *
          * @octdoc  p:file/$ns_separator
-         * @var     string
+         * @type    string
          */
         protected $ns_separator = '/';
         /**/
@@ -33,7 +33,7 @@ namespace org\octris\core\cache\storage {
          * Cache path.
          *
          * @octdoc  p:file/$path
-         * @var     string
+         * @type    string
          */
         protected $path;
         /**/

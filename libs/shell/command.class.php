@@ -26,7 +26,7 @@ namespace org\octris\core\shell {
          * Command to execute.
          *
          * @octdoc  p:command/$command
-         * @var     string
+         * @type    string
          */
         protected $command;
         /**/
@@ -35,7 +35,7 @@ namespace org\octris\core\shell {
          * Command arguments.
          *
          * @octdoc  p:command/$args
-         * @var     array
+         * @type    array
          */
         protected $args;
         /**/
@@ -44,7 +44,7 @@ namespace org\octris\core\shell {
          * Current working directory to use for command execution.
          *
          * @octdoc  p:command/$cwd
-         * @var     string
+         * @type    string
          */
         protected $cwd;
         /**/
@@ -53,7 +53,7 @@ namespace org\octris\core\shell {
          * Environment to use when executing  command.
          *
          * @octdoc  p:command/$env
-         * @var     array
+         * @type    array
          */
         protected $env;
         /**/
@@ -62,7 +62,7 @@ namespace org\octris\core\shell {
          * Command pipes.
          *
          * @octdoc  p:command/$pipes
-         * @var     array
+         * @type    array
          */
         protected $pipes = array();
         /**/
@@ -71,7 +71,7 @@ namespace org\octris\core\shell {
          * Stream i/o specifications.
          *
          * @octdoc  p:command/$stream_specs
-         * @var     array
+         * @type    array
          */
         protected static $stream_specs = array(
             'default'                           => array('pipe', 'w+'),

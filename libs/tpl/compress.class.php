@@ -25,7 +25,7 @@ namespace org\octris\core\tpl {
          * Compressor to use.
          *
          * @octdoc  p:compress/$compressor
-         * @var     \org\octris\core\tpl\compress_if
+         * @type    \org\octris\core\tpl\compress_if
          */
         protected static $compressor;
         /**/

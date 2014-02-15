@@ -24,7 +24,7 @@ namespace org\octris\core\logger\writer {
          * Mapping of logger levels to graylog levels.
          *
          * @octdoc  p:graylog/$graylog_levels
-         * @var     array
+         * @type    array
          */
         private static $graylog_levels = array(
             \org\octris\core\logger::T_EMERGENCY => 0,
@@ -59,7 +59,7 @@ namespace org\octris\core\logger\writer {
          * IP address of graylog server.
          *
          * @octdoc  p:graylog/$host
-         * @var     string
+         * @type    string
          */
         protected $host;
         /**/
@@ -68,7 +68,7 @@ namespace org\octris\core\logger\writer {
          * Port number of graylog server.
          *
          * @octdoc  p:graylog/$port
-         * @var     int
+         * @type    int
          */
         protected $port;
         /**/
@@ -77,7 +77,7 @@ namespace org\octris\core\logger\writer {
          * Maximum chunk size of packets to send to graylog server.
          *
          * @octdoc  p:graylog/$chunk_size
-         * @var     int
+         * @type    int
         protected $chunk_size;
         /**/
 

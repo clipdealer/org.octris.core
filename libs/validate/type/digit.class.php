@@ -24,7 +24,7 @@ namespace org\octris\core\validate\type {
          * Validation pattern.
          *
          * @octdoc  p:digit/$pattern
-         * @var     string
+         * @type    string
          */
         protected $pattern = '/^[0-9]+$/';
         /**/

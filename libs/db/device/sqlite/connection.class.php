@@ -24,7 +24,7 @@ namespace org\octris\core\db\device\sqlite {
          * Device the connection belongs to.
          *
          * @octdoc  p:connection/$device
-         * @var     \org\octris\core\db\device\sqlite
+         * @type    \org\octris\core\db\device\sqlite
          */
         protected $device;
         /**/

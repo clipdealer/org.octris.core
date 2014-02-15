@@ -24,7 +24,7 @@ namespace org\octris\core\db\device\mongodb {
          * Device the connection belongs to.
          *
          * @octdoc  p:connection/$device
-         * @var     \org\octris\core\db\device\mongodb
+         * @type    \org\octris\core\db\device\mongodb
          */
         protected $device;
         /**/
@@ -33,7 +33,7 @@ namespace org\octris\core\db\device\mongodb {
          * Instance of mongo class.
          *
          * @octdoc  p:connection/$mongo
-         * @var     \Mongo
+         * @type    \Mongo
          */
         protected $mongo;
         /**/
@@ -42,7 +42,7 @@ namespace org\octris\core\db\device\mongodb {
          * Connection to a database.
          *
          * @octdoc  p:connection/$db
-         * @var     \MongoDB
+         * @type    \MongoDB
          */
         protected $db;
         /**/

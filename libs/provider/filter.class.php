@@ -24,7 +24,7 @@ namespace org\octris\core\provider {
          * Prefix to use as filter.
          *
          * @octdoc  v:filter/$prefix
-         * @var     string
+         * @type    string
          */
         private $prefix = '';
         /**/

@@ -25,7 +25,7 @@ namespace org\octris\core\auth\storage {
          * Transient identity storage.
          *
          * @octdoc  p:transient/$identity
-         * @var     array|null
+         * @type    array|null
          */
         protected $identity = null;
         /**/

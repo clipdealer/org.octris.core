@@ -24,7 +24,7 @@ namespace org\octris\core\app\cli {
          * Resource types.
          *
          * @octdoc  d:command/T_STDIN, T_STDOUT, T_STDERR
-         * @var     string
+         * @type    string
          */
         const T_STDIN  = 0;
         const T_STDOUT = 1;
@@ -35,7 +35,7 @@ namespace org\octris\core\app\cli {
          * Command to execute.
          *
          * @octdoc  p:command/$cmd
-         * @var     string
+         * @type    string
          */
         protected $cmd;
         /**/
@@ -44,7 +44,7 @@ namespace org\octris\core\app\cli {
          * Working directory.
          *
          * @octdoc  p:command/$cwd
-         * @var     string|null
+         * @type    string|null
          */
         protected $cwd;
         /**/
@@ -53,7 +53,7 @@ namespace org\octris\core\app\cli {
          * Environment variables.
          *
          * @octdoc  p:command/$env
-         * @var     array
+         * @type    array
          */
         protected $env;
         /**/
@@ -62,7 +62,7 @@ namespace org\octris\core\app\cli {
          * Additional options.
          *
          * @octdoc  p:command/$options
-         * @var     array
+         * @type    array
          */
         protected $options;
         /**/
@@ -71,7 +71,7 @@ namespace org\octris\core\app\cli {
          * Delay to nice CPU.
          *
          * @octdoc  p:command/$delay
-         * @var     int
+         * @type    int
          */
         protected $delay = 100;
         /**/
@@ -83,7 +83,7 @@ namespace org\octris\core\app\cli {
          * bit 2 - writing is allowed
          *
          * @octdoc  p:command/$modes
-         * @var     array
+         * @type    array
          */
         private static $modes = array(
             'r'  => 1, 'r+' => 3,
@@ -98,7 +98,7 @@ namespace org\octris\core\app\cli {
          * Descriptors.
          *
          * @octdoc  p:command/$descriptors
-         * @var     array
+         * @type    array
          */
         protected $descriptors = array(
             self::T_STDIN  => array('pipe', 'r'),
@@ -111,7 +111,7 @@ namespace org\octris\core\app\cli {
          * Resources.
          *
          * @octdoc  p:command/$callbacks
-         * @var     array
+         * @type    array
          */
         protected $callbacks = array();
         /**/

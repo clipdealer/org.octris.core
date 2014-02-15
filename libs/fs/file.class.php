@@ -38,7 +38,7 @@ namespace org\octris\core\fs {
          * File opening mode.
          *
          * @octdoc  p:file/$open_mode
-         * @var     string
+         * @type    string
          */
         private $open_mode = '';
         /**/
@@ -50,7 +50,7 @@ namespace org\octris\core\fs {
          * bit 2 - writing is allowed
          *
          * @octdoc  p:file/$modes
-         * @var     array
+         * @type    array
          */
         private static $modes = array(
             'r'  => 1, 'r+' => 3,
@@ -65,7 +65,7 @@ namespace org\octris\core\fs {
          * File handle.
          *
          * @octdoc  p:file/$fh
-         * @var     resource
+         * @type    resource
          */
         private $fh = null;
         /**/
@@ -74,7 +74,7 @@ namespace org\octris\core\fs {
          * If reading from file is possible.
          *
          * @octdoc  p:file/$can_read
-         * @var     bool
+         * @type    bool
          */
         private $can_read = false;
         /**/
@@ -83,7 +83,7 @@ namespace org\octris\core\fs {
          * If writing to file is possible.
          *
          * @octdoc  p:file/$can_write
-         * @var     bool
+         * @type    bool
          */
         private $can_write = false;
         /**/
@@ -92,7 +92,7 @@ namespace org\octris\core\fs {
          * If file is opened in binary mode.
          *
          * @octdoc  p:file/$is_binary
-         * @var     bool
+         * @type    bool
          */
         private $is_binary = false;
         /**/
@@ -101,7 +101,7 @@ namespace org\octris\core\fs {
          * File handling flags.
          * 
          * @octdoc  p:file/$flags
-         * @var     int
+         * @type    int
          */
         private $flags = 0;
         /**/
@@ -110,7 +110,7 @@ namespace org\octris\core\fs {
          * Meta data available for the s
          *
          * @octdoc  p:file/$meta
-         * @var     array
+         * @type    array
          */
         protected $meta = array();
         /**/

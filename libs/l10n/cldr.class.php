@@ -24,7 +24,7 @@ namespace org\octris\core\l10n {
          * Data cache.
          *
          * @octdoc  p:cldr/$cache
-         * @var     array
+         * @type    array
          */
         protected static $cache = array();
         /**/

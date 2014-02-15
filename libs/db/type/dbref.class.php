@@ -26,7 +26,7 @@ namespace org\octris\core\db\type {
          * Name of collection to reference to.
          *
          * @octdoc  p:dbref/$collection
-         * @var     string
+         * @type    string
          */
         protected $collection;
         /**/
@@ -35,7 +35,7 @@ namespace org\octris\core\db\type {
          * Key to reference to.
          *
          * @octdoc  p:dbref/$key
-         * @var     string
+         * @type    string
          */
         protected $key;
         /**/

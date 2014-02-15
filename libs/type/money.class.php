@@ -24,7 +24,7 @@ namespace org\octris\core\type {
          * Currency of money object (ISO 4217)
          *
          * @octdoc  p:money/$currency
-         * @var     string
+         * @type    string
          */
         protected $currency = 'EUR';
         /**/
@@ -33,7 +33,7 @@ namespace org\octris\core\type {
          * Stores instance of money exchange class.
          *
          * @octdoc  p:money/$xchg_service
-         * @var     \org\octris\core\type\money\exchange_if
+         * @type    \org\octris\core\type\money\exchange_if
          */
         protected static $xchg_service = null;
         /**/
@@ -42,7 +42,7 @@ namespace org\octris\core\type {
          * Stores money precision.
          *
          * @octdoc  p:money/$precision
-         * @var     int
+         * @type    int
          */
         protected $precision;
         /**/

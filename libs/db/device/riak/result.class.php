@@ -24,7 +24,7 @@ namespace org\octris\core\db\device\riak {
          * Device the result belongs to.
          *
          * @octdoc  p:result/$device
-         * @var     \org\octris\core\db\device\riak
+         * @type    \org\octris\core\db\device\riak
          */
         protected $device;
         /**/
@@ -33,7 +33,7 @@ namespace org\octris\core\db\device\riak {
          * Name of collection the result belongs to.
          *
          * @octdoc  p:result/$collection
-         * @var     string
+         * @type    string
          */
         protected $collection;
         /**/
@@ -42,7 +42,7 @@ namespace org\octris\core\db\device\riak {
          * Array of result.
          *
          * @octdoc  p:result/$result
-         * @var     array
+         * @type    array
          */
         protected $result = array();
         /**/
@@ -51,7 +51,7 @@ namespace org\octris\core\db\device\riak {
          * Current position in array.
          *
          * @octdoc  p:result/$position
-         * @var     int
+         * @type    int
          */
         protected $position = 0;
         /**/

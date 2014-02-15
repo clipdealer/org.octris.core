@@ -24,7 +24,7 @@ namespace org\octris\core\auth\storage {
          * Instance of session class.
          *
          * @octdoc  p:session/$session
-         * @var     \org\octris\core\app\web\session
+         * @type    \org\octris\core\app\web\session
          */
         protected $session;
         /**/

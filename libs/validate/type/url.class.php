@@ -24,7 +24,7 @@ namespace org\octris\core\validate\type {
          * Validation pattern.
          *
          * @octdoc  p:url/$pattern
-         * @var     string
+         * @type    string
          */
         protected $pattern = "/^%s:\/\/(([a-z0-9\$\-\_\.\+\!\*'\(\)\,\;\?\&\=]|(\%[0-9a-f]{2}))+(\:([a-z0-9\$\-\_\.\+\!\*'\(\)\,\;\?\&\=]|(\%[0-9a-f]{2}))+)?\@)?((([a-z0-9]|([a-z0-9]([a-z0-9\-])*[a-z0-9]))\.)*([a-z]|([a-z][a-z0-9\-]*[a-z0-9]))|[0-9]{1,3}(\.[0-9]{1,3}){3})(\:[0-9]+)?(\/([a-z0-9\$\-\_\.\+\!\*'\(\)\,\;\:\@\&\=]|(\%[0-9a-f]{2}))*(\/([a-z0-9\$\-\_\.\+\!\*'\(\)\,\;\:\@\&\=]|(\%[0-9a-f]{2}))*)*(\?([a-z0-9\$\-\_\.\+\!\*'\(\)\,\;\:\@\&\=]|(\%[0-9a-f]{2}))*)?)?$/i";
         /**/
@@ -33,7 +33,7 @@ namespace org\octris\core\validate\type {
          * Default scheme to use, if no scheme is provided.
          *
          * @octdoc  p:url/$default_scheme
-         * @var     string
+         * @type    string
          */
         protected $default_scheme = 'http://';
         /**/
