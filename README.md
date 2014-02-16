@@ -9,8 +9,7 @@ for details). This framework is a work in progress and parts of it may change in
 
 * Source documentation (nightly update): http://doc.octris.org/org.octris.core/
 
-Requirements
-------------
+## Requirements
 
 It's higly recommended to use this framework in a UN*X environment, like for example Linux and Mac OS X, 
 because the framework makes use of lot's of tools and system-characteristics found on these systems. 
@@ -39,7 +38,6 @@ framework will work perfectly without them:
 *   mcrypt
 *   readline
 
-Copyright
----------
+## Copyright
 
 Copyright (c) 2011-2014 by Harald Lapp <harald@octris.org>
