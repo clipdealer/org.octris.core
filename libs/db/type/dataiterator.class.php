@@ -13,7 +13,7 @@ namespace org\octris\core\db\type {
     /**
      * Iterator for recursive iterating data objects of query results
      *
-     * @octdoc      c:db/dataobject
+     * @octdoc      c:db/dataiterator
      * @copyright   copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
