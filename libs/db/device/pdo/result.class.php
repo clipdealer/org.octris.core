@@ -103,7 +103,7 @@ namespace org\octris\core\db\device\pdo {
         public function next()
         /**/
         {
-            if (!isset($this->cache[++$this->position])) {
+            if (!($this->valid = isset($this->cache[++$this->position]))) {
                 if (($this->valid = !!($row = $this->statement->fetch(\PDO::FETCH_OBJ)))) {
                     $this->cache[$this->position] = $row;
                 }
