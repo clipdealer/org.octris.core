@@ -13,7 +13,7 @@ namespace org\octris\core\db\type {
     /**
      * Iterator for recursive iterating data objects of query results
      *
-     * @octdoc      c:db/dataobject
+     * @octdoc      c:db/dataiterator
      * @copyright   copyright (c) 2012 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
@@ -24,7 +24,7 @@ namespace org\octris\core\db\type {
          * The dataobject to iterate.
          *
          * @octdoc  p:dataiterator/$data
-         * @var     \org\octris\core\db\type\subobject
+         * @type    \org\octris\core\db\type\subobject
          */
         protected $data;
         /**/
@@ -33,7 +33,7 @@ namespace org\octris\core\db\type {
          * Keys stored in dataobject.
          *
          * @octdoc  p:dataiterator/$keys
-         * @var     array
+         * @type    array
          */
         protected $keys;
         /**/
@@ -42,7 +42,7 @@ namespace org\octris\core\db\type {
          * Internal pointer position.
          *
          * @octdoc  p:dataiterator/$position
-         * @var     int
+         * @type    int
          */
         protected $position = 0;
         /**/

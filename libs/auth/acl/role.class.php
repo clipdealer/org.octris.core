@@ -24,7 +24,7 @@ namespace org\octris\core\auth\acl {
          * Name of role.
          *
          * @octdoc  p:role/$name
-         * @var     string
+         * @type    string
          */
         protected $name;
         /**/
@@ -33,7 +33,7 @@ namespace org\octris\core\auth\acl {
          * Additional policies assigned to role.
          *
          * @octdoc  p:role/$policies
-         * @var     array
+         * @type    array
          */
         protected $policies = array();
         /**/
@@ -42,7 +42,7 @@ namespace org\octris\core\auth\acl {
          * Parent roles.
          *
          * @octdoc  p:role/$parents
-         * @var     array
+         * @type    array
          */
         protected $parents = array();
         /**/

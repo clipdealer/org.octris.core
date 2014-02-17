@@ -24,7 +24,7 @@ namespace org\octris\core\auth {
          * Authentication status code.
          *
          * @octdoc  p:identity/$code
-         * @var     int
+         * @type    int
          */
         protected $code;
         /**/
@@ -33,7 +33,7 @@ namespace org\octris\core\auth {
          * Properties stored in the identity.
          *
          * @octdoc  p:identity/$identity
-         * @var     array
+         * @type    array
          */
         protected $identity = array();
         /**/
@@ -42,7 +42,7 @@ namespace org\octris\core\auth {
          * Roles assigned to the identity.
          *
          * @octdoc  p:identity/$roles
-         * @var     array
+         * @type    array
          */
         protected $roles = array('guest');
         /**/

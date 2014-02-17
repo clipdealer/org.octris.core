@@ -24,7 +24,7 @@ namespace org\octris\core {
          * Curl multi handle, if currently executed, otherwise null.
          *
          * @octdoc  p:net/$mh
-         * @var     resource|null
+         * @type    resource|null
          */
         protected $mh = null;
         /**/
@@ -33,7 +33,7 @@ namespace org\octris\core {
          * Max. concurrent sessions.
          *
          * @octdoc  p:net/$concurrency
-         * @var     int
+         * @type    int
          */
         protected $concurrency = 10;
         /**/
@@ -42,7 +42,7 @@ namespace org\octris\core {
          * The clients.
          *
          * @octdoc  p:net/$clients
-         * @var     array
+         * @type    array
          */
         protected $clients = array();
         /**/
@@ -51,7 +51,7 @@ namespace org\octris\core {
          * Session queue.
          *
          * @octdoc  p:net/$queue
-         * @var     array
+         * @type    array
          */
         protected $queue = array();
         /**/

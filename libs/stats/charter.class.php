@@ -26,7 +26,7 @@ namespace org\octris\core\stats {
          * Numerical Id of graph.
          *
          * @octdoc  p:charter/$id
-         * @var     int
+         * @type    int
          */
         protected $id;
         /**/
@@ -35,7 +35,7 @@ namespace org\octris\core\stats {
          * Host Charter is listening on.
          *
          * @octdoc  p:charter/$host
-         * @var     string
+         * @type    string
          */
         protected $host;
         /**/
@@ -44,7 +44,7 @@ namespace org\octris\core\stats {
          * Port Charter is listening on.
          *
          * @octdoc  p:charter/$port
-         * @var     int
+         * @type    int
          */
         protected $port;
         /**/
@@ -53,7 +53,7 @@ namespace org\octris\core\stats {
          * Sample-rate for sampling.
          *
          * @octdoc  p:charter/$sample_rate
-         * @var     float
+         * @type    float
          */
         protected $sample_rate;
 

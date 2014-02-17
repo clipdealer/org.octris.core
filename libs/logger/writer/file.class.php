@@ -24,7 +24,7 @@ namespace org\octris\core\logger\writer {
          * Mapping of logger levels to textual names.
          *
          * @octdoc  p:file/$level_names
-         * @var     array
+         * @type    array
          */
         private static $level_names = array(
             \org\octris\core\logger::T_EMERGENCY => 'emergency',
@@ -42,7 +42,7 @@ namespace org\octris\core\logger\writer {
          * Name of file to log to.
          *
          * @octdoc  p:file/$filename
-         * @var     string
+         * @type    string
          */
         protected $filename;
         /**/

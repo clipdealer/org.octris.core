@@ -39,7 +39,7 @@ namespace org\octris\core\app\cli {
          * Class to use for new instance.
          *
          * @octdoc  p:readline/$class
-         * @var     \org\octris\core\app\cli\readline
+         * @type    \org\octris\core\app\cli\readline
          */
         protected static $class = null;
         /**/
@@ -48,7 +48,7 @@ namespace org\octris\core\app\cli {
          * Instances of readline. Same history files share the sime readline instance.
          *
          * @octdoc  p:readline/$instances
-         * @var     array
+         * @type    array
          */
         protected static $instances = array();
         /**/
@@ -57,7 +57,7 @@ namespace org\octris\core\app\cli {
          * Registered readline devices.
          *
          * @octdoc  p:readline/$devices
-         * @var     array
+         * @type    array
          */
         protected static $devices = array();
         /**/

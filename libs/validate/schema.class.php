@@ -26,7 +26,7 @@ namespace org\octris\core\validate {
          * Validation schema.
          *
          * @octdoc  p:schema/$schema
-         * @var     array
+         * @type    array
          */
         protected $schema = array();
         /**/
@@ -35,7 +35,7 @@ namespace org\octris\core\validate {
          * Validation mode.
          *
          * @octdoc  p:schema/$mode
-         * @var     int
+         * @type    int
          */
         protected $mode;
         /**/
@@ -47,7 +47,7 @@ namespace org\octris\core\validate {
          * return on the first invalid field.
          *
          * @octdoc  p:schema/$fail
-         * @var     int
+         * @type    int
          */
         protected $fail = false;
         /**/
@@ -56,7 +56,7 @@ namespace org\octris\core\validate {
          * Collected errors.
          *
          * @octdoc  p:schema/$errors
-         * @var     array
+         * @type    array
          */
         protected $errors = array();
         /**/
@@ -65,7 +65,7 @@ namespace org\octris\core\validate {
          * Sanitzed data.
          *
          * @octdoc  p:schema/$data
-         * @var     array
+         * @type    array
          */
         protected $data = array();
         /**/
@@ -74,7 +74,7 @@ namespace org\octris\core\validate {
          * Whether validation succeeded.
          *
          * @octdoc  p:schema/$is_valid
-         * @var     bool
+         * @type    bool
          */
         protected $is_valid = false;
         /**/

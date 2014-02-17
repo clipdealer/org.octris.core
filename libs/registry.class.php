@@ -24,7 +24,7 @@ namespace org\octris\core {
          * Stores instance of registry object.
          *
          * @octdoc  p:registry/$instance
-         * @var     \org\octris\core\registry
+         * @type    \org\octris\core\registry
          */
         private static $instance = null;
         /**/

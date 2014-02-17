@@ -28,7 +28,7 @@ namespace org\octris\core {
          * Name of module the configuration belongs to.
          *
          * @octdoc  p:config/$module
-         * @var     string
+         * @type    string
          */
         protected $module = '';
         /**/
@@ -37,7 +37,7 @@ namespace org\octris\core {
          * Name of configuration file.
          *
          * @octdoc  p:config/$name
-         * @var     string
+         * @type    string
          */
         protected $name = '';
         /**/

@@ -24,7 +24,7 @@ namespace org\octris\core {
          * Storage for tests.
          *
          * @octdoc  p:bench/$tests
-         * @var     array
+         * @type    array
          */
         protected $tests = array();
         /**/

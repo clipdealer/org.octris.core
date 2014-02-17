@@ -24,7 +24,7 @@ namespace org\octris\core\cache\storage {
          * Instance of MongoDB database device.
          *
          * @octdoc  p:mongodb/$db
-         * @var     \org\octris\core\db\mongodb
+         * @type    \org\octris\core\db\mongodb
          */
         protected $db;
         /**/
@@ -33,7 +33,7 @@ namespace org\octris\core\cache\storage {
          * Database connection.
          *
          * @octdoc  p:mongodb/$cn
-         * @var     \org\octris\core\db\mongodb\connection
+         * @type    \org\octris\core\db\mongodb\connection
          */
         protected $cn;
         /**/
@@ -42,7 +42,7 @@ namespace org\octris\core\cache\storage {
          * Namespace separator.
          *
          * @octdoc  p:mongodb/$ns_separator
-         * @var     string
+         * @type    string
          */
         protected $ns_separator = '.';
         /**/

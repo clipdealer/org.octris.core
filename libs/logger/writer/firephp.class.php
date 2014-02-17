@@ -24,7 +24,7 @@ namespace org\octris\core\logger\writer {
          * Wildfire JSON streaming protocol header URI.
          *
          * @octdoc  p:firephp/$protocol_uri
-         * @var     string
+         * @type    string
          */
         private static $protocol_uri = 'http://meta.wildfirehq.org/Protocol/JsonStream/0.2';
         /**/
@@ -33,7 +33,7 @@ namespace org\octris\core\logger\writer {
          * FirePHP structure header URI.
          *
          * @octdoc  p:firephp/$structure_uri
-         * @var     string
+         * @type    string
          */
         private static $structure_uri = 'http://meta.firephp.org/Wildfire/Structure/FirePHP/FirebugConsole/0.1';
         /**/
@@ -42,7 +42,7 @@ namespace org\octris\core\logger\writer {
          * Plugin header URI.
          *
          * @octdoc  p:firephp/$plugin_uri
-         * @var     string
+         * @type    string
          */
         private static $plugin_uri = 'http://meta.firephp.org/Wildfire/Plugin/FirePHP/Library-FirePHPCore/0.3';
         /**/
@@ -51,7 +51,7 @@ namespace org\octris\core\logger\writer {
          * Header prefix as required by Wildfire protocol.
          *
          * @octdoc  p:firephp/$prefix
-         * @var     string
+         * @type    string
          */
         private static $prefix = 'X-Wf';
         /**/
@@ -60,7 +60,7 @@ namespace org\octris\core\logger\writer {
          * Mapping of logger levels to FirePHP level types.
          *
          * @octdoc  p:firephp/$level_types
-         * @var     array
+         * @type    array
          */
         private static $level_types = array(
             \org\octris\core\logger::T_EMERGENCY => 'ERROR',
@@ -78,7 +78,7 @@ namespace org\octris\core\logger\writer {
          * Mapping of logger levels to textual names.
          *
          * @octdoc  p:file/$level_names
-         * @var     array
+         * @type    array
          */
         private static $level_names = array(
             \org\octris\core\logger::T_EMERGENCY => 'emergency',
@@ -96,7 +96,7 @@ namespace org\octris\core\logger\writer {
          * Whether the Wildfire specific headers have been send.
          *
          * @octdoc  p:firephp/$initialized
-         * @var     bool
+         * @type    bool
          */
         protected static $initialized = false;
         /**/
@@ -105,7 +105,7 @@ namespace org\octris\core\logger\writer {
          * Sequence number of message to send to FirePHP.
          *
          * @octdoc  p:firephp/$seq_num
-         * @var     int
+         * @type    int
          */
         protected static $seq_num = 1;
         /**/
@@ -114,7 +114,7 @@ namespace org\octris\core\logger\writer {
          * Maximum chunk size for JSON stream messages.
          *
          * @octdoc  p:firephp/$chunk_size
-         * @var     int
+         * @type    int
          */
         protected $chunk_size = 4096;
         /**/

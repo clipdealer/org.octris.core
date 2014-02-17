@@ -29,7 +29,7 @@ namespace org\octris\core\db\device {
          * SQLite flags of how to open database.
          *
          * @octdoc  d:sqlite/T_READONLY, T_READWRITE, T_CREATE
-         * @var     int
+         * @type    int
          */
         const T_READONLY  = SQLITE3_OPEN_READONLY;
         const T_READWRITE = SQLITE3_OPEN_READWRITE;

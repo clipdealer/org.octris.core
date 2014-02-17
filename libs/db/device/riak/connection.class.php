@@ -26,7 +26,7 @@ namespace org\octris\core\db\device\riak {
          * Device the connection belongs to.
          *
          * @octdoc  p:connection/$device
-         * @var     \org\octris\core\db\device\riak
+         * @type    \org\octris\core\db\device\riak
          */
         protected $device;
         /**/
@@ -35,7 +35,7 @@ namespace org\octris\core\db\device\riak {
          * URI instance.
          *
          * @octdoc  p:connection/$uri
-         * @var     \org\octris\core\type\uri
+         * @type    \org\octris\core\type\uri
          */
         protected $uri;
         /**/

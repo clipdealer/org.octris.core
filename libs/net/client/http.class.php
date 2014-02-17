@@ -39,7 +39,7 @@ namespace org\octris\core\net\client {
          * protocols.
          *
          * @octdoc  p:http/$schemes
-         * @var     array
+         * @type    array
          */
         protected static $schemes = array('http', 'https');
         /**/
@@ -48,7 +48,7 @@ namespace org\octris\core\net\client {
          * Request method.
          *
          * @octdoc  p:http/$body
-         * @var     string
+         * @type    string
          */
         protected $method;
         /**/
@@ -57,7 +57,7 @@ namespace org\octris\core\net\client {
          * Stores response headers of last request.
          *
          * @octdoc  p:http/$response_headers
-         * @var     array
+         * @type    array
          */
         protected $response_headers = array();
         /**/
@@ -66,7 +66,7 @@ namespace org\octris\core\net\client {
          * Store request headers.
          *
          * @octdoc  p:http/$request_headers
-         * @var     array
+         * @type    array
          */
         protected $request_headers = array('expect' => '');
         /**/

@@ -24,7 +24,7 @@ namespace org\octris\core\type {
          * The filter to apply.
          *
          * @octdoc  p:filteriterator/$filter
-         * @var     callable
+         * @type    callable
          */
         protected $filter;
         /**/

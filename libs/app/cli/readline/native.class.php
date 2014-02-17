@@ -27,7 +27,7 @@ namespace org\octris\core\app\cli\readline {
          * Instance counter.
          *
          * @octdoc  p:native/$instances
-         * @var     int
+         * @type    int
          */
         private static $instances = 0;
         /**/
@@ -36,7 +36,7 @@ namespace org\octris\core\app\cli\readline {
          * Instance number.
          *
          * @octdoc  p:native/$instance_id
-         * @var     int
+         * @type    int
          */
         private $instance_id = 0;
         /**/
@@ -45,7 +45,7 @@ namespace org\octris\core\app\cli\readline {
          * Whether the readline implementation supports an input history.
          *
          * @octdoc  p:native/$has_history
-         * @var     bool
+         * @type    bool
          */
         protected static $has_history = false;
         /**/
@@ -54,7 +54,7 @@ namespace org\octris\core\app\cli\readline {
          * Name of history file that was used for previous call to readline.
          *
          * @octdoc  p:native/$last_history
-         * @var     string
+         * @type    string
          */
         private static $last_history = '';
         /**/
@@ -63,7 +63,7 @@ namespace org\octris\core\app\cli\readline {
          * Last used instance.
          *
          * @octdoc  p:native/$last_instance
-         * @var     int
+         * @type    int
          */
         private static $last_instance = 0;
         /**/
@@ -72,7 +72,7 @@ namespace org\octris\core\app\cli\readline {
          * Completion function.
          *
          * @octdoc  p:native/$completion_callback
-         * @var     null|callable
+         * @type    null|callable
          */
         protected $completion_callback = null;
         /**/
@@ -81,7 +81,7 @@ namespace org\octris\core\app\cli\readline {
          * History file bound to instance of readline. If no file is specified, the history will not be used.
          *
          * @octdoc  p:native/$history_file
-         * @var     string
+         * @type    string
          */
         protected $history_file = '';
         /**/

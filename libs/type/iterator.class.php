@@ -24,7 +24,7 @@ namespace org\octris\core\type {
          * Instance of collection the iterator accesses.
          *
          * @octdoc  p:iterator/$collection
-         * @var     \org\octris\core\type\collection
+         * @type    \org\octris\core\type\collection
          */
         protected $collection;
         /**/
@@ -33,7 +33,7 @@ namespace org\octris\core\type {
          * Iterator position.
          *
          * @octdoc  p:iterator/$position
-         * @var     int
+         * @type    int
          */
         protected $position = 0;
         /**/

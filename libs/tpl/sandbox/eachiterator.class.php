@@ -24,7 +24,7 @@ namespace org\octris\core\tpl\sandbox {
     	 * Iterator object.
     	 *
     	 * @octdoc  p:eachiterator/$iterator
-    	 * @var     \Traversable
+    	 * @type    \Traversable
     	 */
     	protected $iterator;
     	/**/
@@ -33,7 +33,7 @@ namespace org\octris\core\tpl\sandbox {
          * Iterator position.
          *
          * @octdoc  p:eachiterator/$position
-         * @var     int
+         * @type    int
          */
         protected $position = 0;
         /**/
@@ -42,7 +42,7 @@ namespace org\octris\core\tpl\sandbox {
          * Number of items in iterator object.
          *
          * @octdoc  p:eachiterator/$count
-         * @var     int|null
+         * @type    int|null
          */
         protected $items = null;
         /**/
@@ -51,7 +51,7 @@ namespace org\octris\core\tpl\sandbox {
          * Whether the object to iterate is a generator.
          *
          * @octdoc  p:eachiterator/$is_generator
-         * @var     bool
+         * @type    bool
          */
         protected $is_generator = false;
         /**/

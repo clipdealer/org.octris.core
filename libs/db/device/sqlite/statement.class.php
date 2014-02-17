@@ -24,7 +24,7 @@ namespace org\octris\core\db\device\sqlite {
          * Instance of device.
          *
          * @octdoc  p:statement/$device
-         * @var     \org\octris\core\db\device\sqlite
+         * @type    \org\octris\core\db\device\sqlite
          */
         protected $device;
         /**/
@@ -33,7 +33,7 @@ namespace org\octris\core\db\device\sqlite {
          * Instance of prepared statement.
          *
          * @octdoc  p:statement/$instance
-         * @var     \SQLite3Stmt
+         * @type    \SQLite3Stmt
          */
         protected $instance;
         /**/
@@ -42,7 +42,7 @@ namespace org\octris\core\db\device\sqlite {
          * Parameter types.
          *
          * @octdoc  p:statement/$types
-         * @var     array
+         * @type    array
          */
         protected static $types = array(
             'i' => SQLITE3_INTEGER,

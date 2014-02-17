@@ -24,7 +24,7 @@ namespace org\octris\core\db\type {
          * Data to store in object.
          *
          * @octdoc  p:subobject/$data
-         * @var     array
+         * @type    array
          */
         protected $data = array();
         /**/
@@ -33,7 +33,7 @@ namespace org\octris\core\db\type {
          * Reference to dataobject the subobject belongs to.
          * 
          * @octdoc  p:subobject/$dataobject
-         * @var     \org\octris\core\db\type\dataobject
+         * @type    \org\octris\core\db\type\dataobject
          */
         protected $dataobject;
         /**/

@@ -1,19 +1,15 @@
-Octris PHP Framework
-====================
+# Octris PHP Framework
 
-Preface
--------
+## Preface
 
 This is a BSD licensed PHP framework (please see LICENSE file supplied with this repository
 for details). This framework is a work in progress and parts of it may change in future.
 
-Documentation
--------------
+## Documentation
 
 * Source documentation (nightly update): http://doc.octris.org/org.octris.core/
 
-Requirements
-------------
+## Requirements
 
 It's higly recommended to use this framework in a UN*X environment, like for example Linux and Mac OS X, 
 because the framework makes use of lot's of tools and system-characteristics found on these systems. 
@@ -22,7 +18,7 @@ any problems to use it on either of these operating systems.
 
 The framework requires: 
 
-*   PHP 5.5.x
+*   PHP 5.6.x
 *   GNU make
 
 ## PHP and extensions
@@ -42,7 +38,6 @@ framework will work perfectly without them:
 *   mcrypt
 *   readline
 
-Copyright
----------
+## Copyright
 
-Copyright (c) 2011-2013 by Harald Lapp <harald@octris.org>
+Copyright (c) 2011-2014 by Harald Lapp <harald@octris.org>

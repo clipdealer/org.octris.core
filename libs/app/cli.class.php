@@ -30,7 +30,7 @@ namespace org\octris\core\app {
          * Last page
          *
          * @octdoc  p:cli/$last_page
-         * @var     \org\octris\core\cli\page
+         * @type    \org\octris\core\cli\page
          */
         private $last_page = null;
         /**/
@@ -39,7 +39,7 @@ namespace org\octris\core\app {
          * Mapping of an option to an application page class.
          *
          * @octdoc  p:cli/$option_map
-         * @var     array
+         * @type    array
          */
         protected $option_map = array();
         /**/
