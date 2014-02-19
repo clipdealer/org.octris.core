@@ -104,7 +104,7 @@ namespace org\octris\core\db\device\pdo {
                 throw new \Exception($this->errorInfo()[2], $this->errorCode());
             }
 
-            return new \org\octris\core\db\pdo\result($res);
+            return new \org\octris\core\db\device\pdo\result($res);
         }
 
         /**
@@ -122,7 +122,7 @@ namespace org\octris\core\db\device\pdo {
                 throw new \Exception('PDO prepare');
             }
 
-            return new \org\octris\core\db\pdo\statement($stmt);
+            return new \org\octris\core\db\device\pdo\statement($stmt);
         }
 
         /**
