@@ -127,7 +127,7 @@ namespace org\octris\core\db {
          * Release a connection, push it back into the pool.
          *
          * @octdoc  m:pool/releaseConnection
-         * @param   \org\octris\core\db\connection_if   $cn     Connection to release to pool.
+         * @param   \org\octris\core\db\device\connection_if   $cn     Connection to release to pool.
          */
         public function release(\org\octris\core\db\device\connection_if $cn)
         /**/
