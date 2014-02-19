@@ -335,6 +335,8 @@ namespace org\octris\core\type {
             } elseif ($value instanceof \ArrayObject || $value instanceof \ArrayIterator || $value instanceof \org\octris\core\type\iterator) {
                 // an ArrayObject or ArrayIterator will be casted to a PHP array first
                 $return = $value->getArrayCopy();
+            } elseif (is_object($value)) {
+                $return = get_object_vars($value);
             } elseif (is_array($value)) {
                 $return = $value;
             } else {
