@@ -38,7 +38,7 @@ namespace org\octris\core\db\device\pdo {
          * @param   \org\octris\core\db\device\pdo  $device             Device the connection belongs to.
          * @param   array                           $options            Connection options.
          */
-        public function __construct(\org\octris\core\db\device\mongodb $device, array $options)
+        public function __construct(\org\octris\core\db\device\pdo $device, array $options)
         /**/
         {
             parent::__construct($options['dsn'], $options['username'], $options['password'], $options['options']);

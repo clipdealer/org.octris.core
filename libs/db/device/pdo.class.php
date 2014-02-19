@@ -84,7 +84,7 @@ namespace org\octris\core\db\device {
         public function createConnection(array $options)
         /**/
         {
-            $cn = new \org\octris\core\db\device\mongodb\connection($this, $options);
+            $cn = new \org\octris\core\db\device\pdo\connection($this, $options);
 
             return $cn;
         }
