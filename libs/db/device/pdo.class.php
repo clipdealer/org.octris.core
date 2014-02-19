@@ -68,10 +68,14 @@ namespace org\octris\core\db\device {
         public function __construct($dsn, $username = null, $password = null, array $options = array())
         /**/
         {
-            $this->dsn      = $dsn;
-            $this->username = $username;
-            $this->password = $password;
-            $this->options  = $options;
+            parent::__construct();
+
+            $this->addHost(\org\octris\core\db::T_DB_MASTER, array(
+                'dsn'      => ($this->dsn      = $dsn),
+                'username' => ($this->username = $username),
+                'password' => ($this->password = $password),
+                'options'  => ($this->options  = $options)
+            ));
         }
 
         /**
