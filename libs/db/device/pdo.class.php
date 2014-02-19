@@ -65,7 +65,7 @@ namespace org\octris\core\db\device {
          * @param   string          $password           Optional password to use for connection.
          * @param   array           $options            Optional additional options.
          */
-        public __construct($dsn, $username = null, $password = null, array $options = array())
+        public function __construct($dsn, $username = null, $password = null, array $options = array())
         /**/
         {
             $this->dsn      = $dsn;
@@ -77,20 +77,14 @@ namespace org\octris\core\db\device {
         /**
          * Create database connection.
          *
-         * @octdoc  m:pdo/getConnection
-         * @return  \org\octris\core\db\device\pdo\connection             Connection to a pdo database.
+         * @octdoc  m:pdo/createConnection
+         * @param   array                       $options                Host configuration options.
+         * @return  \org\octris\core\db\device\pdo\connection           Connection to a pdo database.
          */
-        public getConnection()
+        public function createConnection(array $options)
         /**/
         {
-            $cn = new \org\octris\core\db\device\pdo\connection(
-                array(
-                    'dsn'      => $this->dsn,
-                    'username' => $this->username,
-                    'password' => $this->password,
-                    'options'  => $this->options
-                )
-            );
+            $cn = new \org\octris\core\db\device\mongodb\connection($this, $options);
 
             return $cn;
         }

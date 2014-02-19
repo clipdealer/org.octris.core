@@ -23,12 +23,22 @@ namespace org\octris\core\db\device\pdo {
         // use \org\octris\core\db\pool_tr;
 
         /**
+         * Device the connection belongs to.
+         *
+         * @octdoc  p:connection/$device
+         * @type    \org\octris\core\db\device\pdo
+         */
+        protected $device;
+        /**/
+
+        /**
          * Constructor.
          *
          * @octdoc  m:connection/__construct
-         * @param   array                       $options            Connection options.
+         * @param   \org\octris\core\db\device\pdo  $device             Device the connection belongs to.
+         * @param   array                           $options            Connection options.
          */
-        public function __construct(array $options)
+        public function __construct(\org\octris\core\db\device\mongodb $device, array $options)
         /**/
         {
             parent::__construct($options['dsn'], $options['username'], $options['password'], $options['options']);
