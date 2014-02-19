@@ -85,7 +85,7 @@ namespace org\octris\core\db\device {
          * @param   array                       $options                Host configuration options.
          * @return  \org\octris\core\db\device\pdo\connection           Connection to a pdo database.
          */
-        public function createConnection(array $options)
+        protected function createConnection(array $options)
         /**/
         {
             $cn = new \org\octris\core\db\device\pdo\connection($this, $options);
