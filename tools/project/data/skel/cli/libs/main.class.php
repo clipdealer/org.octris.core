@@ -38,7 +38,7 @@ namespace {{$namespace}}\libs {
         public function run()
         /**/
         {
-		}
-	}
+        }
+    }
 }
 
