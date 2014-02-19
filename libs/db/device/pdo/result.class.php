@@ -142,7 +142,7 @@ namespace org\octris\core\db\device\pdo {
         public function valid()
         /**/
         {
-            return $this->valid
+            return $this->valid;
         }
     }
 }
