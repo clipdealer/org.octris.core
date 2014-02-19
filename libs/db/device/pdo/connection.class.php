@@ -17,11 +17,9 @@ namespace org\octris\core\db\device\pdo {
      * @copyright   copyright (c) 2014 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    class connection extends \PDO implements \org\octris\core\db\device\connection_if, \org\octris\core\db\pool_if
+    class connection extends \PDO implements \org\octris\core\db\device\connection_if
     /**/
     {
-        // use \org\octris\core\db\pool_tr;
-
         /**
          * Device the connection belongs to.
          *
@@ -53,6 +51,33 @@ namespace org\octris\core\db\device\pdo {
         /**/
         {
             parent::release();
+        }
+
+        /**
+         * Check availability of a connection.
+         *
+         * @octdoc  m:connection/isAlive
+         * @return  bool                                        Returns true if connection is alive.
+         * @todo    Implement driver specific check.
+         */
+        public function isAlive()
+        /**/
+        {
+            return true;
+        }
+
+        /**
+         * Resolve a database reference.
+         *
+         * @octdoc  m:connection/resolve
+         * @param   \org\octris\core\db\type\dbref                          $dbref      Database reference to resolve.
+         * @return  bool                                                                Returns false always due to missing implementagtion.
+         * @todo    Add implementation.
+         */
+        public function resolve(\org\octris\core\db\type\dbref $dbref)
+        /**/
+        {
+            return false;
         }
 
         /**
@@ -89,6 +114,23 @@ namespace org\octris\core\db\device\pdo {
             }
 
             return new \org\octris\core\db\pdo\statement($stmt);
+        }
+
+        /**
+         * Return instance of collection object.
+         *
+         * @octdoc  m:connection/getCollection
+         * @param   string          $name                               Name of collection to return instance of.
+         * @return  \org\octris\core\db\device\pdo\collection           Instance of a PDO collection.
+         * @todo    Add implementation.
+         */
+        public function getCollection($name)
+        /**/
+        {
+            // return new \org\octris\core\db\device\pdo\collection(
+            //     $this->device,
+            //     $name
+            // );
         }
     }
 }
