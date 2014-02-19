@@ -130,7 +130,7 @@ namespace org\octris\core\db\device\pdo {
         public function rewind()
         /**/
         {
-            $this->position = -1;
+            $this->position = 0;
         }
 
         /**
