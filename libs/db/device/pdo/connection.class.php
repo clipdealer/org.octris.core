@@ -17,7 +17,7 @@ namespace org\octris\core\db\device\pdo {
      * @copyright   copyright (c) 2014 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
-    class connection extends \PDO implements \org\octris\core\db\device\connection_if
+    class connection implements \org\octris\core\db\device\connection_if
     /**/
     {
         /**
@@ -30,6 +30,15 @@ namespace org\octris\core\db\device\pdo {
         /**/
 
         /**
+         * Instance of PDO class.
+         *
+         * @octdoc  p:connection/$pdo
+         * @type    \PDO
+         */
+        protected $pdo;
+        /**/
+
+        /**
          * Constructor.
          *
          * @octdoc  m:connection/__construct
@@ -39,7 +48,7 @@ namespace org\octris\core\db\device\pdo {
         public function __construct(\org\octris\core\db\device\pdo $device, array $options)
         /**/
         {
-            parent::__construct($options['dsn'], $options['username'], $options['password'], $options['options']);
+            $this->pdo = new \PDO($options['dsn'], $options['username'], $options['password'], $options['options']);
         }
 
         /**
@@ -50,7 +59,7 @@ namespace org\octris\core\db\device\pdo {
         public function release()
         /**/
         {
-            parent::release();
+            //$this->pdo->release();
         }
 
         /**
@@ -91,7 +100,7 @@ namespace org\octris\core\db\device\pdo {
         public function query($statement, ...$params)
         /**/
         {
-            if (($res = parent::query($statement, ...$params)) === false) {
+            if (($res = $this->pdo->query($statement, ...$params)) === false) {
                 throw new \Exception($this->errorInfo()[2], $this->errorCode());
             }
 
@@ -109,7 +118,7 @@ namespace org\octris\core\db\device\pdo {
         public function prepare($statement, array $options = array())
         /**/
         {
-            if (($stmt = parent::prepare($statement, $options)) === false) {
+            if (($stmt = $this->pdo->prepare($statement, $options)) === false) {
                 throw new \Exception('PDO prepare');
             }
 
