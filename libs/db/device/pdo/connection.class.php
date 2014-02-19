@@ -88,7 +88,7 @@ namespace org\octris\core\db\device\pdo {
                 throw new \Exception('PDO prepare');
             }
 
-            return new \org\octris\core\db\pdo\statement($stmt)
+            return new \org\octris\core\db\pdo\statement($stmt);
         }
     }
 }
