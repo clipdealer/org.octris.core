@@ -113,7 +113,7 @@ namespace org\octris\core\db {
                     $cn = $this->createConnection($this->hosts[$type][0]);
 
                     if (!($cn instanceof \org\octris\core\db\device\connection_if)) {
-                        throw new \Exception('connection handler needs to implement interface "\org\octris\core\db\connection_if"');
+                        throw new \Exception('connection handler needs to implement interface "\org\octris\core\db\device\connection_if"');
                     }
                 }
 
