@@ -14,10 +14,11 @@ namespace org\octris\core\tpl {
      * Implements static methods for auto-escaping functionality.
      *
      * @octdoc      c:tpl/escape
-     * @copyright   copyright (c) 2012 by Harald Lapp
+     * @copyright   copyright (c) 2012-2014 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      *
      * @ref https://www.owasp.org/index.php/XSS_(Cross_Site_Scripting)_Prevention_Cheat_Sheet
+     * @ref https://www.owasp.org/index.php/DOM_based_XSS_Prevention_Cheat_Sheet
      * @ref https://wiki.php.net/rfc/escaper
      */
     class escape
@@ -72,7 +73,13 @@ namespace org\octris\core\tpl {
         public static function escapeHtml($str)
         /**/
         {
-           return $str;
+            $str = str_replace(
+                array('&', '<', '>', '"', "'", '/'),
+                array('&amp;', '&lt;', '&gt;', '&quot;', '&#x27;', '&x2F;'),
+                $str
+            ); 
+            
+            return $str;
         }
 
         /**
@@ -100,7 +107,9 @@ namespace org\octris\core\tpl {
         {
             if (preg_match('/^javascript:/i', $str)) {
                 // switch to javascript escaping instead
-                $str = $this->escapeJavascript($str);
+                $str = 'javascript:' . $this->escapeJavascript(sunstr($str, 11));
+            } else {
+                
             }
 
             return $str;
