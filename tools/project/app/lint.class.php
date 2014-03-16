@@ -135,7 +135,7 @@ namespace org\octris\core\project\app {
                     print $filename . "\n";
 
                     try {
-                        $tpl->process($filename);
+                        $tpl->process($filename, \org\octris\core\tpl::T_ESC_HTML);
                     } catch(\Exception $e) {
                     }
                 }
