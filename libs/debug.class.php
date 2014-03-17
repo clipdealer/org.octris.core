@@ -53,10 +53,16 @@ namespace org\octris\core {
                 $last_key = $key;
             }
     
-            for ($i = 0, $cnt = func_num_args(); $i < $cnt; ++$i) {
-                ob_start($prepare);
-                var_dump(func_get_arg($i));
-                ob_end_flush();
+            if (extension_loaded('xdebug')) {
+                for ($i = 0, $cnt = func_num_args(); $i < $cnt; ++$i) {
+                    var_dump(func_get_arg($i));
+                }
+            } else {
+                for ($i = 0, $cnt = func_num_args(); $i < $cnt; ++$i) {
+                    ob_start($prepare);
+                    var_dump(func_get_arg($i));
+                    ob_end_flush();
+                }
             }
 
             if (php_sapi_name() != 'cli') {
