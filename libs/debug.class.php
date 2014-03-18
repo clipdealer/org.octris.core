@@ -118,11 +118,11 @@ namespace {
     use \org\octris\core\debug as dbg;
     
     /**
-     * Dump contents of one or multiple variables, shortcut for \org\octris\core\debug::ddump
+     * Dump contents of one or multiple variables.
      *
      * @octdoc  f:debug/ddump
-     * @param   mixed       $data               Data to dump.
-     * @param   ...         ...                 Additional optional parameters to dump.
+     * @param   mixed         ...$params        Parameters to pass to \org\octris\core\debug::ddump.
+     * @see     \org\octris\core\debug::ddump
      */
     function ddump(...$params)
     /**/
@@ -134,8 +134,8 @@ namespace {
      * Print formatted debug message. Message formatting follows the rules of sprints/vsprintf.
      *
      * @octdoc  m:debug/dprint
-     * @param   string      $msg                Message with optional placeholders to print.
-     * @param   ...         ...                 Additional optional parameters to print.
+     * @param   mixed         ...$params        Parameters to pass to \org\octris\core\debug::dprint.
+     * @see     \org\octris\core\debug::dprint
      */
     function dprint(...$params)
     /**/
