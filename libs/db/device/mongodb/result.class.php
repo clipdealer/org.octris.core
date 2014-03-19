@@ -24,7 +24,7 @@ namespace org\octris\core\db\device\mongodb {
          * Device the result belongs to.
          *
          * @octdoc  p:result/$device
-         * @var     \org\octris\core\db\device\mongodb
+         * @type    \org\octris\core\db\device\mongodb
          */
         protected $device;
         /**/
@@ -33,7 +33,7 @@ namespace org\octris\core\db\device\mongodb {
          * Name of collection the result belongs to.
          *
          * @octdoc  p:result/$collection
-         * @var     string
+         * @type    string
          */
         protected $collection;
         /**/
@@ -42,7 +42,7 @@ namespace org\octris\core\db\device\mongodb {
          * MongoDB result cursor.
          *
          * @octdoc  p:result/$cursor
-         * @var     \MongoCursor
+         * @type    \MongoCursor
          */
         protected $cursor;
         /**/

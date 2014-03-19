@@ -26,19 +26,31 @@ namespace org\octris\core\tpl {
          * File handle for error messages output.
          *
          * @octdoc  p:lint/$errout
-         * @var     resource
+         * @type    resource
          */
-        protected $errout;
+        protected $errout = 'php://stderr';
         /**/
 
         /**
          * Number of errors occured.
          *
          * @octdoc  p:lint/$errors
-         * @var     int
+         * @type    int
          */
         protected $errors = 0;
         /**/
+
+        /**
+         * Set location for error output.
+         *
+         * @octdoc  m:lint/setErrorOutput
+         * @param   string      $errout     Location for error output.
+         */
+        public function setErrorOutput($errout)
+        /**/
+        {
+            $this->errout = $errout;
+        }
 
         /**
          * Trigger an error.
@@ -74,27 +86,36 @@ namespace org\octris\core\tpl {
         }
         
         /**
-         * Execute compiler toolchain for a template snippet.
+         * Execute lint toolchain for a template snippet.
          *
          * @octdoc  m:lint/toolchain
          * @param   string      $snippet        Template snippet to process.
          * @param   int         $line           Line in template processed.
+         * @param   array       $blocks         Block information required by analyzer / compiler.
+         * @param   string      $escape         Escaping to use.
          * @return  string                      Processed / compiled snippet.
          */
-        protected function toolchain($snippet, $line)
+        protected function toolchain($snippet, $line, array &$blocks, $escape)
         /**/
         {
-            $tokens = $this->tokenize($snippet, $line);
-            $code   = '';
+            if (is_null(self::$parser)) {
+                // initialize parser
+                $this->setup($blocks);
+            }
 
-            if (count($tokens) > 0) {
-                try {
-                    $this->analyze($tokens);
-                } catch(\Exception $e) {
+            try {
+                if (($tokens = self::$parser->tokenize($snippet, $line, $this->filename)) === false) {
+                    $error = self::$parser->getLastError();
+
+                    $this->error($error['ifile'], $error['iline'], $error['line'], $error['token'], $error['payload']);
+                } elseif (count($tokens) > 0) {
+                    self::$parser->getGrammar()->analyze($tokens);
                 }
+            } catch(\Exception $e) {
+                // dismiss exception to continue lint process
             }
             
-            return $code;
+            return '';
         }
         
         /**
@@ -102,18 +123,17 @@ namespace org\octris\core\tpl {
          *
          * @octdoc  m:lint/process
          * @param   string      $filename       Name of template file to lint.
+         * @param   string      $escape         Escaping to use.
          * @param   string      $err            Destination for error reporting.
          * @return  bool                        Returns true if template is valid.
          */
-        public function process($filename, $errout = 'php://stdout')
+        public function process($filename, $escape)
         /**/
         {
-            $this->filename = $filename;
             $this->errors   = 0;
-            $this->errout   = $errout;
 
-            $this->parse($filename, true);
-            
+            parent::process($filename, $escape);
+
             return ($this->errors == 0);
         }
     }

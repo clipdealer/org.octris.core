@@ -24,7 +24,7 @@ namespace org\octris\core\type {
          * Value of object.
          *
          * @octdoc  p:number/$value
-         * @var     float
+         * @type    float
          */
         protected $value = '0';
         /**/
@@ -33,7 +33,7 @@ namespace org\octris\core\type {
          * Number of digits after the decimal point for a calculated result.
          *
          * @octdoc  p:number/$scale
-         * @var     int|null 
+         * @type    int|null 
          */
         protected $scale = null;
         /**/

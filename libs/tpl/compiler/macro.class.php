@@ -24,7 +24,7 @@ namespace org\octris\core\tpl\compiler {
          * Macro registry.
          *
          * @octdoc  p:macro/$registry
-         * @var     array
+         * @type    array
          */
         protected static $registry = array();
         /**/
@@ -33,7 +33,7 @@ namespace org\octris\core\tpl\compiler {
          * Last error occured.
          *
          * @octdoc  p:macro/$last_error
-         * @var     string
+         * @type    string
          */
         protected static $last_error = '';
         /**/
@@ -63,7 +63,7 @@ namespace org\octris\core\tpl\compiler {
          * Set error.
          *
          * @octdoc  m:macro/setError
-         * @param   string      $name       Name of constant the error occured for.
+         * @param   string      $name       Name of macro the error occured for.
          * @param   string      $msg        Additional error message.
          */
         protected static function setError($name, $msg)

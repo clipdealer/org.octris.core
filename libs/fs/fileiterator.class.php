@@ -24,7 +24,7 @@ namespace org\octris\core\fs {
          * File handle.
          *
          * @octdoc  p:fileiterator/$fh
-         * @var     resource
+         * @type    resource
          */
         protected $fh = null;
         /**/
@@ -33,7 +33,7 @@ namespace org\octris\core\fs {
          * File handling flags.
          * 
          * @octdoc  p:fileiterator/$flags
-         * @var     int
+         * @type    int
          */
         protected $flags = 0;
         /**/
@@ -42,7 +42,7 @@ namespace org\octris\core\fs {
          * Current row number.
          *
          * @octdoc  p:fileiterator/$row
-         * @var     int
+         * @type    int
          */
         protected $row = null;
         /**/
@@ -51,7 +51,7 @@ namespace org\octris\core\fs {
          * Contents of current line of file.
          *
          * @octdoc  p:fileiterator/$current
-         * @var     string
+         * @type    string
          */
         protected $current = '';
         /**/
@@ -60,7 +60,7 @@ namespace org\octris\core\fs {
          * Whether file is seekable.
          *
          * @octdoc  p:fileiterator/$is_seekable
-         * @var     bool
+         * @type    bool
          */
         protected $is_seekable;
         /**/

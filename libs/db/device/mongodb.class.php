@@ -24,7 +24,7 @@ namespace org\octris\core\db\device {
          * Name of database to access.
          *
          * @octdoc  p:mongodb/$database
-         * @var     string
+         * @type    string
          */
         protected $database;
         /**/
@@ -33,7 +33,7 @@ namespace org\octris\core\db\device {
          * Username to use for connection.
          *
          * @octdoc  p:mongodb/$username
-         * @var     string
+         * @type    string
          */
         protected $username;
         /**/
@@ -42,7 +42,7 @@ namespace org\octris\core\db\device {
          * Password to use for connection.
          *
          * @octdoc  p:mongodb/$password
-         * @var     string
+         * @type    string
          */
         protected $password;
         /**/

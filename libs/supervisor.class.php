@@ -24,7 +24,7 @@ namespace org\octris\core {
          * Services.
          *
          * @octdoc  p:supervisor/$services
-         * @var     array
+         * @type    array
          */
         protected $services = array();
         /**/
@@ -33,7 +33,7 @@ namespace org\octris\core {
          * Whether to autostart polling.
          *
          * @octdoc  p:supervisor/$autostart
-         * @var     bool
+         * @type    bool
          */
         protected $autostart = false;
         /**/
@@ -42,7 +42,7 @@ namespace org\octris\core {
          * Whether supervisor is already running.
          *
          * @octdoc  p:supervisor/$running
-         * @var     bool
+         * @type    bool
          */
         protected $running = false;
         /**/

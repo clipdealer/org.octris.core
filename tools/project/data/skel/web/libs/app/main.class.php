@@ -26,8 +26,8 @@ namespace {{$namespace}}\app {
          * Page to use a entry point, if no "next_page" is specified through the
          * application state.
          *
-         * @octdoc  v:main/$entry_page
-         * @var     string
+         * @octdoc  p:main/$entry_page
+         * @type    string
          */
         protected $entry_page = '{{$namespace}}\app\entry';
         /**/

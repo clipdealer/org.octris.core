@@ -27,7 +27,7 @@ namespace org\octris\core\db\device\riak {
          * Device the collection belongs to.
          *
          * @octdoc  p:collection/$device
-         * @var     \org\octris\core\db\device\riak
+         * @type    \org\octris\core\db\device\riak
          */
         protected $device;
         /**/
@@ -36,7 +36,7 @@ namespace org\octris\core\db\device\riak {
          * Instance of connection class the collection is access by.
          *
          * @octdoc  p:collection/$connection
-         * @var     \org\octris\core\db\device\riak\connection
+         * @type    \org\octris\core\db\device\riak\connection
          */
         protected $connection;
         /**/
@@ -45,7 +45,7 @@ namespace org\octris\core\db\device\riak {
          * Name of collection.
          *
          * @octdoc  p:collection/$name
-         * @var     string
+         * @type    string
          */
         protected $name;
         /**/

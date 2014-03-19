@@ -22,7 +22,7 @@ namespace org\octris\core\db {
          * Storage for host configurations.
          *
          * @octdoc  p:device/$hosts
-         * @var     array
+         * @type    array
          */
         protected $hosts = array(
             \org\octris\core\db::T_DB_MASTER => array(),
@@ -34,7 +34,7 @@ namespace org\octris\core\db {
          * Active connections.
          *
          * @octdoc  p:device/$connections
-         * @var     array
+         * @type    array
          */
         protected $connections = array();
         /**/
@@ -43,7 +43,7 @@ namespace org\octris\core\db {
          * Storage of free database connections.
          *
          * @octdoc  p:device/$pool
-         * @var     array
+         * @type    array
          */
         protected $pool = array(
             \org\octris\core\db::T_DB_MASTER => array(),
@@ -113,7 +113,7 @@ namespace org\octris\core\db {
                     $cn = $this->createConnection($this->hosts[$type][0]);
 
                     if (!($cn instanceof \org\octris\core\db\device\connection_if)) {
-                        throw new \Exception('connection handler needs to implement interface "\org\octris\core\db\connection_if"');
+                        throw new \Exception('connection handler needs to implement interface "\org\octris\core\db\device\connection_if"');
                     }
                 }
 
@@ -127,7 +127,7 @@ namespace org\octris\core\db {
          * Release a connection, push it back into the pool.
          *
          * @octdoc  m:pool/releaseConnection
-         * @param   \org\octris\core\db\connection_if   $cn     Connection to release to pool.
+         * @param   \org\octris\core\db\device\connection_if   $cn     Connection to release to pool.
          */
         public function release(\org\octris\core\db\device\connection_if $cn)
         /**/

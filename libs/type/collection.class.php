@@ -24,7 +24,7 @@ namespace org\octris\core\type {
          * Stores keys of items stored in collection.
          *
          * @octdoc  p:collection/$keys
-         * @var     array
+         * @type    array
          */
         protected $keys = array();
         /**/
@@ -40,7 +40,7 @@ namespace org\octris\core\type {
         {
             if (($tmp = static::normalize($value)) === false) {
                 // not an array
-                throw new \Exception('don\'t know how to handle parameter of type "' . gettype($tmp) . '"');
+                throw new \Exception('don\'t know how to handle parameter of type "' . gettype($value) . '"');
             }
         
             $this->keys = array_keys($tmp);
@@ -335,6 +335,8 @@ namespace org\octris\core\type {
             } elseif ($value instanceof \ArrayObject || $value instanceof \ArrayIterator || $value instanceof \org\octris\core\type\iterator) {
                 // an ArrayObject or ArrayIterator will be casted to a PHP array first
                 $return = $value->getArrayCopy();
+            } elseif (is_object($value)) {
+                $return = get_object_vars($value);
             } elseif (is_array($value)) {
                 $return = $value;
             } else {

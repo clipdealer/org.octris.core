@@ -25,7 +25,7 @@ namespace org\octris\core\net {
          * protocols.
          *
          * @octdoc  p:client/$schemes
-         * @var     array
+         * @type    array
          */
         protected static $schemes = array();
         /**/
@@ -34,7 +34,7 @@ namespace org\octris\core\net {
          * Curl info.
          *
          * @octdoc  p:client/$info
-         * @var     array
+         * @type    array
          */
         protected static $info = null;
         /**/
@@ -43,7 +43,7 @@ namespace org\octris\core\net {
          * Options for curl client.
          *
          * @octdoc  p:client/$options
-         * @var     array
+         * @type    array
          */
         protected $options = array();
         /**/
@@ -52,7 +52,7 @@ namespace org\octris\core\net {
          * Information of the last request performed.
          *
          * @octdoc  p:client/$request_info
-         * @var     array
+         * @type    array
          */
         protected $request_info = array();
         /**/
@@ -61,7 +61,7 @@ namespace org\octris\core\net {
          * Session assigned to the client.
          *
          * @octdoc  p:client/$session
-         * @var     \org\octris\core\net|null
+         * @type    \org\octris\core\net|null
          */
         protected $session = null;
         /**/
@@ -70,7 +70,7 @@ namespace org\octris\core\net {
          * Event listener.
          * 
          * @octdoc  p:client/$listener
-         * @var     callable|null
+         * @type    callable|null
          */
         protected $listener = null;
         /**/
@@ -79,7 +79,7 @@ namespace org\octris\core\net {
          * Client URI.
          *
          * @octdoc  p:client/$uri
-         * @var     \org\octris\core\type\uri
+         * @type    \org\octris\core\type\uri
          */
         protected $uri;
         /**/

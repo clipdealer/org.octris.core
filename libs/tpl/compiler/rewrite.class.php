@@ -26,7 +26,7 @@ namespace org\octris\core\tpl\compiler {
          * Inline method rewrite.
          *
          * @octdoc  p:rewrite/$inline
-         * @var     array
+         * @type    array
          */
         protected static $inline = array(
             // blocks
@@ -77,7 +77,8 @@ namespace org\octris\core\tpl\compiler {
             'now'       => array('min' => 0, 'max' => 0),
             'uniqid'    => array('min' => 0, 'max' => 0),
             'let'       => array('min' => 2, 'max' => 2),
-            'dump'      => array('min' => 1, 'max' => 1),
+            'ddump'     => array('min' => 1),
+            'dprint'    => array('min' => 1),
             'error'     => array('min' => 1, 'max' => 1),
             
             'include'   => array('min' => 1, 'max' => 1),
@@ -99,7 +100,7 @@ namespace org\octris\core\tpl\compiler {
 
             // localisation functions
             'comify'    => array('min' => 2, 'max' => 4),
-            'enum'      => array('min' => 2, 'max' => 5),
+            'enum'      => array('min' => 2),
             'monf'      => array('min' => 1, 'max' => 2),
             'numf'      => array('min' => 1, 'max' => 2),
             'perf'      => array('min' => 1, 'max' => 2),
@@ -114,7 +115,7 @@ namespace org\octris\core\tpl\compiler {
          * Allowed PHP functions and optional mapping to an PHP or framework internal name.
          *
          * @octdoc  p:rewrite/$phpfunc
-         * @var     array
+         * @type    array
          */
         protected static $phpfunc = array(
             // string functions
@@ -159,7 +160,7 @@ namespace org\octris\core\tpl\compiler {
          * Forbidden function names.
          *
          * @octdoc  p:rewrite/$forbidden
-         * @var     array
+         * @type    array
          */
         protected static $forbidden = array(
             'setvalue', 'setvalues', 'each', 'bufferstart', 'bufferend', 'cache', 'cron', 'loop', 'onchange', 'trigger',
@@ -171,7 +172,7 @@ namespace org\octris\core\tpl\compiler {
          * Last error occured.
          *
          * @octdoc  p:rewrite/$last_error
-         * @var     string
+         * @type    string
          */
         protected static $last_error = '';
         /**/
@@ -263,7 +264,7 @@ namespace org\octris\core\tpl\compiler {
                     }
                 }
                 
-                $name = '_' . str_replace('#', '_', $name);
+                $name = '_' . str_replace('#', 'block_', $name);
 
                 return self::$name($args);
             } elseif (substr($name, 0, 1) == '#') {
@@ -293,7 +294,7 @@ namespace org\octris\core\tpl\compiler {
         /*
          * inline block functions, that can be converted directly
          */
-        protected static function __bench($args) {
+        protected static function _block_bench($args) {
             $var1 = '$_' . self::getUniqId();
             $var2 = '$_' . self::getUniqId();
 
@@ -315,7 +316,7 @@ namespace org\octris\core\tpl\compiler {
             );
         }
 
-        protected static function __cache($args) {
+        protected static function _block_cache($args) {
             $var = '$_' . self::getUniqId();
             $key = $args[0];
             $ttl = $args[1];
@@ -333,28 +334,28 @@ namespace org\octris\core\tpl\compiler {
             );
         }
         
-        protected static function __copy($args) {
+        protected static function _block_copy($args) {
             return array(
                 '$this->bufferStart(' . implode(', ', $args) . ', false);', 
                 '$this->bufferEnd();'
             );
         }
         
-        protected static function __cron($args) {
+        protected static function _block_cron($args) {
             return array(
                 'if ($this->cron(' . implode(', ', $args) . ')) {',
                 '}'
             );
         }
         
-        protected static function __cut($args) {
+        protected static function _block_cut($args) {
             return array(
                 '$this->bufferStart(' . implode(', ', $args) . ', true);', 
                 '$this->bufferEnd();'
             );
         }
         
-        protected static function __foreach($args) {
+        protected static function _block_foreach($args) {
             $var = self::getUniqId();
             $arg = $args[1];
             unset($args[1]);
@@ -371,14 +372,14 @@ namespace org\octris\core\tpl\compiler {
             );
         }
         
-        protected static function __if($args) {
+        protected static function _block_if($args) {
             return array(
                 'if (' . implode('', $args) . ') {',
                 '}'
             );
         }
 
-        protected static function __loop($args) {
+        protected static function _block_loop($args) {
             $var = self::getUniqId();
             
             $start = $args[1];
@@ -402,14 +403,14 @@ namespace org\octris\core\tpl\compiler {
             );
         }
 
-        protected static function __onchange($args) {
+        protected static function _block_onchange($args) {
             return array(
                 'if ($this->onchange("' . self::getUniqId() . '", ' . implode(', ', $args) . ')) {',
                 '}'
             );
         }
         
-        protected static function __trigger($args) {
+        protected static function _block_trigger($args) {
             return array(
                 'if ($this->trigger("' . self::getUniqId() . '", ' . implode(', ', $args) . ')) {',
                 '}'
@@ -547,8 +548,12 @@ namespace org\octris\core\tpl\compiler {
             return '(' . implode(' = ', $args) . ')';
         }
         
-        protected static function _dump($args) {
-            return '$this->dump(' . implode('', $args) . ')';
+        protected static function _ddump($args) {
+            return '\\org\\octris\\core\\debug::ddump(' . implode(', ', $args) . ')';
+        }
+        
+        protected static function _dprint($args) {
+            return '\\org\\octris\\core\\debug::dprint(' . implode(', ', $args) . ')';
         }
         
         protected static function _error($args) {
@@ -607,7 +612,10 @@ namespace org\octris\core\tpl\compiler {
             // TODO: implementation
         }
         protected static function _enum($args) {
-            // TODO: implementation
+            $value   = array_shift($args);
+            $snippet = 'array(' . implode(', ', $args) . ')';
+            
+            return '(!array_key_exists(' . $value . ' - 1, ' . $snippet . ') ? "" : ' . $snippet . '[' . $value . ' - 1])';
         }        
         protected static function _monf($args) {
             // TODO: implementation

@@ -33,7 +33,7 @@ namespace org\octris\core\auth {
          * Configured access control lists.
          *
          * @octdoc  p:acl/$resources
-         * @var     array
+         * @type    array
          */
         protected $resources = array();
         /**/
@@ -42,7 +42,7 @@ namespace org\octris\core\auth {
          * Roles configured in ACL.
          *
          * @octdoc  p:acl/$roles
-         * @var     array
+         * @type    array
          */
         protected $roles = array();
         /**/
@@ -51,7 +51,7 @@ namespace org\octris\core\auth {
          * Instance of authentication library.
          *
          * @octdoc  p:acl/$auth
-         * @var     \org\octris\core\auth|null
+         * @type    \org\octris\core\auth|null
          */
         protected $auth = null;
         /**/

@@ -24,7 +24,7 @@ namespace org\octris\core\db\device\riak {
          * Headers stored with object.
          *
          * @octdoc  p:dataobject/$headers
-         * @var     array
+         * @type    array
          */
         protected $headers;
         /**/
@@ -33,7 +33,7 @@ namespace org\octris\core\db\device\riak {
          * Content type of stored data.
          *
          * @octdoc  p:dataobject/$content_type
-         * @var     string
+         * @type    string
          */
         protected $content_type = 'application/json';
         /**/

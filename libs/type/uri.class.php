@@ -24,7 +24,7 @@ namespace org\octris\core\type {
          * Stores URI.
          *
          * @octdoc  p:uri/$uri
-         * @var     string
+         * @type    string
          */
         protected $uri = '';
         /**/
@@ -33,7 +33,7 @@ namespace org\octris\core\type {
          * Stores URI components.
          *
          * @octdoc  p:uri/$components
-         * @var     array
+         * @type    array
          */
         protected $components = array();
         /**/
@@ -42,7 +42,7 @@ namespace org\octris\core\type {
          * Stores query parameters.
          *
          * @octdoc  p:uri/$query
-         * @var     \ArrayObject
+         * @type    \ArrayObject
          */
         protected $query;
         /**/

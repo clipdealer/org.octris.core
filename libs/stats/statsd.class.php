@@ -24,7 +24,7 @@ namespace org\octris\core\stats {
          * Host the statsd server is listening on.
          *
          * @octdoc  p:statsd/$host
-         * @var     string
+         * @type    string
          */
         protected $host;
         /**/
@@ -33,7 +33,7 @@ namespace org\octris\core\stats {
          * Port the statsd server is listening on.
          *
          * @octdoc  p:statsd/$port
-         * @var     int
+         * @type    int
          */
         protected $port;
         /**/
@@ -42,7 +42,7 @@ namespace org\octris\core\stats {
          * Default sampling-rate.
          *
          * @octdoc  p:statsd/$sampling_rate
-         * @var     float
+         * @type    float
          */
         protected $sampling_rate;
         /**/    

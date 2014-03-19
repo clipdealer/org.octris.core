@@ -21,26 +21,37 @@ namespace org\octris\core\validate\type {
     /**/
     {
         /**
+         * Validation pattern.
+         *
+         * @octdoc  p:digit/$pattern
+         * @type    string
+         */
+        protected $pattern = '/^[0-9]+$/';
+        /**/
+        
+        /**
          * Validator implementation.
          *
-         * @octdoc  m:alpha/validate
+         * @octdoc  m:digit/validate
          * @param   mixed       $value          Value to validate.
          * @return  bool                        Returns true if value is valid.
          */
         public function validate($value)
         /**/
         {
-            $return = (isset($this->options['min']) 
-                        ? ($value >= $this->options['min']) 
-                        : true);
+            if (($return = preg_match($this->pattern, $value))) {
+                $return = (isset($this->options['min']) 
+                            ? ($value >= $this->options['min']) 
+                            : true);
 
-            $return = ($return
-                        ? (isset($this->options['max'])
-                            ? ($value <= $this->options['max'])
-                            : true)
-                        : false);
+                $return = ($return
+                            ? (isset($this->options['max'])
+                                ? ($value <= $this->options['max'])
+                                : true)
+                            : false);
+            }
 
-            return ($return ? preg_match('/^[0-9]+$/', $value) : false);
+            return $return;
         }
     }
 }

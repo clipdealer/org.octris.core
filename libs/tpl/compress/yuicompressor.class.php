@@ -24,7 +24,7 @@ namespace org\octris\core\tpl\compress {
          * Path
          *
          * @octdoc  p:yuicompressor/$path
-         * @var     string
+         * @type    string
          */
         protected $path;
         /**/
@@ -33,7 +33,7 @@ namespace org\octris\core\tpl\compress {
          * Additional options for yuicompressor.
          *
          * @octdoc  p:yuicompressor/$options
-         * @var     array
+         * @type    array
          */
         protected $options = array(
             'js'  => array(),

@@ -24,8 +24,8 @@ namespace {{$namespace}}\app {
          * The index points to which the current page should allow requests to have to be defined with this
          * property.
          *
-         * @octdoc  v:index/$next_page
-         * @var     array
+         * @octdoc  p:index/$next_page
+         * @type    array
          */
          protected $next_pages = array(
              '' => '{{$namespace}}\app\index',

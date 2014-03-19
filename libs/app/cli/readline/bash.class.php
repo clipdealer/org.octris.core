@@ -27,7 +27,7 @@ namespace org\octris\core\app\cli\readline {
          * Whether the readline implementation supports an input history.
          *
          * @octdoc  p:native/$has_history
-         * @var     bool
+         * @type    bool
          */
         protected static $has_history = false;
         /**/
@@ -36,7 +36,7 @@ namespace org\octris\core\app\cli\readline {
          * Set bash command.
          *
          * @octdoc  p:bash/$cmd
-         * @var     string
+         * @type    string
          */
         protected static $cmd = '';
         /**/
@@ -45,7 +45,7 @@ namespace org\octris\core\app\cli\readline {
          * History file bound to instance of readline. If no file is specified, the history will not be used.
          *
          * @octdoc  p:bash/$history_file
-         * @var     string
+         * @type    string
          */
         protected $history_file = '';
         /**/

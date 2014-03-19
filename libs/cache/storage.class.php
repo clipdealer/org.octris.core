@@ -24,7 +24,7 @@ namespace org\octris\core\cache {
          * Storage namespace.
          *
          * @octdoc  p:storage/$ns
-         * @var     string
+         * @type    string
          */
         protected $ns = '';
         /**/
@@ -33,7 +33,7 @@ namespace org\octris\core\cache {
          * Namespace separator.
          *
          * @octdoc  p:storage/$ns_separator
-         * @var     string
+         * @type    string
          */
         protected $ns_separator = ':';
         /**/
@@ -42,7 +42,7 @@ namespace org\octris\core\cache {
          * Time to live in seconds.
          *
          * @octdoc  p:storage/$ttl
-         * @var     int
+         * @type    int
          */
         protected $ttl = 0;
         /**/

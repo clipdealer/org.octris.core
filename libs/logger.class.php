@@ -51,7 +51,7 @@ namespace org\octris\core {
          * Configured writers.
          *
          * @octdoc  p:logger/$writers
-         * @var     array
+         * @type    array
          */
         private $writers = array(
             self::T_EMERGENCY => array(),
@@ -69,7 +69,7 @@ namespace org\octris\core {
          * Logger instance.
          *
          * @octdoc  p:logger/$instance
-         * @var     \org\octris\core\logger
+         * @type    \org\octris\core\logger
          */
         private static $instance = null;
         /**/
@@ -79,7 +79,7 @@ namespace org\octris\core {
          * will be used or an optional string provided for 'log' method.
          *
          * @octdoc  p:logger/$facility
-         * @var     string
+         * @type    string
          */
         protected $facility = '';
         /**/
@@ -88,7 +88,7 @@ namespace org\octris\core {
          * Standard data to write to log.
          *
          * @octdoc  p:logger/$data
-         * @var     array
+         * @type    array
          */
         protected $data = array();
         /**/

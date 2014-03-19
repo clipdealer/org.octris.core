@@ -24,7 +24,7 @@ namespace org\octris\core {
          * Hash algorithm
          *
          * @octdoc  p:cache/$hash_algo
-         * @var     string
+         * @type    string
          */
         protected $hash_algo = 'adler32';
         /**/
@@ -33,7 +33,7 @@ namespace org\octris\core {
          * Standard caching backend.
          *
          * @octdoc  p:cache/$backend
-         * @var     \org\octris\core\cache\storage_if
+         * @type    \org\octris\core\cache\storage_if
          */
         protected $backend;
         /**/
@@ -42,7 +42,7 @@ namespace org\octris\core {
          * Fallback caching backend.
          *
          * @octdoc  p:cacbe/$fallback
-         * @var     \org\octris\core\cache\storage_if|null
+         * @type    \org\octris\core\cache\storage_if|null
          */
         protected $fallback = null;
         /**/
@@ -51,7 +51,7 @@ namespace org\octris\core {
          * Logger instance.
          *
          * @octdoc  p:cache/$logger
-         * @var     \org\octris\core\logger $logger|null
+         * @type    \org\octris\core\logger $logger|null
          */
         protected $logger = null;
         /**/

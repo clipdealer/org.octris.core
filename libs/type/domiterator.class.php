@@ -24,7 +24,7 @@ namespace org\octris\core\type {
          * List of nodes to iterate.
          *
          * @octdoc  p:domiterator/$nodes
-         * @var     \DOMNodeList
+         * @type    \DOMNodeList
          */
         protected $nodes;
         /**/
@@ -33,7 +33,7 @@ namespace org\octris\core\type {
          * Iterator position.
          *
          * @octdoc  p:domiterator/$position
-         * @var     int
+         * @type    int
          */
         protected $position = 0;
         /**/

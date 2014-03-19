@@ -10,780 +10,32 @@
  */
 
 namespace org\octris\core\tpl {
+    use \org\octris\core\tpl\compiler\grammar;
+    
     /**
      * Implementation of template compiler.
      *
      * @octdoc      c:tpl/compiler
-     * @copyright   copyright (c) 2010-2013 by Harald Lapp
+     * @copyright   copyright (c) 2010-2014 by Harald Lapp
      * @author      Harald Lapp <harald@octris.org>
      */
     class compiler
     /**/
     {
         /**
-         * Parser tokens.
-         * 
-         * @octdoc  d:compiler/T_...
-         */
-        const T_START           = 1;
-        const T_END             = 2;
-        const T_BLOCK_OPEN      = 3;
-        const T_BLOCK_CLOSE     = 4;
-        const T_IF_OPEN         = 5;
-        const T_IF_ELSE         = 6;
-    
-        const T_BRACE_OPEN      = 10;
-        const T_BRACE_CLOSE     = 11;
-        const T_PSEPARATOR      = 12;
-    
-        const T_METHOD          = 20;
-        const T_LET             = 21;
-        const T_VARIABLE        = 22;
-        const T_CONSTANT        = 23;
-        const T_MACRO           = 24;
-        const T_GETTEXT         = 25;
-        const T_ESCAPE          = 26;
-    
-        const T_STRING          = 30;
-        const T_NUMBER          = 31;
-        const T_BOOL            = 32;
-        
-        const T_WHITESPACE      = 40;
-        const T_NEWLINE         = 41;
-        /**/
-
-        /**
-         * Regular expression patterns for parser tokens.
+         * Instance of parser class.
          *
-         * @octdoc  p:compiler/$tokens
-         * @var     array
+         * @octdoc  p:compiler/$parser
+         * @type    \org\octris\core\parser|null
          */
-        private static $tokens = array(
-            self::T_IF_OPEN     => '#if',
-            self::T_IF_ELSE     => '#else',
-            
-            self::T_BLOCK_CLOSE => '#end',
-            self::T_BLOCK_OPEN  => '#[a-z][a-z-0-9_]*',
-            
-            self::T_BRACE_OPEN  => '\(',
-            self::T_BRACE_CLOSE => '\)',
-            self::T_PSEPARATOR  => '\,',
-
-            self::T_ESCAPE      => 'escape(?=\()',
-            self::T_LET         => 'let(?=\()',
-            self::T_GETTEXT     => '_(?=\()',
-            self::T_METHOD      => '[a-z_][a-z0-9_]*(?=\()',
-            self::T_BOOL        => '(true|false)',
-            self::T_VARIABLE    => '\$[a-z_][a-z0-9_]*(:\$?[a-z_][a-z0-9_]*|)+',
-            self::T_CONSTANT    => "%[_a-z][_a-z0-9]*",
-            self::T_MACRO       => "@[_a-z][_a-z0-9]*",
-        
-            self::T_STRING      => "(?:(?:\"(?:\\\\\"|[^\"])+\")|(?:'(?:\\'|[^'])+'))",
-            self::T_NUMBER      => '[+-]?[0-9]+(\.[0-9]+|)',
-            
-            self::T_WHITESPACE  => '\s+',
-            self::T_NEWLINE     => '\n+',
-        );
-        /**/
-
-        /**
-         * Template analyzer rules.
-         *
-         * @octdoc  p:compiler/$rules
-         * @octdoc  private static $rules = array(...);
-         * @var     array
-         */
-        private static $rules = array(
-            self::T_START   => array(
-                self::T_END     => true,
-            
-                /* T_BLOCK_OPEN */
-                self::T_BLOCK_OPEN  => array(
-                    self::T_BRACE_OPEN  => array(
-                        self::T_LET         => NULL,
-                        self::T_METHOD      => NULL, 
-                        self::T_VARIABLE    => array(
-                            self::T_PSEPARATOR  => array(
-                                self::T_LET         => NULL,
-                                self::T_METHOD      => NULL,
-                                self::T_VARIABLE    => NULL,
-                                self::T_CONSTANT    => NULL, 
-                                self::T_STRING      => NULL, 
-                                self::T_NUMBER      => NULL,
-                                self::T_BOOL        => NULL,
-                            ), 
-                            self::T_BRACE_CLOSE => NULL
-                        ), 
-                        self::T_CONSTANT    => array(
-                            self::T_PSEPARATOR  => array(
-                                self::T_LET         => NULL,
-                                self::T_METHOD      => NULL,
-                                self::T_VARIABLE    => NULL,
-                                self::T_CONSTANT    => NULL, 
-                                self::T_STRING      => NULL, 
-                                self::T_NUMBER      => NULL,
-                                self::T_BOOL        => NULL,
-                            ), 
-                            self::T_BRACE_CLOSE => NULL
-                        ),
-                        self::T_STRING      => array(
-                            self::T_PSEPARATOR  => array(
-                                self::T_LET         => NULL,
-                                self::T_METHOD      => NULL,
-                                self::T_VARIABLE    => NULL,
-                                self::T_CONSTANT    => NULL, 
-                                self::T_STRING      => NULL, 
-                                self::T_NUMBER      => NULL,
-                                self::T_BOOL        => NULL,
-                            ), 
-                            self::T_BRACE_CLOSE => NULL
-                        ),
-                        self::T_NUMBER      => array(
-                            self::T_PSEPARATOR  => array(
-                                self::T_LET         => NULL,
-                                self::T_METHOD      => NULL,
-                                self::T_VARIABLE    => NULL,
-                                self::T_CONSTANT    => NULL, 
-                                self::T_STRING      => NULL, 
-                                self::T_NUMBER      => NULL,
-                                self::T_BOOL        => NULL,
-                            ), 
-                            self::T_BRACE_CLOSE => NULL
-                        ),
-                        self::T_BOOL        => array(
-                            self::T_PSEPARATOR  => array(
-                                self::T_LET         => NULL,
-                                self::T_METHOD      => NULL,
-                                self::T_VARIABLE    => NULL,
-                                self::T_CONSTANT    => NULL, 
-                                self::T_STRING      => NULL, 
-                                self::T_NUMBER      => NULL,
-                                self::T_BOOL        => NULL,
-                            ), 
-                            self::T_BRACE_CLOSE => NULL
-                        ),
-                        self::T_BRACE_CLOSE => array(
-                            self::T_BRACE_CLOSE => NULL, 
-                            self::T_PSEPARATOR  => NULL, 
-                            self::T_END         => NULL
-                        )
-                    )
-                ),
-
-                /* T_IF_OPEN */
-                self::T_IF_OPEN  => array(
-                    self::T_BRACE_OPEN  => array(
-                        self::T_LET         => NULL,
-                        self::T_METHOD      => NULL, 
-                        self::T_VARIABLE    => array(
-                            self::T_PSEPARATOR  => array(
-                                self::T_LET         => NULL,
-                                self::T_METHOD      => NULL,
-                                self::T_VARIABLE    => NULL,
-                                self::T_CONSTANT    => NULL, 
-                                self::T_STRING      => NULL, 
-                                self::T_NUMBER      => NULL,
-                                self::T_BOOL        => NULL,
-                            ), 
-                            self::T_BRACE_CLOSE => NULL
-                        ), 
-                        self::T_CONSTANT    => array(
-                            self::T_PSEPARATOR  => array(
-                                self::T_LET         => NULL,
-                                self::T_METHOD      => NULL,
-                                self::T_VARIABLE    => NULL,
-                                self::T_CONSTANT    => NULL, 
-                                self::T_STRING      => NULL, 
-                                self::T_NUMBER      => NULL,
-                                self::T_BOOL        => NULL,
-                            ), 
-                            self::T_BRACE_CLOSE => NULL
-                        ),
-                        self::T_STRING      => array(
-                            self::T_PSEPARATOR  => array(
-                                self::T_LET         => NULL,
-                                self::T_METHOD      => NULL,
-                                self::T_VARIABLE    => NULL,
-                                self::T_CONSTANT    => NULL, 
-                                self::T_STRING      => NULL, 
-                                self::T_NUMBER      => NULL,
-                                self::T_BOOL        => NULL,
-                            ), 
-                            self::T_BRACE_CLOSE => NULL
-                        ),
-                        self::T_NUMBER      => array(
-                            self::T_PSEPARATOR  => array(
-                                self::T_LET         => NULL,
-                                self::T_METHOD      => NULL,
-                                self::T_VARIABLE    => NULL,
-                                self::T_CONSTANT    => NULL, 
-                                self::T_STRING      => NULL, 
-                                self::T_NUMBER      => NULL,
-                                self::T_BOOL        => NULL,
-                            ), 
-                            self::T_BRACE_CLOSE => NULL
-                        ),
-                        self::T_BOOL        => array(
-                            self::T_PSEPARATOR  => array(
-                                self::T_LET         => NULL,
-                                self::T_METHOD      => NULL,
-                                self::T_VARIABLE    => NULL,
-                                self::T_CONSTANT    => NULL, 
-                                self::T_STRING      => NULL, 
-                                self::T_NUMBER      => NULL,
-                                self::T_BOOL        => NULL,
-                            ), 
-                            self::T_BRACE_CLOSE => NULL
-                        ),
-                        self::T_BRACE_CLOSE => array(
-                            self::T_BRACE_CLOSE => NULL, 
-                            self::T_PSEPARATOR  => NULL, 
-                            self::T_END         => NULL
-                        )
-                    )
-                ),
-            
-                // T_BLOCK_CLOSE, T_IF_ELSE, T_VARIABLE, T_CONSTANT, T_STRING, T_NUMBER, T_BOOL
-                self::T_BLOCK_CLOSE => array(self::T_END => NULL),
-                self::T_IF_ELSE     => array(self::T_END => NULL),
-                self::T_VARIABLE    => array(self::T_END => NULL),
-                self::T_CONSTANT    => array(self::T_END => NULL),
-            
-                // method : method(... [, ...])
-                self::T_METHOD  => array(
-                    self::T_BRACE_OPEN  => array(
-                        self::T_LET         => NULL,
-                        self::T_METHOD      => NULL, 
-                        self::T_VARIABLE    => array(
-                            self::T_PSEPARATOR  => array(
-                                self::T_LET         => NULL,
-                                self::T_METHOD      => NULL,
-                                self::T_VARIABLE    => NULL,
-                                self::T_CONSTANT    => NULL, 
-                                self::T_STRING      => NULL, 
-                                self::T_NUMBER      => NULL,
-                                self::T_BOOL        => NULL,
-                            ), 
-                            self::T_BRACE_CLOSE => NULL
-                        ), 
-                        self::T_CONSTANT    => array(
-                            self::T_PSEPARATOR  => array(
-                                self::T_LET         => NULL,
-                                self::T_METHOD      => NULL,
-                                self::T_VARIABLE    => NULL,
-                                self::T_CONSTANT    => NULL, 
-                                self::T_STRING      => NULL, 
-                                self::T_NUMBER      => NULL,
-                                self::T_BOOL        => NULL,
-                            ), 
-                            self::T_BRACE_CLOSE => NULL
-                        ),
-                        self::T_STRING      => array(
-                            self::T_PSEPARATOR  => array(
-                                self::T_LET         => NULL,
-                                self::T_METHOD      => NULL,
-                                self::T_VARIABLE    => NULL,
-                                self::T_CONSTANT    => NULL, 
-                                self::T_STRING      => NULL, 
-                                self::T_NUMBER      => NULL,
-                                self::T_BOOL        => NULL,
-                            ), 
-                            self::T_BRACE_CLOSE => NULL
-                        ),
-                        self::T_NUMBER      => array(
-                            self::T_PSEPARATOR  => array(
-                                self::T_LET         => NULL,
-                                self::T_METHOD      => NULL,
-                                self::T_VARIABLE    => NULL,
-                                self::T_CONSTANT    => NULL, 
-                                self::T_STRING      => NULL, 
-                                self::T_NUMBER      => NULL,
-                                self::T_BOOL        => NULL,
-                            ), 
-                            self::T_BRACE_CLOSE => NULL
-                        ),
-                        self::T_BOOL        => array(
-                            self::T_PSEPARATOR  => array(
-                                self::T_LET         => NULL,
-                                self::T_METHOD      => NULL,
-                                self::T_VARIABLE    => NULL,
-                                self::T_CONSTANT    => NULL, 
-                                self::T_STRING      => NULL, 
-                                self::T_NUMBER      => NULL,
-                                self::T_BOOL        => NULL,
-                            ), 
-                            self::T_BRACE_CLOSE => NULL
-                        ),
-                        self::T_BRACE_CLOSE => array(
-                            self::T_BRACE_CLOSE => NULL, 
-                            self::T_PSEPARATOR  => array(
-                                self::T_LET         => NULL,
-                                self::T_METHOD      => NULL,
-                                self::T_VARIABLE    => NULL,
-                                self::T_CONSTANT    => NULL, 
-                                self::T_STRING      => NULL, 
-                                self::T_NUMBER      => NULL,
-                                self::T_BOOL        => NULL,
-                            ), 
-                            self::T_END         => NULL
-                        )
-                    )
-                ),
-        
-                // escape : escape(..., ...)
-                self::T_ESCAPE => array(
-                    self::T_BRACE_OPEN  => array(
-                        self::T_VARIABLE    => array(
-                            self::T_PSEPARATOR  => array(
-                                self::T_STRING      => array(
-                                    self::T_BRACE_CLOSE => array(
-                                        self::T_END => NULL,
-                                    )
-                                ),
-                            ),
-                        ), 
-                        self::T_CONSTANT    => array(
-                            self::T_PSEPARATOR  => array(
-                                self::T_STRING      => array(
-                                    self::T_BRACE_CLOSE => array(
-                                        self::T_END => NULL,
-                                    )
-                                ),
-                            ),
-                        ), 
-                        self::T_STRING      => array(
-                            self::T_PSEPARATOR  => array(
-                                self::T_STRING      => array(
-                                    self::T_BRACE_CLOSE => array(
-                                        self::T_END => NULL,
-                                    )
-                                ),
-                            ),
-                        ), 
-                        self::T_VARIABLE    => array(
-                            self::T_PSEPARATOR  => array(
-                                self::T_STRING      => array(
-                                    self::T_BRACE_CLOSE => array(
-                                        self::T_END => NULL,
-                                    )
-                                ),
-                            ),
-                        ), 
-                    )
-                ),
-
-                // let : let($..., ...)
-                self::T_LET  => array(
-                    self::T_BRACE_OPEN  => array(
-                        self::T_VARIABLE    => array(
-                            self::T_PSEPARATOR  => array(
-                                self::T_LET         => NULL,
-                                self::T_METHOD      => NULL,
-                                self::T_VARIABLE    => NULL,
-                                self::T_CONSTANT    => array(
-                                    self::T_PSEPARATOR  => array(
-                                        self::T_LET         => NULL,
-                                        self::T_METHOD      => NULL,
-                                        self::T_VARIABLE    => NULL,
-                                        self::T_CONSTANT    => NULL, 
-                                        self::T_STRING      => NULL, 
-                                        self::T_NUMBER      => NULL,
-                                        self::T_BOOL        => NULL,
-                                    ), 
-                                    self::T_BRACE_CLOSE => NULL
-                                ),
-                                self::T_STRING      => array(
-                                    self::T_PSEPARATOR  => array(
-                                        self::T_LET         => NULL,
-                                        self::T_METHOD      => NULL,
-                                        self::T_VARIABLE    => NULL,
-                                        self::T_CONSTANT    => NULL, 
-                                        self::T_STRING      => NULL, 
-                                        self::T_NUMBER      => NULL,
-                                        self::T_BOOL        => NULL,
-                                    ), 
-                                    self::T_BRACE_CLOSE => NULL
-                                ),
-                                self::T_NUMBER      => array(
-                                    self::T_PSEPARATOR  => array(
-                                        self::T_LET         => NULL,
-                                        self::T_METHOD      => NULL,
-                                        self::T_VARIABLE    => NULL,
-                                        self::T_CONSTANT    => NULL, 
-                                        self::T_STRING      => NULL, 
-                                        self::T_NUMBER      => NULL,
-                                        self::T_BOOL        => NULL,
-                                    ), 
-                                    self::T_BRACE_CLOSE => NULL
-                                ),
-                                self::T_BOOL        => array(
-                                    self::T_PSEPARATOR  => array(
-                                        self::T_LET         => NULL,
-                                        self::T_METHOD      => NULL,
-                                        self::T_VARIABLE    => NULL,
-                                        self::T_CONSTANT    => NULL, 
-                                        self::T_STRING      => NULL, 
-                                        self::T_NUMBER      => NULL,
-                                        self::T_BOOL        => NULL,
-                                    ), 
-                                    self::T_BRACE_CLOSE => NULL
-                                ),
-                            ), 
-                            self::T_BRACE_CLOSE => NULL
-                        ), 
-                        self::T_BRACE_CLOSE => array(
-                            self::T_BRACE_CLOSE => NULL, 
-                            self::T_PSEPARATOR  => array(
-                                self::T_LET         => NULL,
-                                self::T_METHOD      => NULL,
-                                self::T_VARIABLE    => NULL,
-                                self::T_CONSTANT    => array(
-                                    self::T_PSEPARATOR  => array(
-                                        self::T_LET         => NULL,
-                                        self::T_METHOD      => NULL,
-                                        self::T_VARIABLE    => NULL,
-                                        self::T_CONSTANT    => NULL, 
-                                        self::T_STRING      => NULL, 
-                                        self::T_NUMBER      => NULL,
-                                        self::T_BOOL        => NULL,
-                                    ), 
-                                    self::T_BRACE_CLOSE => NULL
-                                ),
-                                self::T_STRING      => array(
-                                    self::T_PSEPARATOR  => array(
-                                        self::T_LET         => NULL,
-                                        self::T_METHOD      => NULL,
-                                        self::T_VARIABLE    => NULL,
-                                        self::T_CONSTANT    => NULL, 
-                                        self::T_STRING      => NULL, 
-                                        self::T_NUMBER      => NULL,
-                                        self::T_BOOL        => NULL,
-                                    ), 
-                                    self::T_BRACE_CLOSE => NULL
-                                ),
-                                self::T_NUMBER      => array(
-                                    self::T_PSEPARATOR  => array(
-                                        self::T_LET         => NULL,
-                                        self::T_METHOD      => NULL,
-                                        self::T_VARIABLE    => NULL,
-                                        self::T_CONSTANT    => NULL, 
-                                        self::T_STRING      => NULL, 
-                                        self::T_NUMBER      => NULL,
-                                        self::T_BOOL        => NULL,
-                                    ), 
-                                    self::T_BRACE_CLOSE => NULL
-                                ),
-                                self::T_BOOL        => array(
-                                    self::T_PSEPARATOR  => array(
-                                        self::T_LET         => NULL,
-                                        self::T_METHOD      => NULL,
-                                        self::T_VARIABLE    => NULL,
-                                        self::T_CONSTANT    => NULL, 
-                                        self::T_STRING      => NULL, 
-                                        self::T_NUMBER      => NULL,
-                                        self::T_BOOL        => NULL,
-                                    ), 
-                                    self::T_BRACE_CLOSE => NULL
-                                ),
-                            ), 
-                            self::T_END         => NULL
-                        )
-                    )
-                ),
-        
-                // gettext : _([$... | "..." | %...], ...)
-                self::T_GETTEXT  => array(
-                    self::T_BRACE_OPEN  => array(
-                        self::T_VARIABLE    => array(
-                            self::T_PSEPARATOR  => array(
-                                self::T_LET         => NULL,
-                                self::T_METHOD      => NULL,
-                                self::T_VARIABLE    => NULL,
-                                self::T_CONSTANT    => array(
-                                    self::T_PSEPARATOR  => array(
-                                        self::T_LET         => NULL,
-                                        self::T_METHOD      => NULL,
-                                        self::T_VARIABLE    => NULL,
-                                        self::T_CONSTANT    => NULL, 
-                                        self::T_STRING      => NULL, 
-                                        self::T_NUMBER      => NULL,
-                                        self::T_BOOL        => NULL,
-                                    ), 
-                                    self::T_BRACE_CLOSE => NULL
-                                ),
-                                self::T_STRING      => array(
-                                    self::T_PSEPARATOR  => array(
-                                        self::T_LET         => NULL,
-                                        self::T_METHOD      => NULL,
-                                        self::T_VARIABLE    => NULL,
-                                        self::T_CONSTANT    => NULL, 
-                                        self::T_STRING      => NULL, 
-                                        self::T_NUMBER      => NULL,
-                                        self::T_BOOL        => NULL,
-                                    ), 
-                                    self::T_BRACE_CLOSE => NULL
-                                ),
-                                self::T_NUMBER      => array(
-                                    self::T_PSEPARATOR  => array(
-                                        self::T_LET         => NULL,
-                                        self::T_METHOD      => NULL,
-                                        self::T_VARIABLE    => NULL,
-                                        self::T_CONSTANT    => NULL, 
-                                        self::T_STRING      => NULL, 
-                                        self::T_NUMBER      => NULL,
-                                        self::T_BOOL        => NULL,
-                                    ), 
-                                    self::T_BRACE_CLOSE => NULL
-                                ),
-                                self::T_BOOL        => array(
-                                    self::T_PSEPARATOR  => array(
-                                        self::T_LET         => NULL,
-                                        self::T_METHOD      => NULL,
-                                        self::T_VARIABLE    => NULL,
-                                        self::T_CONSTANT    => NULL, 
-                                        self::T_STRING      => NULL, 
-                                        self::T_NUMBER      => NULL,
-                                        self::T_BOOL        => NULL,
-                                    ), 
-                                    self::T_BRACE_CLOSE => NULL
-                                ),
-                            ), 
-                            self::T_BRACE_CLOSE => NULL
-                        ), 
-                        self::T_CONSTANT    => array(
-                            self::T_PSEPARATOR  => array(
-                                self::T_LET         => NULL,
-                                self::T_METHOD      => NULL,
-                                self::T_VARIABLE    => NULL,
-                                self::T_CONSTANT    => array(
-                                    self::T_PSEPARATOR  => array(
-                                        self::T_LET         => NULL,
-                                        self::T_METHOD      => NULL,
-                                        self::T_VARIABLE    => NULL,
-                                        self::T_CONSTANT    => NULL, 
-                                        self::T_STRING      => NULL, 
-                                        self::T_NUMBER      => NULL,
-                                        self::T_BOOL        => NULL,
-                                    ), 
-                                    self::T_BRACE_CLOSE => NULL
-                                ),
-                                self::T_STRING      => array(
-                                    self::T_PSEPARATOR  => array(
-                                        self::T_LET         => NULL,
-                                        self::T_METHOD      => NULL,
-                                        self::T_VARIABLE    => NULL,
-                                        self::T_CONSTANT    => NULL, 
-                                        self::T_STRING      => NULL, 
-                                        self::T_NUMBER      => NULL,
-                                        self::T_BOOL        => NULL,
-                                    ), 
-                                    self::T_BRACE_CLOSE => NULL
-                                ),
-                                self::T_NUMBER      => array(
-                                    self::T_PSEPARATOR  => array(
-                                        self::T_LET         => NULL,
-                                        self::T_METHOD      => NULL,
-                                        self::T_VARIABLE    => NULL,
-                                        self::T_CONSTANT    => NULL, 
-                                        self::T_STRING      => NULL, 
-                                        self::T_NUMBER      => NULL,
-                                        self::T_BOOL        => NULL,
-                                    ), 
-                                    self::T_BRACE_CLOSE => NULL
-                                ),
-                                self::T_BOOL        => array(
-                                    self::T_PSEPARATOR  => array(
-                                        self::T_LET         => NULL,
-                                        self::T_METHOD      => NULL,
-                                        self::T_VARIABLE    => NULL,
-                                        self::T_CONSTANT    => NULL, 
-                                        self::T_STRING      => NULL, 
-                                        self::T_NUMBER      => NULL,
-                                        self::T_BOOL        => NULL,
-                                    ), 
-                                    self::T_BRACE_CLOSE => NULL
-                                ),
-                            ), 
-                            self::T_BRACE_CLOSE => NULL
-                        ), 
-                        self::T_STRING    => array(
-                            self::T_PSEPARATOR  => array(
-                                self::T_LET         => NULL,
-                                self::T_METHOD      => NULL,
-                                self::T_VARIABLE    => NULL,
-                                self::T_CONSTANT    => array(
-                                    self::T_PSEPARATOR  => array(
-                                        self::T_LET         => NULL,
-                                        self::T_METHOD      => NULL,
-                                        self::T_VARIABLE    => NULL,
-                                        self::T_CONSTANT    => NULL, 
-                                        self::T_STRING      => NULL, 
-                                        self::T_NUMBER      => NULL,
-                                        self::T_BOOL        => NULL,
-                                    ), 
-                                    self::T_BRACE_CLOSE => NULL
-                                ),
-                                self::T_STRING      => array(
-                                    self::T_PSEPARATOR  => array(
-                                        self::T_LET         => NULL,
-                                        self::T_METHOD      => NULL,
-                                        self::T_VARIABLE    => NULL,
-                                        self::T_CONSTANT    => NULL, 
-                                        self::T_STRING      => NULL, 
-                                        self::T_NUMBER      => NULL,
-                                        self::T_BOOL        => NULL,
-                                    ), 
-                                    self::T_BRACE_CLOSE => NULL
-                                ),
-                                self::T_NUMBER      => array(
-                                    self::T_PSEPARATOR  => array(
-                                        self::T_LET         => NULL,
-                                        self::T_METHOD      => NULL,
-                                        self::T_VARIABLE    => NULL,
-                                        self::T_CONSTANT    => NULL, 
-                                        self::T_STRING      => NULL, 
-                                        self::T_NUMBER      => NULL,
-                                        self::T_BOOL        => NULL,
-                                    ), 
-                                    self::T_BRACE_CLOSE => NULL
-                                ),
-                                self::T_BOOL        => array(
-                                    self::T_PSEPARATOR  => array(
-                                        self::T_LET         => NULL,
-                                        self::T_METHOD      => NULL,
-                                        self::T_VARIABLE    => NULL,
-                                        self::T_CONSTANT    => NULL, 
-                                        self::T_STRING      => NULL, 
-                                        self::T_NUMBER      => NULL,
-                                        self::T_BOOL        => NULL,
-                                    ), 
-                                    self::T_BRACE_CLOSE => NULL
-                                ),
-                            ), 
-                            self::T_BRACE_CLOSE => NULL
-                        ), 
-                        self::T_BRACE_CLOSE => array(
-                            self::T_BRACE_CLOSE => NULL, 
-                            self::T_PSEPARATOR  => array(
-                                self::T_LET         => NULL,
-                                self::T_METHOD      => NULL,
-                                self::T_VARIABLE    => NULL,
-                                self::T_CONSTANT    => array(
-                                    self::T_PSEPARATOR  => array(
-                                        self::T_LET         => NULL,
-                                        self::T_METHOD      => NULL,
-                                        self::T_VARIABLE    => NULL,
-                                        self::T_CONSTANT    => NULL, 
-                                        self::T_STRING      => NULL, 
-                                        self::T_NUMBER      => NULL,
-                                        self::T_BOOL        => NULL,
-                                    ), 
-                                    self::T_BRACE_CLOSE => NULL
-                                ),
-                                self::T_STRING      => array(
-                                    self::T_PSEPARATOR  => array(
-                                        self::T_LET         => NULL,
-                                        self::T_METHOD      => NULL,
-                                        self::T_VARIABLE    => NULL,
-                                        self::T_CONSTANT    => NULL, 
-                                        self::T_STRING      => NULL, 
-                                        self::T_NUMBER      => NULL,
-                                        self::T_BOOL        => NULL,
-                                    ), 
-                                    self::T_BRACE_CLOSE => NULL
-                                ),
-                                self::T_NUMBER      => array(
-                                    self::T_PSEPARATOR  => array(
-                                        self::T_LET         => NULL,
-                                        self::T_METHOD      => NULL,
-                                        self::T_VARIABLE    => NULL,
-                                        self::T_CONSTANT    => NULL, 
-                                        self::T_STRING      => NULL, 
-                                        self::T_NUMBER      => NULL,
-                                        self::T_BOOL        => NULL,
-                                    ), 
-                                    self::T_BRACE_CLOSE => NULL
-                                ),
-                                self::T_BOOL        => array(
-                                    self::T_PSEPARATOR  => array(
-                                        self::T_LET         => NULL,
-                                        self::T_METHOD      => NULL,
-                                        self::T_VARIABLE    => NULL,
-                                        self::T_CONSTANT    => NULL, 
-                                        self::T_STRING      => NULL, 
-                                        self::T_NUMBER      => NULL,
-                                        self::T_BOOL        => NULL,
-                                    ), 
-                                    self::T_BRACE_CLOSE => NULL
-                                ),
-                            ), 
-                            self::T_END         => NULL
-                        )
-                    )
-                ),
-
-                // macro : @macro(... [, ...])
-                self::T_MACRO   => array(
-                    self::T_BRACE_OPEN  => array(
-                        self::T_CONSTANT    => array(
-                            self::T_PSEPARATOR  => array(
-                                self::T_CONSTANT => NULL, 
-                                self::T_STRING   => NULL, 
-                                self::T_NUMBER   => NULL, 
-                                self::T_BOOL     => NULL
-                            ), 
-                            self::T_BRACE_CLOSE => NULL
-                        ),
-                        self::T_STRING      => array(
-                            self::T_PSEPARATOR  => array(
-                                self::T_CONSTANT => NULL, 
-                                self::T_STRING   => NULL, 
-                                self::T_NUMBER   => NULL, 
-                                self::T_BOOL     => NULL
-                            ), 
-                            self::T_BRACE_CLOSE => NULL
-                        ), 
-                        self::T_NUMBER      => array(
-                            self::T_PSEPARATOR  => array(
-                                self::T_CONSTANT => NULL, 
-                                self::T_STRING   => NULL, 
-                                self::T_NUMBER   => NULL, 
-                                self::T_BOOL     => NULL
-                            ), 
-                            self::T_BRACE_CLOSE => NULL
-                        ), 
-                        self::T_BOOL        => array(
-                            self::T_PSEPARATOR  => array(
-                                self::T_CONSTANT => NULL, 
-                                self::T_STRING   => NULL, 
-                                self::T_NUMBER   => NULL, 
-                                self::T_BOOL     => NULL
-                            ), 
-                            self::T_BRACE_CLOSE => NULL
-                        ), 
-                        self::T_BRACE_CLOSE => array(
-                            self::T_END => NULL
-                        )
-                    )
-                )
-            )
-        );
+        protected static $parser = null;
         /**/
         
-        /**
-         * Names of tokens. This array gets build the first time the constructor is called.
-         *
-         * @octdoc  p:compiler/$tokennames
-         * @var     array
-         */
-        private static $tokennames = NULL;
-        /**/
-
         /**
          * Name of file currently compiled.
          *
          * @octdoc  p:compiler/$filename
-         * @var     string
+         * @type    string
          */
         protected $filename = '';
         /**/
@@ -792,7 +44,7 @@ namespace org\octris\core\tpl {
          * Stores pathes to look into when searching for template to load.
          *
          * @octdoc  p:compiler/$searchpath
-         * @var     array
+         * @type    array
          */
         protected $searchpath = array();
         /**/
@@ -801,7 +53,7 @@ namespace org\octris\core\tpl {
          * Instance of locale class.
          *
          * @octdoc  p:compiler/$l10n
-         * @var     \org\octris\core\l10n
+         * @type    \org\octris\core\l10n
          */
         protected $l10n;
         /**/
@@ -814,10 +66,6 @@ namespace org\octris\core\tpl {
         public function __construct()
         /**/
         {
-            if (is_null(self::$tokennames)) {
-                $class = new \ReflectionClass($this);
-                self::$tokennames = array_flip($class->getConstants());
-            }
         }
 
         /**
@@ -879,61 +127,31 @@ namespace org\octris\core\tpl {
         }
 
         /**
-         * Return name of token.
-         *
-         * @octdoc  m:compiler/getTokenName
-         * @param   int     $token      ID of token.
-         * @return  string              Name of token.
-         */
-        protected function getTokenName($token)
-        /**/
-        {
-            return (isset(self::$tokennames[$token])
-                    ? self::$tokennames[$token]
-                    : 'T_UNKNOWN');
-        }
-
-        /**
-         * Return names of multiple tokens.
-         *
-         * @octdoc  m:compiler/getTokenNames
-         * @param   array       $tokens     Array of token IDs.
-         * @return  array                   Names of tokens.
-         */
-        protected function getTokenNames(array $tokens)
-        /**/
-        {
-            $return = array();
-            
-            foreach ($tokens as $token) $return[] = $this->getTokenName($token);
-            
-            return $return;
-        }
-        
-        /**
          * Trigger an error and halt execution.
          *
          * @octdoc  m:compiler/error
-         * @param   string      $type       Type of error to trigger.
-         * @param   int         $cline      Line in compiler class error was triggered from.
+         * @param   string      $ifile      Internal filename the error occured in.
+         * @param   int         $iline      Internal line number the error occured in.
          * @param   int         $line       Line in template the error was triggered for.
-         * @param   int         $token      ID of token that triggered the error.
+         * @param   mixed       $token      Token that triggered the error.
          * @param   mixed       $payload    Optional additional information. Either an array of expected token IDs or an additional message to output.
          */
-        protected function error($type, $cline, $line, $token, $payload = NULL)
+        protected function error($ifile, $iline, $line, $token, $payload = NULL)
         /**/
         {
             if (php_sapi_name() != 'cli') {
                 print "<pre>";
+
+                $payload = htmlentities($payload, ENT_QUOTES);
             }
             
-            printf("\n** ERROR: %s(%d) **\n", $type, $cline);
+            printf("\n** ERROR: %s(%d) **\n", $ifile, $iline);
             printf("   line :    %d\n", $line);
             printf("   file :    %s\n", $this->filename);
-            printf("   token:    %s\n", $this->getTokenName($token));
+            printf("   token:    %s\n", htmlentities(self::$parser->getTokenName($token), ENT_QUOTES));
             
             if (is_array($payload)) {
-                printf("   expected: %s\n", implode(', ', $this->getTokenNames(array_keys($payload))));
+                printf("   expected: %s\n", implode(', ', $payload));
             } elseif (isset($payload)) {
                 printf("   message:  %s\n", $payload);
             }
@@ -943,157 +161,6 @@ namespace org\octris\core\tpl {
             }
 
             die();
-        }
-
-        /**
-         * Tokenizer converts template snippets to tokens.
-         *
-         * @octdoc  m:compiler/tokenize
-         * @param   string      $in         Template snippet to tokenize.
-         * @param   int         $line       Line number of template the snippet was taken from.
-         * @return  array                   Tokens parsed from snippet.
-         */
-        protected function tokenize($in, $line)
-        /**/
-        {
-            $out = array();
-            $in  = stripslashes($in);
-
-            while (strlen($in) > 0) {
-                foreach (self::$tokens as $token => $regexp) {
-                    if (preg_match('/^(' . $regexp . ')/i', $in, $m)) {
-                        if ($token != self::T_WHITESPACE) {
-                            // spaces between tokens are ignored
-                            $out[] = array(
-                                'token' => $token,
-                                'value' => $m[1],
-                                'file'  => $this->filename,
-                                'line'  => $line
-                            );
-                        }
-
-                        $in = substr($in, strlen($m[1]));
-                        continue 2;
-                    }
-                }
-                
-                $this->error(__FUNCTION__, __LINE__, $line, 0, sprintf('parse error at "%s"', $in));
-            }
-
-            if (count($out) > 0) {
-                array_unshift($out, array(
-                    'token' => self::T_START,
-                    'value' => '',
-                    'file'  => $this->filename,
-                    'line'  => $line
-                ));
-                array_push($out, array(
-                    'token' => self::T_END,
-                    'value' => '',
-                    'file'  => $this->filename,
-                    'line'  => $line
-                ));
-            }
-
-            return $out;
-        }
-
-        /**
-         * Token analyzer. The analyzer applies rulesets to tokens and checks if
-         * the rules are fulfilled.
-         *
-         * @octdoc  m:compiler/analyze
-         * @param   array       $tokens     Tokens to analyze.
-         * @param   array       $blocks     Block information required by analyzer / compiler.
-         * @return  bool                    Returns true if token analysis succeeded.
-         */
-        protected function analyze(array $tokens, array &$blocks)
-        /**/
-        {
-            $braces  = 0;               // brace level
-            $current = null;            // current token
-            
-            $rule    = self::$rules;
-            $stack   = array();
-            
-            /*
-             * retrieve next rule
-             */
-            $get_next_rule = function($rule, $token) use (&$stack) {
-                $return = false;
-                
-                if (is_array($rule) && array_key_exists($token, $rule)) {
-                    // valid token, because it's in current ruleset
-                    if (is_array($rule[$token])) {
-                        // push current rule on stack and get child rule
-                        $stack[] = $rule;
-                        $return  = $rule[$token];
-                    } elseif (is_null($rule[$token])) {
-                        // ruleset is null -> try to get it from parent rules
-                        while (($return = array_pop($stack)) && !isset($return[$token]));
-
-                        if (is_array($return)) {
-                            $stack[] = $return;
-                            $return  = $return[$token];
-                        }
-                    }
-                }
-
-                return $return;
-            };
-            
-            foreach ($tokens as $current) {
-                extract($current);
-                
-                switch ($token) {
-                case self::T_BRACE_OPEN:
-                    // opening '(' brace
-                    ++$braces;
-                    break;
-                case self::T_BRACE_CLOSE:
-                    // closing ')' brace -- only allowed, if a brace was opened previously
-                    if ($braces == 0) {
-                        $this->error(__FUNCTION__, __LINE__, $line, $token);
-                    } else {
-                        --$braces;
-                    }
-                    break;
-                case self::T_PSEPARATOR:
-                    // ',' is only allowed to separate arguments
-                    if ($braces == 0) $this->error(__FUNCTION__, __LINE__, $line, $token);
-                    break;
-                case self::T_IF_OPEN:
-                    // opening if
-                    
-                    /** FALL THRU **/
-                case self::T_BLOCK_OPEN:
-                    // opening block
-                    $blocks['analyzer'][] = $current;
-                    break;
-                case self::T_BLOCK_CLOSE:
-                    // closing block only allowed is a block is open
-                    if (!($block = array_pop($blocks['analyzer']))) {
-                        $this->error(__FUNCTION__, __LINE__, $line, $token, 'there is no open block');
-                    }
-                    break;
-                case self::T_IF_ELSE:
-                    // else is only allowed within an 'if' block
-                    if ((($cnt = count($blocks['analyzer'])) > 0 && $blocks['analyzer'][$cnt - 1]['token'] != self::T_IF_OPEN)) {
-                        $this->error(__FUNCTION__, __LINE__, $line, $token, 'only allowed inside an "if" block');
-                    } else {
-                        $blocks['analyzer'][$cnt - 1]['token'] = self::T_IF_ELSE;
-                    }
-                    break;
-                }
-
-                if (!($tmp = $get_next_rule($rule, $token))) {
-                    $this->error(__FUNCTION__, __LINE__, $line, $token, $rule);
-                }
-                
-                $rule = $tmp;
-            }
-
-            return true;
         }
 
         /**
@@ -1182,8 +249,8 @@ namespace org\octris\core\tpl {
                 extract($current);
             
                 switch ($token) {
-                case self::T_IF_OPEN:
-                case self::T_BLOCK_OPEN:
+                case grammar::T_IF_OPEN:
+                case grammar::T_BLOCK_OPEN:
                     // replace/rewrite block call
                     $value = strtolower($value);
                     
@@ -1193,37 +260,70 @@ namespace org\octris\core\tpl {
                     $blocks['compiler'][] = $_end;
                 
                     if (($err = compiler\rewrite::getError()) != '') {
-                        $this->error(__FUNCTION__, __LINE__, $line, $token, $err);
+                        $this->error(__FILE__, __LINE__, $line, $token, $err);
                     }
                     break;
-                case self::T_IF_ELSE:
+                case grammar::T_IF_ELSE:
                     $code[] = '} else {';
                     break;
-                case self::T_BLOCK_CLOSE:
+                case grammar::T_BLOCK_CLOSE:
                     $code[] = array_pop($blocks['compiler']);
                     break;
-                case self::T_BRACE_CLOSE:
+                case grammar::T_ARRAY_CLOSE:
+                case grammar::T_BRACE_CLOSE:
                     array_push($stack, $code);
                     $code = array();
                     break;
-                case self::T_GETTEXT:
-                    // gettext handling
-                    $code = array($this->gettext(array_reverse($code)));
-                    break;
-                case self::T_ESCAPE:
-                case self::T_LET:
-                case self::T_METHOD:
-                    // replace/rewrite method call
-                    $value = strtolower($value);
-                    $code  = array(compiler\rewrite::$value(array_reverse($code)));
-                    
-                    if (($err = compiler\rewrite::getError()) != '') {
-                        $this->error(__FUNCTION__, __LINE__, $line, $token, $err);
-                    }
+                case grammar::T_ARRAY_OPEN:
+                    $code = array('[' . array_reduce(array_reverse($code), function($code, $snippet) {
+                        static $last = '';
+                        
+                        if ($code != '') {
+                            $code .= (($last == '=>' || $snippet == '=>') ? '' : ', ');
+                        }
+
+                        $code .= $last = $snippet;
+                        
+                        return $code;
+                    }, '') . ']');
                     
                     if (($tmp = array_pop($stack))) $code = array_merge($tmp, $code);
                     break;
-                case self::T_MACRO:
+                case grammar::T_GETTEXT:
+                    // gettext handling
+                    $code = array($this->gettext(array_reverse($code)));
+                    break;
+                case grammar::T_DDUMP:
+                case grammar::T_DPRINT:
+                case grammar::T_ESCAPE:
+                case grammar::T_LET:
+                case grammar::T_METHOD:
+                    // replace/rewrite method call
+                    $value = strtolower($value);
+                    
+                    if ($token == grammar::T_DDUMP || $token == grammar::T_DPRINT) {
+                        // ddump and dprint need to be treated a little different from other method calls,
+                        // because we include template-filename and template-linenumber in arguments
+                        $code = array(compiler\rewrite::$value(
+                            array_merge(
+                                array('"' . $file . '"', (int)$line),
+                                array_reverse($code)
+                            )
+                        ));
+                    } else {
+                        $code = array(compiler\rewrite::$value(array_reverse($code)));
+                    }
+                    
+                    if (($err = compiler\rewrite::getError()) != '') {
+                        $this->error(__FILE__, __LINE__, $line, $token, $err);
+                    }
+
+                    if (($tmp = array_pop($stack))) $code = array_merge($tmp, $code);
+                    break;
+                case grammar::T_ARRAY_OPEN:
+                    $code[] = '[';
+                    break;
+                case grammar::T_MACRO:
                     // resolve macro
                     $value = strtolower(substr($value, 1));
                     $file  = substr($code[0], 1, -1);
@@ -1236,22 +336,22 @@ namespace org\octris\core\tpl {
                     );
 
                     if (($err = compiler\macro::getError()) != '') {
-                        $this->error(__FUNCTION__, __LINE__, $line, $token, $err);
+                        $this->error(__FILE__, __LINE__, $line, $token, $err);
                     }
                     
                     $code[] = implode(', ', array_pop($stack));
                     break;
-                case self::T_CONSTANT:
+                case grammar::T_CONSTANT:
                     $value = strtoupper(substr($value, 1));
                     $tmp   = compiler\constant::getConstant($value);
                 
                     if (($err = compiler\constant::getError()) != '') {
-                        $this->error(__FUNCTION__, __LINE__, $line, $token, $err);
+                        $this->error(__FILE__, __LINE__, $line, $token, $err);
                     }
                 
                     $code[] = (is_string($tmp) ? '"' . $tmp . '"' : (int)$tmp);
                     break;
-                case self::T_VARIABLE:
+                case grammar::T_VARIABLE:
                     $tmp = sprintf(
                         '$this->data["%s"]', 
                         implode('"]["', explode(':', strtolower(substr($value, 1))))
@@ -1260,47 +360,79 @@ namespace org\octris\core\tpl {
                     // $code[] = sprintf('(is_callable(%1$s) ? %1$s() : %1$s)', $tmp);
                     $code[] = $tmp;
                     break;
-                case self::T_BOOL:
-                case self::T_STRING:
-                case self::T_NUMBER:
+                case grammar::T_BOOL:
+                case grammar::T_STRING:
+                case grammar::T_NUMBER:
+                case grammar::T_ARRAY_KEY:
                     $code[] = $value;
                     break;
-                case self::T_START:
-                    /*
-                     * NOTE: Regarding newlines behind PHP closing tag '?>'. this is because PHP 'eats' newslines
-                     *       after PHP closing tag. For details refer to:
-                     *      
-                     *      http://shiflett.org/blog/2005/oct/php-stripping-newlines
-                     */
-                    $last_token = $getLastToken($last_tokens, -2);
-                    
-                    if ($last_token == self::T_LET) {
-                        $code = array('<?php ' . implode('', $code) . '; ?>'."\n");
-                    } elseif (in_array($last_token, array(self::T_CONSTANT, self::T_MACRO))) {
-                        $code = array(implode('', $code));
-                    } elseif (!in_array($last_token, array(self::T_BLOCK_OPEN, self::T_BLOCK_CLOSE, self::T_IF_OPEN, self::T_IF_ELSE))) {
-                        if ($last_token == self::T_ESCAPE) {
-                            // no additional escaping, when 'escape' method was used
-                            $code = array('<?php $this->write(' . implode('', $code) . '); ?>'."\n");
-                        } else {
-                            $code = array('<?php $this->write(' . implode('', $code) . ', "' . $escape . '"); ?>'."\n");
-                        }
-                    } else {
-                        $code = array('<?php ' . implode('', $code) . ' ?>'."\n");
-                    }
-                    break;
-                case self::T_PSEPARATOR:
-                case self::T_BRACE_OPEN:
-                case self::T_END:
+                case grammar::T_PUNCT:
+                case grammar::T_BRACE_OPEN:
                     // nothing to do for these tokens
                     break;
                 default:
-                    $this->error(__FUNCTION__, __LINE__, $line, $token, 'unknown token');
+                    $this->error(__FILE__, __LINE__, $line, $token, 'unknown token');
                     break;
                 }
             }
             
+            /*
+             * NOTE: Regarding newlines behind PHP closing tag '?>'. this is because PHP 'eats' newslines
+             *       after PHP closing tag. For details refer to:
+             *      
+             *      http://shiflett.org/blog/2005/oct/php-stripping-newlines
+             */
+            $last_token = $getLastToken($last_tokens, -1);
+            
+            if ($last_token == grammar::T_LET) {
+                $code = array('<?php ' . implode('', $code) . '; ?>'."\n");
+            } elseif (in_array($last_token, array(grammar::T_CONSTANT, grammar::T_MACRO))) {
+                $code = array(implode('', $code));
+            } elseif (!in_array($last_token, array(grammar::T_BLOCK_OPEN, grammar::T_BLOCK_CLOSE, grammar::T_IF_OPEN, grammar::T_IF_ELSE))) {
+                if ($last_token == grammar::T_ESCAPE) {
+                    // no additional escaping, when 'escape' method was used
+                    $code = array('<?php $this->write(' . implode('', $code) . '); ?>'."\n");
+                } else {
+                    $code = array('<?php $this->write(' . implode('', $code) . ', "' . $escape . '"); ?>'."\n");
+                }
+            } else {
+                $code = array('<?php ' . implode('', $code) . ' ?>'."\n");
+            }
+
             return $code;
+        }
+        
+        /**
+         * Setup toolchain.
+         *
+         * @octdoc  m:compiler/setup
+         * @param   array       $blocks         Block information required by analyzer / compiler.
+         */
+        protected function setup(array &$blocks)
+        /**/
+        {
+            $grammar = new \org\octris\core\tpl\compiler\grammar();
+            self::$parser = new \org\octris\core\parser($grammar, [grammar::T_WHITESPACE]);
+            
+            $grammar->addEvent(grammar::T_IF_OPEN, function($current) use (&$blocks) {
+                $blocks['analyzer'][] = $current;
+            });
+            $grammar->addEvent(grammar::T_BLOCK_OPEN, function($current) use (&$blocks) {
+                $blocks['analyzer'][] = $current;
+            });
+            $grammar->addEvent(grammar::T_BLOCK_CLOSE, function($current) use (&$blocks) {
+                // closing block only allowed is a block is open
+                if (!($block = array_pop($blocks['analyzer']))) {
+                    $this->error(__FILE__, __LINE__, $line, $token, 'there is no open block');
+                }
+            });
+            $grammar->addEvent(grammar::T_IF_ELSE, function($current) use (&$blocks) {
+                if ((($cnt = count($blocks['analyzer'])) > 0 && $blocks['analyzer'][$cnt - 1]['token'] != grammar::T_IF_OPEN)) {
+                    $this->error(__FILE__, __LINE__, $line, $token, 'only allowed inside an "if" block');
+                } else {
+                    $blocks['analyzer'][$cnt - 1]['token'] = grammar::T_IF_ELSE;
+                }
+            });
         }
         
         /**
@@ -1316,11 +448,19 @@ namespace org\octris\core\tpl {
         protected function toolchain($snippet, $line, array &$blocks, $escape)
         /**/
         {
-            $tokens = $this->tokenize($snippet, $line);
+            if (is_null(self::$parser)) {
+                // initialize parser
+                $this->setup($blocks);
+            }
+
             $code   = '';
 
-            if (count($tokens) > 0) {
-                if ($this->analyze($tokens, $blocks) !== false) {
+            if (($tokens = self::$parser->tokenize($snippet, $line, $this->filename)) === false) {
+                $error = self::$parser->getLastError();
+
+                $this->error($error['ifile'], $error['iline'], $error['line'], $error['token'], $error['payload']);
+            } elseif (count($tokens) > 0) {
+                if (self::$parser->getGrammar()->analyze($tokens) !== false) {
                     $tokens = array_reverse($tokens);
                     $code   = implode('', $this->compile($tokens, $blocks, $escape));
                 }
@@ -1361,8 +501,8 @@ namespace org\octris\core\tpl {
 
             if (count($blocks['analyzer']) > 0) {
                 // all block-commands in a template have to be closed
-                $this->error(__FUNCTION__, __LINE__, $line, 0, sprintf('missing %s for %s',
-                    $this->getTokenName(self::T_BLOCK_CLOSE),
+                $this->error(__FILE__, __LINE__, $parser->getTotalLines(), 0, sprintf('missing %s for %s',
+                    $this->getTokenName(grammar::T_BLOCK_CLOSE),
                     implode(', ', array_map(function($v) {
                         return $v['value'];
                     }, array_reverse($blocks['analyzer'])))

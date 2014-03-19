@@ -24,7 +24,7 @@ namespace org\octris\core\db\device\riak {
          * HTTP status code of last request.
          *
          * @octdoc  p:request/$status
-         * @var     int
+         * @type    int
          */
         protected $status;
         /**/

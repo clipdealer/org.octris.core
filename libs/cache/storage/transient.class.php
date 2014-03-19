@@ -25,7 +25,7 @@ namespace org\octris\core\cache\storage {
          * Local data storage.
          *
          * @octdoc  p:transient/$data
-         * @var     array
+         * @type    array
          */
         protected $data = array();
         /**/
@@ -39,7 +39,7 @@ namespace org\octris\core\cache\storage {
          * - atime -- time the cache key was last accessed (read)
          *
          * @octdoc  p:transient/$meta
-         * @var     array
+         * @type    array
          */
         protected $meta = array();
         /**/

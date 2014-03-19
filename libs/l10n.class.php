@@ -24,7 +24,7 @@ namespace org\octris\core {
          * Instance of l10n class for singleton pattern.
          *
          * @octdoc  p:l10n/$instance
-         * @var     \org\octris\core\l10n
+         * @type    \org\octris\core\l10n
          */
         private static $instance = null;
         /**/
@@ -33,7 +33,7 @@ namespace org\octris\core {
          * Locale string.
          *
          * @octdoc  p:l10n/$lc
-         * @var     string
+         * @type    string
          */
         protected $lc = null;
         /**/
@@ -42,7 +42,7 @@ namespace org\octris\core {
          * Stores language codes for restoreLocale
          *
          * @octdoc  p:l10n/$lc_mem
-         * @var     array
+         * @type    array
          */
         protected $lc_mem = array();
         /**/
@@ -51,17 +51,26 @@ namespace org\octris\core {
          * Gettext compiler cache -- an array -- is only used, if a caching backend is not set.
          *
          * @octdoc  p:l10n/$compiler_cache
-         * @var     array
+         * @type    array
          * @see     l10n::setCache
          */
         protected $compiler_cache = array();
         /**/
 
         /**
+         * L10n caching backend.
+         *
+         * @octdoc  p:l10n/$cache
+         * @type    \org\octris\core\cache
+         */
+        protected static $cache = null;
+        /**/
+
+        /**
          * Directory of dictionary
          *
          * @octdoc  p:l10n/$directory
-         * @var     string
+         * @type    string
          */
         protected $directory = '';
         /**/
@@ -70,7 +79,7 @@ namespace org\octris\core {
          * Bound gettext domains.
          *
          * @octdoc  p:l10n/$domains
-         * @var     array
+         * @type    array
          */
         protected $domains = array();
         /**/
@@ -79,12 +88,12 @@ namespace org\octris\core {
          * Configured localization backend.
          *
          * @octdoc  p:l10n/$backend
-         * @var     \org\octris\core\l10n\backend_if|null
-         */
+         * @type    \org\octris\core\l10n\backend_if|null
+		 */
         protected $backend = null;
-        /**/
+		/**/
 
-        /**
+		/**
          * Protected constructor and magic clone method. L10n is a singleton.
          *
          * @octdoc  m:l10n/__construct
@@ -92,6 +101,18 @@ namespace org\octris\core {
         protected function __construct() {}
         protected function __clone() {}
         /**/
+
+        /**
+         * Directory to lookup dictionary in.
+         *
+         * @octdoc  m:l10n/setDirectory
+         * @param   string      $directory      Name of directory to set for looking up dictionary.
+         */
+        public function setDirectory($directory)
+        /**/
+        {
+            $this->directory = $directory;
+        }
 
         /**
          * Return instance of localization class.

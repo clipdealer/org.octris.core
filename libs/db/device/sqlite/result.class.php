@@ -24,7 +24,7 @@ namespace org\octris\core\db\device\sqlite {
          * Device the result belongs to.
          *
          * @octdoc  p:result/$device
-         * @var     \org\octris\core\db\device\sqlite
+         * @type    \org\octris\core\db\device\sqlite
          */
         protected $device;
         /**/
@@ -34,7 +34,7 @@ namespace org\octris\core\db\device\sqlite {
          * result cannot be assigned to a single collection.
          *
          * @octdoc  p:result/$collection
-         * @var     string|null
+         * @type    string|null
          */
         protected $collection = null;
         /**/
@@ -43,7 +43,7 @@ namespace org\octris\core\db\device\sqlite {
          * SQLite result instance.
          *
          * @octdoc  p:result/$result
-         * @var     \SQLite3
+         * @type    \SQLite3
          */
         protected $result;
         /**/
@@ -52,7 +52,7 @@ namespace org\octris\core\db\device\sqlite {
          * Row data of current position.
          *
          * @octdoc  p:result/$position
-         * @var     array
+         * @type    array
          */
         protected $row = array();
         /**/
@@ -61,7 +61,7 @@ namespace org\octris\core\db\device\sqlite {
          * Current position in result.
          *
          * @octdoc  p:result/$position
-         * @var     int
+         * @type    int
          */
         protected $position = 0;
         /**/

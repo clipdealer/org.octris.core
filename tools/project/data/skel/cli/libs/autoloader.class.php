@@ -20,27 +20,27 @@ namespace {{$namespace}}\libs {
     class autoloader
     /**/
     {
-		/**
-		 * Whether script is executed from within a phar.
-		 *
-		 * @octdoc 	m:autoloader/$is_phar
-		 * @var 	bool
-		 */
-		protected static $is_phar = false;
-		/**/
-	
-		/**
-		 * Set whether script is executed from within a phar.
-		 *
-		 * @octdoc 	m:autoloader/setIsPhar
-		 * @param 	bool 		$is_phar 		Whether script is executed from within a phar.
-		 */
-		public static function setIsPhar($is_phar)
-		/**/
-		{
-			self::$is_phar = $is_phar;
-		}
-	
+        /**
+         * Whether script is executed from within a phar.
+         *
+         * @octdoc  v:autoloader/$is_phar
+         * @type    bool
+         */
+        protected static $is_phar = false;
+        /**/
+    
+        /**
+         * Set whether script is executed from within a phar.
+         *
+         * @octdoc  m:autoloader/setIsPhar
+         * @param   bool        $is_phar        Whether script is executed from within a phar.
+         */
+        public static function setIsPhar($is_phar)
+        /**/
+        {
+            self::$is_phar = $is_phar;
+        }
+    
         /**
          * Resolve path of a class for inclusion using the autoloader.
          *

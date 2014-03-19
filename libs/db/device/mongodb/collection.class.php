@@ -24,7 +24,7 @@ namespace org\octris\core\db\device\mongodb {
          * Device the collection belongs to.
          *
          * @octdoc  p:collection/$device
-         * @var     \org\octris\core\db\device\mongodb
+         * @type    \org\octris\core\db\device\mongodb
          */
         protected $device;
         /**/
@@ -33,7 +33,7 @@ namespace org\octris\core\db\device\mongodb {
          * Instance of collection.
          *
          * @octdoc  p:collection/$collection
-         * @var     string
+         * @type    string
          */
         protected $collection;
         /**/
