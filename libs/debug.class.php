@@ -21,13 +21,15 @@ namespace org\octris\core {
     /**/
     {
         /**
-         * Dump contents of one or multiple variables.
+         * Dump contents of one or multiple variables. This method should not be called directly, use global
+         * function 'ddump' instead.
          *
          * @octdoc  m:debug/ddump
-         * @param   mixed       $data               Data to dump.
-         * @param   ...         ...                 Additional optional parameters to dump.
+         * @param   string      $file               File the ddump command was called from.
+         * @param   int         $line               Line number of file the ddump command was called from.
+         * @param   ...         $data               Data to dump.
          */
-        public static function ddump($data)
+        public static function ddump($file, $line, ...$data)
         /**/
         {
             static $last_key = '';
@@ -44,23 +46,22 @@ namespace org\octris\core {
                 };
             }
     
-            $trace = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 1)[0];
-            $key   = $trace['file'] . ':' . $trace['line'];
+            $key = $file . ':' . $line;
     
             if ($last_key != $key) {
-                printf("file: %s\n", $trace['file']);
-                printf("line: %s\n\n", $trace['line']);
+                printf("file: %s\n", $file);
+                printf("line: %s\n\n", $line);
                 $last_key = $key;
             }
     
             if (extension_loaded('xdebug')) {
-                for ($i = 0, $cnt = func_num_args(); $i < $cnt; ++$i) {
-                    var_dump(func_get_arg($i));
+                for ($i = 0, $cnt = count($data); $i < $cnt; ++$i) {
+                    var_dump($data[$i]);
                 }
             } else {
-                for ($i = 0, $cnt = func_num_args(); $i < $cnt; ++$i) {
+                for ($i = 0, $cnt = count($data); $i < $cnt; ++$i) {
                     ob_start($prepare);
-                    var_dump(func_get_arg($i));
+                    var_dump($data[$i]);
                     ob_end_flush();
                 }
             }
@@ -71,13 +72,16 @@ namespace org\octris\core {
         }
         
         /**
-         * Print formatted debug message. Message formatting follows the rules of sprints/vsprintf.
+         * Print formatted debug message. Message formatting follows the rules of sprints/vsprintf. 
+         * This method should not be called directly, use global function 'dprint' instead.
          *
          * @octdoc  m:debug/dprint
+         * @param   string      $file               File the ddump command was called from.
+         * @param   int         $line               Line number of file the ddump command was called from.
          * @param   string      $msg                Message with optional placeholders to print.
-         * @param   ...         ...                 Additional optional parameters to print.
+         * @param   mixed       ...$data            Additional optional parameters to print.
          */
-        public static function dprint($msg, ...$data)
+        public static function dprint($file, $line, $msg, ...$data)
         /**/
         {
             static $last_key = '';
@@ -94,17 +98,16 @@ namespace org\octris\core {
                 };
             }
     
-            $trace = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 1)[0];
-            $key   = $trace['file'] . ':' . $trace['line'];
+            $key = $file . ':' . $line;
     
             if ($last_key != $key) {
-                printf("file: %s\n", $trace['file']);
-                printf("line: %s\n\n", $trace['line']);
+                printf("file: %s\n", $file);
+                printf("line: %s\n\n", $line);
                 $last_key = $key;
             }
 
             ob_start($prepare);
-            printf($msg, ...$data);
+            vprintf($msg, $data);
             ob_end_flush();
 
             if (php_sapi_name() != 'cli') {
@@ -122,24 +125,27 @@ namespace {
      *
      * @octdoc  f:debug/ddump
      * @param   mixed         ...$params        Parameters to pass to \org\octris\core\debug::ddump.
-     * @see     \org\octris\core\debug::ddump
      */
     function ddump(...$params)
     /**/
     {
-        dbg::ddump(...$params);
+        $trace = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 1)[0];
+
+        dbg::ddump($trace['file'], $trace['line'], ...$params);
     }
 
     /**
      * Print formatted debug message. Message formatting follows the rules of sprints/vsprintf.
      *
      * @octdoc  m:debug/dprint
-     * @param   mixed         ...$params        Parameters to pass to \org\octris\core\debug::dprint.
-     * @see     \org\octris\core\debug::dprint
+     * @param   string      $msg                Message with optional placeholders to print.
+     * @param   mixed       ...$params          Parameters to pass to \org\octris\core\debug::dprint.
      */
-    function dprint(...$params)
+    function dprint($msg, ...$params)
     /**/
     {
-        dbg::dprint(...$params);
+        $trace = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 1)[0];
+
+        dbg::dprint($trace['file'], $trace['line'], $msg, ...$params);
     }
 }
