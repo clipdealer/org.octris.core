@@ -282,6 +282,22 @@ namespace org\octris\core {
         }
 
         /**
+         * Value enumeration.
+         *
+         * @octdoc  m:l10n/enum
+         * @param   int             $value              Number of element to retrieve.
+         * @param   ...             ...$items           Arbitrary amount of items.
+         * @return  string                              The value of the item of position 'value' or an empty string.
+         */
+        public function enum($value, ...$items) 
+        /**/
+        {
+            return (!array_key_exists($value - 1, $items) 
+                    ? ''
+                    : $items[$value]);
+        }        
+
+        /**
          * If parameter 'test' ist bool true, the parameter 'first' will
          * be returnes, otherwise the parameter 'second' will be returned.
          *
