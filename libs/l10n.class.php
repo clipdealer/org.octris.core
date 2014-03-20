@@ -526,11 +526,15 @@ namespace org\octris\core {
             $cnt     = 0;
             $pattern = '/\[(?:(?P<cmd>[a-z]+), *)?_(?P<arg>\d+)(?:, *(?P<str>.*?))?(?<!\\\)\]/s';
 
-            $msg = preg_replace_callback($pattern, function($m) {
+            $msg = preg_replace_callback($pattern, function($m) use ($fn) {
                 $cmd = (isset($m['cmd']) ? $m['cmd'] : '');
                 $arg = $m['arg'];
 
                 if ($cmd != '') {
+                    if (!in_array($cmd, $fn)) {
+                        throw new \Exception(sprintf('undefined command "%s"', $cmd));
+                    }
+                    
                     $tmp = array_map(function($arg) {
                         return "'" . trim($arg) . "'";
                     }, (isset($m['str']) ? preg_split('/(?<!\\\),/', $m['str']) : array()));
