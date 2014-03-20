@@ -294,7 +294,7 @@ namespace org\octris\core {
         {
             return (!array_key_exists($value - 1, $items) 
                     ? ''
-                    : $items[$value]);
+                    : $items[$value - 1]);
         }        
 
         /**
