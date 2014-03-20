@@ -520,24 +520,27 @@ namespace org\octris\core {
         protected function compile($msg)
         /**/
         {
+            $fn = array('comify', 'enum', 'monf', 'numf', 'perf', 'datef', 'gender', 'quant', 'yesno');
+            
             $msg     = '\'' . str_replace("'", "\'", $msg) . '\'';
             $cnt     = 0;
-            $pattern = '/\[(?:(_\d+)|(?:([^,]+))(?:,(.*?))?(?<!\\\))\]/s';
+            $pattern = '/\[(?:(?P<cmd>[a-z]+), *)?_(?P<arg>\d+)(?:, *(?P<str>.*?))?(?<!\\\)\]/s';
 
             $msg = preg_replace_callback($pattern, function($m) {
-                $cmd = (isset($m[2]) ? $m[2] : '');
-                $tmp = preg_split('/(?<!\\\),/', array_pop($m));
-                $par = array();
+                $cmd = (isset($m['cmd']) ? $m['cmd'] : '');
+                $arg = $m['arg'];
 
-                foreach ($tmp as $t) {
-                    $par[] = (($t = trim($t)) && preg_match('/^_(\d+)$/', $t, $m)
-                                ? '$args[' . ($m[1] - 1) . ']'
-                                : '\'' . $t . '\'');
+                if ($cmd != '') {
+                    $tmp = array_map(function($arg) {
+                        return "'" . trim($arg) . "'";
+                    }, (isset($m['str']) ? preg_split('/(?<!\\\),/', $m['str']) : array()));
+
+                    array_unshift($tmp, "\$args[" . ($arg - 1) . "]");
+
+                    $code = "' . \$obj->" . $cmd . "(" . implode(', ', $tmp) . ") . '";
+                } else {
+                    $code = "' . \$args[" . ($arg - 1) . "] . '";
                 }
-
-                $code = ($cmd != '' 
-                         ? '\' . $obj->' . $cmd . '(' . implode(',', $par) . ') . \''
-                         : '\' . ' . array_shift($par) . ' . \'');
 
                 return $code;
             }, $msg, -1, $cnt);
