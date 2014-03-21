@@ -94,8 +94,9 @@ namespace org\octris\core {
         /**/
         {
             return array(
-                'storage'   => self::$storage[$this->name],
-                'validated' => $this->validated
+                'storage'    => self::$storage[$this->name],
+                'validators' => $this->validators,
+                'validated'  => $this->validated
             );
         }
 
