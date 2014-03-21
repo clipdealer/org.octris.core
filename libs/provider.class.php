@@ -86,6 +86,20 @@ namespace org\octris\core {
         }
 
         /**
+         * Debug information.
+         *
+         * @octdoc  m:provider/__debugInfo
+         */
+        public function __debugInfo()
+        /**/
+        {
+            return array(
+                'storage'   => self::$storage[$this->name],
+                'validated' => $this->validated
+            );
+        }
+
+        /**
          * Returns a new instance of the data provider by granting access to
          * data stored with the specified name in the data provider.
          *
