@@ -236,9 +236,10 @@ namespace org\octris\core {
          * @param   mixed           $money              Float value as amount or instance of \org\octris\core\type\money
          * @return  string                              Formatted money.
          */
-        public function monf($money)
+        public function monf($money, $currency = 'EUR')
         /**/
         {
+            return \NumberFormatter::create($this->lc, \NumberFormatter::CURRENCY)->formatCurrency($money, $currency);
         }
 
         /**
@@ -252,6 +253,7 @@ namespace org\octris\core {
         public function numf($number)
         /**/
         {
+            return \NumberFormatter::create($this->lc, \NumberFormatter::DECIMAL)->format($number);
         }
 
         /**
@@ -264,6 +266,7 @@ namespace org\octris\core {
         public function perf($percentage)
         /**/
         {
+            return \NumberFormatter::create($this->lc, \NumberFormatter::PERCENT)->format($percentage);
         }
 
         /**
@@ -276,9 +279,10 @@ namespace org\octris\core {
          * @param   int             $format             Optional formatting type.
          * @return  string                              Formatted date.
          */
-        public function datef($datetime, $format)
+        public function datef($datetime, $format = \IntlDateFormatter::SHORT)
         /**/
         {
+            return \IntlDateFormatter::create($this->lc, $format, $format)->format($datetime);
         }
 
         /**
