@@ -28,7 +28,7 @@ namespace org\octris\core\project\app {
         /**
          * Application data.
          *
-         * @octdoc  v:lint/$data
+         * @octdoc  p:lint/$data
          * @type    array
          */
         protected $data = array();

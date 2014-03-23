@@ -27,7 +27,7 @@ namespace org\octris\core\project\app {
         /**
          * Name of project
          *
-         * @octdoc  v:graph/$project
+         * @octdoc  p:graph/$project
          * @type    string
          */
         protected $project;
@@ -36,7 +36,7 @@ namespace org\octris\core\project\app {
         /**
          * Output file.
          *
-         * @octdoc  v:graph/$output
+         * @octdoc  p:graph/$output
          * @type    string|null
          */
         protected $output = null;
@@ -45,7 +45,7 @@ namespace org\octris\core\project\app {
         /**
          * Output format.
          *
-         * @octdoc  v:graph/$format
+         * @octdoc  p:graph/$format
          * @type    string
          */
         protected $format = '';
@@ -54,7 +54,7 @@ namespace org\octris\core\project\app {
         /**
          * Dot command.
          *
-         * @octdoc  v:graph/$cmd
+         * @octdoc  p:graph/$cmd
          * @type    string
          */
         protected $cmd = '';

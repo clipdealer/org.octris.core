@@ -24,7 +24,7 @@ namespace org\octris\core\project\app {
          * The entry points to which the current page should allow requests to have to be defined with this
          * property.
          *
-         * @octdoc  v:entry/$next_page
+         * @octdoc  p:entry/$next_page
          * @type    array
          */
         protected $next_pages = array(

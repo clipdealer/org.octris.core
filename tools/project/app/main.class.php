@@ -23,7 +23,7 @@ namespace org\octris\core\project\app {
         /**
          * Entry page to use if no other page is loaded. To be overwritten by applications' main class.
          *
-         * @octdoc  v:main/$entry_page
+         * @octdoc  p:main/$entry_page
          * @type    string
          */
         protected $entry_page = '\org\octris\core\project\app\entry';

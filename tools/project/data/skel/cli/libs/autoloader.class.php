@@ -23,7 +23,7 @@ namespace {{$namespace}}\libs {
         /**
          * Whether script is executed from within a phar.
          *
-         * @octdoc  v:autoloader/$is_phar
+         * @octdoc  p:autoloader/$is_phar
          * @type    bool
          */
         protected static $is_phar = false;
