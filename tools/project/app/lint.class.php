@@ -29,7 +29,7 @@ namespace org\octris\core\project\app {
          * Application data.
          *
          * @octdoc  v:lint/$data
-         * @var     array
+         * @type    array
          */
         protected $data = array();
         /**/

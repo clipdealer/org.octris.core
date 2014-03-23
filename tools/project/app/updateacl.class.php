@@ -28,7 +28,7 @@ namespace org\octris\core\project\app {
          * Name of project
          *
          * @octdoc  v:updateacl/$project
-         * @var     string
+         * @type    string
          */
         protected $project;
         /**/
@@ -37,7 +37,7 @@ namespace org\octris\core\project\app {
          * Path to the app folder of the project.
          *
          * @octdoc  v:updateacl/$app_path
-         * @var     string
+         * @type    string
          */
         protected $app_path;
         /**/

@@ -25,7 +25,7 @@ namespace org\octris\core\project\app {
          * property.
          *
          * @octdoc  v:entry/$next_page
-         * @var     array
+         * @type    array
          */
         protected $next_pages = array(
             '' => '\org\octris\core\project\app\entry',

@@ -29,7 +29,7 @@ namespace org\octris\core\project\app {
          * Application data.
          *
          * @octdoc  p:create/$data
-         * @var     array
+         * @type    array
          */
         protected $data = array();
         /**/
@@ -38,7 +38,7 @@ namespace org\octris\core\project\app {
          * Type of application to create.
          *
          * @octdoc  p:create/$type
-         * @var     string
+         * @type    string
          */
         protected $type;
         /**/
@@ -47,7 +47,7 @@ namespace org\octris\core\project\app {
          * Application types.
          *
          * @octdoc  p:create/$types
-         * @var     array
+         * @type    array
          */
         protected static $types = array(
             'w' => 'web',

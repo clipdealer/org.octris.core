@@ -29,7 +29,7 @@ namespace org\octris\core\project\app {
          * Autoloader class name.
          *
          * @octdoc  p:getdeps/$autoloader
-         * @var     string
+         * @type    string
          */
         protected $autoloader = '';
         /**/
