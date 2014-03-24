@@ -922,16 +922,13 @@ namespace org\octris\core\type {
          *
          * @octdoc  m:string/sprintf
          * @param   string      $format         Formatting pattern.
-         * @param   mixed       ...             Additional optional parameters for pattern replacing in first parameter.
+         * @param   mixed       ...$params      Additional optional parameters for pattern replacing in first parameter.
          * @return  string                      Returns a string produced according to the formatting string format.
          */
-        public static function sprintf($format)
+        public static function sprintf($format, ...$params)
         /**/
         {
-            $args = func_get_args();
-            array_shift($args);
-        
-            return vsprintf($format, $args);
+            return sprintf($format, ...$params);
         }
     
         /**
